@@ -1,4 +1,4 @@
-workspace "Prototype"
+workspace "UnitTest"
 	architecture "x64"
 
 	configurations
@@ -20,10 +20,9 @@ workspace "Prototype"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-include "DAEngine"
+include "../../DAEngine"
 
-project "Prototype"
-	location "Prototype"
+project "DAEngineTests"
 	kind "ConsoleApp"
 	language "C++"
 			cppdialect "C++20"
@@ -34,20 +33,20 @@ project "Prototype"
 
 	defines 
 	{
-		"DA_PROJECT_Prototype"
+		"DA_TEST"
 	}
 	
 	files 
 	{
-		"%{prj.location}/%{prj.name}/src/**.h",
-		"%{prj.location}/%{prj.name}/src/**.c",
-		"%{prj.location}/%{prj.name}/src/**.cpp"
+		"src/**.h",
+		"src/**.c",
+		"src/**.cpp"
 	}
 
 	includedirs 
 	{
-		"DAEngine/src",
-		"%{prj.location}/%{prj.name}/src"
+		"../src",
+		"src"
 	}
 
 	links
@@ -57,7 +56,7 @@ project "Prototype"
 	
 	filter "system:windows"
 		systemversion "latest"
-		kind "WindowedApp"
+		kind "ConsoleApp"
 
 		defines
 		{
@@ -68,7 +67,6 @@ project "Prototype"
 			defines "DA_DEBUG"
 			runtime "Debug"
 			symbols "On"
-			kind "ConsoleApp"
 			
 		filter "configurations:Release"
 			defines "DA_RELEASE"
@@ -113,7 +111,7 @@ project "Prototype"
 	
 	filter "system:android"
 		toolset "clang"
-		cppdialect "gnu++20"
+		cppdialect "gnu++17"
 		kind "SharedLib"
 		linkoptions { "-lm"}
 		rtti ("On")
@@ -199,7 +197,7 @@ project "Prototype"
 
 	filter "system:macosx"
 		systemversion "latest"
-		kind "WindowedApp"
+		kind "ConsoleApp"
 
 		defines
 		{
@@ -250,4 +248,3 @@ project "Prototype"
 				defines "DA_FINAL"
 				runtime "Release"
 				optimize "On"
-

@@ -39,3 +39,6 @@ Bin-Obj/
 *.vcxproj.filters
 *.vcxproj.user
 *.sln
+*.lua.bak
+*.log
+*.log.bak

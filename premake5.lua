@@ -26,28 +26,28 @@ project "Prototype"
 	location "Prototype"
 	kind "ConsoleApp"
 	language "C++"
-			cppdialect "C++17"
+			cppdialect "C++20"
 	staticruntime "on"
 
-	targetdir ("%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{prj.location}/Bin-Obj/" .. outputdir .. "/%{prj.name}")
+	targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("%{prj.location}/bin-obj/" .. outputdir .. "/%{prj.name}")
 
 	defines 
 	{
-		"GE_PROJECT_Prototype"
+		"DA_PROJECT_Prototype"
 	}
 	
 	files 
 	{
-		"%{prj.location}/%{prj.name}/src/**.h",
-		"%{prj.location}/%{prj.name}/src/**.c",
-		"%{prj.location}/%{prj.name}/src/**.cpp"
+		"%{prj.location}/src/**.h",
+		"%{prj.location}/src/**.c",
+		"%{prj.location}/src/**.cpp"
 	}
 
 	includedirs 
 	{
 		"DAEngine/src",
-		"%{prj.location}/%{prj.name}/src"
+		"%{prj.location}/src"
 	}
 
 	links
@@ -113,7 +113,7 @@ project "Prototype"
 	
 	filter "system:android"
 		toolset "clang"
-		cppdialect "gnu++17"
+		cppdialect "gnu++20"
 		kind "SharedLib"
 		linkoptions { "-lm"}
 		rtti ("On")
@@ -148,7 +148,7 @@ project "Prototype"
 			postbuildcommands
 			{
 			"copy /y \"%{wks.location}%{cfg.architecture}\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/bin/" .. outputdir .. "/%{prj.name}\"",
 			"RMDIR /Q/S \"%{wks.location}%{cfg.architecture}\"",
 			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
@@ -162,7 +162,7 @@ project "Prototype"
 			postbuildcommands
 			{
 			"copy /y \"%{wks.location}%{cfg.architecture}\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/bin/" .. outputdir .. "/%{prj.name}\"",
 			"RMDIR /Q/S \"%{wks.location}%{cfg.architecture}\"",
 			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
@@ -177,7 +177,7 @@ project "Prototype"
 			postbuildcommands
 			{
 			"copy /y \"%{wks.location}%{cfg.architecture}\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/bin/" .. outputdir .. "/%{prj.name}\"",
 			"RMDIR /Q/S \"%{wks.location}%{cfg.architecture}\"",
 			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
@@ -192,7 +192,7 @@ project "Prototype"
 			postbuildcommands
 			{
 			"copy /y \"%{wks.location}%{cfg.architecture}\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/bin/" .. outputdir .. "/%{prj.name}\"",
 			"RMDIR /Q/S \"%{wks.location}%{cfg.architecture}\"",
 			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}

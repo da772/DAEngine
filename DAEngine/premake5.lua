@@ -1,14 +1,14 @@
 project "DAEngine"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "on"
 
 	pchheader "dapch.h"
 	pchsource "src/dapch.cpp"
 
-	targetdir ("Bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("Bin-Obj/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-Obj/" .. outputdir .. "/%{prj.name}")
 
 	files 
 	{
@@ -25,7 +25,8 @@ project "DAEngine"
 	includedirs
 	{
 		"%{prj.location}",
-		"src/"
+		"src/",
+		"src/DAEngine"
 	}
 
 	filter "system:macosx"
@@ -158,3 +159,26 @@ project "DAEngine"
 			defines "DA_FINAL"
 			runtime "Release"
 			optimize "On"
+
+		filter "system:linux"
+			linkgroups 'on'
+			systemversion "latest"
+			cppdialect "gnu++20"
+			
+			defines
+			{
+				"DA_PLATFORM_LINUX"
+			}
+			
+			filter "configurations:Debug"
+				defines "DA_DEBUG"
+				runtime "Debug"
+				symbols "On"
+			filter "configurations:Release"
+				defines "DA_RELEASE"
+				runtime "Release"
+				optimize "On"
+			filter "configurations:Final"
+				defines "DA_FINAL"
+				runtime "Release"
+				optimize "On"
