@@ -10,6 +10,7 @@ namespace da {
 				Arena(const size_t& size);
 				~Arena();
 				void* Allocate(const size_t& size);
+				void Free();
 
 			private:
 				unsigned char* m_base = 0;

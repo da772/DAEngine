@@ -19,8 +19,6 @@ public:
 
 	void RunTests();
 
-
-
 private:
 	std::vector<Test*> m_tests;
 

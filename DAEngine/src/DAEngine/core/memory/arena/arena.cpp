@@ -33,6 +33,14 @@ namespace da
 				return p;
 			}
 
+			void Arena::Free()
+			{
+				free(m_base);
+				m_ptr = 0;
+				m_allocated = 0;
+				m_size = 0;
+			}
+
 		}
 	}
 }

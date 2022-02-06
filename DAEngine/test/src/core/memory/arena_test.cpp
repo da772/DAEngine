@@ -15,6 +15,7 @@ void ArenaTest::RunTests()
 
 bool ArenaTest::CreateTest()
 {
+	TEST_ASSERT(!m_arena)
 	m_arena = new da::core::memory::Arena(0x140);
 	TEST_ASSERT(m_arena);
 
@@ -23,6 +24,7 @@ bool ArenaTest::CreateTest()
 
 bool ArenaTest::AllocateTest()
 {
+	TEST_ASSERT(m_arena);
 	for (int i = 0; i < 9; i++)
 	{
 		int* myInt = (int*)m_arena->Allocate(0x20);
@@ -35,7 +37,10 @@ bool ArenaTest::AllocateTest()
 
 bool ArenaTest::FreeTest()
 {
-	TEST_ASSERT(false);
+	TEST_ASSERT(m_arena);
+	m_arena->Free();
+	m_arena = nullptr;
+	TEST_ASSERT(!m_arena);
 
 	return true;
 }
