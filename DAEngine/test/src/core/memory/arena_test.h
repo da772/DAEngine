@@ -2,14 +2,14 @@
 
 #include "test.h"
 
-namespace da { namespace core { namespace memory { class Arena; } } }
+namespace da::core::memory { class CArena; }
 
-class ArenaTest : public Test
+class CArenaTest : public ITest
 {
-	TEST_CLASS(ArenaTest);
+	TEST_CLASS(CArenaTest);
 
 public:
-	ArenaTest();
+	CArenaTest();
 	void RunTests() override;
 
 private:
@@ -19,7 +19,7 @@ private:
 
 
 private:
-	da::core::memory::Arena* m_arena;
+	da::core::memory::CArena* m_arena;
 
 };
 

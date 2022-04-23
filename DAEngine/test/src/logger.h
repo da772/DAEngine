@@ -1,7 +1,7 @@
 #pragma once
 #include <fstream>
 
-class Logger
+class CLogger
 {
 public:
 	static void Initalize(const char* output);
@@ -15,7 +15,7 @@ public:
 
 		printf("%s\n", buff);
 
-		Logger::m_file << buff << "\n";
+		CLogger::m_file << buff << "\n";
 		m_file.flush();
 	}
 private:

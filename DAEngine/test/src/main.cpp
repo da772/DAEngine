@@ -4,13 +4,13 @@
 
 int main(int argc, char** argv)
 {
-	Logger::Initalize(utility::GetLogFileName().c_str()) ;
+	CLogger::Initalize(utility::GetLogFileName().c_str());
 
-	TestManager manager;
+	CTestManager manager;
 
 	manager.RunTests();
 
-	Logger::Shutdown();
+	CLogger::Shutdown();
 
 	return 0;
 }

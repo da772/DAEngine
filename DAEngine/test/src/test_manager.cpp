@@ -6,14 +6,14 @@
 #include "core/memory/arena_test.h"
 
 
-TestManager::TestManager()
+CTestManager::CTestManager()
 {
-	RegisterTest<ArenaTest>();
+	RegisterTest<CArenaTest>();
 }
 
-TestManager::~TestManager()
+CTestManager::~CTestManager()
 {
-	for (Test* t : m_tests)
+	for (ITest* t : m_tests)
 	{
 		delete t;
 	}
@@ -21,13 +21,13 @@ TestManager::~TestManager()
 	m_tests.clear();
 }
 
-void TestManager::RunTests()
+void CTestManager::RunTests()
 {
-	for (Test* t : m_tests)
+	for (ITest* t : m_tests)
 	{
-		Logger::Log("------------------------------------\n[%s]\n------------------------------------", t->GetTestName());
+		CLogger::Log("------------------------------------\n[%s]\n------------------------------------", t->GetTestName());
 		uint64_t time = utility::GetTimeUS();
 		t->RunTests();
-		Logger::Log("\n[%s] Time Elapsed: %.3f ms\n", t->GetTestName(), (utility::GetTimeUS() - time) / 1000.f);
+		CLogger::Log("\n[%s] Time Elapsed: %.3f ms\n", t->GetTestName(), (utility::GetTimeUS() - time) / 1000.f);
 	}
 }

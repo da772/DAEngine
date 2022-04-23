@@ -1,13 +1,13 @@
 #include "logger.h"
 
-std::ofstream Logger::m_file;
+std::ofstream CLogger::m_file;
 
-void Logger::Initalize(const char* file)
+void CLogger::Initalize(const char* file)
 {
 	m_file = std::ofstream(file, std::ofstream::out);
 }
 
-void Logger::Shutdown()
+void CLogger::Shutdown()
 {
 	m_file.close();
 }

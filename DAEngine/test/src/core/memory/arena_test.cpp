@@ -1,28 +1,28 @@
 #include "arena_test.h"
 #include "DAEngine/core/memory/arena/arena.h"
 
-ArenaTest::ArenaTest() : m_arena(nullptr)
+CArenaTest::CArenaTest() : m_arena(nullptr)
 {
 
 }
 
-void ArenaTest::RunTests()
+void CArenaTest::RunTests()
 {
 	TEST_FUNC(CreateTest);
-	TEST_FUNC(FreeTest);
 	TEST_FUNC(AllocateTest);
+	TEST_FUNC(FreeTest);
 }
 
-bool ArenaTest::CreateTest()
+bool CArenaTest::CreateTest()
 {
 	TEST_ASSERT(!m_arena)
-	m_arena = new da::core::memory::Arena(0x140);
+	m_arena = new da::core::memory::CArena(0x140);
 	TEST_ASSERT(m_arena);
 
 	return true;
 }
 
-bool ArenaTest::AllocateTest()
+bool CArenaTest::AllocateTest()
 {
 	TEST_ASSERT(m_arena);
 	for (int i = 0; i < 9; i++)
@@ -35,7 +35,7 @@ bool ArenaTest::AllocateTest()
 	return true;
 }
 
-bool ArenaTest::FreeTest()
+bool CArenaTest::FreeTest()
 {
 	TEST_ASSERT(m_arena);
 	m_arena->Free();

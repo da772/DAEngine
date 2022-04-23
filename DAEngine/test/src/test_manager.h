@@ -2,14 +2,14 @@
 
 #include <vector>
 
-class Test;
+class ITest;
 
-class TestManager
+class CTestManager
 {
 public:
 
-	TestManager();
-	~TestManager();
+	CTestManager();
+	~CTestManager();
 
 	template<class T>
 	inline void RegisterTest()
@@ -20,6 +20,6 @@ public:
 	void RunTests();
 
 private:
-	std::vector<Test*> m_tests;
+	std::vector<ITest*> m_tests;
 
 };

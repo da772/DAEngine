@@ -13,7 +13,7 @@ namespace utility {
 
 	inline std::string GetLogFileName()
 	{
-		std::string s = "output/UnitTestOutput_" + CurrentDateTime()+".log";
+		std::string s = "output/UnitTest_" + CurrentDateTime()+".log";
 		std::replace(s.begin(), s.end(), ':', '-');
 		return s;
 	}

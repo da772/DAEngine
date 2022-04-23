@@ -1,18 +1,12 @@
 #pragma once
 
-namespace da
+namespace da::core::memory
 {
-	namespace memory
+
+	class CArenaManager
 	{
+	public:
+		static CArenaManager GetManager();
 
-		class ArenaManager
-		{
-		public:
-			static ArenaManager GetManager();
-
-
-
-
-		};
-	}
+	};
 }
