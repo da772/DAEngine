@@ -68,7 +68,6 @@ namespace da::core::containers {
 		}
 
 		inline T* Data() const { return m_ptr; }
-		inline size_t Size() const { return m_size; }
 
 		inline TEnumerator<T> begin() const override {
 			ASSERT(m_ptr);

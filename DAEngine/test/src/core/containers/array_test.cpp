@@ -138,7 +138,12 @@ bool CArrayTest::ObjectTest()
 		return o == TestObject(-1, -1);
 		}) != m_array.end());
 
+	TEnumerator<TestObject> enu = m_array.Find([](const TestObject& o) {
+		return o == TestObject(7, 7);
+		});
 
-	
+	enu->x = 17;
+	enu->y = 24;
+
 	return true;
 }
