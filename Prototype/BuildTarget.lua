@@ -39,15 +39,15 @@ project "Prototype"
 	
 	files 
 	{
-		"%{prj.location}/%{prj.name}/src/**.h",
-		"%{prj.location}/%{prj.name}/src/**.c",
-		"%{prj.location}/%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.c",
+		"%{prj.name}/src/**.cpp"
 	}
 
 	includedirs 
 	{
 		"DAEngine/src",
-		"%{prj.location}/%{prj.name}/src"
+		"%{prj.name}/src"
 	}
 
 	links
