@@ -31,12 +31,11 @@ namespace da::core::containers {
 			return false;
 		}
 		
-		inline T* Find(bool_func func) {
+		inline TEnumerator<T> Find(bool_func func) const {
 			for (TEnumerator<T> i = begin(), e = end(); i != end(); ++i) {
-				if (func(*i)) return i.Get();
+				if (func(*i)) return i;
 			}
-
-			return nullptr;
+			return end();
 		}
 	};
 }

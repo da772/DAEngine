@@ -15,10 +15,6 @@ private:
 	bool PrimitiveTest();
 	bool ObjectTest();
 
-
-private:
-	da::core::containers::TArray<int> m_array;
-
 };
 
 

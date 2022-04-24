@@ -57,12 +57,22 @@ namespace da::core::containers {
 			m_size = 0;
 		};
 
+		inline void Resize(const size_t& n) {
+			if (n == m_size) return;
+			T* ptr = new T[n];
+			if (m_ptr)
+				memcpy(ptr, m_ptr, sizeof(T) * (n > m_size ? m_size : n));
+			Free();
+			m_ptr = ptr;
+			m_size = n;
+		}
+
 		inline T* Data() const { return m_ptr; }
 		inline size_t Size() const { return m_size; }
 
 		inline TEnumerator<T> begin() const override {
 			ASSERT(m_ptr);
-			return TEnumerator<T>(&m_ptr[0]); 
+			return TEnumerator<T>(&m_ptr[0]);
 		};
 
 		inline TEnumerator<T> end() const override {
@@ -94,7 +104,7 @@ namespace da::core::containers {
 		}
 
 		// Move
-		inline TArray<T>& operator=(TArray<T>&& rhs)
+		inline TArray<T>& operator=(TArray<T>&& rhs) noexcept
 		{
 			if (m_ptr) Free();
 			m_ptr = rhs.m_ptr;
