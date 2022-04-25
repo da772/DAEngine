@@ -4,12 +4,14 @@
 #include "utility.h"
 
 #include "core/containers/array_test.h"
+#include "core/containers/list_test.h"
 #include "core/memory/arena_test.h"
 
 
 CTestManager::CTestManager()
 {
 	RegisterTest<CArrayTest>();
+	RegisterTest<CListTest>();
 	RegisterTest<CArenaTest>();
 }
 

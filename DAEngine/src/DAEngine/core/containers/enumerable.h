@@ -35,6 +35,13 @@ namespace da::core::containers {
 			return end();
 		}
 
+		inline TEnumerator<T> Find(const T& x) const {
+			for (TEnumerator<T> i = begin(), e = end(); i != end(); ++i) {
+				if (x == *i) return i;
+			}
+			return end();
+		}
+
 		inline size_t Size() const {
 			return ((uintptr_t)end().Get() - (uintptr_t)begin().Get())/sizeof(T);
 		}
