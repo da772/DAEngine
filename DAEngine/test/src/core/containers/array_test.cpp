@@ -32,7 +32,6 @@ bool CArrayTest::PrimitiveTest()
 	}
 
 	TArray<int> newArr(10, 0xef);
-
 	TEST_ASSERT(newArr == m_array);
 	newArr = TArray<int>(10, 0xe1);
 	TEST_ASSERT(newArr != m_array);
@@ -42,6 +41,7 @@ bool CArrayTest::PrimitiveTest()
 	TEST_ASSERT(newArr == m_array);
 	newArr = TArray<int>(std::move(m_array));
 	TEST_ASSERT(newArr != m_array);
+
 
 	m_array = newArr;
 	TEST_ASSERT(m_array == newArr);
