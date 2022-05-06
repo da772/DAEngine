@@ -1,7 +1,5 @@
 #include "list_test.h"
 
-#include <iostream>
-
 using namespace da::core::containers;
 
 CListTest::CListTest()
@@ -9,10 +7,11 @@ CListTest::CListTest()
 
 }
 
-void CListTest::RunTests()
+bool CListTest::RunTests()
 {
 	TEST_FUNC(PrimitiveTest);
 	TEST_FUNC(ObjectTest);
+	TEST_END();
 }
 
 bool CListTest::PrimitiveTest()
@@ -33,7 +32,7 @@ bool CListTest::PrimitiveTest()
 
 	counter = 0;
 	for (int i = 0; i < 25; i++) {
-		TEST_ASSERT(list1[i] == (i + 25) );
+		TEST_ASSERT(list1[i] == (i + 25));
 	}
 
 	list1.Pop();
@@ -65,8 +64,6 @@ bool CListTest::PrimitiveTest()
 	list1.Remove(24);
 	TEST_ASSERT(list1.Size() == 23);
 	for (int i = 0; i < 23; i++) {
-
-		std::cout << i << " " << list1[i] << std::endl;
 		TEST_ASSERT(list1[i] == (i));
 	}
 

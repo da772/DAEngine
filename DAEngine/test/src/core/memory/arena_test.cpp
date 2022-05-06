@@ -6,11 +6,12 @@ CArenaTest::CArenaTest() : m_arena(nullptr)
 
 }
 
-void CArenaTest::RunTests()
+bool CArenaTest::RunTests()
 {
 	TEST_FUNC(CreateTest);
 	TEST_FUNC(AllocateTest);
 	TEST_FUNC(FreeTest);
+	TEST_END();
 }
 
 bool CArenaTest::CreateTest()

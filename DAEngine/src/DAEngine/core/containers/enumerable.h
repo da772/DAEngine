@@ -29,14 +29,14 @@ namespace da::core::containers {
 		}
 		
 		inline TEnumerator<T> Find(bool_func func) const {
-			for (TEnumerator<T> i = begin(), e = end(); i != end(); ++i) {
+			for (TEnumerator<T> i = begin(), e = end(); i != e; ++i) {
 				if (func(*i)) return i;
 			}
 			return end();
 		}
 
 		inline TEnumerator<T> Find(const T& x) const {
-			for (TEnumerator<T> i = begin(), e = end(); i != end(); ++i) {
+			for (TEnumerator<T> i = begin(), e = end(); i != e; ++i) {
 				if (x == *i) return i;
 			}
 			return end();

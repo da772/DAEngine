@@ -10,7 +10,6 @@ class CArenaTest : public ITest
 
 public:
 	CArenaTest();
-	void RunTests() override;
 
 private:
 	bool CreateTest();

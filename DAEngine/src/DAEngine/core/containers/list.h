@@ -75,14 +75,11 @@ namespace da::core::containers {
 			m_ptr = nullptr;
 		}
 
-		TEnumerator<T> begin() const override
-		{
+		TEnumerator<T> begin() const override {
 			return TEnumerator<T>(m_ptr);
 		}
 
-
-		TEnumerator<T> end() const override
-		{
+		TEnumerator<T> end() const override {
 			return TEnumerator<T>(&m_ptr[m_size]);
 		}
 

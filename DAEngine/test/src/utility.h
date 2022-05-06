@@ -11,10 +11,22 @@ namespace utility {
 		return ss.str();
 	}
 
+	inline std::string GetConfiguration()
+	{
+#ifdef DA_DEBUG
+		return "DEBUG";
+#elif DA_RELEASE
+		return "RELEASE";
+#elif DA_FINAL
+		return "FINAL";
+#endif
+	}
+
 	inline std::string GetLogFileName()
 	{
-		std::string s = "output/UnitTest_" + CurrentDateTime()+".log";
+		std::string s = "output/UnitTest_" + CurrentDateTime() + "_" + GetConfiguration() + ".log";
 		std::replace(s.begin(), s.end(), ':', '-');
+		std::erase(s, ' ');
 		return s;
 	}
 

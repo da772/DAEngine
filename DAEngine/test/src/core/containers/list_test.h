@@ -9,7 +9,6 @@ class CListTest : public ITest
 
 public:
 	CListTest();
-	void RunTests() override;
 
 private:
 	bool PrimitiveTest();

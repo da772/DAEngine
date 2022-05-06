@@ -7,10 +7,11 @@ CArrayTest::CArrayTest()
 
 }
 
-void CArrayTest::RunTests()
+bool CArrayTest::RunTests()
 {
 	TEST_FUNC(PrimitiveTest);
 	TEST_FUNC(ObjectTest);
+	TEST_END();
 }
 
 bool CArrayTest::PrimitiveTest()

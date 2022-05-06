@@ -2,7 +2,7 @@
 
 std::ofstream CLogger::m_file;
 
-void CLogger::Initalize(const char* file)
+void CLogger::Initialize(const char* file)
 {
 	m_file = std::ofstream(file, std::ofstream::out);
 }

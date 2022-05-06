@@ -9,7 +9,6 @@ class CArrayTest : public ITest
 
 public:
 	CArrayTest();
-	void RunTests() override;
 
 private:
 	bool PrimitiveTest();

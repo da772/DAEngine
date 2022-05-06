@@ -27,14 +27,28 @@ CTestManager::~CTestManager()
 
 void CTestManager::RunTests()
 {
+	std::vector<ITest*> failedTests;
 	const auto start_time = utility::GetTimeUS();
 	CLogger::Log("----------------------------------------------\n[Tests Begin]\n----------------------------------------------", (utility::GetTimeUS() - start_time) / 1000.f);
 	for (ITest* t : m_tests)
 	{
 		CLogger::Log("------------------------------------\n[%s]\n------------------------------------", t->GetTestName());
 		uint64_t time = utility::GetTimeUS();
-		t->RunTests();
-		CLogger::Log("\n[%s] Time Elapsed: %.3f ms\n", t->GetTestName(), (utility::GetTimeUS() - time) / 1000.f);
+		if (!t->RunTests())
+			failedTests.push_back(t);
+		CLogger::Log("%s\n[%s] Time Elapsed: %.3f ms\n%s", color::FG_CYAN, t->GetTestName(), (utility::GetTimeUS() - time) / 1000.f, color::FG_DEFAULT);
 	}
-	CLogger::Log("----------------------------------------------\n[Tests Complete -  Time Elapsed: %.3f ms]\n----------------------------------------------", (utility::GetTimeUS() - start_time) / 1000.f);
+
+	if (failedTests.size()) 
+		CLogger::Log("%s------------------------------------\n[Tests Failed]\n------------------------------------%s", color::FG_RED, color::FG_DEFAULT);
+	else
+		CLogger::Log("%s------------------------------------\n[Tests Passed]\n------------------------------------%s", color::FG_GREEN, color::FG_DEFAULT);
+
+	for (ITest* t : failedTests)
+	{
+		CLogger::Log("[%s]\n%s\n", t->GetTestName(), t->GetError());
+	}
+
+	CLogger::Log("%s----------------------------------------------\n[Tests Complete -  Time Elapsed: %.3f ms]\n----------------------------------------------%s", 
+		color::FG_CYAN, (utility::GetTimeUS() - start_time) / 1000.f, color::FG_DEFAULT);
 }
