@@ -1,7 +1,5 @@
 #pragma once
-
 #include "test.h"
-#include <DAEngine/core/containers/array.h>
 
 class CArrayTest : public ITest
 {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "test.h"
-#include <DAEngine/core/containers/list.h>
 
 class CListTest : public ITest
 {
@@ -13,6 +12,8 @@ public:
 private:
 	bool PrimitiveTest();
 	bool ObjectTest();
+	bool AllocTest();
+	bool AllocTestVector();
 
 };
 

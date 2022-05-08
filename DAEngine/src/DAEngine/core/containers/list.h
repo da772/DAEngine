@@ -1,5 +1,6 @@
 #pragma once
 #include "DAEngine/core/core.h"
+#include "DAEngine/core/maths/maths.h"
 #include "enumerable.h"
 
 namespace da::core::containers {
@@ -29,6 +30,11 @@ namespace da::core::containers {
 			m_ptr[m_size - 1] = x;
 		}
 
+		inline void Push(T&& x) {
+			Resize(m_size + 1);
+			m_ptr[m_size - 1] = T(x);
+		}
+
 		inline void Pop() {
 			ASSERT(m_size);
 			Resize(m_size - 1);
@@ -40,6 +46,14 @@ namespace da::core::containers {
 
 			memcpy(&m_ptr[n + 1], &m_ptr[n], sizeof(T) * (m_size-n-1) );
 			m_ptr[n] = o;
+		}
+
+		inline void Insert(T&& o, const size_t& n) {
+			ASSERT(n < m_size);
+			Resize(m_size + 1);
+
+			memcpy(&m_ptr[n + 1], &m_ptr[n], sizeof(T) * (m_size - n - 1));
+			m_ptr[n] = T(o);
 		}
 
 		inline void Remove(const TEnumerator<T>& it) {
@@ -57,20 +71,40 @@ namespace da::core::containers {
 			Remove(TEnumerator<int>(&m_ptr[i]));
 		}
 
+		inline size_t Size() const {
+			return m_size;
+		}
+
 		inline void Resize(const size_t& n) {
+			if (!n) {
+				Clear();
+				return;
+			}
+
 			ASSERT(n);
-			if (n == m_size) return;
-			T* ptr = new T[n];
-			if (m_ptr)
-				memcpy(ptr, m_ptr, sizeof(T) * (n > m_size ? m_size : n));
-			Clear();
-			m_ptr = ptr;
+
+			if (n < m_heapSize && m_heapSize < (n << 2) ) {
+				m_size = n;
+				return;
+			};
+
+			size_t newSize = n << 1;
+			
+			if (m_ptr) {
+				T* ptr = (T*)realloc(m_ptr, sizeof(T) * newSize);
+				ASSERT(ptr);
+				m_ptr = ptr;
+			}
+			else m_ptr = new T[newSize];
+			ASSERT(m_ptr);
+			m_heapSize = newSize;
 			m_size = n;
 		}
 
 		inline void Clear() {
 			if (!m_ptr) return;
 			m_size = 0;
+			m_heapSize = 0;
 			delete[] m_ptr;
 			m_ptr = nullptr;
 		}
@@ -141,6 +175,7 @@ namespace da::core::containers {
 
 	private:
 		size_t m_size = 0;
+		size_t m_heapSize = 0;
 		T* m_ptr = nullptr;
 
 	};

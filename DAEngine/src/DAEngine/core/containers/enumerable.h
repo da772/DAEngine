@@ -10,6 +10,7 @@ namespace da::core::containers {
 	public:
 		virtual TEnumerator<T> begin() const = 0;
 		virtual TEnumerator<T> end() const = 0;
+		virtual size_t Size() const = 0;
 
 		inline bool Contains(const T& x) const {
 			TEnumerator<T> i = begin(), e = end();
@@ -42,9 +43,8 @@ namespace da::core::containers {
 			return end();
 		}
 
-		inline size_t Size() const {
-			return ((uintptr_t)end().Get() - (uintptr_t)begin().Get())/sizeof(T);
+		inline bool IsEmpty() const {
+			return Size() == 0;
 		}
-
 	};
 }

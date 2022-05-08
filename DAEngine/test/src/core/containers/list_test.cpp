@@ -1,6 +1,7 @@
 #include "list_test.h"
+#include <DAEngine/core/containers.h>
 
-using namespace da::core::containers;
+using namespace da;
 
 CListTest::CListTest()
 {
@@ -11,12 +12,14 @@ bool CListTest::RunTests()
 {
 	TEST_FUNC(PrimitiveTest);
 	TEST_FUNC(ObjectTest);
+	TEST_FUNC(AllocTest);
+	TEST_FUNC(AllocTestVector);
 	TEST_END();
 }
 
 bool CListTest::PrimitiveTest()
 {
-	TList<int> list1;
+	List<int> list1;
 
 	for (int i = 0; i < 25; i++) {
 		list1.Push(i);
@@ -26,8 +29,8 @@ bool CListTest::PrimitiveTest()
 	int counter = 0;
 	for (const int& i : list1) {
 		TEST_ASSERT(i == counter++);
-		list1[(size_t)counter-1] += 25;
-		
+		list1[(size_t)counter - 1] += 25;
+
 	}
 
 	counter = 0;
@@ -57,7 +60,7 @@ bool CListTest::PrimitiveTest()
 		count++;
 	}
 
-	TEnumerator<int> en = list1.Find(55);
+	Enumerator<int> en = list1.Find(55);
 	TEST_ASSERT(en != list1.end());
 	list1.Remove(en);
 	TEST_ASSERT(list1.Size() == 24);
@@ -66,6 +69,8 @@ bool CListTest::PrimitiveTest()
 	for (int i = 0; i < 23; i++) {
 		TEST_ASSERT(list1[i] == (i));
 	}
+
+	list1.Clear();
 
 	return true;
 }
@@ -91,6 +96,42 @@ public:
 bool CListTest::ObjectTest()
 {
 
+
+	return true;
+}
+
+bool CListTest::AllocTest()
+{
+	List<int> ii;
+	for (int i = 0; i < 1e6; i++) {
+		ii.Push(i);
+	}
+
+	TEST_ASSERT(ii.Size() == 1e6);
+
+	for (int i = 0; i < 1e6; i++) {
+		ii.Pop();
+	}
+
+	TEST_ASSERT(ii.Size() == 0);
+
+	return true;
+}
+
+bool CListTest::AllocTestVector()
+{
+	std::vector<int> ii;
+	for (int i = 0; i < 1e6; i++) {
+		ii.push_back(i);
+	}
+
+	TEST_ASSERT(ii.size() == 1e6);
+
+	for (int i = 0; i < 1e6; i++) {
+		ii.pop_back();
+	}
+
+	TEST_ASSERT(ii.size() == 0);
 
 	return true;
 }
