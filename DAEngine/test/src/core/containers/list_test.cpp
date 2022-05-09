@@ -22,9 +22,9 @@ bool CListTest::PrimitiveTest()
 	List<int> list1;
 
 	for (int i = 0; i < 25; i++) {
-		list1.Push(i);
+		list1.push(i);
 	}
-	TEST_ASSERT(list1.Size() == 25);
+	TEST_ASSERT(list1.size() == 25);
 
 	int counter = 0;
 	for (const int& i : list1) {
@@ -38,8 +38,8 @@ bool CListTest::PrimitiveTest()
 		TEST_ASSERT(list1[i] == (i + 25));
 	}
 
-	list1.Pop();
-	TEST_ASSERT(list1.Size() == 24);
+	list1.pop();
+	TEST_ASSERT(list1.size() == 24);
 
 	counter = 0;
 	for (int i = 0; i < 24; i++) {
@@ -47,7 +47,7 @@ bool CListTest::PrimitiveTest()
 		list1[i] = i;
 	}
 
-	list1.Insert(55, 12);
+	list1.insert(55, 12);
 	int count = 0;
 	for (int i = 0; i < 25; i++) {
 		if (i == 12) {
@@ -60,17 +60,17 @@ bool CListTest::PrimitiveTest()
 		count++;
 	}
 
-	Enumerator<int> en = list1.Find(55);
+	Enumerator<int> en = list1.find(55);
 	TEST_ASSERT(en != list1.end());
-	list1.Remove(en);
-	TEST_ASSERT(list1.Size() == 24);
-	list1.Remove(24);
-	TEST_ASSERT(list1.Size() == 23);
+	list1.remove(en);
+	TEST_ASSERT(list1.size() == 24);
+	list1.remove(24);
+	TEST_ASSERT(list1.size() == 23);
 	for (int i = 0; i < 23; i++) {
 		TEST_ASSERT(list1[i] == (i));
 	}
 
-	list1.Clear();
+	list1.clear();
 
 	return true;
 }
@@ -104,16 +104,16 @@ bool CListTest::AllocTest()
 {
 	List<int> ii;
 	for (int i = 0; i < 1e6; i++) {
-		ii.Push(i);
+		ii.push(i);
 	}
 
-	TEST_ASSERT(ii.Size() == 1e6);
+	TEST_ASSERT(ii.size() == 1e6);
 
 	for (int i = 0; i < 1e6; i++) {
-		ii.Pop();
+		ii.pop();
 	}
 
-	TEST_ASSERT(ii.Size() == 0);
+	TEST_ASSERT(ii.size() == 0);
 
 	return true;
 }

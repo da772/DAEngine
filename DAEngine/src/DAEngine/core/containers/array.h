@@ -12,7 +12,7 @@ namespace da::core::containers {
 		}
 
 		inline TArray(const IEnumerable<T>& e) {
-			Resize();
+			resize();
 			size_t c = 0;
 			for (const T& i : e) {
 				m_ptr[c++] = i;
@@ -31,7 +31,7 @@ namespace da::core::containers {
 
 		// Move
 		inline TArray(TArray<T>&& other) {
-			if (m_ptr) Clear();
+			if (m_ptr) clear();
 			m_ptr = other.m_ptr;
 			m_size = other.m_size;
 			other.m_ptr = nullptr;
@@ -39,7 +39,7 @@ namespace da::core::containers {
 		}
 
 		inline ~TArray() {
-			Clear();
+			clear();
 		}
 
 		inline TArray(size_t size) { 
@@ -57,29 +57,29 @@ namespace da::core::containers {
 			for (size_t i = 0; i < m_size; i++) m_ptr[i] = value;
 		};
 
-		inline void Clear() { 
+		inline void clear() { 
 			if (!m_ptr) return;
 			delete[] m_ptr; 
 			m_ptr = nullptr;
 			m_size = 0;
 		};
 
-		inline void Resize(const size_t& n) {
+		inline void resize(const size_t& n) {
 			ASSERT(n);
 			if (n == m_size) return;
 			T* ptr = new T[n];
 			if (m_ptr)
 				memcpy(ptr, m_ptr, sizeof(T) * (n > m_size ? m_size : n));
-			Clear();
+			clear();
 			m_ptr = ptr;
 			m_size = n;
 		}
 
-		inline size_t Size() const {
+		inline size_t size() const {
 			return m_size;
 		}
 
-		inline T* Data() const { return m_ptr; }
+		inline T* data() const { return m_ptr; }
 
 		inline TEnumerator<T> begin() const override {
 			ASSERT(m_ptr);
@@ -103,7 +103,7 @@ namespace da::core::containers {
 		// Copy
 		inline TArray<T>& operator=(const TArray<T>& other)
 		{
-			if (m_ptr) Clear();
+			if (m_ptr) clear();
 
 			m_size = other.m_size;
 			ASSERT(m_size);
@@ -117,7 +117,7 @@ namespace da::core::containers {
 		// Move
 		inline TArray<T>& operator=(TArray<T>&& rhs) noexcept
 		{
-			if (m_ptr) Clear();
+			if (m_ptr) clear();
 			m_ptr = rhs.m_ptr;
 			m_size = rhs.m_size;
 			rhs.m_ptr = nullptr;
@@ -137,22 +137,22 @@ namespace da::core::containers {
 		}
 
 		inline bool operator==(const IEnumerable<T>& rhs) const {
-			if (m_size != rhs.Size()) return false;
-			if (m_ptr == rhs.Get()) return true;
+			if (m_size != rhs.size()) return false;
+			if (m_ptr == rhs.get()) return true;
 			if (!m_ptr) return false;
 			for (size_t i = 0; i < m_size; i++) {
-				if (m_ptr[i] != rhs.Get()[i]) return false;
+				if (m_ptr[i] != rhs.get()[i]) return false;
 			}
 
 			return true;
 		}
 
 		inline bool operator!=(const IEnumerable<T>& rhs) const {
-			if (m_size != rhs.Size()) return true;
-			if (m_ptr == rhs.Get()) return false;
+			if (m_size != rhs.size()) return true;
+			if (m_ptr == rhs.get()) return false;
 			if (!m_ptr) return true;
 			for (size_t i = 0; i < m_size; i++) {
-				if (m_ptr[i] != rhs.Get()[i]) return true;
+				if (m_ptr[i] != rhs.get()[i]) return true;
 			}
 
 			return true;

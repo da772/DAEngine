@@ -11,7 +11,7 @@ namespace da::core::containers {
 
 		inline T operator*() const { return *m_ptr; }
 		inline T* operator->() const { return m_ptr; }
-		inline T* Get() const { return m_ptr; }
+		inline T* get() const { return m_ptr; }
 
 		inline TEnumerator& operator++() { m_ptr++; return *this; }
 		inline TEnumerator operator++(int) { TEnumerator tmp = *this; ++(*this); return tmp; }

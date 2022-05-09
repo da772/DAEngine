@@ -18,7 +18,7 @@ bool CArrayTest::RunTests()
 bool CArrayTest::PrimitiveTest()
 {
 	Array<int> m_array = Array<int>(10, 0xff);
-	TEST_ASSERT( m_array.Size() == 10);
+	TEST_ASSERT( m_array.size() == 10);
 
 	int counter = 0;
 
@@ -51,43 +51,43 @@ bool CArrayTest::PrimitiveTest()
 	m_array = Array<int>(10, 0xef);
 	m_array[9] = 0xff;
 
-	TEST_ASSERT(m_array.Contains(0xef));
-	TEST_ASSERT(m_array.Contains(0xff));
+	TEST_ASSERT(m_array.contains(0xef));
+	TEST_ASSERT(m_array.contains(0xff));
 
-	TEST_ASSERT(m_array.Contains(
+	TEST_ASSERT(m_array.contains(
 		[](const int& i) {
 			return i == 0xff;
 		}
 	));
 
-	TEST_ASSERT(!m_array.Contains(
+	TEST_ASSERT(!m_array.contains(
 		[](const int& i) {
 			return i == 0xf3;
 		}
 	));
 
-	TEST_ASSERT(*m_array.Find(
+	TEST_ASSERT(*m_array.find(
 		[](const int& i) {
 			return i == 0xff;
 		}
 	) == 0xff );
 
-	TEST_ASSERT(m_array.Find(
+	TEST_ASSERT(m_array.find(
 		[](const int& i) {
 			return i == 0xf3;
 		}
 	) == m_array.end());
 
-	m_array.Resize(4);
-	TEST_ASSERT(m_array.Size() == 4);
+	m_array.resize(4);
+	TEST_ASSERT(m_array.size() == 4);
 
 	for (const int& i : m_array) {
 		TEST_ASSERT(i == 0xef);;
 	}
 
-	m_array.Resize(10);
+	m_array.resize(10);
 
-	TEST_ASSERT(m_array.Size() == 10);
+	TEST_ASSERT(m_array.size() == 10);
 
 	for (int i = 0; i < 4; i++) {
 		TEST_ASSERT(m_array[i] == 0xef);;
@@ -128,19 +128,19 @@ bool CArrayTest::ObjectTest()
 
 	TEST_ASSERT(m_array[0] == TestObject(5, 5));
 	m_array[9] = TestObject(7, 7);
-	TEST_ASSERT(m_array.Contains(TestObject(7, 7)));
+	TEST_ASSERT(m_array.contains(TestObject(7, 7)));
 
-	TEST_ASSERT(m_array.Find([](const TestObject& o) {
+	TEST_ASSERT(m_array.find([](const TestObject& o) {
 		return o == TestObject(7, 7);
 		}) != m_array.end());
 
-	m_array.Resize(15);
+	m_array.resize(15);
 
-	TEST_ASSERT(m_array.Find([](const TestObject& o) {
+	TEST_ASSERT(m_array.find([](const TestObject& o) {
 		return o == TestObject(-1, -1);
 		}) != m_array.end());
 
-	Enumerator<TestObject> enu = m_array.Find([](const TestObject& o) {
+	Enumerator<TestObject> enu = m_array.find([](const TestObject& o) {
 		return o == TestObject(7, 7);
 		});
 

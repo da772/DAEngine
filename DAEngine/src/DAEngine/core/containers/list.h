@@ -14,7 +14,7 @@ namespace da::core::containers {
 		}
 
 		TList(const IEnumerable<T>& n) {
-			Resize(n.Size());
+			resize(n.size());
 			size_t c = 0;
 			for (const T& i : n) {
 				m_ptr[c++] = i;
@@ -22,62 +22,62 @@ namespace da::core::containers {
 		}
 
 		TList(const size_t& size) : m_size(size) {
-			Resize(size);
+			resize(size);
 		}
 
-		inline void Push(const T& x) {
-			Resize(m_size + 1);
+		inline void push(const T& x) {
+			resize(m_size + 1);
 			m_ptr[m_size - 1] = x;
 		}
 
-		inline void Push(T&& x) {
-			Resize(m_size + 1);
+		inline void push(T&& x) {
+			resize(m_size + 1);
 			m_ptr[m_size - 1] = T(x);
 		}
 
-		inline void Pop() {
+		inline void pop() {
 			ASSERT(m_size);
-			Resize(m_size - 1);
+			resize(m_size - 1);
 		}
 
-		inline void Insert(const T& o, const size_t& n) {
+		inline void insert(const T& o, const size_t& n) {
 			ASSERT(n < m_size);
-			Resize(m_size + 1);
+			resize(m_size + 1);
 
 			memcpy(&m_ptr[n + 1], &m_ptr[n], sizeof(T) * (m_size-n-1) );
 			m_ptr[n] = o;
 		}
 
-		inline void Insert(T&& o, const size_t& n) {
+		inline void insert(T&& o, const size_t& n) {
 			ASSERT(n < m_size);
-			Resize(m_size + 1);
+			resize(m_size + 1);
 
 			memcpy(&m_ptr[n + 1], &m_ptr[n], sizeof(T) * (m_size - n - 1));
 			m_ptr[n] = T(o);
 		}
 
-		inline void Remove(const TEnumerator<T>& it) {
+		inline void remove(const TEnumerator<T>& it) {
 			if (it == &m_ptr[m_size]) {
-				Pop();
+				pop();
 				return;
 			}
 
-			TEnumerator<int> nxt(&it.Get()[1]);
-			memcpy(it.Get(), nxt.Get(), ((uintptr_t)end().Get() - (uintptr_t)nxt.Get()));
-			Resize(m_size - 1);
+			TEnumerator<int> nxt(&it.get()[1]);
+			memcpy(it.get(), nxt.get(), ((uintptr_t)end().get() - (uintptr_t)nxt.get()));
+			resize(m_size - 1);
 		}
 
-		inline void Remove(const size_t& i) {
-			Remove(TEnumerator<int>(&m_ptr[i]));
+		inline void remove(const size_t& i) {
+			remove(TEnumerator<int>(&m_ptr[i]));
 		}
 
-		inline size_t Size() const {
+		inline size_t size() const {
 			return m_size;
 		}
 
-		inline void Resize(const size_t& n) {
+		inline void resize(const size_t& n) {
 			if (!n) {
-				Clear();
+				clear();
 				return;
 			}
 
@@ -101,7 +101,7 @@ namespace da::core::containers {
 			m_size = n;
 		}
 
-		inline void Clear() {
+		inline void clear() {
 			if (!m_ptr) return;
 			m_size = 0;
 			m_heapSize = 0;
@@ -129,7 +129,7 @@ namespace da::core::containers {
 		// Copy
 		inline TList<T>& operator=(const TList<T>& other)
 		{
-			if (m_ptr) Clear();
+			if (m_ptr) clear();
 
 			m_size = other.m_size;
 			ASSERT(m_size);
@@ -143,7 +143,7 @@ namespace da::core::containers {
 		// Move
 		inline TList<T>& operator=(TList<T>&& rhs) noexcept
 		{
-			if (m_ptr) Clear();
+			if (m_ptr) clear();
 			m_ptr = rhs.m_ptr;
 			m_size = rhs.m_size;
 			rhs.m_ptr = nullptr;
