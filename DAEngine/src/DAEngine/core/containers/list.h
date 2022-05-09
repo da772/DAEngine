@@ -9,11 +9,11 @@ namespace da::core::containers {
 	class TList : public IEnumerable<T>
 	{
 	public:
-		TList() {
+		inline TList() {
 
 		}
 
-		TList(const IEnumerable<T>& n) {
+		inline TList(const IEnumerable<T>& n) {
 			resize(n.size());
 			size_t c = 0;
 			for (const T& i : n) {
@@ -21,8 +21,34 @@ namespace da::core::containers {
 			}
 		}
 
-		TList(const size_t& size) : m_size(size) {
+		inline TList(const TList& other) {
+			resize(other.size());
+			m_ptr = new T[other.size()];
+			ASSERT(m_ptr);
+			memcpy(m_ptr, other.m_ptr, sizeof(T) * other.size());
+			m_heapSize = other.size();
+			m_size = other.size();
+		}
+
+		inline TList(TList&& other)
+		{
+			resize(other.size());
+			m_ptr = new T[other.size()];
+			ASSERT(m_ptr);
+			memcpy(m_ptr, other.m_ptr, sizeof(T) * other.size());
+			m_heapSize = other.size();
+			m_size = other.size();
+			other.clear();
+		}
+
+		inline TList(const size_t& size) {
+			ASSERT(size);
 			resize(size);
+		}
+
+		inline ~TList()
+		{
+			clear();
 		}
 
 		inline void push(const T& x) {

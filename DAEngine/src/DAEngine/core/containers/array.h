@@ -31,7 +31,6 @@ namespace da::core::containers {
 
 		// Move
 		inline TArray(TArray<T>&& other) {
-			if (m_ptr) clear();
 			m_ptr = other.m_ptr;
 			m_size = other.m_size;
 			other.m_ptr = nullptr;

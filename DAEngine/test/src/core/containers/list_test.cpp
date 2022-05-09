@@ -60,6 +60,12 @@ bool CListTest::PrimitiveTest()
 		count++;
 	}
 
+	List<int> list2 = List<int>(list1);
+
+	TEST_ASSERT(list1 == list2);
+
+	List<int> list3 = List<int>(std::move(list2));
+
 	Enumerator<int> en = list1.find(55);
 	TEST_ASSERT(en != list1.end());
 	list1.remove(en);
