@@ -21,7 +21,8 @@ bool CHashStringTest::HashStringTests()
 	TEST_ASSERT(CHashString("abc") != CHashString("abcabcabcabcabcabcbacbac"));
 	TEST_ASSERT(CHashString("abcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbac1") != CHashString("abcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbac"));
 	TEST_ASSERT(CHashString("abcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbac1") == CHashString("abcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbac1"));
-
+	TEST_ASSERT(CHashString(CString("abcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbac1")) == CHashString("abcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbac1"));
+	TEST_ASSERT(CHashString(CString("abcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbac1")) == CHashString("abcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbac1"));
 
 	TEST_END();
 }

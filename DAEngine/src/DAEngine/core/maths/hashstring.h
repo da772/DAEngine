@@ -8,9 +8,16 @@ namespace da::core::maths
 		public:
 			CHashString(const char* str) {
 #if DA_DEBUG
-				//m_string = str;
+				m_string = str;
 #endif
 				m_hash = genHash(str);
+			}
+
+			CHashString(const CString& str) {
+#if DA_DEBUG
+				m_string = str;
+#endif
+				m_hash = genHash(str.cstr());
 			}
 
 			CHashString(const uint32_t hash) : m_hash(hash) {
@@ -45,24 +52,10 @@ namespace da::core::maths
 			/// </summary>
 			/// <param name="str"></param>
 			/// <returns></returns>
-			inline uint32_t genHash(const char* str) const
-			{
-				uint32_t hash = 0xAAAAAAAA;
-				uint32_t i = 0;
-				const size_t size = strlen(str);
-
-				for (i = 0; i < size; ++str, ++i)
-				{
-					hash ^= ((i & 1) == 0) ? ((hash << 7) ^ (*str) * (hash >> 3)) :
-						(~((hash << 11) + ((*str) ^ (hash >> 5))));
-				}
-
-				return hash;
-			}
-
+			uint32_t genHash(const char* str) const;
 		private:
 #if DA_DEBUG
-			
+			CString m_string;
 #endif
 			uint32_t m_hash;
 	};

@@ -74,6 +74,21 @@ namespace da::core::containers {
 			m_ptr[n] = o;
 		}
 
+		inline void insert(const IEnumerable<T>& e, const size_t& n) {
+			assert(e.size());
+			assert(n < m_size);
+			resize(m_size + e.size());
+
+			memcpy(&m_ptr[n + e.size()], &m_ptr[n], sizeof(T) * (size() - n - 1));
+			
+			TEnumerator<T> d = e.begin();
+
+			for (size_t i = 0; i < e.size(); i++) {
+				m_ptr[n + i] = *d;
+				d++;
+			}
+		}
+
 		inline void insert(T&& o, const size_t& n) {
 			ASSERT(n < m_size);
 			resize(m_size + 1);
@@ -135,11 +150,11 @@ namespace da::core::containers {
 			m_ptr = nullptr;
 		}
 
-		TEnumerator<T> begin() const override {
+		inline TEnumerator<T> begin() const override {
 			return TEnumerator<T>(m_ptr);
 		}
 
-		TEnumerator<T> end() const override {
+		inline TEnumerator<T> end() const override {
 			return TEnumerator<T>(&m_ptr[m_size]);
 		}
 
