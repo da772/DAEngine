@@ -1,8 +1,6 @@
 #include "array_test.h"
 #include <DAEngine/core/containers.h>
 
-using namespace da;
-
 CArrayTest::CArrayTest()
 {
 
@@ -17,7 +15,7 @@ bool CArrayTest::RunTests()
 
 bool CArrayTest::PrimitiveTest()
 {
-	Array<int> m_array = Array<int>(10, 0xff);
+	TArray<int> m_array = TArray<int>(10, 0xff);
 	TEST_ASSERT( m_array.size() == 10);
 
 	int counter = 0;
@@ -33,22 +31,22 @@ bool CArrayTest::PrimitiveTest()
 		TEST_ASSERT(m_array[i] == 0xef);
 	}
 
-	Array<int> newArr(10, 0xef);
+	TArray<int> newArr(10, 0xef);
 	TEST_ASSERT(newArr == m_array);
-	newArr = Array<int>(10, 0xe1);
+	newArr = TArray<int>(10, 0xe1);
 	TEST_ASSERT(newArr != m_array);
-	newArr = Array<int>(5, 0xef);
+	newArr = TArray<int>(5, 0xef);
 	TEST_ASSERT(newArr != m_array);
-	newArr = Array<int>(m_array);
+	newArr = TArray<int>(m_array);
 	TEST_ASSERT(newArr == m_array);
-	newArr = Array<int>(std::move(m_array));
+	newArr = TArray<int>(std::move(m_array));
 	TEST_ASSERT(newArr != m_array);
 
 
 	m_array = newArr;
 	TEST_ASSERT(m_array == newArr);
 
-	m_array = Array<int>(10, 0xef);
+	m_array = TArray<int>(10, 0xef);
 	m_array[9] = 0xff;
 
 	TEST_ASSERT(m_array.contains(0xef));
@@ -117,7 +115,7 @@ public:
 
 bool CArrayTest::ObjectTest()
 {
-	Array<TestObject> m_array(10, TestObject(0, 0));
+	TArray<TestObject> m_array(10, TestObject(0, 0));
 
 	for (const TestObject& obj : m_array) {
 		TEST_ASSERT(obj == TestObject(0, 0));
@@ -140,7 +138,7 @@ bool CArrayTest::ObjectTest()
 		return o == TestObject(-1, -1);
 		}) != m_array.end());
 
-	Enumerator<TestObject> enu = m_array.find([](const TestObject& o) {
+	TEnumerator<TestObject> enu = m_array.find([](const TestObject& o) {
 		return o == TestObject(7, 7);
 		});
 

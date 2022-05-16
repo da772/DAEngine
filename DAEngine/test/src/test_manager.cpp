@@ -6,6 +6,7 @@
 #include "core/containers/array_test.h"
 #include "core/containers/list_test.h"
 #include "core/memory/arena_test.h"
+#include "core/maths/hashstring_test.h"
 #include "core/maths/maths_test.h"
 #include "core/maths/vector_test.h"
 
@@ -17,6 +18,7 @@ CTestManager::CTestManager()
 	RegisterTest<CArenaTest>();
 	RegisterTest<CMathsTest>();
 	RegisterTest<CVectorTest>();
+	RegisterTest<CHashStringTest>();
 }
 
 CTestManager::~CTestManager()

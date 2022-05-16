@@ -1,8 +1,6 @@
 #include "list_test.h"
 #include <DAEngine/core/containers.h>
 
-using namespace da;
-
 CListTest::CListTest()
 {
 
@@ -19,7 +17,7 @@ bool CListTest::RunTests()
 
 bool CListTest::PrimitiveTest()
 {
-	List<int> list1;
+	TList<int> list1;
 
 	for (int i = 0; i < 25; i++) {
 		list1.push(i);
@@ -60,13 +58,13 @@ bool CListTest::PrimitiveTest()
 		count++;
 	}
 
-	List<int> list2 = List<int>(list1);
+	TList<int> list2 = TList<int>(list1);
 
 	TEST_ASSERT(list1 == list2);
 
-	List<int> list3 = List<int>(std::move(list2));
+	TList<int> list3 = TList<int>(std::move(list2));
 
-	Enumerator<int> en = list1.find(55);
+	TEnumerator<int> en = list1.find(55);
 	TEST_ASSERT(en != list1.end());
 	list1.remove(en);
 	TEST_ASSERT(list1.size() == 24);
@@ -108,7 +106,7 @@ bool CListTest::ObjectTest()
 
 bool CListTest::AllocTest()
 {
-	List<int> ii;
+	TList<int> ii;
 	for (int i = 0; i < 1e6; i++) {
 		ii.push(i);
 	}

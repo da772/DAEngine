@@ -4,15 +4,7 @@
 #include "containers/enumerable.h"
 #include "containers/enumerator.h"
 #include "containers/list.h"
+#include "containers/string.h"
 
-namespace da {
 
-	template <typename T>
-	using Array = da::core::containers::TArray<T>;
-	template <typename T>
-	using List = da::core::containers::TList<T>;
-	template <typename T>
-	using Enumerator = da::core::containers::TEnumerator<T>;
-	template <typename T>
-	using Enumerable = da::core::containers::IEnumerable<T>;
-}
+using namespace da::core::containers;

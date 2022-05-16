@@ -199,7 +199,7 @@ namespace da::core::containers {
 			return false;
 		}
 
-	private:
+	protected:
 		size_t m_size = 0;
 		size_t m_heapSize = 0;
 		T* m_ptr = nullptr;
