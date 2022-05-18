@@ -158,10 +158,11 @@ namespace da::core::containers {
 			return TEnumerator<T>(&m_ptr[m_size]);
 		}
 
-		inline T operator [](const size_t& i) const {
+		inline const T& operator [](const size_t& i) const {
 			ASSERT(i < m_size);
 			return m_ptr[i];
 		};
+
 		inline T& operator [](const size_t& i) {
 			ASSERT(i < m_size);
 			return m_ptr[i];

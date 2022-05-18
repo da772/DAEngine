@@ -10,6 +10,7 @@
 #include "core/maths/hashstring_test.h"
 #include "core/maths/maths_test.h"
 #include "core/maths/vector_test.h"
+#include "core/guid_test.h"
 
 
 CTestManager::CTestManager()
@@ -21,6 +22,7 @@ CTestManager::CTestManager()
 	RegisterTest<CMathsTest>();
 	RegisterTest<CVectorTest>();
 	RegisterTest<CHashStringTest>();
+	RegisterTest<CGuidTest>();
 }
 
 CTestManager::~CTestManager()
