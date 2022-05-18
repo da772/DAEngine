@@ -3,8 +3,6 @@
 
 namespace da::core::containers
 {
-	
-
 	CString::CString(const char* str)
 	{
 		const size_t len = strlen(str);
@@ -36,6 +34,17 @@ namespace da::core::containers
 	CString::CString() : TList<char>()
 	{
 
+	}
+
+	CString::CString(const IEnumerable<char>& e)
+	{
+		resize(e.size()+1);
+		size_t counter = 0;
+		for (const char& c : e) {
+			m_ptr[counter++] = c;
+		}
+
+		m_ptr[e.size()] = 0;
 	}
 
 	void CString::append(const CString& str)

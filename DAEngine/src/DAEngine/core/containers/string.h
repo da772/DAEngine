@@ -9,6 +9,7 @@ namespace da::core::containers
 		CString(const size_t& n);
 		CString(const char* str);
 		CString(const CString& str);
+		CString(const IEnumerable<char>& e);
 
 		void append(const CString& str);
 		void append(const char* str);

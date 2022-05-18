@@ -68,6 +68,16 @@ bool CStringTest::StringTest()
 	subStr = str.substr(3, 3);
 
 	TEST_ASSERT(strcmp(subStr.cstr(), "123") == 0);
+	TEST_ASSERT(subStr == "123");
+
+	TArray<char> chArr(5);
+	for (unsigned char i = 0; i < 5; i++) {
+		chArr[i] = i + '0';
+	}
+
+	CString arrString(chArr);
+
+	TEST_ASSERT(arrString == "01234")
 
 	TEST_END();
 }
