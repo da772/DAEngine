@@ -80,12 +80,22 @@ namespace da::core::containers {
 
 		inline T* data() const { return m_ptr; }
 
-		inline TEnumerator<T> begin() const override {
+		inline const TEnumerator<T> begin() const override {
 			ASSERT(m_ptr);
 			return TEnumerator<T>(&m_ptr[0]);
 		};
 
-		inline TEnumerator<T> end() const override {
+		inline const TEnumerator<T> end() const override {
+			ASSERT(m_ptr);
+			return TEnumerator<T>(&m_ptr[m_size]);
+		}
+
+		inline TEnumerator<T> begin() override {
+			ASSERT(m_ptr);
+			return TEnumerator<T>(&m_ptr[0]);
+		};
+
+		inline TEnumerator<T> end() override {
 			ASSERT(m_ptr);
 			return TEnumerator<T>(&m_ptr[m_size]);
 		}

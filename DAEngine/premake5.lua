@@ -1,3 +1,18 @@
+group "ThirdParty"
+
+filter "system:macosx"
+	include "thirdparty/GLFW"
+filter "system:windows"
+	include "thirdparty/GLFW"
+filter "system:linux"
+	include "thirdparty/GLFW"
+
+group ""
+
+IncludeDir = {}
+IncludeDir["GLFW"] = "thirdparty/GLFW/include"
+IncludeDir["Vulkan"] = "thirdparty/Vulkan"
+
 project "DAEngine"
 	kind "StaticLib"
 	language "C++"
@@ -28,6 +43,11 @@ project "DAEngine"
 		"src/",
 		"src/DAEngine"
 	}
+	
+	libdirs
+	{
+		"%{IncludeDir.Vulkan}/lib"
+	}
 
 	filter "system:macosx"
 		systemversion "latest"
@@ -44,7 +64,19 @@ project "DAEngine"
 
 		links 
 		{
-
+			"GLFW",
+			"vulkan-1"
+		}
+		
+		includedirs
+		{
+			"%{IncludeDir.GLFW}",
+			"%{IncludeDir.Vulkan}/include"
+		}
+		
+		libdirs
+		{
+			"%{IncludeDir.Vulkan}/lib"
 		}
 
 		filter "configurations:Debug"
@@ -62,6 +94,79 @@ project "DAEngine"
 			runtime "Release"
 			optimize "On"
 		
+	filter "system:windows"
+		systemversion "latest"
+		
+		defines
+		{
+			"DA_PLATFORM_WINDOWS"
+		}
+		
+		links
+		{
+			"GLFW",
+			"vulkan-1"
+		}
+		
+		libdirs
+		{
+			"%{IncludeDir.Vulkan}/lib"
+		}
+		
+		includedirs
+		{
+			"%{IncludeDir.GLFW}",
+			"%{IncludeDir.Vulkan}/include"
+		}
+
+		filter "configurations:Debug"
+			defines "DA_DEBUG"
+			runtime "Debug"
+			symbols "On"
+		filter "configurations:Release"
+			defines "DA_RELEASE"
+			runtime "Release"
+			optimize "On"
+		filter "configurations:Final"
+			defines "DA_FINAL"
+			runtime "Release"
+			optimize "On"
+
+		filter "system:linux"
+			linkgroups 'on'
+			systemversion "latest"
+			cppdialect "gnu++20"
+			
+			defines
+			{
+				"DA_PLATFORM_LINUX"
+			}
+			
+			links
+			{
+				"GLFW",
+				"vulkan-1"
+			}
+			
+			includedirs
+			{
+				"%{IncludeDir.GLFW}",
+				"%{IncludeDir.Vulkan}/include"
+			}
+			
+			filter "configurations:Debug"
+				defines "DA_DEBUG"
+				runtime "Debug"
+				symbols "On"
+			filter "configurations:Release"
+				defines "DA_RELEASE"
+				runtime "Release"
+				optimize "On"
+			filter "configurations:Final"
+				defines "DA_FINAL"
+				runtime "Release"
+				optimize "On"
+				
 	filter "system:ios"
 		architecture "ARM"
 
@@ -138,47 +243,3 @@ project "DAEngine"
 			defines "DA_FINAL"
 			runtime "Release"
 			optimize "On"
-
-	filter "system:windows"
-		systemversion "latest"
-		
-		defines
-		{
-			"DA_PLATFORM_WINDOWS"
-		}
-
-		filter "configurations:Debug"
-			defines "DA_DEBUG"
-			runtime "Debug"
-			symbols "On"
-		filter "configurations:Release"
-			defines "DA_RELEASE"
-			runtime "Release"
-			optimize "On"
-		filter "configurations:Final"
-			defines "DA_FINAL"
-			runtime "Release"
-			optimize "On"
-
-		filter "system:linux"
-			linkgroups 'on'
-			systemversion "latest"
-			cppdialect "gnu++20"
-			
-			defines
-			{
-				"DA_PLATFORM_LINUX"
-			}
-			
-			filter "configurations:Debug"
-				defines "DA_DEBUG"
-				runtime "Debug"
-				symbols "On"
-			filter "configurations:Release"
-				defines "DA_RELEASE"
-				runtime "Release"
-				optimize "On"
-			filter "configurations:Final"
-				defines "DA_FINAL"
-				runtime "Release"
-				optimize "On"

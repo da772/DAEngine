@@ -1,14 +1,31 @@
 #pragma once
 
+#include "core/containers.h"
+#include "modules/module.h"
+
 namespace da
 {
-	class App
+	class CApp
 	{
 	public:
-		virtual void Begin();
-		virtual void Run();
-		virtual void End();
+		CApp();
+		~CApp();
+		void initalize();
+		void update();
+		void shutdown();
+
+	protected:
+		virtual void onInitalize() = 0;
+		virtual void onUpdate() = 0;
+		virtual void onShutdown() = 0;
+
+		void addModule(IModule* module);
+		void forceEnd();
+
+	private:
+		bool m_running;
+		TList<IModule*> m_modules;
 	};
 	
-	App* CreateApp();
+	extern CApp* createApp();
 }

@@ -5,6 +5,7 @@
 #include "containers/enumerator.h"
 #include "containers/list.h"
 #include "containers/string.h"
+#include "containers/pair.h"
 
 
 using namespace da::core::containers;

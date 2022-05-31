@@ -1,6 +1,6 @@
-#include "logger.h"
-#include "test_manager.h"
-#include "utility.h"
+#include "test/test_manager.h"
+#include "util/logger.h"
+#include "util/utility.h"
 
 int main(int argc, char** argv)
 {

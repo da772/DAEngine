@@ -6,13 +6,22 @@ class TQueue : IEnumerable<T> {
 public:
 	
 
-	TEnumerator<T> begin() const override
+	TEnumerator<T> begin() override
 	{
 		return TEnumerator(m_ptr);
 	}
 
+	const TEnumerator<T> begin() const override
+	{
+		return TEnumerator(m_ptr);
+	}
 
-	TEnumerator<T> end() const override
+	const TEnumerator<T> end() const override
+	{
+		return TEnumerator(&m_ptr[m_size - 1]);
+	}
+
+	TEnumerator<T> end() override
 	{
 		return TEnumerator(&m_ptr[m_size - 1]);
 	}
