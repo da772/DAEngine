@@ -16,7 +16,6 @@ protected:
 	virtual void onInitalize() override
 	{
 		std::cout << "Begin" << std::endl;
-		da::CLogger::LogAssert(false, da::ELogChannel::External, "Hello World! %d", 123);
 	}
 
 	virtual void onShutdown() override
