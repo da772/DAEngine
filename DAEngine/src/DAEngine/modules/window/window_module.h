@@ -14,7 +14,7 @@ namespace da::modules {
 		virtual void initalize() override;
 		virtual void shutdown() override;
 
-		const platform::CWindow& GetWindow() const;
+		const platform::CWindow& getWindow() const;
 
 	private:
 		platform::CWindow* m_Window;

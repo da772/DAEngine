@@ -21,6 +21,9 @@ namespace da
 
 		void addModule(IModule* module);
 		void forceEnd();
+	private:
+		void initalizeInternal();
+		void shutdownInternal();
 
 	private:
 		bool m_running;

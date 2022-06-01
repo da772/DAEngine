@@ -29,7 +29,7 @@ namespace da::modules
 		m_Window->shutdown();
 	}
 
-	const da::platform::CWindow& CWindowModule::GetWindow() const
+	const da::platform::CWindow& CWindowModule::getWindow() const
 	{
 		return *m_Window;
 	}

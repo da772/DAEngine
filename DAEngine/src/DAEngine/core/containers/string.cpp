@@ -70,8 +70,8 @@ namespace da::core::containers
 
 	void CString::insert(const char* e, const size_t& n) {
 		const size_t len = strlen(e);
-		assert(len);
-		assert(n < m_size);
+		ASSERT(len);
+		ASSERT(n < m_size);
 		resize(m_size + len);
 
 		memcpy(&m_ptr[n + len], &m_ptr[n], sizeof(char) * (size() - n - 1));
@@ -201,8 +201,8 @@ namespace da::core::containers
 
 	CString CString::substr(const size_t& s, const size_t& e) const
 	{
-		assert(e);
-		assert(s + e <= size());
+		ASSERT(e);
+		ASSERT(s + e <= size());
 		CString str(e + 1);
 		str.m_size = e + 1;
 
@@ -213,6 +213,17 @@ namespace da::core::containers
 		str.m_ptr[e+1] = 0;
 
 		return str;
+	}
+
+	void CString::remove(char e)
+	{
+		for (size_t i = 0; i < m_size;) {
+			if (m_ptr[i] == e) {
+				TList<char>::remove(TEnumerator<char>(&m_ptr[i]));
+				continue;
+			}
+			i++;
+		}
 	}
 
 	CString operator+(const CString& lhs, const CString& rhs)

@@ -1,8 +1,15 @@
 #pragma once
-// TODO: Assert only on specific platforms
-#include <assert.h>
-
 #include <stdint.h>
 
 // Extra defines go here (acts as config)
-#define ASSERT(...) assert(__VA_ARGS__);
+#define ASSERT(x) CCore::_assert(x, __FILE__, __LINE__)
+
+
+namespace da
+{
+	class CCore {
+	public:
+		static void _assert(bool x, const char* file, long line);
+	};
+	
+}

@@ -18,6 +18,8 @@ namespace da::core::containers
 		void insert(const IEnumerable<char>& e, const size_t& n);
 		void insert(char e, const size_t& n);
 
+		void remove(char e);
+
 		CString substr(const size_t& s, const size_t& e) const;
 
  		virtual size_t size() const override;

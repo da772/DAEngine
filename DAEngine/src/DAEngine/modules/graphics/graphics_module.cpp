@@ -5,7 +5,7 @@
 namespace da::modules
 {
 
-	CGraphicsModule::CGraphicsModule(CWindowModule* windowsModule) : m_Window(windowsModule), m_GraphicsApi(platform::graphics::CGraphicsFactory::Create(windowsModule->GetWindow()))
+	CGraphicsModule::CGraphicsModule(CWindowModule* windowsModule) : m_Window(windowsModule), m_GraphicsApi(platform::graphics::CGraphicsFactory::Create(windowsModule->getWindow()))
 	{
 
 	}

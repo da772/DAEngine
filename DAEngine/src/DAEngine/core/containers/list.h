@@ -1,7 +1,8 @@
 #pragma once
-#include "DAEngine/core/core.h"
-#include "DAEngine/core/maths/maths.h"
+#include "daengine/core/core.h"
+#include "daengine/core/maths/maths.h"
 #include "enumerable.h"
+
 
 namespace da::core::containers {
 
@@ -75,8 +76,8 @@ namespace da::core::containers {
 		}
 
 		inline void insert(const IEnumerable<T>& e, const size_t& n) {
-			assert(e.size());
-			assert(n < m_size);
+			ASSERT(e.size());
+			ASSERT(n < m_size);
 			resize(m_size + e.size());
 
 			memcpy(&m_ptr[n + e.size()], &m_ptr[n], sizeof(T) * (size() - n - 1));
@@ -103,7 +104,7 @@ namespace da::core::containers {
 				return;
 			}
 
-			TEnumerator<int> nxt(&it.get()[1]);
+			TEnumerator<T> nxt(&it.get()[1]);
 			memcpy(it.get(), nxt.get(), ((uintptr_t)end().get() - (uintptr_t)nxt.get()));
 			resize(m_size - 1);
 		}
@@ -166,15 +167,15 @@ namespace da::core::containers {
 			return TEnumerator<T>(&m_ptr[m_size]);
 		}
 
+		inline T& operator [](const size_t& i) { /*strengthen with const*/
+			ASSERT(i < m_size);
+			return m_ptr[i];
+		}
+
 		inline const T& operator [](const size_t& i) const {
 			ASSERT(i < m_size);
 			return m_ptr[i];
-		};
-
-		inline T& operator [](const size_t& i) {
-			ASSERT(i < m_size);
-			return m_ptr[i];
-		};
+		}
 
 		// Copy
 		inline TList<T>& operator=(const TList<T>& other)

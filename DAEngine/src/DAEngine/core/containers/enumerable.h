@@ -47,6 +47,12 @@ namespace da::core::containers {
 			return end();
 		}
 
+		inline void replace(const T& x, const T& y) {
+			for (T& i : *this) {
+				if (i == x) i = y;
+			}
+		}
+
 		inline bool isEmpty() const {
 			return size() == 0;
 		}

@@ -1,10 +1,10 @@
 #include "dapch.h"
 #include "app.h"
+#include "logger.h"
 
 namespace da
 {
 	CApp::CApp() : m_running(true), m_modules() {
-
 	}
 
 	CApp::~CApp() {
@@ -13,6 +13,7 @@ namespace da
 
 	void CApp::initalize()
 	{
+		initalizeInternal();
 		onInitalize();
 		for (IModule* m : m_modules) {
 			m->initalize();
@@ -35,10 +36,11 @@ namespace da
 	}
 	void CApp::shutdown()
 	{
+		onShutdown();
 		for (IModule* m : m_modules) {
 			m->shutdown();
 		}
-		onShutdown();
+		shutdownInternal();
 	}
 
 	void CApp::addModule(IModule* module)
@@ -49,6 +51,16 @@ namespace da
 	void CApp::forceEnd()
 	{
 		m_running = false;
+	}
+
+	void CApp::initalizeInternal()
+	{
+		CLogger::initialize();
+	}
+
+	void CApp::shutdownInternal()
+	{
+		CLogger::shutdown();
 	}
 
 }
