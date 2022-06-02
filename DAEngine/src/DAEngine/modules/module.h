@@ -12,6 +12,7 @@ namespace da {
 		inline virtual void lateUpdate() {};
 		inline virtual void initalize() = 0;
 		inline virtual void shutdown() = 0;
+		inline virtual void lateShutdown() {};
 
 	};
 

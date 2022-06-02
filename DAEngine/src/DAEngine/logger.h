@@ -6,6 +6,9 @@
 #include <stdio.h>
 
 namespace da {
+#define NAMEOF(x) #x
+
+
 #define __LOGFUNC__(x, y) template <typename ...Args> \
 inline static void x(const ELogChannel& channel, const CString& message, Args ... args) {\
 CLogger::log(y, channel, message, args...); }
@@ -16,12 +19,14 @@ CLogger::log(y, channel, message, args...); }
 		Maths,
 		Modules,
 		Platform,
-		External
+		External,
+		Graphics,
+		Window
 	};
 
 	enum class ELogType : uint8_t
 	{
-		Trace,
+		Info,
 		Debug,
 		Warning,
 		Error,
@@ -34,6 +39,7 @@ CLogger::log(y, channel, message, args...); }
 		Cyan,
 		Yellow,
 		Red,
+		Pink,
 		Default,
 	};
 
@@ -41,7 +47,7 @@ CLogger::log(y, channel, message, args...); }
 	{
 	public:
 		__LOGFUNC__(LogDebug, ELogType::Debug);
-		__LOGFUNC__(LogTrace, ELogType::Trace);
+		__LOGFUNC__(LogInfo, ELogType::Info);
 		__LOGFUNC__(LogWarning, ELogType::Warning);
 		__LOGFUNC__(LogError, ELogType::Error);
 		template <typename ...Args> 
@@ -66,9 +72,9 @@ CLogger::log(y, channel, message, args...); }
 		}
 		static void logInternal(const CString& message);
 
-		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "External" };
-		inline static const char* logTypeMap[] = { "Trace", "Debug", "Warning", "Error", "Assert" };
-		inline static const char* colorTypeMap[] = { "\033[32m", "\033[36m", "\033[33m", "\033[31m", "\033[39m" };
+		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "External", "Graphics", "Window"};
+		inline static const char* logTypeMap[] = { "Info", "Debug", "Warning", "Error", "Assert" };
+		inline static const char* colorTypeMap[] = { "\033[39m", "\033[36m", "\033[33m", "\033[31m", "\033[35m", "\033[39m" };
 
 		static void* s_outFile;
 	};

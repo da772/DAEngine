@@ -24,7 +24,6 @@ namespace da::core::containers {
 
 		inline TList(const TList& other) {
 			resize(other.size());
-			m_ptr = new T[other.size()];
 			ASSERT(m_ptr);
 			memcpy(m_ptr, other.m_ptr, sizeof(T) * other.size());
 			m_heapSize = other.size();

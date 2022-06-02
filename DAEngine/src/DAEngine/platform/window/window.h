@@ -41,7 +41,7 @@ namespace da::platform{
 		virtual void update() = 0;
 		virtual void shutdown() = 0;
 
-		virtual void* getNativeWindow() = 0;
+		virtual void* getNativeWindow() const = 0;
 
 	protected:
 		window::FWindowData m_windowData;

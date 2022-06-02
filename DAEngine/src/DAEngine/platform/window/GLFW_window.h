@@ -15,7 +15,7 @@ namespace da::platform::window {
 		void initalize() override;
 		void update() override;
 		void shutdown() override;
-		void* getNativeWindow() override;
+		void* getNativeWindow() const override;
 
 	private:
 		GLFWwindow* m_Window;

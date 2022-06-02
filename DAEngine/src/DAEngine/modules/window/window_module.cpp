@@ -26,12 +26,17 @@ namespace da::modules
 
 	void CWindowModule::shutdown()
 	{
-		m_Window->shutdown();
+		
 	}
 
 	const da::platform::CWindow& CWindowModule::getWindow() const
 	{
 		return *m_Window;
+	}
+
+	void CWindowModule::lateShutdown()
+	{
+		m_Window->shutdown();
 	}
 
 }

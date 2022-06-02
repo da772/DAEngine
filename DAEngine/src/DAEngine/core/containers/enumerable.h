@@ -56,5 +56,9 @@ namespace da::core::containers {
 		inline bool isEmpty() const {
 			return size() == 0;
 		}
+
+		inline T* data() const {
+			return begin().get();
+		}
 	};
 }

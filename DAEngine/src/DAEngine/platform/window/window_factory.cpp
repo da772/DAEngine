@@ -1,6 +1,7 @@
 #include "dapch.h"
 #include "platform/platform.h"
 #include "window_factory.h"
+#include "logger.h"
 
 #ifdef DA_WINDOW_GLFW
 #include "platform/window/GLFW_window.h"

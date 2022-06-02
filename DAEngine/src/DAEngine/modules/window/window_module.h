@@ -13,6 +13,7 @@ namespace da::modules {
 		virtual void lateUpdate() override;
 		virtual void initalize() override;
 		virtual void shutdown() override;
+		virtual void lateShutdown() override;
 
 		const platform::CWindow& getWindow() const;
 

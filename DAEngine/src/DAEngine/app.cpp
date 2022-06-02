@@ -1,19 +1,21 @@
 #include "dapch.h"
 #include "app.h"
 #include "logger.h"
+#include "core/arg_handler.h"
 
 namespace da
 {
-	CApp::CApp() : m_running(true), m_modules() {
+	CApp::CApp(int argc, const char** argv) : m_running(true), m_modules() {
+		initalizeInternal(argc, argv);
 	}
 
 	CApp::~CApp() {
-
+		shutdownInternal();
 	}
 
 	void CApp::initalize()
 	{
-		initalizeInternal();
+		
 		onInitalize();
 		for (IModule* m : m_modules) {
 			m->initalize();
@@ -21,7 +23,7 @@ namespace da
 	}
 	void CApp::update()
 	{
-		while (m_running)
+		if (m_running)
 		{
 			for (IModule* m : m_modules) {
 				m->update();
@@ -31,16 +33,16 @@ namespace da
 				m->lateUpdate();
 			}
 		}
-
-		shutdown();
 	}
 	void CApp::shutdown()
 	{
-		onShutdown();
 		for (IModule* m : m_modules) {
 			m->shutdown();
 		}
-		shutdownInternal();
+		onShutdown();
+		for (IModule* m : m_modules) {
+			m->lateShutdown();
+		}
 	}
 
 	void CApp::addModule(IModule* module)
@@ -53,13 +55,15 @@ namespace da
 		m_running = false;
 	}
 
-	void CApp::initalizeInternal()
+	void CApp::initalizeInternal(int argc, const char** argv)
 	{
 		CLogger::initialize();
+		core::CArgHandler::initialize(argc, argv);
 	}
 
 	void CApp::shutdownInternal()
 	{
+		core::CArgHandler::shutdown();
 		CLogger::shutdown();
 	}
 

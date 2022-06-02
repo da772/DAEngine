@@ -8,7 +8,7 @@ namespace da
 	class CApp
 	{
 	public:
-		CApp();
+		CApp(int argc, const char** argv);
 		~CApp();
 		void initalize();
 		void update();
@@ -22,7 +22,7 @@ namespace da
 		void addModule(IModule* module);
 		void forceEnd();
 	private:
-		void initalizeInternal();
+		void initalizeInternal(int argc, const char** argv);
 		void shutdownInternal();
 
 	private:
@@ -30,5 +30,5 @@ namespace da
 		TList<IModule*> m_modules;
 	};
 	
-	extern CApp* createApp();
+	extern CApp* createApp(int argc, const char** argv);
 }

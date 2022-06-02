@@ -2,7 +2,7 @@
 #include "app.h"
 
 
-da::CApp* da::createApp()
+da::CApp* da::createApp(int argc, const char** argv)
 {
-	return new ProtoTypeApp();
+	return new ProtoTypeApp(argc, argv);
 }

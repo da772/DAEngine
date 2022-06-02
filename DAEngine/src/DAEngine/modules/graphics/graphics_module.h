@@ -1,7 +1,7 @@
 #pragma once
 
-#include "modules/module.h"
-#include "modules/window/window_module.h"
+#include "daengine/modules/module.h"
+#include "daengine/modules/window/window_module.h"
 
 namespace da::platform
 {
@@ -10,7 +10,7 @@ namespace da::platform
 
 namespace da::modules
 {
-	class CGraphicsModule : IModule
+	class CGraphicsModule : public IModule
 	{
 	public:
 		CGraphicsModule(CWindowModule* windowsModule);
