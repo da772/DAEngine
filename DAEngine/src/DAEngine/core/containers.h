@@ -6,6 +6,6 @@
 #include "containers/list.h"
 #include "containers/string.h"
 #include "containers/pair.h"
-
+#include "containers/hashstring.h"
 
 using namespace da::core::containers;

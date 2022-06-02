@@ -1,20 +1,20 @@
 #pragma once
 #include "DAEngine/core/containers.h"
 
-namespace da::core::maths
+namespace da::core::containers
 {
 	class CHashString
 	{
 		public:
 			CHashString(const char* str) {
-#if DA_DEBUG
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string = str;
 #endif
 				m_hash = genHash(str);
 			}
 
 			CHashString(const CString& str) {
-#if DA_DEBUG
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string = str;
 #endif
 				m_hash = genHash(str.cstr());
@@ -54,11 +54,9 @@ namespace da::core::maths
 			/// <returns></returns>
 			uint32_t genHash(const char* str) const;
 		private:
-#if DA_DEBUG
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 			CString m_string;
 #endif
 			uint32_t m_hash;
 	};
 }
-
-using namespace da::core::maths;

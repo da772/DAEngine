@@ -2,7 +2,7 @@
 #include "hashstring.h"
 #include <string.h>
 
-namespace da::core::maths {
+namespace da::core::containers {
 
 	uint32_t CHashString::genHash(const char* str) const {
 		
@@ -17,7 +17,6 @@ namespace da::core::maths {
 		}
 
 		return hash;
-
 	}
 
 }

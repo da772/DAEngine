@@ -23,7 +23,7 @@ namespace da
 	}
 	void CApp::update()
 	{
-		if (m_running)
+		while (m_running)
 		{
 			for (IModule* m : m_modules) {
 				m->update();
