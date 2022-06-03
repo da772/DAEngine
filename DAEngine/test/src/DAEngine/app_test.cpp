@@ -1,10 +1,12 @@
 #include "app_test.h"
 #include <DAEngine/app.h>
 
+#include <DAEngine/logger.h>
+
 class CTestApp : public da::CApp
 {
 public:
-	CTestApp() : da::CApp(0, 0) {}
+	CTestApp() : da::CApp(0, 0) { }
 
 	bool m_initalized, m_updated, m_shutdown;
 protected:
