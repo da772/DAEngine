@@ -39,4 +39,9 @@ namespace da::modules
 		m_Window->shutdown();
 	}
 
+	da::core::events::CEventHandler& CWindowModule::getEventHandler()
+	{
+		return m_Window->getEventHandler();
+	}
+
 }

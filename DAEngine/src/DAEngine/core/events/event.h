@@ -1,12 +1,30 @@
 #pragma once
-#include "core/containers.h"
+#include "daengine/core/containers.h"
 
-class CEvent
-{
-public:
+namespace da::core::events {
 
+	enum class EEventType : uint32_t {
+		None,
+		WindowResize, WindowClose, WindowMove
+	};
 
-private:
-	CHashString m_type;
+	enum class EEventCategory : uint32_t {
+		None,
+		Window,
+	};
 
-};
+	class CEvent
+	{
+	public:
+		inline CEvent(const EEventType type, const EEventCategory category) : m_type(type), m_categoryType(category) {
+		};
+
+		inline const EEventType getType() const { return m_type; }
+		inline const EEventCategory getCategory() const { return m_categoryType; }
+
+	protected:
+		EEventType m_type;
+		EEventCategory m_categoryType;
+
+	};
+}

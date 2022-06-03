@@ -2,6 +2,8 @@
 #include "daengine/core/core.h"
 #include "daengine/core/maths/maths.h"
 #include "enumerable.h"
+#include <cstdlib>
+#include <cstring>
 
 
 namespace da::core::containers {
@@ -23,6 +25,7 @@ namespace da::core::containers {
 		}
 
 		inline TList(const TList& other) {
+			if (!other.size()) return;
 			resize(other.size());
 			ASSERT(m_ptr);
 			memcpy(m_ptr, other.m_ptr, sizeof(T) * other.size());

@@ -3,47 +3,54 @@
 
 namespace da::core::containers
 {
+#define HASH(x) CHashString::generateHash(#x)
+
 	class CHashString
 	{
 		public:
-			CHashString(const char* str) {
+			inline CHashString() : m_string(""), m_hash(0) {
+
+			}
+			inline CHashString(const char* str) {
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string = str;
 #endif
 				m_hash = genHash(str);
 			}
 
-			CHashString(const CString& str) {
+			inline CHashString(const CString& str) {
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string = str;
 #endif
 				m_hash = genHash(str.cstr());
 			}
 
-			CHashString(const uint32_t hash) : m_hash(hash) {
+			inline CHashString(const uint32_t hash) : m_hash(hash) {
 
 			}
 
-			const uint32_t hash() const
+			inline const uint32_t hash() const
 			{
 				return m_hash;
 			}
 
-			bool operator ==(const CHashString& rhs) const {
+			inline bool operator ==(const CHashString& rhs) const {
 				return rhs.m_hash == m_hash;
 			}
 
-			bool operator !=(const CHashString& rhs) const {
+			inline bool operator !=(const CHashString& rhs) const {
 				return rhs.m_hash != m_hash;
 			}
 
-			bool operator ==(const char* rhs) const {
+			inline bool operator ==(const char* rhs) const {
 				return genHash(rhs) == m_hash;
 			}
 
-			bool operator !=(const char* rhs) const {
+			inline bool operator !=(const char* rhs) const {
 				return genHash(rhs) != m_hash;
 			}
+
+			static constexpr const uint32_t generateHash(const char*);
 
 		private:
 			/// <summary>

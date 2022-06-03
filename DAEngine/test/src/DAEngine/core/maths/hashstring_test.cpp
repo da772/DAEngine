@@ -1,5 +1,5 @@
 #include "hashstring_test.h"
-#include <DAEngine/core/maths/hashstring.h>
+#include <DAEngine/core/containers/hashstring.h>
 
 CHashStringTest::CHashStringTest()
 {

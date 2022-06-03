@@ -65,6 +65,12 @@ bool CListTest::PrimitiveTest()
 	TList<int> list3 = TList<int>(std::move(list2));
 
 	TEnumerator<int> en = list1.find(55);
+
+	TEnumerator<int> en1 = list1.find([](const int& i) {
+		if (i == 55) return true;
+		return false;
+	});
+
 	TEST_ASSERT(en != list1.end());
 	list1.remove(en);
 	TEST_ASSERT(list1.size() == 24);

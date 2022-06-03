@@ -1,7 +1,10 @@
 #pragma once
 
+#include "daengine/core/events/event_handler.h"
 #include "daengine/modules/module.h"
 #include "daengine/platform/window/window.h"
+
+using namespace da::core::events;
 
 namespace da::modules {
 	class CWindowModule : public IModule
@@ -14,6 +17,8 @@ namespace da::modules {
 		virtual void initalize() override;
 		virtual void shutdown() override;
 		virtual void lateShutdown() override;
+
+		CEventHandler& getEventHandler();
 
 		const platform::CWindow& getWindow() const;
 

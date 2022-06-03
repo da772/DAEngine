@@ -4,6 +4,8 @@
 class CTestApp : public da::CApp
 {
 public:
+	CTestApp() : da::CApp(0, 0) {}
+
 	bool m_initalized, m_updated, m_shutdown;
 protected:
 	void onInitalize() override

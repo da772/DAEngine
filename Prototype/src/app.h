@@ -2,6 +2,7 @@
 
 #include "daengine.h"
 #include <iostream>
+#include <functional>
 
 class ProtoTypeApp : public da::CApp {
 
@@ -12,6 +13,29 @@ public:
 		addModule(windowModule);
 		da::modules::CGraphicsModule* graphicsModule = new da::modules::CGraphicsModule(windowModule);
 		addModule(graphicsModule);
+
+		windowModule->getEventHandler().registerCallback(EEventCategory::Window, BIND_EVENT_FN(ProtoTypeApp, windowEvent));
+	}
+
+	void windowEvent(const da::core::events::CEvent& e) {
+
+		if (e.getType() == EEventType::WindowClose) {
+			da::CLogger::LogDebug(da::ELogChannel::External, "WindowClosed!");
+			forceEnd();
+			return;
+		}
+
+		if (e.getType() == EEventType::WindowResize) {
+			const CWindowResizeEvent* cl = static_cast<const CWindowResizeEvent*>(&e);
+			da::CLogger::LogDebug(da::ELogChannel::External, "WindowResize: {%d, %d}", cl->getWidth(), cl->getHeight());
+			return;
+		}
+
+		if (e.getType() == EEventType::WindowMove) {
+			const CWindowMoveEvent* cl = static_cast<const CWindowMoveEvent*>(&e);
+			da::CLogger::LogDebug(da::ELogChannel::External, "WindowMove: {%d, %d}", cl->getX(), cl->getY());
+			return;
+		}
 	}
 
 protected:

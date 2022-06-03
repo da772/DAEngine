@@ -2,6 +2,7 @@
 #include "GLFW_window.h"
 #include "logger.h"
 #ifdef DA_WINDOW_GLFW
+#include "core/events/window_event.h"
 
 namespace da::platform::window {
 	bool CGLFW_Window::s_initialized = 0;
@@ -54,6 +55,33 @@ namespace da::platform::window {
 			monitorY + (mode->height - windowHeight) / 2);
 
 		glfwSetWindowUserPointer(m_Window, &m_windowData);
+
+		// Events
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
+			FWindowData& data = *(FWindowData*)glfwGetWindowUserPointer(window);
+
+			data.Width = width;
+			data.Height = height;
+			CWindowResizeEvent event(width, height);
+			data.EventHandler.eventCallback(event);
+		});
+
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
+			FWindowData& data = *(FWindowData*)glfwGetWindowUserPointer(window);
+
+			CWindowCloseEvent event;
+			data.EventHandler.eventCallback(event);
+		});
+
+		glfwSetWindowPosCallback(m_Window, [](GLFWwindow* window, int x, int y) {
+			FWindowData& data = *(FWindowData*)glfwGetWindowUserPointer(window);
+
+			data.XPos = x;
+			data.YPos = y;
+
+			CWindowMoveEvent event(x, y);
+			data.EventHandler.eventCallback(event);
+		});
 	}
 
 	void CGLFW_Window::update()

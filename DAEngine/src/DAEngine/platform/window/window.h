@@ -1,8 +1,10 @@
 #pragma once
 #include "DAEngine/core/containers.h"
+#include "DAEngine/core/events/event_handler.h"
 
 namespace da::platform{
 	
+	using namespace da::core::events;
 	using u16 = uint16_t;
 	using u32 = uint32_t;
 
@@ -30,6 +32,7 @@ namespace da::platform{
 			u32 YPos;
 			u16 RefreshRate;
 			EWindowDeco WindowDeco;
+			CEventHandler EventHandler;;
 		};
 	}
 
@@ -42,6 +45,10 @@ namespace da::platform{
 		virtual void shutdown() = 0;
 
 		virtual void* getNativeWindow() const = 0;
+
+		inline CEventHandler& getEventHandler() {
+			return m_windowData.EventHandler;
+		}
 
 	protected:
 		window::FWindowData m_windowData;
