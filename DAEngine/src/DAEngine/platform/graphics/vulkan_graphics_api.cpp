@@ -628,7 +628,7 @@ namespace da::platform::graphics {
 		createInfo.codeSize = code.size();
 		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
-		VkShaderModule shaderModule;
+		VkShaderModule shaderModule{};
 		ASSERT(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) == VK_SUCCESS);
 		return shaderModule;
 	}

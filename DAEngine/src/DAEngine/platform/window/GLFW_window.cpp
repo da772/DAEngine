@@ -92,7 +92,9 @@ namespace da::platform::window {
 
 	void CGLFW_Window::shutdown()
 	{
+		if (!m_Window) return;
 		glfwDestroyWindow(m_Window);
+		m_Window = nullptr;
 	}
 
 	void* CGLFW_Window::getNativeWindow() const

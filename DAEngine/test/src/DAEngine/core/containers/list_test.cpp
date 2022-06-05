@@ -92,10 +92,6 @@ public:
 
 	}
 
-	inline TestObject() : x(-1), y(-1) {
-
-	}
-
 	inline bool operator==(const TestObject& rhs) const {
 		return x == rhs.x && y == rhs.y;
 	}
@@ -105,43 +101,126 @@ public:
 
 bool CListTest::ObjectTest()
 {
+	
+	TList<TestObject> list;
 
+	list.push(TestObject(0, 1));
+	list.push(TestObject(2, 1));
+	list.push(TestObject(3, 4));
+	list.push(TestObject(3, 6));
+	
+	TEST_ASSERT(list.size() == 4);
 
+	TEnumerator<TestObject> enumerator = list.find([](const TestObject& i) { return i.x == 0; });
+
+	TEST_ASSERT(enumerator != list.end());
+
+	enumerator = list.find(TestObject(0, 1));
+
+	TEST_ASSERT(enumerator != list.end());
+
+	enumerator = list.find(TestObject(0, 12));
+
+	TEST_ASSERT(enumerator == list.end());
+
+	for (TestObject& obj : list) {
+		obj.x = 15;
+	}
+
+	for (const TestObject& obj : list) {
+		TEST_ASSERT(obj.x == 15);
+	}
+
+	
 	return true;
 }
 
 bool CListTest::AllocTest()
 {
-	TList<int> ii;
-	for (int i = 0; i < 1e6; i++) {
-		ii.push(i);
+	{
+		TList<int> ii;
+		for (int i = 0; i < 1e6; i++) {
+			ii.push(i);
+		}
+
+		TEST_ASSERT(ii.size() == 1e6);
+
+		for (int i = 0; i < 1e6; i++) {
+			TEST_ASSERT(ii[i] == i);
+		}
+
+		for (int i = 0; i < 1e6; i++) {
+			ii.pop();
+		}
+
+		TEST_ASSERT(ii.size() == 0);
+
 	}
 
-	TEST_ASSERT(ii.size() == 1e6);
+	{
+		TList<TestObject> ii;
+		for (int i = 0; i < 1e6; i++) {
+			ii.push(TestObject(i, i));
+		}
 
-	for (int i = 0; i < 1e6; i++) {
-		ii.pop();
+		TEST_ASSERT(ii.size() == 1e6);
+
+		for (int i = 0; i < 1e6; i++) {
+			TEST_ASSERT( ii[i] == TestObject(i, i));
+		}
+
+		for (int i = 0; i < 1e6; i++) {
+			ii.pop();
+		}
+
+		TEST_ASSERT(ii.size() == 0);
 	}
-
-	TEST_ASSERT(ii.size() == 0);
 
 	return true;
 }
 
 bool CListTest::AllocTestVector()
 {
-	std::vector<int> ii;
-	for (int i = 0; i < 1e6; i++) {
-		ii.push_back(i);
+	{
+		std::vector<int> ii;
+		for (int i = 0; i < 1e6; i++) {
+			ii.push_back(i);
+		}
+
+		TEST_ASSERT(ii.size() == 1e6);
+
+		for (int i = 0; i < 1e6; i++) {
+			TEST_ASSERT(ii[i] == i);
+		}
+
+		for (int i = 0; i < 1e6; i++) {
+			ii.pop_back();
+		}
+
+		TEST_ASSERT(ii.size() == 0);
 	}
 
-	TEST_ASSERT(ii.size() == 1e6);
+	{
+		std::vector<TestObject> ii;
+		for (int i = 0; i < 1e6; i++) {
+			ii.push_back(TestObject(i,i));
+		}
 
-	for (int i = 0; i < 1e6; i++) {
-		ii.pop_back();
+		TEST_ASSERT(ii.size() == 1e6);
+
+
+		for (int i = 0; i < 1e6; i++) {
+			TEST_ASSERT(ii[i] == TestObject(i, i));
+		}
+
+		for (int i = 0; i < 1e6; i++) {
+			ii.pop_back();
+		}
+
+		TEST_ASSERT(ii.size() == 0);
 	}
 
-	TEST_ASSERT(ii.size() == 0);
+	
 
 	return true;
 }

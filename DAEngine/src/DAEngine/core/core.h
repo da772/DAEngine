@@ -2,7 +2,11 @@
 #include <stdint.h>
 
 // Extra defines go here (acts as config)
+#if !defined(DA_FINAL)
 #define ASSERT(x) CCore::_assert(x, __FILE__, __LINE__)
+#else
+#define ASSERT(...)
+#endif
 
 
 namespace da

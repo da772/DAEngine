@@ -8,7 +8,11 @@ namespace da::core::containers
 	class CHashString
 	{
 		public:
-			inline CHashString() : m_string(""), m_hash(0) {
+			inline CHashString() : 
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+				m_string(""), 
+#endif
+				m_hash(0) {
 
 			}
 			inline CHashString(const char* str) {

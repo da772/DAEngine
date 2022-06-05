@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <cstring>
 
-
 namespace da::core::containers {
 
 	template<typename T>
@@ -36,7 +35,7 @@ namespace da::core::containers {
 		inline TList(TList&& other)
 		{
 			resize(other.size());
-			m_ptr = new T[other.size()];
+			m_ptr = (T*)malloc(other.size() * sizeof(T));
 			ASSERT(m_ptr);
 			memcpy(m_ptr, other.m_ptr, sizeof(T) * other.size());
 			m_heapSize = other.size();
@@ -73,7 +72,7 @@ namespace da::core::containers {
 			ASSERT(n < m_size);
 			resize(m_size + 1);
 
-			memcpy(&m_ptr[n + 1], &m_ptr[n], sizeof(T) * (m_size-n-1) );
+			memcpy(&m_ptr[n + 1], &m_ptr[n], sizeof(T) * (m_size - n - 1));
 			m_ptr[n] = o;
 		}
 
@@ -83,7 +82,7 @@ namespace da::core::containers {
 			resize(m_size + e.size());
 
 			memcpy(&m_ptr[n + e.size()], &m_ptr[n], sizeof(T) * (size() - n - 1));
-			
+
 			TEnumerator<T> d = e.begin();
 
 			for (size_t i = 0; i < e.size(); i++) {
@@ -127,19 +126,19 @@ namespace da::core::containers {
 
 			ASSERT(n);
 
-			if (n < m_heapSize && m_heapSize < (n << 2) ) {
+			if (n < m_heapSize && m_heapSize < (n << 2)) {
 				m_size = n;
 				return;
 			};
 
 			size_t newSize = n << 1;
-			
+
 			if (m_ptr) {
 				T* ptr = (T*)realloc(m_ptr, sizeof(T) * newSize);
 				ASSERT(ptr);
 				m_ptr = ptr;
 			}
-			else m_ptr = new T[newSize];
+			else m_ptr = (T*)malloc(newSize * sizeof(T));
 			ASSERT(m_ptr);
 			m_heapSize = newSize;
 			m_size = n;
@@ -149,7 +148,7 @@ namespace da::core::containers {
 			if (!m_ptr) return;
 			m_size = 0;
 			m_heapSize = 0;
-			delete[] m_ptr;
+			free(m_ptr);
 			m_ptr = nullptr;
 		}
 
@@ -186,7 +185,7 @@ namespace da::core::containers {
 
 			m_size = other.m_size;
 			ASSERT(m_size);
-			m_ptr = new T[m_size];
+			m_ptr = (T*)malloc(m_size * sizeof(T));
 			ASSERT(m_ptr);
 			memcpy(m_ptr, other.m_ptr, sizeof(T) * m_size);
 

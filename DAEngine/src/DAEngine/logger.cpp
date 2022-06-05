@@ -53,6 +53,17 @@ namespace da
 		(*(std::ofstream*)s_outFile).flush();
 	}
 
+#else
+	void CLogger::initialize()
+	{
+	}
+
+	void CLogger::shutdown()
+	{
+	}
+
+	void CLogger::logInternal(const CString& message)
+	{}
 #endif
 
 }
