@@ -13,14 +13,18 @@ namespace da::modules
 	class CGraphicsModule : public IModule
 	{
 	public:
-		CGraphicsModule(CWindowModule* windowsModule);
+		CGraphicsModule(const CWindowModule& windowsModule);
 
 		void lateUpdate() override;
 		void initalize() override;
 		void shutdown() override;
 
+		inline da::platform::CGraphicsApi* getGraphicsApi() const {
+			return m_GraphicsApi;
+		}
+
 	private:
-		CWindowModule* m_Window;
+		const CWindowModule& m_Window;
 		platform::CGraphicsApi* m_GraphicsApi;
 
 

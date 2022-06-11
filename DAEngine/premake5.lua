@@ -2,16 +2,20 @@ group "ThirdParty"
 
 filter "system:macosx"
 	include "thirdparty/GLFW"
+	include "thirdparty/DearImGui"
 filter "system:windows"
 	include "thirdparty/GLFW"
+	include "thirdparty/DearImGui"
 filter "system:linux"
 	include "thirdparty/GLFW"
+	include "thirdparty/DearImGui"
 
 group ""
 
 IncludeDir = {}
 IncludeDir["GLFW"] = "thirdparty/GLFW/include"
 IncludeDir["Vulkan"] = "thirdparty/Vulkan"
+IncludeDir["ImGui"] = "thirdparty/DearImGui"
 
 project "DAEngine"
 	kind "StaticLib"
@@ -65,13 +69,15 @@ project "DAEngine"
 		links 
 		{
 			"GLFW",
-			"vulkan-1"
+			"vulkan-1",
+			"ImGui"
 		}
 		
 		includedirs
 		{
 			"%{IncludeDir.GLFW}",
-			"%{IncludeDir.Vulkan}/include"
+			"%{IncludeDir.Vulkan}/include",
+			"%{IncludeDir.ImGui}"
 		}
 		
 		libdirs
@@ -105,18 +111,21 @@ project "DAEngine"
 		links
 		{
 			"GLFW",
-			"vulkan-1"
+			"vulkan-1",
+			"ImGui"
 		}
 		
 		libdirs
 		{
-			"%{IncludeDir.Vulkan}/lib"
+			"%{IncludeDir.Vulkan}/lib",
+			"%{IncludeDir.ImGui}"
 		}
 		
 		includedirs
 		{
 			"%{IncludeDir.GLFW}",
-			"%{IncludeDir.Vulkan}/include"
+			"%{IncludeDir.Vulkan}/include",
+			"%{IncludeDir.ImGui}"
 		}
 
 		filter "configurations:Debug"
@@ -145,13 +154,15 @@ project "DAEngine"
 			links
 			{
 				"GLFW",
-				"vulkan-1"
+				"vulkan-1",
+				"ImGui"
 			}
 			
 			includedirs
 			{
 				"%{IncludeDir.GLFW}",
-				"%{IncludeDir.Vulkan}/include"
+				"%{IncludeDir.Vulkan}/include",
+				"%{IncludeDir.ImGui}"
 			}
 			
 			filter "configurations:Debug"

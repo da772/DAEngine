@@ -16,6 +16,16 @@ namespace da::platform::graphics
 		virtual void update() override;
 		virtual void shutdown() override;
 
+	public:
+		inline const VkInstance& getInstance() const { return m_instance; }
+		inline const VkPhysicalDevice& getPhysicalDevice() const { return m_physicalDevice; }
+		inline const VkDevice& getDevice() const { return m_device; }
+		inline const uint32_t& getQueueFamily() const { return m_queueFamilyIndices[0]; }
+		inline const VkQueue& getQueue() const { return m_graphicsQueue; }
+		inline const VkSurfaceKHR getSurface() const { return m_surface; }
+		inline const VkSwapchainKHR& getSwapChain() const { return m_swapChain; }
+		
+
 	private:
 		void createInstance();
 		bool checkValidationLayerSupport(const TList<const char*>& validationLayers);
@@ -62,6 +72,7 @@ namespace da::platform::graphics
 		TList<VkSemaphore> m_renderFinishedSemaphores;
 		TList<VkFence> m_inFlightFences;
 		TList<VkFramebuffer> m_swapChainFramebuffers;
+		uint32_t m_queueFamilyIndices[2];
 
 		uint32_t m_currentFrame = 0;
 

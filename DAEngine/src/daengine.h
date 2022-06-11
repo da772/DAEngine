@@ -9,3 +9,4 @@
 #include "DAEngine/platform/window/window.h"
 #include "DAEngine/modules/window/window_module.h"
 #include "DAEngine/modules/graphics/graphics_module.h"
+#include "DAEngine/modules/graphics/imgui_module.h"

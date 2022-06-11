@@ -12,6 +12,8 @@ namespace da::platform
 		inline virtual void update() {};
 		inline virtual void shutdown() {};
 
+		inline const CWindow& getWindow() const { return m_nativeWindow; }
+
 	protected:
 		const CWindow& m_nativeWindow;
 
