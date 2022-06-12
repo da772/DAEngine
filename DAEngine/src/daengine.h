@@ -4,7 +4,7 @@
 #include "DAEngine/logger.h"
 
 #include "DAEngine/modules/module.h"
-#include "daengine/core/entry.h"
+#include "DAEngine/core/entry.h"
 
 #include "DAEngine/platform/window/window.h"
 #include "DAEngine/modules/window/window_module.h"

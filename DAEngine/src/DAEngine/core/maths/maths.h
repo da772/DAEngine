@@ -1,5 +1,7 @@
 #pragma once
 
+#include "vector.h"
+
 namespace da::core::maths
 {
 	bool IsPrime(const int& n);

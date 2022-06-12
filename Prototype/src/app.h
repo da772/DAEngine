@@ -1,6 +1,6 @@
 #pragma once
 
-#include "daengine.h"
+#include <daengine.h>
 #include <iostream>
 #include <functional>
 
@@ -8,7 +8,7 @@ class ProtoTypeApp : public da::CApp {
 
 public:
 	
-	ProtoTypeApp(int argc, const char** argv) : CApp(argc, argv) {
+	inline ProtoTypeApp(int argc, const char** argv) : CApp(argc, argv) {
 		da::modules::CWindowModule* windowModule = new da::modules::CWindowModule({ "Hello World!", 720, 480, 0,0, 144, da::platform::window::EWindowDeco::NONE });
 		addModule(windowModule);
 		
@@ -28,7 +28,7 @@ public:
 			});
 	}
 
-	void windowEvent(const da::core::events::CEvent& e) {
+	inline void windowEvent(const da::core::events::CEvent& e) {
 
 		if (e.getType() == EEventType::WindowClose) {
 			da::CLogger::LogDebug(da::ELogChannel::External, "WindowClosed!");
@@ -50,17 +50,19 @@ public:
 	}
 
 protected:
-	virtual void onInitalize() override
+	inline virtual void onInitalize() override
 	{
 		da::CLogger::LogDebug(da::ELogChannel::External, "App Init");
+		da::CLogger::LogError(da::ELogChannel::External, "App Init");
 	}
 
-	virtual void onShutdown() override
+	inline virtual void onShutdown() override
 	{
 		da::CLogger::LogDebug(da::ELogChannel::External, "App End");
+
 	}
 
-	virtual void onUpdate() override
+	inline virtual void onUpdate() override
 	{
 		/*
 		da::CLogger::LogTrace(da::ELogChannel::External, "Hello World! %d", 123);

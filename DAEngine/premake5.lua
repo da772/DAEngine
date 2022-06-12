@@ -16,6 +16,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "thirdparty/GLFW/include"
 IncludeDir["Vulkan"] = "thirdparty/Vulkan"
 IncludeDir["ImGui"] = "thirdparty/DearImGui"
+IncludeDir["glm"] = "thirdparty/glm"
 
 project "DAEngine"
 	kind "StaticLib"
@@ -38,14 +39,14 @@ project "DAEngine"
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
-		"GE_ENGINE"
 	}
 
 	includedirs
 	{
 		"%{prj.location}",
 		"src/",
-		"src/DAEngine"
+		"src/DAEngine",
+		"%{IncludeDir.glm}",
 	}
 	
 	libdirs
@@ -136,6 +137,7 @@ project "DAEngine"
 			defines "DA_RELEASE"
 			runtime "Release"
 			optimize "On"
+			symbols "On"
 		filter "configurations:Final"
 			defines "DA_FINAL"
 			runtime "Release"
@@ -173,6 +175,7 @@ project "DAEngine"
 				defines "DA_RELEASE"
 				runtime "Release"
 				optimize "On"
+				symbols "On"
 			filter "configurations:Final"
 				defines "DA_FINAL"
 				runtime "Release"

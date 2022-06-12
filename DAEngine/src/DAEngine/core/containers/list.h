@@ -4,6 +4,7 @@
 #include "enumerable.h"
 #include <cstdlib>
 #include <cstring>
+#include <initializer_list>
 
 namespace da::core::containers {
 
@@ -13,6 +14,14 @@ namespace da::core::containers {
 	public:
 		inline TList() {
 
+		}
+
+		inline TList(std::initializer_list<T> l) {
+			resize(l.size());
+			size_t c = 0;
+			for (const T& t : l) {
+				m_ptr[c++] = t;
+			}
 		}
 
 		inline TList(const IEnumerable<T>& n) {

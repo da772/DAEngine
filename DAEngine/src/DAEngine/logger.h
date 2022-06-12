@@ -8,10 +8,12 @@
 namespace da {
 #define NAMEOF(x) #x
 
-
 #define __LOGFUNC__(x, y) template <typename ...Args> \
 inline static void x(const ELogChannel& channel, const CString& message, Args ... args) {\
 CLogger::log(y, channel, message, args...); }
+
+#define __LOGFUNC_EMPTY__(x, y) template <typename ...Args> \
+inline static void x(const ELogChannel& channel, const CString& message, Args ... args) {}
 
 	enum class ELogChannel : uint8_t {
 		Core,
@@ -46,7 +48,11 @@ CLogger::log(y, channel, message, args...); }
 	class CLogger
 	{
 	public:
+#ifdef DA_REVIEW
 		__LOGFUNC__(LogDebug, ELogType::Debug);
+#else
+		__LOGFUNC_EMPTY__(LogDebug, ELogType::Debug);
+#endif
 		__LOGFUNC__(LogInfo, ELogType::Info);
 		__LOGFUNC__(LogWarning, ELogType::Warning);
 		__LOGFUNC__(LogError, ELogType::Error);

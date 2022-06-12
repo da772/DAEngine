@@ -42,3 +42,4 @@ Bin-Obj/
 *.lua.bak
 *.log
 *.log.bak
+premake5.lua

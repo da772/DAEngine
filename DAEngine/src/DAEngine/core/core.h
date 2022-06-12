@@ -8,6 +8,10 @@
 #define ASSERT(...)
 #endif
 
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#define DA_REVIEW
+#endif
+
 
 namespace da
 {

@@ -74,6 +74,8 @@ project "Prototype"
 			defines "DA_RELEASE"
 			runtime "Release"
 			optimize "On"
+			symbols "On"
+			
 		filter "configurations:Final"
 			defines "DA_Final"
 			runtime "Release"

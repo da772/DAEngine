@@ -2,23 +2,72 @@
 #include "vulkan_graphics_api.h"
 #include "logger.h"
 #include "core/containers.h"
-#include <optional>
+
 #include <set>
 #include <algorithm>
 #include <vector>
 #include <fstream>
+#include "core/maths/maths.h"
 
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <chrono>
 
 namespace da::platform::graphics {
 
+#if DA_DEBUG || DA_RELEASE
+#define VK_CHECK(x, y) ASSERT(x == y)
+#endif
+
+#if DA_FINAL 
+#define VK_CHECK(x, y) x
+#endif
+
+
 #ifdef NDEBUG
-	const bool enableValidationLayers = false;
+	const bool enableValidationLayers = true;
 #else
 	const bool enableValidationLayers = true;
 #endif
+
+	struct Vertex {
+		Vector2f Pos;
+		Vector3f Color;
+
+		static VkVertexInputBindingDescription getBindingDescription() {
+			VkVertexInputBindingDescription bindingDescription{};
+			bindingDescription.binding = 0;
+			bindingDescription.stride = sizeof(Vertex);
+			bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+			return bindingDescription;
+		}
+
+
+		static TArray<VkVertexInputAttributeDescription> getAttributeDescriptions() {
+			TArray<VkVertexInputAttributeDescription> attributeDescriptions(2);
+			attributeDescriptions[0].binding = 0;
+			attributeDescriptions[0].location = 0;
+			attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+			attributeDescriptions[0].offset = offsetof(Vertex, Pos);
+
+			attributeDescriptions[1].binding = 0;
+			attributeDescriptions[1].location = 1;
+			attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+			attributeDescriptions[1].offset = offsetof(Vertex, Color);
+			return attributeDescriptions;
+		}
+	};
+
+	struct UniformBufferObject {
+		glm::mat4 model;
+		glm::mat4 view;
+		glm::mat4 proj;
+	};
+
 
 	static TList<char> readFile(const std::string& filename) {
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
@@ -38,14 +87,7 @@ namespace da::platform::graphics {
 		return buffer;
 	}
 
-	struct QueueFamilyIndices {
-		std::optional<uint32_t> graphicsFamily;
-		std::optional<uint32_t> presentFamily;
-
-		bool isComplete() {
-			return graphicsFamily.has_value() && presentFamily.has_value();
-		}
-	};
+	
 
 	struct SwapChainSupportDetails {
 		VkSurfaceCapabilitiesKHR capabilities;
@@ -97,9 +139,15 @@ namespace da::platform::graphics {
 		createSwapChain();
 		createImageViews();
 		createRenderPass();
+		createDescriptorSetLayout();
 		createGraphicsPipeline();
 		createCommandPool();
 		createFramebuffers();
+		createVertexBuffers();
+		createIndexBuffers();
+		createUniformBuffers();
+		createDescriptorPools();
+		createDescriptorSets();
 		createCommandBuffers();
 		createSyncObjects();
 	}
@@ -119,6 +167,8 @@ namespace da::platform::graphics {
 		}
 
 		ASSERT(result == VK_SUCCESS);
+
+		updateUniformBuffer(m_currentFrame);
 
 		vkResetFences(m_device, 1, &m_inFlightFences[m_currentFrame]);
 
@@ -140,7 +190,7 @@ namespace da::platform::graphics {
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
-		ASSERT(vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFences[m_currentFrame]) == VK_SUCCESS);
+		VK_CHECK(vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFences[m_currentFrame]), VK_SUCCESS);
 
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -179,6 +229,15 @@ namespace da::platform::graphics {
 	{
 		vkDeviceWaitIdle(m_device);
 
+		vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);
+		vkFreeMemory(m_device, m_vertexBufferMemory, nullptr);
+
+		vkDestroyBuffer(m_device, m_indexBuffer, nullptr);
+		vkFreeMemory(m_device, m_indexBufferMemory, nullptr);
+
+		vkDestroyDescriptorPool(m_device, m_descriptorPool, nullptr);
+		vkDestroyDescriptorSetLayout(m_device, m_descriptorSetLayout, nullptr);
+
 		if (enableValidationLayers) {
 			DestroyDebugUtilsMessengerEXT(m_instance, m_debugMessenger, nullptr);
 		}
@@ -190,10 +249,19 @@ namespace da::platform::graphics {
 		}
 
 		vkDestroyCommandPool(m_device, m_commandPool, nullptr);
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			vkDestroyBuffer(m_device, m_uniformBuffers[i], nullptr);
+			vkFreeMemory(m_device, m_uniformBuffersMemory[i], nullptr);
+		}
+
+		vkDestroyDescriptorSetLayout(m_device, m_descriptorSetLayout, nullptr);
 		cleanupSwapChain();
 
+		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Destroying Surface", NAMEOF(CVulkanGraphicsApi::shutdown));
 		vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
 		vkDestroyDevice(m_device, nullptr);
+		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Destroying Instance", NAMEOF(CVulkanGraphicsApi::shutdown));
 		vkDestroyInstance(m_instance, nullptr);
 	}
 
@@ -201,8 +269,10 @@ namespace da::platform::graphics {
 	{
 		m_validationLayers.push("VK_LAYER_KHRONOS_validation");
 
-		ASSERT(!enableValidationLayers || checkValidationLayerSupport(m_validationLayers));
-
+		if (!enableValidationLayers) {
+			VK_CHECK(checkValidationLayerSupport(m_validationLayers), true);
+		}
+		
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		// TODO: Change app/engine name
@@ -305,7 +375,7 @@ namespace da::platform::graphics {
 		createInfo.pfnUserCallback = debugCallback;
 		createInfo.pUserData = nullptr;
 
-		ASSERT(CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_debugMessenger) == VK_SUCCESS);
+		VK_CHECK(CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_debugMessenger), VK_SUCCESS);
 	}
 
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
@@ -328,39 +398,9 @@ namespace da::platform::graphics {
 		return requiredExtensions.empty();
 	}
 
-	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, std::optional<VkSurfaceKHR> surface) {
-		QueueFamilyIndices indices;
 
-		uint32_t queueFamilyCount = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
 
-		TList<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
-
-		int i = 0;
-		for (const auto& queueFamily : queueFamilies) {
-			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-				indices.graphicsFamily = i;
-			}
-
-			if (surface.has_value()) {
-				VkBool32 presentSupport = false;
-				vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface.value(), &presentSupport);
-				if (presentSupport) {
-					indices.presentFamily = i;
-				}
-			}
-			
-			if (indices.isComplete())
-				break;
-
-			i++;
-		}
-
-		return indices;
-	}
-
-	VkPhysicalDevice findDevices(const TList<VkPhysicalDevice>& devices)
+	VkPhysicalDevice CVulkanGraphicsApi::findDevices(const TList<VkPhysicalDevice>& devices)
 	{
 		int score = -1;
 		VkPhysicalDevice result = VK_NULL_HANDLE;
@@ -463,7 +503,7 @@ namespace da::platform::graphics {
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 		createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-		ASSERT(vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device) == VK_SUCCESS);
+		VK_CHECK(vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device), VK_SUCCESS);
 
 		vkGetDeviceQueue(m_device, indices.graphicsFamily.value(), 0, &m_graphicsQueue);
 		vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_presentQueue);
@@ -473,7 +513,7 @@ namespace da::platform::graphics {
 	void CVulkanGraphicsApi::createSurface()
 	{
 		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Vulkan creating GLFW Surface", NAMEOF(CVulkanGraphicsApi::createSurface));
-		ASSERT(glfwCreateWindowSurface(m_instance, (GLFWwindow*)m_nativeWindow.getNativeWindow(), nullptr, &m_surface) == VK_SUCCESS);
+		VK_CHECK(glfwCreateWindowSurface(m_instance, (GLFWwindow*)m_nativeWindow.getNativeWindow(), nullptr, &m_surface), VK_SUCCESS);
 	}
 
 	VkExtent2D CVulkanGraphicsApi::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
@@ -589,7 +629,7 @@ namespace da::platform::graphics {
 		createInfo.oldSwapchain = VK_NULL_HANDLE;
 
 
-		ASSERT(vkCreateSwapchainKHR(m_device, &createInfo, nullptr, &m_swapChain) == VK_SUCCESS);
+		VK_CHECK(vkCreateSwapchainKHR(m_device, &createInfo, nullptr, &m_swapChain), VK_SUCCESS);
 
 		vkGetSwapchainImagesKHR(m_device, m_swapChain, &imageCount, nullptr);
 		m_swapChainImages.resize(imageCount);
@@ -619,7 +659,7 @@ namespace da::platform::graphics {
 			createInfo.subresourceRange.baseArrayLayer = 0;
 			createInfo.subresourceRange.layerCount = 1;
 
-			ASSERT(vkCreateImageView(m_device, &createInfo, nullptr, &m_swapChainImageViews[i]) == VK_SUCCESS);
+			VK_CHECK(vkCreateImageView(m_device, &createInfo, nullptr, &m_swapChainImageViews[i]), VK_SUCCESS);
 		}
 	}
 
@@ -630,7 +670,7 @@ namespace da::platform::graphics {
 		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
 		VkShaderModule shaderModule{};
-		ASSERT(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) == VK_SUCCESS);
+		VK_CHECK(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule), VK_SUCCESS);
 		return shaderModule;
 	}
 
@@ -658,10 +698,14 @@ namespace da::platform::graphics {
 
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexBindingDescriptionCount = 0;
-		vertexInputInfo.pVertexBindingDescriptions = nullptr; // Optional
-		vertexInputInfo.vertexAttributeDescriptionCount = 0;
-		vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
+
+		auto bindingDescription = Vertex::getBindingDescription();
+		auto attributeDescriptions = Vertex::getAttributeDescriptions();
+
+		vertexInputInfo.vertexBindingDescriptionCount = 1;
+		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data(); // Optional
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -697,8 +741,8 @@ namespace da::platform::graphics {
 
 		rasterizer.lineWidth = 1.0f;
 
-		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-		rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+		//rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 
 		rasterizer.depthBiasEnable = VK_FALSE;
 		rasterizer.depthBiasConstantFactor = 0.0f; // Optional
@@ -747,12 +791,11 @@ namespace da::platform::graphics {
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 0; // Optional
-		pipelineLayoutInfo.pSetLayouts = nullptr; // Optional
-		pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
-		pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
 
-		ASSERT(vkCreatePipelineLayout(m_device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout) == VK_SUCCESS);
+
+		VK_CHECK(vkCreatePipelineLayout(m_device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout), VK_SUCCESS);
 
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -774,7 +817,7 @@ namespace da::platform::graphics {
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 		pipelineInfo.basePipelineIndex = -1; // Optional
 
-		ASSERT(vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline) == VK_SUCCESS);
+		VK_CHECK(vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline), VK_SUCCESS);
 
 		vkDestroyShaderModule(m_device, fragShaderModule, nullptr);
 		vkDestroyShaderModule(m_device, vertShaderModule, nullptr);
@@ -822,7 +865,7 @@ namespace da::platform::graphics {
 		renderPassInfo.dependencyCount = 1;
 		renderPassInfo.pDependencies = &dependency;
 
-		ASSERT(vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &m_renderPass) == VK_SUCCESS);
+		VK_CHECK(vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &m_renderPass), VK_SUCCESS);
 	}
 
 	void CVulkanGraphicsApi::createFramebuffers()
@@ -844,7 +887,7 @@ namespace da::platform::graphics {
 			framebufferInfo.height = m_swapChainExtent.height;
 			framebufferInfo.layers = 1;
 
-			ASSERT(vkCreateFramebuffer(m_device, &framebufferInfo, nullptr, &m_swapChainFramebuffers[i]) == VK_SUCCESS);
+			VK_CHECK(vkCreateFramebuffer(m_device, &framebufferInfo, nullptr, &m_swapChainFramebuffers[i]), VK_SUCCESS);
 
 		}
 	}
@@ -858,16 +901,26 @@ namespace da::platform::graphics {
 		poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-		ASSERT(vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_commandPool) == VK_SUCCESS);
+		VK_CHECK(vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_commandPool), VK_SUCCESS);
 	}
+
+	const std::vector<Vertex> vertices = {
+	{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+	{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+	{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+	};
+
+	const std::vector<uint16_t> indices = {
+	0, 1, 2, 2, 3, 0
+	};
+
 
 	void CVulkanGraphicsApi::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		beginInfo.flags = 0; // Optional
-		beginInfo.pInheritanceInfo = nullptr; // Optional
 
-		ASSERT(vkBeginCommandBuffer(commandBuffer, &beginInfo) == VK_SUCCESS);
+		VK_CHECK(vkBeginCommandBuffer(commandBuffer, &beginInfo), VK_SUCCESS);
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -882,11 +935,20 @@ namespace da::platform::graphics {
 		renderPassInfo.pClearValues = &clearColor;
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
-		vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+			VkBuffer vertexBuffers[] = { m_vertexBuffer };
+			VkDeviceSize offsets[] = { 0 };
+			vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+			vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+			vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+
+			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSets[m_currentFrame], 0, nullptr);
+
+			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 		vkCmdEndRenderPass(commandBuffer);
 
-		ASSERT(vkEndCommandBuffer(commandBuffer) == VK_SUCCESS);
+		VK_CHECK(vkEndCommandBuffer(commandBuffer), VK_SUCCESS);
 	}
 
 	void CVulkanGraphicsApi::createCommandBuffers()
@@ -898,7 +960,7 @@ namespace da::platform::graphics {
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandBufferCount = (uint32_t)m_commandBuffers.size();
 
-		ASSERT(vkAllocateCommandBuffers(m_device, &allocInfo, m_commandBuffers.data()) == VK_SUCCESS);
+		VK_CHECK(vkAllocateCommandBuffers(m_device, &allocInfo, m_commandBuffers.data()), VK_SUCCESS);
 	}
 
 	void CVulkanGraphicsApi::createSyncObjects()
@@ -913,9 +975,9 @@ namespace da::platform::graphics {
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			ASSERT(vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_imageAvailableSemaphores[i]) == VK_SUCCESS);
-			ASSERT(vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_renderFinishedSemaphores[i]) == VK_SUCCESS);
-			ASSERT(vkCreateFence(m_device, &fenceInfo, nullptr, &m_inFlightFences[i]) == VK_SUCCESS);
+			VK_CHECK(vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_imageAvailableSemaphores[i]), VK_SUCCESS);
+			VK_CHECK(vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_renderFinishedSemaphores[i]), VK_SUCCESS);
+			VK_CHECK(vkCreateFence(m_device, &fenceInfo, nullptr, &m_inFlightFences[i]), VK_SUCCESS);
 		}
 		
 	}
@@ -933,7 +995,260 @@ namespace da::platform::graphics {
 
 	}
 
+	uint32_t CVulkanGraphicsApi::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
 	
+		VkPhysicalDeviceMemoryProperties memProperties;
+		vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &memProperties);
+		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+			if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+				return i;
+			}
+		}
+
+		return 0;
+	}
+
+	void CVulkanGraphicsApi::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+		VkCommandBufferAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		allocInfo.commandPool = m_commandPool;
+		allocInfo.commandBufferCount = 1;
+
+		VkCommandBuffer commandBuffer;
+		vkAllocateCommandBuffers(m_device, &allocInfo, &commandBuffer);
+
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+		vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+		VkBufferCopy copyRegion{};
+		copyRegion.size = size;
+		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+
+		vkEndCommandBuffer(commandBuffer);
+
+		VkSubmitInfo submitInfo{};
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submitInfo.commandBufferCount = 1;
+		submitInfo.pCommandBuffers = &commandBuffer;
+
+		vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+		vkQueueWaitIdle(m_graphicsQueue);
+
+		vkFreeCommandBuffers(m_device, m_commandPool, 1, &commandBuffer);
+	}
+
+	void CVulkanGraphicsApi::createVertexBuffers()
+	{
+		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingBufferMemory;
+		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+		void* data;
+		vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0, &data);
+		memcpy(data, vertices.data(), (size_t)bufferSize);
+		vkUnmapMemory(m_device, stagingBufferMemory);
+
+		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_vertexBuffer, m_vertexBufferMemory);
+
+		copyBuffer(stagingBuffer, m_vertexBuffer, bufferSize);
+
+		vkDestroyBuffer(m_device, stagingBuffer, nullptr);
+		vkFreeMemory(m_device, stagingBufferMemory, nullptr);
+	}
+
+	void CVulkanGraphicsApi::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+	{
+		VkBufferCreateInfo bufferInfo{};
+		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		bufferInfo.size = size;
+		bufferInfo.usage = usage;
+		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+		if (vkCreateBuffer(m_device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create buffer!");
+		}
+
+		VkMemoryRequirements memRequirements;
+		vkGetBufferMemoryRequirements(m_device, buffer, &memRequirements);
+
+		VkMemoryAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		allocInfo.allocationSize = memRequirements.size;
+		allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+
+		VK_CHECK(vkAllocateMemory(m_device, &allocInfo, nullptr, &bufferMemory), VK_SUCCESS);
+
+		vkBindBufferMemory(m_device, buffer, bufferMemory, 0);
+	}
+
+	void CVulkanGraphicsApi::createIndexBuffers()
+	{
+		VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingBufferMemory;
+		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+
+		void* data;
+		vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0, &data);
+		memcpy(data, indices.data(), (size_t)bufferSize);
+		vkUnmapMemory(m_device, stagingBufferMemory);
+
+		createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_indexBuffer, m_indexBufferMemory);
+
+		copyBuffer(stagingBuffer, m_indexBuffer, bufferSize);
+
+		vkDestroyBuffer(m_device, stagingBuffer, nullptr);
+		vkFreeMemory(m_device, stagingBufferMemory, nullptr);
+	}
+
+	void CVulkanGraphicsApi::createDescriptorSetLayout()
+	{
+		VkDescriptorSetLayoutBinding uboLayoutBinding{};
+		uboLayoutBinding.binding = 0;
+		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		uboLayoutBinding.descriptorCount = 1;
+		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
+
+		VkDescriptorSetLayoutCreateInfo layoutInfo{};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = 1;
+		layoutInfo.pBindings = &uboLayoutBinding;
+
+		VK_CHECK(vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &m_descriptorSetLayout), VK_SUCCESS);
+
+		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
+	}
+
+	void CVulkanGraphicsApi::createUniformBuffers()
+	{
+		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+		m_uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+		m_uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_uniformBuffers[i], m_uniformBuffersMemory[i]);
+		}
+	}
+
+	void CVulkanGraphicsApi::updateUniformBuffer(uint32_t frame)
+	{
+		static auto startTime = std::chrono::high_resolution_clock::now();
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+		UniformBufferObject ubo{};
+		ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 1.0f));
+		ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		ubo.proj = glm::perspective(glm::radians(45.0f), m_swapChainExtent.width / (float)m_swapChainExtent.height, 0.1f, 10.0f);
+
+		ubo.proj[1][1] *= -1;
+
+		void* data;
+		vkMapMemory(m_device, m_uniformBuffersMemory[frame], 0, sizeof(ubo), 0, &data);
+		memcpy(data, &ubo, sizeof(ubo));
+		vkUnmapMemory(m_device, m_uniformBuffersMemory[frame]);
+	}
+
+	void CVulkanGraphicsApi::createDescriptorPools()
+	{
+		
+		VkDescriptorPoolSize poolSize{};
+		poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		poolSize.descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+		VkDescriptorPoolCreateInfo poolInfo{};
+		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		poolInfo.poolSizeCount = 1;
+		poolInfo.pPoolSizes = &poolSize;
+
+		poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+		VK_CHECK(vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &m_descriptorPool), VK_SUCCESS);
+	}
+
+	void CVulkanGraphicsApi::createDescriptorSets()
+	{
+		TArray<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_descriptorSetLayout);
+		VkDescriptorSetAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		allocInfo.descriptorPool = m_descriptorPool;
+		allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+		allocInfo.pSetLayouts = layouts.data();
+
+		m_descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+
+		VK_CHECK(vkAllocateDescriptorSets(m_device, &allocInfo, m_descriptorSets.data()), VK_SUCCESS);
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			VkDescriptorBufferInfo bufferInfo{};
+			bufferInfo.buffer = m_uniformBuffers[i];
+			bufferInfo.offset = 0;
+			bufferInfo.range = sizeof(UniformBufferObject);
+
+			VkWriteDescriptorSet descriptorWrite{};
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_descriptorSets[i];
+			descriptorWrite.dstBinding = 0;
+			descriptorWrite.dstArrayElement = 0;
+
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrite.descriptorCount = 1;
+
+			descriptorWrite.pBufferInfo = &bufferInfo;
+			descriptorWrite.pImageInfo = nullptr; // Optional
+			descriptorWrite.pTexelBufferView = nullptr; // Optional
+
+			vkUpdateDescriptorSets(m_device, 1, &descriptorWrite, 0, nullptr);
+		}
+
+		
+		
+	}
+
+	da::platform::graphics::QueueFamilyIndices CVulkanGraphicsApi::findQueueFamilies(VkPhysicalDevice device, std::optional<VkSurfaceKHR> surface)
+	{
+		QueueFamilyIndices indices;
+
+		uint32_t queueFamilyCount = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+
+		TList<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+
+		int i = 0;
+		for (const auto& queueFamily : queueFamilies) {
+			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+				indices.graphicsFamily = i;
+			}
+
+			if (surface.has_value()) {
+				VkBool32 presentSupport = false;
+				VK_CHECK(vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface.value(), &presentSupport), VK_SUCCESS);
+				if (presentSupport) {
+					indices.presentFamily = i;
+				}
+			}
+
+			if (indices.isComplete())
+				break;
+
+			i++;
+		}
+
+		return indices;
+	}
 
 }
 

@@ -93,6 +93,7 @@ namespace da::platform::window {
 	void CGLFW_Window::shutdown()
 	{
 		if (!m_Window) return;
+		CLogger::LogInfo(ELogChannel::Window, "[%s] Destroying Window", NAMEOF(CGLFW_Window::shutdown));
 		glfwDestroyWindow(m_Window);
 		m_Window = nullptr;
 	}

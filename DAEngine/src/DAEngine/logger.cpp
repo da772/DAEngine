@@ -13,7 +13,6 @@
 
 namespace da
 {
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
 	void* CLogger::s_outFile = nullptr;
 
 	void CLogger::initialize()
@@ -52,18 +51,5 @@ namespace da
 		*(std::ofstream*)s_outFile << result.str();
 		(*(std::ofstream*)s_outFile).flush();
 	}
-
-#else
-	void CLogger::initialize()
-	{
-	}
-
-	void CLogger::shutdown()
-	{
-	}
-
-	void CLogger::logInternal(const CString& message)
-	{}
-#endif
 
 }
