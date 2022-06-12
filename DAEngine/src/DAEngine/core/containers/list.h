@@ -16,7 +16,7 @@ namespace da::core::containers {
 
 		}
 
-		inline TList(std::initializer_list<T> l) {
+		inline TList(const std::initializer_list<T>& l) {
 			resize(l.size());
 			size_t c = 0;
 			for (const T& t : l) {

@@ -13,10 +13,12 @@ filter "system:linux"
 group ""
 
 IncludeDir = {}
-IncludeDir["GLFW"] = "thirdparty/GLFW/include"
-IncludeDir["Vulkan"] = "thirdparty/Vulkan"
-IncludeDir["ImGui"] = "thirdparty/DearImGui"
-IncludeDir["glm"] = "thirdparty/glm"
+IncludeDir["GLFW"] = "%{wks.location}/DAEngine/thirdparty/GLFW/include"
+IncludeDir["Vulkan"] = "%{wks.location}/DAEngine/thirdparty/Vulkan"
+IncludeDir["ImGui"] = "%{wks.location}/DAEngine/thirdparty/DearImGui"
+IncludeDir["glm"] = "%{wks.location}/DAEngine/thirdparty/glm"
+IncludeDir["stb"] = "%{wks.location}/DAEngine/thirdparty/stb"
+IncludeDir["tiny_obj_loader"] = "%{wks.location}/DAEngine/thirdparty/tiny_obj_loader"
 
 project "DAEngine"
 	kind "StaticLib"
@@ -47,6 +49,8 @@ project "DAEngine"
 		"src/",
 		"src/DAEngine",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb}",
+		"%{IncludeDir.tiny_obj_loader}"
 	}
 	
 	libdirs

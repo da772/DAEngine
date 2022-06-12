@@ -21,7 +21,7 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 		Maths,
 		Modules,
 		Platform,
-		External,
+		Application,
 		Graphics,
 		Window
 	};
@@ -78,7 +78,7 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 		}
 		static void logInternal(const CString& message);
 
-		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "External", "Graphics", "Window"};
+		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "Application", "Graphics", "Window"};
 		inline static const char* logTypeMap[] = { "Info", "Debug", "Warning", "Error", "Assert" };
 		inline static const char* colorTypeMap[] = { "\033[39m", "\033[36m", "\033[33m", "\033[31m", "\033[35m", "\033[39m" };
 

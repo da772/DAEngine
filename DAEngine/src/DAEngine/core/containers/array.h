@@ -1,6 +1,7 @@
 #pragma once
 #include "DAEngine/core/core.h"
 #include "enumerable.h"
+#include <initializer_list>
 
 namespace da::core::containers {
 
@@ -9,6 +10,16 @@ namespace da::core::containers {
 	public:
 		inline TArray() : m_size(0), m_ptr(nullptr) {
 
+		}
+
+		inline TArray(const std::initializer_list<T>& l) {
+			m_size = l.size();
+			ASSERT(m_size);
+			m_ptr = new T[m_size];
+			size_t cnt = 0;
+			for (const T& i : l) {
+				m_ptr[cnt++] = i;
+			}
 		}
 
 		inline TArray(const IEnumerable<T>& e) {

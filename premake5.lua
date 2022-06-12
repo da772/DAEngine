@@ -39,15 +39,17 @@ project "Prototype"
 	
 	files 
 	{
-		"%{prj.location}/src/**.h",
-		"%{prj.location}/src/**.c",
-		"%{prj.location}/src/**.cpp"
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.c",
+		"%{prj.name}/src/**.cpp"
 	}
 
 	includedirs 
 	{
 		"DAEngine/src",
-		"%{prj.location}/src"
+		"%{prj.name}/src",
+		"%{IncludeDir.stb}",
+		"%{IncludeDir.tiny_obj_loader}"
 	}
 
 	links
@@ -74,6 +76,8 @@ project "Prototype"
 			defines "DA_RELEASE"
 			runtime "Release"
 			optimize "On"
+			symbols "On"
+			
 		filter "configurations:Final"
 			defines "DA_Final"
 			runtime "Release"
@@ -227,4 +231,27 @@ project "Prototype"
 			runtime "Release"
 			optimize "On"
 				
+		filter "system:linux"
+			linkgroups 'on'
+			systemversion "latest"
+			cppdialect "gnu++20"
+			
+			defines
+			{
+				
+				"DA_PLATFORM_LINUX",
+			}
+			
+			filter "configurations:Debug"
+				defines "DA_DEBUG"
+				runtime "Debug"
+				symbols "On"
+			filter "configurations:Release"
+				defines "DA_RELEASE"
+				runtime "Release"
+				optimize "On"
+			filter "configurations:Final"
+				defines "DA_FINAL"
+				runtime "Release"
+				optimize "On"
 

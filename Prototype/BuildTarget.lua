@@ -47,7 +47,9 @@ project "Prototype"
 	includedirs 
 	{
 		"DAEngine/src",
-		"%{prj.name}/src"
+		"%{prj.name}/src",
+		"%{IncludeDir.stb}",
+		"%{IncludeDir.tiny_obj_loader}"
 	}
 
 	links
