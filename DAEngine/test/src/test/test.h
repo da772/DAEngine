@@ -20,6 +20,7 @@ virtual bool RunTests() override; \
 class ITest
 {
 public:
+    inline virtual ~ITest() {};
 	virtual bool RunTests() = 0;
 	virtual const char* GetTestName() = 0;
 	inline const char* GetError() { return m_failReason.c_str(); };

@@ -1,6 +1,6 @@
 #pragma once
-#include "DAEngine/core/containers.h"
-#include "DAEngine/core/events/event_handler.h"
+#include "DaEngine/core/containers.h"
+#include "DaEngine/core/events/event_handler.h"
 
 namespace da::platform{
 	

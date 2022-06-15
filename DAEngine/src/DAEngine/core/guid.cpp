@@ -38,7 +38,11 @@ namespace da::core {
 			}
 
 			unsigned int n;
+#ifdef DA_PLATFORM_WINDOWS
 			sscanf_s((const char*)&guid[i], "%02x", &n);
+#else
+            sscanf((const char*)&guid[i], "%02x", &n);
+#endif
 			
 			memcpy(&m_uuid[j++], &n, sizeof(unsigned int));
 			i += 2;
@@ -64,7 +68,11 @@ namespace da::core {
 		char ch[33];
 
 		for (unsigned char i = 0; i < 16; i++) {
+#ifdef DA_PLATFORM_WINDOWS
 			sprintf_s(&ch[i*2], sizeof(ch)-((int)i*2*sizeof(char)), "%02x", m_uuid[i]);
+#else
+            snprintf(&ch[i*2], sizeof(ch)-((int)i*2*sizeof(char)), "%02x", m_uuid[i]);
+#endif
 		}
 
 		ch[32] = 0;

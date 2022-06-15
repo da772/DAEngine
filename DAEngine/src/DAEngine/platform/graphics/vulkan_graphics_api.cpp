@@ -145,6 +145,7 @@ namespace da::platform::graphics {
 		bool framebufferResized = false;
 		vkWaitForFences(m_device, 1, &m_inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
 
+        
 		uint32_t imageIndex;
 		VkResult result = vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &imageIndex);
 
@@ -178,7 +179,9 @@ namespace da::platform::graphics {
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
-		VK_CHECK(vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFences[m_currentFrame]), VK_SUCCESS);
+        result = vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFences[m_currentFrame]);
+        
+		VK_CHECK(result, VK_SUCCESS);
 
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -191,8 +194,13 @@ namespace da::platform::graphics {
 		presentInfo.pSwapchains = swapChains;
 		presentInfo.pImageIndices = &imageIndex;
 		presentInfo.pResults = nullptr; // Optional
-		vkQueuePresentKHR(m_presentQueue, &presentInfo);
+		result = vkQueuePresentKHR(m_presentQueue, &presentInfo);
 
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
+            framebufferResized) {
+            recreateSwapChain();
+        }
+        
 		m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
 
@@ -261,7 +269,6 @@ namespace da::platform::graphics {
 			DestroyDebugUtilsMessengerEXT(m_instance, m_debugMessenger, nullptr);
 		}
 		
-
 		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Destroying Surface", NAMEOF(CVulkanGraphicsApi::shutdown));
 		vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
 		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Destroying Instance", NAMEOF(CVulkanGraphicsApi::shutdown));
@@ -270,8 +277,7 @@ namespace da::platform::graphics {
 
 	void CVulkanGraphicsApi::createInstance()
 	{
-		m_validationLayers.push("VK_LAYER_KHRONOS_validation");
-
+        m_validationLayers.push("VK_LAYER_KHRONOS_validation");
 		if (!enableValidationLayers) {
 			VK_CHECK(checkValidationLayerSupport(m_validationLayers), true);
 		}
@@ -288,21 +294,15 @@ namespace da::platform::graphics {
 		VkInstanceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		createInfo.pApplicationInfo = &appInfo;
+        createInfo.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR; // MoltenVK
 
-		uint32_t glfwExtensionCount = 0;
-		const char** glfwExtensions;
-
-		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-		createInfo.enabledExtensionCount = glfwExtensionCount;
-		createInfo.ppEnabledExtensionNames = glfwExtensions;
 
 		auto extensions = getRequiredExtensions();
+        extensions.push(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+        extensions.push("VK_KHR_get_physical_device_properties2"); // MoltenVK
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
-
-
-		createInfo.enabledLayerCount = 0;
+        
 
 		if (enableValidationLayers) {
 			createInfo.enabledLayerCount = static_cast<uint32_t>(m_validationLayers.size());
@@ -315,7 +315,6 @@ namespace da::platform::graphics {
 		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Create Instance", NAMEOF(CVulkanGraphicsApi::createInstance));
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &m_instance);
 		ASSERT(result == VK_SUCCESS);
-		
 	}
 
 	bool CVulkanGraphicsApi::checkValidationLayerSupport(const TList<const char*>& validationLayers) {
@@ -378,7 +377,9 @@ namespace da::platform::graphics {
 		createInfo.pfnUserCallback = debugCallback;
 		createInfo.pUserData = nullptr;
 
-		VK_CHECK(CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_debugMessenger), VK_SUCCESS);
+        auto result = CreateDebugUtilsMessengerEXT(m_instance, &createInfo, nullptr, &m_debugMessenger);
+        
+		VK_CHECK(result, VK_SUCCESS);
 	}
 
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
@@ -405,7 +406,7 @@ namespace da::platform::graphics {
 
 	VkPhysicalDevice CVulkanGraphicsApi::findDevices(const TList<VkPhysicalDevice>& devices)
 	{
-		int score = -1;
+		int score = -3;
 		VkPhysicalDevice result = VK_NULL_HANDLE;
 		VkPhysicalDeviceProperties rs_deviceProperties;
 
@@ -512,12 +513,14 @@ namespace da::platform::graphics {
 		createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 		createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
-		TList<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+		TList<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME, "VK_KHR_portability_subset"};
 
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 		createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-		VK_CHECK(vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device), VK_SUCCESS);
+        auto result = vkCreateDevice(m_physicalDevice, &createInfo, nullptr, &m_device);
+        
+		VK_CHECK(result, VK_SUCCESS);
 
 		vkGetDeviceQueue(m_device, indices.graphicsFamily.value(), 0, &m_graphicsQueue);
 		vkGetDeviceQueue(m_device, indices.presentFamily.value(), 0, &m_presentQueue);
@@ -527,7 +530,9 @@ namespace da::platform::graphics {
 	void CVulkanGraphicsApi::createSurface()
 	{
 		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Vulkan creating GLFW Surface", NAMEOF(CVulkanGraphicsApi::createSurface));
-		VK_CHECK(glfwCreateWindowSurface(m_instance, (GLFWwindow*)m_nativeWindow.getNativeWindow(), nullptr, &m_surface), VK_SUCCESS);
+        auto result =glfwCreateWindowSurface(m_instance, (GLFWwindow*)m_nativeWindow.getNativeWindow(), nullptr, &m_surface);
+		VK_CHECK(result, VK_SUCCESS);
+        
 	}
 
 	VkExtent2D CVulkanGraphicsApi::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
@@ -642,8 +647,8 @@ namespace da::platform::graphics {
 		createInfo.clipped = VK_TRUE;
 		createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-
-		VK_CHECK(vkCreateSwapchainKHR(m_device, &createInfo, nullptr, &m_swapChain), VK_SUCCESS);
+        auto res =vkCreateSwapchainKHR(m_device, &createInfo, nullptr, &m_swapChain);
+		VK_CHECK(res, VK_SUCCESS);
 
 		vkGetSwapchainImagesKHR(m_device, m_swapChain, &imageCount, nullptr);
 		m_swapChainImages.resize(imageCount);
@@ -669,7 +674,8 @@ namespace da::platform::graphics {
 		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
 		VkShaderModule shaderModule{};
-		VK_CHECK(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule), VK_SUCCESS);
+        auto result = vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule);
+		VK_CHECK(result, VK_SUCCESS);
 		return shaderModule;
 	}
 
@@ -794,7 +800,9 @@ namespace da::platform::graphics {
 		pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
 
 
-		VK_CHECK(vkCreatePipelineLayout(m_device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout), VK_SUCCESS);
+        auto result = vkCreatePipelineLayout(m_device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout);
+        
+		VK_CHECK(result, VK_SUCCESS);
 
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -830,7 +838,9 @@ namespace da::platform::graphics {
 
 		pipelineInfo.pDepthStencilState = &depthStencil;
 
-		VK_CHECK(vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline), VK_SUCCESS);
+        result = vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline);
+        
+		VK_CHECK(result, VK_SUCCESS);
 
 		vkDestroyShaderModule(m_device, fragShaderModule, nullptr);
 		vkDestroyShaderModule(m_device, vertShaderModule, nullptr);
@@ -909,9 +919,9 @@ namespace da::platform::graphics {
 		renderPassInfo.dependencyCount = 1;
 		renderPassInfo.pDependencies = &dependency;
 
+        auto result = vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &m_renderPass);
 
-
-		VK_CHECK(vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &m_renderPass), VK_SUCCESS);
+		VK_CHECK(result, VK_SUCCESS);
 	}
 
 	void CVulkanGraphicsApi::createFramebuffers()
@@ -934,7 +944,9 @@ namespace da::platform::graphics {
 			framebufferInfo.height = m_swapChainExtent.height;
 			framebufferInfo.layers = 1;
 
-			VK_CHECK(vkCreateFramebuffer(m_device, &framebufferInfo, nullptr, &m_swapChainFramebuffers[i]), VK_SUCCESS);
+            auto result = vkCreateFramebuffer(m_device, &framebufferInfo, nullptr, &m_swapChainFramebuffers[i]);
+            
+			VK_CHECK(result, VK_SUCCESS);
 
 		}
 	}
@@ -948,15 +960,20 @@ namespace da::platform::graphics {
 		poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-		VK_CHECK(vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_commandPool), VK_SUCCESS);
+        auto result = vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_commandPool);
+        
+		VK_CHECK(result, VK_SUCCESS);
 	}
 
 
 	void CVulkanGraphicsApi::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-		VK_CHECK(vkBeginCommandBuffer(commandBuffer, &beginInfo), VK_SUCCESS);
+        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+        
+        auto res = vkBeginCommandBuffer(commandBuffer, &beginInfo);
+        
+		VK_CHECK(res, VK_SUCCESS);
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -987,7 +1004,9 @@ namespace da::platform::graphics {
 
 		vkCmdEndRenderPass(commandBuffer);
 
-		VK_CHECK(vkEndCommandBuffer(commandBuffer), VK_SUCCESS);
+        
+        res = vkEndCommandBuffer(commandBuffer);
+		VK_CHECK(res, VK_SUCCESS);
 	}
 
 	void CVulkanGraphicsApi::createCommandBuffers()
@@ -998,8 +1017,10 @@ namespace da::platform::graphics {
 		allocInfo.commandPool = m_commandPool;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandBufferCount = (uint32_t)m_commandBuffers.size();
+        
+        auto result = vkAllocateCommandBuffers(m_device, &allocInfo, m_commandBuffers.data());
 
-		VK_CHECK(vkAllocateCommandBuffers(m_device, &allocInfo, m_commandBuffers.data()), VK_SUCCESS);
+		VK_CHECK(result, VK_SUCCESS);
 	}
 
 	void CVulkanGraphicsApi::createSyncObjects()
@@ -1014,9 +1035,12 @@ namespace da::platform::graphics {
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			VK_CHECK(vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_imageAvailableSemaphores[i]), VK_SUCCESS);
-			VK_CHECK(vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_renderFinishedSemaphores[i]), VK_SUCCESS);
-			VK_CHECK(vkCreateFence(m_device, &fenceInfo, nullptr, &m_inFlightFences[i]), VK_SUCCESS);
+            auto result =vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_imageAvailableSemaphores[i]);
+			VK_CHECK(result, VK_SUCCESS);
+            result = vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_renderFinishedSemaphores[i]);
+			VK_CHECK(result, VK_SUCCESS);
+            result = vkCreateFence(m_device, &fenceInfo, nullptr, &m_inFlightFences[i]);
+			VK_CHECK(result, VK_SUCCESS);
 		}
 		
 	}
@@ -1066,7 +1090,7 @@ namespace da::platform::graphics {
 
 	void CVulkanGraphicsApi::createVertexBuffers()
 	{
-		VkDeviceSize bufferSize = sizeof(m_vertices[0]) * m_vertices.size();
+		VkDeviceSize bufferSize = sizeof(Vertex) * m_vertices.size();
 
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
@@ -1104,14 +1128,16 @@ namespace da::platform::graphics {
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-		VK_CHECK(vkAllocateMemory(m_device, &allocInfo, nullptr, &bufferMemory), VK_SUCCESS);
+        auto result = vkAllocateMemory(m_device, &allocInfo, nullptr, &bufferMemory);
+        
+		VK_CHECK(result, VK_SUCCESS);
 
 		vkBindBufferMemory(m_device, buffer, bufferMemory, 0);
 	}
 
 	void CVulkanGraphicsApi::createIndexBuffers()
 	{
-		VkDeviceSize bufferSize = sizeof(m_indices[0]) * m_indices.size();
+		VkDeviceSize bufferSize = sizeof(uint32_t) * m_indices.size();
 
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
@@ -1152,7 +1178,9 @@ namespace da::platform::graphics {
 		layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
 		layoutInfo.pBindings = bindings.data();
 
-		VK_CHECK(vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &m_descriptorSetLayout), VK_SUCCESS);
+        auto result = vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &m_descriptorSetLayout);
+        
+		VK_CHECK(result, VK_SUCCESS);
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -1207,7 +1235,9 @@ namespace da::platform::graphics {
 		poolInfo.pPoolSizes = poolSizes.data();
 		poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
-		VK_CHECK(vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &m_descriptorPool), VK_SUCCESS);
+        auto result = vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &m_descriptorPool);
+        
+		VK_CHECK(result, VK_SUCCESS);
 	}
 
 	void CVulkanGraphicsApi::createDescriptorSets()
@@ -1221,7 +1251,9 @@ namespace da::platform::graphics {
 
 		m_descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
 
-		VK_CHECK(vkAllocateDescriptorSets(m_device, &allocInfo, m_descriptorSets.data()), VK_SUCCESS);
+        auto res = vkAllocateDescriptorSets(m_device, &allocInfo, m_descriptorSets.data());
+        
+		VK_CHECK(res, VK_SUCCESS);
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 			VkDescriptorBufferInfo bufferInfo{};
@@ -1234,7 +1266,7 @@ namespace da::platform::graphics {
 			imageInfo.imageView = m_textureImageView;
 			imageInfo.sampler = m_textureSampler;
 
-			std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+			TArray<VkWriteDescriptorSet> descriptorWrites(2);
 
 			descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			descriptorWrites[0].dstSet = m_descriptorSets[i];
@@ -1243,7 +1275,8 @@ namespace da::platform::graphics {
 			descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 			descriptorWrites[0].descriptorCount = 1;
 			descriptorWrites[0].pBufferInfo = &bufferInfo;
-
+            descriptorWrites[0].pNext = NULL;
+            
 			descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			descriptorWrites[1].dstSet = m_descriptorSets[i];
 			descriptorWrites[1].dstBinding = 1;
@@ -1251,6 +1284,7 @@ namespace da::platform::graphics {
 			descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 			descriptorWrites[1].descriptorCount = 1;
 			descriptorWrites[1].pImageInfo = &imageInfo;
+            descriptorWrites[1].pNext = NULL;
 
 			vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 		}
@@ -1277,7 +1311,8 @@ namespace da::platform::graphics {
 
 			if (surface.has_value()) {
 				VkBool32 presentSupport = false;
-				VK_CHECK(vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface.value(), &presentSupport), VK_SUCCESS);
+                auto result = vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface.value(), &presentSupport);
+				VK_CHECK(result, VK_SUCCESS);
 				if (presentSupport) {
 					indices.presentFamily = i;
 				}
@@ -1309,7 +1344,9 @@ namespace da::platform::graphics {
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		imageInfo.mipLevels = mipLevels;
 
-		VK_CHECK(vkCreateImage(m_device, &imageInfo, nullptr, &image), VK_SUCCESS);
+        auto result =vkCreateImage(m_device, &imageInfo, nullptr, &image);
+        
+		VK_CHECK(result, VK_SUCCESS);
 
 		VkMemoryRequirements memRequirements;
 		vkGetImageMemoryRequirements(m_device, image, &memRequirements);
@@ -1319,7 +1356,9 @@ namespace da::platform::graphics {
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-		VK_CHECK(vkAllocateMemory(m_device, &allocInfo, nullptr, &imageMemory), VK_SUCCESS);
+        result = vkAllocateMemory(m_device, &allocInfo, nullptr, &imageMemory);
+        
+		VK_CHECK(result, VK_SUCCESS);
 
 		vkBindImageMemory(m_device, image, imageMemory, 0);
 	}
@@ -1349,8 +1388,6 @@ namespace da::platform::graphics {
 		stbi_image_free(pixels);
 
 		createImage(texWidth, texHeight, m_mipLevels, VK_SAMPLE_COUNT_1_BIT, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory);
-
-
 
 		transitionImageLayout(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, m_mipLevels);
 		copyBufferToImage(stagingBuffer, m_textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
@@ -1518,7 +1555,8 @@ namespace da::platform::graphics {
 		viewInfo.subresourceRange.aspectMask = aspectFlags;
 
 		VkImageView imageView;
-		VK_CHECK(vkCreateImageView(m_device, &viewInfo, nullptr, &imageView), VK_SUCCESS);
+        auto result =vkCreateImageView(m_device, &viewInfo, nullptr, &imageView);
+		VK_CHECK(result, VK_SUCCESS);
 
 		return imageView;
 	}
@@ -1545,7 +1583,9 @@ namespace da::platform::graphics {
 		samplerInfo.maxLod = static_cast<float>(m_mipLevels);
 		samplerInfo.mipLodBias = 0.0f; // Optional
 
-		VK_CHECK(vkCreateSampler(m_device, &samplerInfo, nullptr, &m_textureSampler), VK_SUCCESS);
+        auto result = vkCreateSampler(m_device, &samplerInfo, nullptr, &m_textureSampler);
+        
+        VK_CHECK(result, VK_SUCCESS);
 	}
 
 	VkFormat CVulkanGraphicsApi::findDepthFormat() {

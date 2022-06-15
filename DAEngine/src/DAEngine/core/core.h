@@ -1,9 +1,11 @@
 #pragma once
 #include <stdint.h>
 
+#include <assert.h>
+
 // Extra defines go here (acts as config)
 #if !defined(DA_FINAL)
-#define ASSERT(x) CCore::_assert(x, __FILE__, __LINE__)
+#define ASSERT(x) CCore::_assert(x, __FILE__, __LINE__); assert(x);
 #else
 #define ASSERT(...)
 #endif

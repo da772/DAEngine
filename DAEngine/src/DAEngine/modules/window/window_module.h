@@ -1,8 +1,8 @@
 #pragma once
 
-#include "daengine/core/events/event_handler.h"
-#include "daengine/modules/module.h"
-#include "daengine/platform/window/window.h"
+#include "DaEngine/core/events/event_handler.h"
+#include "DaEngine/modules/module.h"
+#include "DaEngine/platform/window/window.h"
 
 using namespace da::core::events;
 

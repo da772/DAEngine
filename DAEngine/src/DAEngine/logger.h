@@ -72,7 +72,11 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 		{
 			char buffer[4096];
 			const CString msg = "%s[%s] %s: [%s] " + message + "\n%s";
+#if DA_PLATFORM_WINDOWS
 			sprintf_s(buffer, sizeof(buffer), msg.cstr(), colorTypeMap[(uint8_t)type], utility::CurrentDateTime().cstr(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
+#else
+            snprintf(buffer, sizeof(buffer), msg.cstr(), colorTypeMap[(uint8_t)type], utility::CurrentDateTime().cstr(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
+#endif
 
 			logInternal(CString(buffer));
 		}

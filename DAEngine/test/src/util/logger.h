@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
 #include <regex>
+#include <sstream>
 
 class CLogger
 {
@@ -12,7 +13,11 @@ public:
 	static inline void Log(const char* format, Args&& ... args)
 	{
 		char buff[4096] = { 0 };
+#ifdef _WIN32
 		sprintf_s(buff, sizeof(buff), format, std::forward<Args>(args)...);
+#else
+        snprintf(buff, sizeof(buff), format, std::forward<Args>(args)...);
+#endif
 
 		printf("%s\n", buff);
 
@@ -30,7 +35,11 @@ public:
 	static inline std::string Format(const char* format, Args&& ... args)
 	{
 		char buff[4096] = { 0 };
+#ifdef _WIN32
 		sprintf_s(buff, sizeof(buff), format, std::forward<Args>(args)...);
+#else
+        snprintf(buff, sizeof(buff), format, std::forward<Args>(args)...);
+#endif
 
 		return std::string(buff);
 	}

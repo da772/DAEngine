@@ -2,6 +2,8 @@
 
 #include "imgui_api.h"
 
+#ifdef DA_WINDOW_GLFW
+
 #include <imgui.h>
 
 namespace da::platform
@@ -29,3 +31,5 @@ namespace da::platform
 	}
 
 }
+
+#endif

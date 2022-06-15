@@ -20,14 +20,14 @@ public:
 		//da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(*graphicsModule);
 		//addModule(imGuiModule);
 
-		da::modules::CWindowModule* windowModule2 = new da::modules::CWindowModule({ "Hello World 2", 480, 240, 0,0, 144, da::platform::window::EWindowDeco::NONE });
-		addModule(windowModule2);
+		//da::modules::CWindowModule* windowModule2 = new da::modules::CWindowModule({ "Hello World 2", 480, 240, 0,0, 144, da::platform::window::EWindowDeco::NONE });
+		//addModule(windowModule2);
 		//da::modules::CGraphicsModule* graphisModule2 = new da::modules::CGraphicsModule(*windowModule2);
 		//addModule(graphisModule2);
 		
-		windowModule2->getEventHandler().registerCallback(EEventType::WindowClose, [windowModule2](const da::core::events::CEvent& e) {
+		/*windowModule2->getEventHandler().registerCallback(EEventType::WindowClose, [windowModule2](const da::core::events::CEvent& e) {
 			windowModule2->lateShutdown();
-			});
+			});*/
 	}
 
 	inline void windowEvent(const da::core::events::CEvent& e) {

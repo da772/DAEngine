@@ -1,5 +1,6 @@
 #pragma once
 #include "enumerator.h"
+#include <stddef.h>
 
 namespace da::core::containers {
 

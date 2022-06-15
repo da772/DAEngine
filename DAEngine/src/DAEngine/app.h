@@ -9,7 +9,7 @@ namespace da
 	{
 	public:
 		CApp(int argc, const char** argv);
-		~CApp();
+		virtual ~CApp();
 		void initalize();
 		void update();
 		void shutdown();

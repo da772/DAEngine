@@ -123,7 +123,7 @@ namespace da::core::containers {
 			remove(TEnumerator<int>(&m_ptr[i]));
 		}
 
-		inline size_t size() const {
+		inline size_t size() const override {
 			return m_size;
 		}
 
@@ -161,19 +161,19 @@ namespace da::core::containers {
 			m_ptr = nullptr;
 		}
 
-		inline const TEnumerator<T> begin() const override {
+		inline virtual const TEnumerator<T> begin() const override {
 			return TEnumerator<T>(m_ptr);
 		}
 
-		inline const TEnumerator<T> end() const override {
+		inline virtual const TEnumerator<T> end() const override {
 			return TEnumerator<T>(&m_ptr[m_size]);
 		}
 
-		inline TEnumerator<T> begin() override {
+		inline virtual TEnumerator<T> begin() override {
 			return TEnumerator<T>(m_ptr);
 		}
 
-		inline TEnumerator<T> end() override {
+		inline virtual TEnumerator<T> end() override {
 			return TEnumerator<T>(&m_ptr[m_size]);
 		}
 

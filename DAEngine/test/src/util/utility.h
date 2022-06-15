@@ -1,14 +1,19 @@
 #pragma once
 #include <chrono>
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <sstream>
 
 namespace utility {
 
 	inline std::string CurrentDateTime() {
-		using namespace std::chrono;
-		auto local = zoned_time{ current_zone(), system_clock::now() };
-		std::stringstream ss;
-		ss << local;
-		return ss.str();
+        auto t = std::time(nullptr);
+        auto tm = *std::localtime(&t);
+
+        std::ostringstream oss;
+            oss << std::put_time(&tm, "%m-%d-%Y %H:%M:%S");
+        return oss.str().c_str();
 	}
 
 	inline std::string GetConfiguration()

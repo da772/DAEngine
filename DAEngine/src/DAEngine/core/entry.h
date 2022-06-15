@@ -12,7 +12,7 @@ int WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LP
 int main(int argc, const char** argv)
 #endif
 {
-	da::CApp* app = da::createApp(__argc, (const char**)__argv);
+	da::CApp* app = da::createApp(argc, (const char**)argv);
 	app->initalize();
 	app->update();
 	app->shutdown();

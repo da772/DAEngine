@@ -26,7 +26,7 @@ project "DAEngine"
 	cppdialect "C++20"
 	staticruntime "on"
 
-	pchheader "dapch.h"
+	pchheader "src/dapch.h"
 	pchsource "src/dapch.cpp"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -45,9 +45,8 @@ project "DAEngine"
 
 	includedirs
 	{
-		"%{prj.location}",
-		"src/",
-		"src/DAEngine",
+		"%{prj.location}/src",
+		"%{prj.location}/src/DAEngine",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.tiny_obj_loader}"
@@ -74,7 +73,8 @@ project "DAEngine"
 		links 
 		{
 			"GLFW",
-			"vulkan-1",
+			"libvulkan.1.3.216.dylib",
+			"libMoltenVK.dylib",
 			"ImGui"
 		}
 		
