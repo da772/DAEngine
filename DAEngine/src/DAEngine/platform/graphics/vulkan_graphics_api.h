@@ -84,7 +84,8 @@ namespace da::platform::graphics
 		inline const VkQueue& getQueue() const { return m_graphicsQueue; }
 		inline const VkSurfaceKHR getSurface() const { return m_surface; }
 		inline const VkSwapchainKHR& getSwapChain() const { return m_swapChain; }
-		
+        inline const VkCommandPool& getCommandPool() const {return m_commandPool; }
+        inline const VkRenderPass& getRenderPass() const {return m_renderPass;}
 
 	private:
 		void createInstance();
@@ -116,12 +117,12 @@ namespace da::platform::graphics
 		void createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSample, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
 			VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+		void beginRecordingCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+        void stopRecordingCommandBuffer(VkCommandBuffer commandBuffer);
 		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags peoperties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-		VkCommandBuffer beginSingleTimeCommands();
-		void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+		
 		void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
 		void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
@@ -134,7 +135,6 @@ namespace da::platform::graphics
 		VkFormat findDepthFormat();
 
 		void generateMipMaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
-		VkSampleCountFlagBits getMaxUsableSampleCount();
 
 		void updateUniformBuffer(uint32_t frame);
 
@@ -144,6 +144,11 @@ namespace da::platform::graphics
 		const int MAX_FRAMES_IN_FLIGHT = 2;
 
 		void loadModel();
+    public:
+        VkCommandBuffer beginSingleTimeCommands() const;
+        void endSingleTimeCommands(VkCommandBuffer commandBuffer) const;
+        void immediateSubmit(std::function<void (VkCommandBuffer cmd)>&& func) const;
+        VkSampleCountFlagBits getMaxUsableSampleCount() const;
 	private:
 		VkInstance m_instance;
 		VkDebugUtilsMessengerEXT m_debugMessenger;
@@ -185,7 +190,8 @@ namespace da::platform::graphics
 		VkDeviceMemory m_depthImageMemory;
 		VkImageView m_depthImageView;
 		VkSampleCountFlagBits m_msaaSamples = VK_SAMPLE_COUNT_1_BIT;
-
+        uint32_t m_imageIndex;
+        
 		// Render target
 		VkImage m_colorImage;
 		VkDeviceMemory m_colorImageMemory;

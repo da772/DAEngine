@@ -17,6 +17,7 @@ namespace da::platform
 		virtual void onShutdown() override;
 	private:
 		const graphics::CVulkanGraphicsApi& m_vulkanGraphics;
+        VkDescriptorPool m_imguiPool;
 	};
 
 }

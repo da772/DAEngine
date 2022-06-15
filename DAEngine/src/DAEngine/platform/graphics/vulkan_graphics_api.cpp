@@ -23,6 +23,8 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 #include <unordered_map>
+#include <imgui.h>
+#include <backends/imgui_impl_vulkan.h>
 
 namespace std {
 	template<> struct hash<da::platform::graphics::Vertex> {
@@ -146,8 +148,8 @@ namespace da::platform::graphics {
 		vkWaitForFences(m_device, 1, &m_inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
 
         
-		uint32_t imageIndex;
-		VkResult result = vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &imageIndex);
+		
+		VkResult result = vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &m_imageIndex);
 
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
 			framebufferResized = false;
@@ -162,8 +164,10 @@ namespace da::platform::graphics {
 		vkResetFences(m_device, 1, &m_inFlightFences[m_currentFrame]);
 
 		vkResetCommandBuffer(m_commandBuffers[m_currentFrame], 0);
-		recordCommandBuffer(m_commandBuffers[m_currentFrame], imageIndex);
-
+		beginRecordingCommandBuffer(m_commandBuffers[m_currentFrame], m_imageIndex);
+            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_commandBuffers[m_currentFrame]);
+        stopRecordingCommandBuffer(m_commandBuffers[m_currentFrame]);
+        
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -179,6 +183,7 @@ namespace da::platform::graphics {
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
+        
         result = vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFences[m_currentFrame]);
         
 		VK_CHECK(result, VK_SUCCESS);
@@ -192,7 +197,7 @@ namespace da::platform::graphics {
 		VkSwapchainKHR swapChains[] = { m_swapChain };
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = swapChains;
-		presentInfo.pImageIndices = &imageIndex;
+		presentInfo.pImageIndices = &m_imageIndex;
 		presentInfo.pResults = nullptr; // Optional
 		result = vkQueuePresentKHR(m_presentQueue, &presentInfo);
 
@@ -200,7 +205,8 @@ namespace da::platform::graphics {
             framebufferResized) {
             recreateSwapChain();
         }
-        
+    
+        ImGui::EndFrame();
 		m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
 
@@ -965,8 +971,14 @@ namespace da::platform::graphics {
 		VK_CHECK(result, VK_SUCCESS);
 	}
 
+    void CVulkanGraphicsApi::stopRecordingCommandBuffer(VkCommandBuffer commandBuffer)
+    {
+        vkCmdEndRenderPass(commandBuffer);
+        auto result = vkEndCommandBuffer(commandBuffer);
+        VK_CHECK(result, VK_SUCCESS);
+    }
 
-	void CVulkanGraphicsApi::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+	void CVulkanGraphicsApi::beginRecordingCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
@@ -1002,11 +1014,10 @@ namespace da::platform::graphics {
 
 			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
 
-		vkCmdEndRenderPass(commandBuffer);
+		
 
         
-        res = vkEndCommandBuffer(commandBuffer);
-		VK_CHECK(res, VK_SUCCESS);
+       
 	}
 
 	void CVulkanGraphicsApi::createCommandBuffers()
@@ -1399,7 +1410,7 @@ namespace da::platform::graphics {
 		vkFreeMemory(m_device, stagingBufferMemory, nullptr);
 	}
 
-	VkCommandBuffer CVulkanGraphicsApi::beginSingleTimeCommands()
+	VkCommandBuffer CVulkanGraphicsApi::beginSingleTimeCommands() const
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -1419,7 +1430,15 @@ namespace da::platform::graphics {
 		return commandBuffer;
 	}
 
-	void CVulkanGraphicsApi::endSingleTimeCommands(VkCommandBuffer commandBuffer)
+    void CVulkanGraphicsApi::immediateSubmit(std::function<void (VkCommandBuffer cmd)>&& func) const
+    {
+        VkCommandBuffer buff = beginSingleTimeCommands();
+        
+        func(buff);
+        endSingleTimeCommands(buff);
+    }
+
+	void CVulkanGraphicsApi::endSingleTimeCommands(VkCommandBuffer commandBuffer) const
 	{
 		vkEndCommandBuffer(commandBuffer);
 
@@ -1746,7 +1765,7 @@ namespace da::platform::graphics {
 		endSingleTimeCommands(commandBuffer);
 	}
 
-	VkSampleCountFlagBits CVulkanGraphicsApi::getMaxUsableSampleCount()
+	VkSampleCountFlagBits CVulkanGraphicsApi::getMaxUsableSampleCount() const
 	{
 		VkPhysicalDeviceProperties physicalDeviceProperties;
 		vkGetPhysicalDeviceProperties(m_physicalDevice, &physicalDeviceProperties);

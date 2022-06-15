@@ -47,3 +47,4 @@ premake5.lua
 *.DS_STORE
 *.xcodeproj
 *.xcworkspace
+Prototype/imgui.ini
