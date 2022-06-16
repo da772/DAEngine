@@ -8,6 +8,12 @@
 namespace da {
 #define NAMEOF(x) #x
 
+#define LOG_INFO(ELogChannel, msg, ...) CLogger::LogInfo(ELogChannel, CString("[%s] ") + msg, __FUNCTION__  , __VA_ARGS__)
+#define LOG_DEBUG(ELogChannel, msg, ...) CLogger::LogDebug(ELogChannel, CString("[%s] ") + msg, __FUNCTION__  , __VA_ARGS__)
+#define LOG_WARN(ELogChannel, msg, ...) CLogger::LogWarning(ELogChannel, CString("[%s] ") + msg __FUNCTION__  , __VA_ARGS__)
+#define LOG_ERROR(ELogChannel, msg, ...) CLogger::LogError(ELogChannel, CString("[%s] ") + msg, __FUNCTION__  , __VA_ARGS__)
+#define LOG_ASSERT(x, ELogChannel, msg, ...) CLogger::LogAssert(x, ELogChannel, CString("[%s] ") + msg, __FUNCTION__  , __VA_ARGS__)
+
 #define __LOGFUNC__(x, y) template <typename ...Args> \
 inline static void x(const ELogChannel& channel, const CString& message, Args ... args) {\
 CLogger::log(y, channel, message, args...); }

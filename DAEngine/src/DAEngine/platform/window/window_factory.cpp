@@ -7,7 +7,7 @@
 #include "platform/window/GLFW_window.h"
 #endif
 
-namespace da::platform::window {
+namespace da::platform {
 
 	da::platform::CWindow* CWindowFactory::CreateWindow(const FWindowData& windowData)
 	{

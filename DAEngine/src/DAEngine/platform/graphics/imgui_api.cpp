@@ -5,6 +5,7 @@
 #ifdef DA_WINDOW_GLFW
 
 #include <imgui.h>
+#include "logger.h"
 
 namespace da::platform
 {
@@ -17,6 +18,7 @@ namespace da::platform
 
 		ImGui::StyleColorsDark();
 
+		LOG_INFO(ELogChannel::Graphics, "ImGui Initialized v%s", IMGUI_VERSION);
 		onInitialize();
 	}
 
@@ -28,6 +30,7 @@ namespace da::platform
 	void CImGuiApi::shutdown()
 	{
 		onShutdown();
+		LOG_INFO(ELogChannel::Graphics, "ImGui Shutdown v%s", IMGUI_VERSION);
 	}
 
 }

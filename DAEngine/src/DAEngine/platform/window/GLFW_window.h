@@ -5,7 +5,7 @@
 #include "window.h"
 #include <GLFW/glfw3.h>
 
-namespace da::platform::window {
+namespace da::platform {
 
 	class CGLFW_Window : public CWindow
 	{

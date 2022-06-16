@@ -1,7 +1,7 @@
 #pragma once
 #include "graphics_api.h"
 #include "platform/window/window.h"
-#include "platform.h"
+#include "platform/platform.h"
 
 #ifdef DA_WINDOW_GLFW
 

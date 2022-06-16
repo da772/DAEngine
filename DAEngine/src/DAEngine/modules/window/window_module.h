@@ -10,7 +10,7 @@ namespace da::modules {
 	class CWindowModule : public IModule
 	{
 	public:
-		CWindowModule(const platform::window::FWindowData& windowData);
+		CWindowModule(const platform::FWindowData& windowData);
 
 		virtual void update() override;
 		virtual void lateUpdate() override;

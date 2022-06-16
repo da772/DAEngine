@@ -4,7 +4,7 @@
 #ifdef DA_WINDOW_GLFW
 #include "core/events/window_event.h"
 
-namespace da::platform::window {
+namespace da::platform {
 	bool CGLFW_Window::s_initialized = 0;
 
 	CGLFW_Window::CGLFW_Window(const FWindowData& windowData) : CWindow(windowData), m_Window(nullptr)
@@ -18,7 +18,7 @@ namespace da::platform::window {
 
 		ASSERT(success);
 
-		CLogger::LogInfo(ELogChannel::Window, "[%s] GLFW Initialized: %d", NAMEOF(CGLFW_Window::CGLFW_Window), success);
+		LOG_INFO(ELogChannel::Window, "GLFW Initialized: %d", success);
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -26,7 +26,7 @@ namespace da::platform::window {
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 		glfwSetErrorCallback([](int i, const char* e) {
-			CLogger::LogAssert(false, ELogChannel::Window, "[%s] %d: %s", NAMEOF(CGLFW_Window::glfwSetErrorCallback), i, e);
+			LOG_ASSERT(false, ELogChannel::Window, "%d: %s", i, e);
 		});
 
 		s_initialized = true;
@@ -36,7 +36,7 @@ namespace da::platform::window {
 	{
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
-		CLogger::LogInfo(ELogChannel::Platform, "[%s] Initializing Window: \"%s\" %d, %d", NAMEOF(CWindow::initalize), m_windowData.Title.cstr(), m_windowData.Width, m_windowData.Height);
+		LOG_INFO(ELogChannel::Platform, "Initializing Window: \"%s\" %d, %d", m_windowData.Title.cstr(), m_windowData.Width, m_windowData.Height);
 
 		m_Window = glfwCreateWindow((int)m_windowData.Width, (int)m_windowData.Height, m_windowData.Title.cstr(), nullptr, nullptr);
 
@@ -93,7 +93,7 @@ namespace da::platform::window {
 	void CGLFW_Window::shutdown()
 	{
 		if (!m_Window) return;
-		CLogger::LogInfo(ELogChannel::Window, "[%s] Destroying Window", NAMEOF(CGLFW_Window::shutdown));
+		LOG_INFO(ELogChannel::Window, "Destroying Window");
 		glfwDestroyWindow(m_Window);
 		m_Window = nullptr;
 	}

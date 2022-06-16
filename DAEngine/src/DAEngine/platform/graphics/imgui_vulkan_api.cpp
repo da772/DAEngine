@@ -11,7 +11,7 @@
 
 namespace da::platform {
 
-	CImGuiVulkanApi::CImGuiVulkanApi(const CGraphicsApi& graphicsApi) : CImGuiApi(graphicsApi), m_vulkanGraphics(*static_cast<const platform::graphics::CVulkanGraphicsApi*>(&graphicsApi))
+	CImGuiVulkanApi::CImGuiVulkanApi(const CGraphicsApi& graphicsApi) : CImGuiApi(graphicsApi), m_vulkanGraphics(*static_cast<const platform::CVulkanGraphicsApi*>(&graphicsApi))
 	{
 
     }
@@ -86,6 +86,7 @@ namespace da::platform {
 
 	void CImGuiVulkanApi::onShutdown()
 	{
+        vkDeviceWaitIdle(m_vulkanGraphics.getDevice());
         // Todo:: shutdown before vulkan and glfw
         vkDestroyDescriptorPool(m_vulkanGraphics.getDevice(), m_imguiPool, nullptr);
         ImGui_ImplVulkan_Shutdown();

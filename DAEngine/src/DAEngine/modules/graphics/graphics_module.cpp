@@ -5,7 +5,7 @@
 namespace da::modules
 {
 
-	CGraphicsModule::CGraphicsModule(const CWindowModule& windowsModule) : m_Window(windowsModule), m_GraphicsApi(platform::graphics::CGraphicsFactory::Create(windowsModule.getWindow()))
+	CGraphicsModule::CGraphicsModule(const CWindowModule& windowsModule) : m_Window(windowsModule), m_GraphicsApi(platform::CGraphicsFactory::Create(windowsModule.getWindow()))
 	{
 
 	}
@@ -21,6 +21,11 @@ namespace da::modules
 	}
 
 	void CGraphicsModule::shutdown()
+	{
+
+	}
+
+	void CGraphicsModule::lateShutdown()
 	{
 		m_GraphicsApi->shutdown();
 	}

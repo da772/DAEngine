@@ -27,14 +27,14 @@
 #include <backends/imgui_impl_vulkan.h>
 
 namespace std {
-	template<> struct hash<da::platform::graphics::Vertex> {
-		size_t operator()(da::platform::graphics::Vertex const& vertex) const {
-			return CHashString((const char*)&vertex, sizeof(da::platform::graphics::Vertex)).hash();
+	template<> struct hash<da::platform::Vertex> {
+		size_t operator()(da::platform::Vertex const& vertex) const {
+			return CHashString((const char*)&vertex, sizeof(da::platform::Vertex)).hash();
 		}
 	};
 };
 
-namespace da::platform::graphics {
+namespace da::platform {
 
 #if DA_DEBUG || DA_RELEASE
 #define VK_CHECK(x, y) ASSERT(x == y)
@@ -85,7 +85,7 @@ namespace da::platform::graphics {
 		void* pUserData) {
 
 		if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-			CLogger::LogError(ELogChannel::Graphics, "[%s] Vulkan Validation Layer: %s", NAMEOF(CVulkanGraphicsApi::debugCallback), pCallbackData->pMessage);
+			CLogger::LogError(ELogChannel::Graphics, "Vulkan Validation Layer: %s", pCallbackData->pMessage);
 		}
 
 		
@@ -275,9 +275,9 @@ namespace da::platform::graphics {
 			DestroyDebugUtilsMessengerEXT(m_instance, m_debugMessenger, nullptr);
 		}
 		
-		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Destroying Surface", NAMEOF(CVulkanGraphicsApi::shutdown));
+		LOG_INFO(ELogChannel::Graphics, "Destroying Surface");
 		vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
-		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Destroying Instance", NAMEOF(CVulkanGraphicsApi::shutdown));
+		LOG_INFO(ELogChannel::Graphics, "Destroying Instance");
 		vkDestroyInstance(m_instance, nullptr);
 	}
 
@@ -300,12 +300,16 @@ namespace da::platform::graphics {
 		VkInstanceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		createInfo.pApplicationInfo = &appInfo;
+#if DA_PLATFORM_MACOSX
         createInfo.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR; // MoltenVK
+#endif
 
 
 		auto extensions = getRequiredExtensions();
-        extensions.push(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+#if DA_PLATFORM_MACOSX
+		extensions.push(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
         extensions.push("VK_KHR_get_physical_device_properties2"); // MoltenVK
+#endif
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
         
@@ -318,7 +322,7 @@ namespace da::platform::graphics {
 			createInfo.enabledLayerCount = 0;
 		}
 
-		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Create Instance", NAMEOF(CVulkanGraphicsApi::createInstance));
+		LOG_INFO(ELogChannel::Graphics, "Create Instance");
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &m_instance);
 		ASSERT(result == VK_SUCCESS);
 	}
@@ -446,10 +450,10 @@ namespace da::platform::graphics {
 				rs_deviceProperties = deviceProperties;
 			}
 
-			CLogger::LogInfo(ELogChannel::Graphics, "[%s] Found Device: %s Score: %d", NAMEOF(CVulkanGraphicsApi::findDevices), deviceProperties.deviceName, s);
+			LOG_INFO(ELogChannel::Graphics, "Found Device: %s Score: %d", deviceProperties.deviceName, s);
 		}
 
-		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Selected Device: %s", NAMEOF(CVulkanGraphicsApi::findDevices), rs_deviceProperties.deviceName);
+		LOG_INFO(ELogChannel::Graphics, "Selected Device: %s", rs_deviceProperties.deviceName);
 
 		ASSERT(result != VK_NULL_HANDLE);
 
@@ -519,7 +523,12 @@ namespace da::platform::graphics {
 		createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 		createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
-		TList<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME, "VK_KHR_portability_subset"};
+		TList<const char*> deviceExtensions = { 
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME
+#ifdef DA_PLATFORM_MACOSX
+			,"VK_KHR_portability_subset" // Molten
+#endif
+		};
 
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 		createInfo.ppEnabledExtensionNames = deviceExtensions.data();
@@ -535,7 +544,7 @@ namespace da::platform::graphics {
 
 	void CVulkanGraphicsApi::createSurface()
 	{
-		CLogger::LogInfo(ELogChannel::Graphics, "[%s] Vulkan creating GLFW Surface", NAMEOF(CVulkanGraphicsApi::createSurface));
+		LOG_INFO(ELogChannel::Graphics, "Vulkan creating GLFW Surface");
         auto result =glfwCreateWindowSurface(m_instance, (GLFWwindow*)m_nativeWindow.getNativeWindow(), nullptr, &m_surface);
 		VK_CHECK(result, VK_SUCCESS);
         
@@ -1304,7 +1313,7 @@ namespace da::platform::graphics {
 		
 	}
 
-	da::platform::graphics::QueueFamilyIndices CVulkanGraphicsApi::findQueueFamilies(VkPhysicalDevice device, std::optional<VkSurfaceKHR> surface)
+	da::platform::QueueFamilyIndices CVulkanGraphicsApi::findQueueFamilies(VkPhysicalDevice device, std::optional<VkSurfaceKHR> surface)
 	{
 		QueueFamilyIndices indices;
 

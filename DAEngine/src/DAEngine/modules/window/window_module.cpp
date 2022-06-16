@@ -4,7 +4,7 @@
 
 namespace da::modules
 {
-	CWindowModule::CWindowModule(const platform::window::FWindowData& windowData) : m_Window(platform::window::CWindowFactory::CreateWindow(windowData))
+	CWindowModule::CWindowModule(const platform::FWindowData& windowData) : m_Window(platform::CWindowFactory::CreateWindow(windowData))
 	{
 
 	}

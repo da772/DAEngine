@@ -13,12 +13,12 @@ namespace da::core
 		s_argc = argc;
 		s_argv = argv;
 
-		CString argList = "[%s] Initalized with args:";
+		CString argList = "Initalized with args:";
 		for (int i = 0; i < argc; i++) {
 			argList += CString("\n") + argv[i];
 		}
 
-		CLogger::LogInfo(ELogChannel::Core, argList, NAMEOF(CArgHandler::initialize));
+		LOG_INFO(ELogChannel::Core, argList);
 	}
 
 	void CArgHandler::shutdown()

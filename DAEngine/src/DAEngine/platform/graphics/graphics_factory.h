@@ -5,14 +5,10 @@
 
 namespace da::platform
 {
-	namespace graphics {
+	class CGraphicsFactory
+	{
+	public:
+		static CGraphicsApi* Create(const CWindow& window);
 
-		class CGraphicsFactory
-		{
-		public:
-			static CGraphicsApi* Create(const CWindow& window);
-
-		};
-	}
-
+	};
 }

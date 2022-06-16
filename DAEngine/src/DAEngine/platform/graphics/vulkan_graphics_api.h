@@ -6,7 +6,7 @@
 #include "vulkan/vulkan.h"
 #include <optional>
 
-namespace da::platform::graphics
+namespace da::platform
 {
 
 	struct QueueFamilyIndices {

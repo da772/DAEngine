@@ -2,13 +2,12 @@
 #include "DaEngine/core/containers.h"
 #include "DaEngine/core/events/event_handler.h"
 
-namespace da::platform{
+namespace da::platform {
 	
 	using namespace da::core::events;
 	using u16 = uint16_t;
 	using u32 = uint32_t;
 
-	namespace window {
 		enum class EWindowType : u32 {
 			INVALID = 0x00,
 			WINDOWS = 0x01,
@@ -32,14 +31,13 @@ namespace da::platform{
 			u32 YPos;
 			u16 RefreshRate;
 			EWindowDeco WindowDeco;
-			CEventHandler EventHandler;;
+			CEventHandler EventHandler;
 		};
-	}
 
 	class CWindow
 	{
 	public:
-		inline CWindow(const window::FWindowData& windowData) :m_windowData(windowData) {};
+		inline CWindow(const FWindowData& windowData) :m_windowData(windowData) {};
 		virtual void initalize() = 0;
 		virtual void update() = 0;
 		virtual void shutdown() = 0;
@@ -51,6 +49,6 @@ namespace da::platform{
 		}
 
 	protected:
-		window::FWindowData m_windowData;
+		FWindowData m_windowData;
 	};
 }

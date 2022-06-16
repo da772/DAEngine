@@ -7,7 +7,7 @@
 #include "vulkan_graphics_api.h"
 #endif
 
-namespace da::platform::graphics
+namespace da::platform
 {
 
 	CGraphicsApi* CGraphicsFactory::Create(const CWindow& window)

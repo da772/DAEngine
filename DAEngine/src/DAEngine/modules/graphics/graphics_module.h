@@ -18,6 +18,7 @@ namespace da::modules
 		void lateUpdate() override;
 		void initalize() override;
 		void shutdown() override;
+		void lateShutdown() override;
 
 		inline da::platform::CGraphicsApi* getGraphicsApi() const {
 			return m_GraphicsApi;

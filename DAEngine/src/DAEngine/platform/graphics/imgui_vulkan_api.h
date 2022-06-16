@@ -16,7 +16,7 @@ namespace da::platform
 		virtual void onUpdate() override;
 		virtual void onShutdown() override;
 	private:
-		const graphics::CVulkanGraphicsApi& m_vulkanGraphics;
+		const CVulkanGraphicsApi& m_vulkanGraphics;
         VkDescriptorPool m_imguiPool;
 	};
 
