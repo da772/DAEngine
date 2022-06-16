@@ -85,7 +85,7 @@ namespace da::core::containers {
 			m_size = n;
 		}
 
-		inline size_t size() const {
+		inline virtual size_t size() const override {
 			return m_size;
 		}
 

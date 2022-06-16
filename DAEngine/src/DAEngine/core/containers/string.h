@@ -41,6 +41,9 @@ namespace da::core::containers
 		CString& operator +=(const CString& rhs);
 		CString& operator +=(const char* rhs);
 
+    protected:
+        uint8_t m_shiftSize = 0;
+        
 	};
 
 	CString operator+(const CString& lhs, const CString& rhs);

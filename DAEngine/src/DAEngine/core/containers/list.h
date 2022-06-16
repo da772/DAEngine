@@ -140,7 +140,7 @@ namespace da::core::containers {
 				return;
 			};
 
-			size_t newSize = n << 1;
+			size_t newSize = n << m_shiftSize;
 
 			if (m_ptr) {
 				T* ptr = (T*)realloc(m_ptr, sizeof(T) * newSize);
@@ -238,6 +238,7 @@ namespace da::core::containers {
 		size_t m_size = 0;
 		size_t m_heapSize = 0;
 		T* m_ptr = nullptr;
+        uint8_t m_shiftSize = 1;
 
 	};
 }
