@@ -40,7 +40,7 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 		Error,
 		Assert
 	};
-
+#ifdef DA_COLORED_OUT
 	enum class ELogColor : uint8_t
 	{
 		Green,
@@ -50,6 +50,7 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 		Pink,
 		Default,
 	};
+#endif
 
 	class CLogger
 	{
@@ -76,21 +77,36 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 		template <typename ...Args>
 		inline static void log(ELogType type, ELogChannel channel, const CString& message, Args ... args)
 		{
+
 			char buffer[4096];
+			
+#ifdef DA_COLORED_OUT
 			const CString msg = "%s[%s] %s: [%s] " + message + "\n%s";
 #if DA_PLATFORM_WINDOWS
 			sprintf_s(buffer, sizeof(buffer), msg.cstr(), colorTypeMap[(uint8_t)type], utility::CurrentDateTime().cstr(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
 #else
             snprintf(buffer, sizeof(buffer), msg.cstr(), colorTypeMap[(uint8_t)type], utility::CurrentDateTime().cstr(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
 #endif
-
 			logInternal(CString(buffer));
+#else
+			const CString msg = "[%s] %s: [%s] " + message + "\n";
+#if DA_PLATFORM_WINDOWS
+			sprintf_s(buffer, sizeof(buffer), msg.cstr(), utility::CurrentDateTime().cstr(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args...);
+#else
+			snprintf(buffer, sizeof(buffer), msg.cstr(), utility::CurrentDateTime().cstr(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args...);
+#endif
+			logInternal(CString(buffer));
+#endif
+
+			
 		}
 		static void logInternal(const CString& message);
 
 		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "Application", "Graphics", "Window"};
 		inline static const char* logTypeMap[] = { "Info", "Debug", "Warning", "Error", "Assert" };
+#ifdef DA_COLORED_OUT
 		inline static const char* colorTypeMap[] = { "\033[39m", "\033[36m", "\033[33m", "\033[31m", "\033[35m", "\033[39m" };
+#endif
 
 		static void* s_outFile;
 	};

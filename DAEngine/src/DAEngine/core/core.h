@@ -14,6 +14,10 @@
 #define DA_REVIEW
 #endif
 
+#if defined(DA_PLATFORM_WINDOWS) && defined(DA_REVIEW)
+#define DA_COLORED_OUT
+#endif
+
 
 namespace da
 {

@@ -108,6 +108,10 @@ project "DAEngine"
 	filter "system:windows"
 		systemversion "latest"
 		
+		pchheader "dapch.h"
+		pchsource "src/dapch.cpp"
+		
+		
 		defines
 		{
 			"DA_PLATFORM_WINDOWS"
