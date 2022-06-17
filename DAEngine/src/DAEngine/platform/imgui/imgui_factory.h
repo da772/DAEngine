@@ -6,7 +6,7 @@ namespace da::platform {
 
 	class CImGuiFactory {
 	public:
-		static CImGuiApi* Create(const CGraphicsApi& graphicsApi);
+		static CImGuiApi* Create(CGraphicsApi& graphicsApi);
 	};
 
 }

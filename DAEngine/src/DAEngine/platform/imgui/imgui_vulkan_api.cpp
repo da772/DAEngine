@@ -8,16 +8,22 @@
 #include <backends/imgui_impl_vulkan.cpp>
 #include <backends/imgui_impl_glfw.cpp>
 #include <GLFW/glfw3.h>
+#include <vulkan/vulkan.h>
 
 namespace da::platform {
 
-	CImGuiVulkanApi::CImGuiVulkanApi(const CGraphicsApi& graphicsApi) : CImGuiApi(graphicsApi), m_vulkanGraphics(*static_cast<const platform::CVulkanGraphicsApi*>(&graphicsApi))
+	CImGuiVulkanApi::CImGuiVulkanApi(CGraphicsApi& graphicsApi) : 
+        CImGuiApi(graphicsApi)
+        ,m_vulkanGraphics(*static_cast<platform::CVulkanGraphicsApi*>(&graphicsApi))
+        ,m_funcPtr(new std::function<void(VkCommandBuffer cmd)>(std::bind(&CImGuiVulkanApi::renderImGui, this, std::placeholders::_1)))
 	{
 
     }
 
 	void CImGuiVulkanApi::onInitialize()
 	{
+        
+
         //1: create descriptor pool for IMGUI
             // the size of the pool is very oversize, but it's copied from imgui demo itself.
         VkDescriptorPoolSize pool_sizes[] =
@@ -39,7 +45,7 @@ namespace da::platform {
         pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
         pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
         pool_info.maxSets = 1000;
-        pool_info.poolSizeCount = std::size(pool_sizes);
+        pool_info.poolSizeCount = sizeof(pool_sizes) / sizeof(VkDescriptorPoolSize);
         pool_info.pPoolSizes = pool_sizes;
 
 
@@ -68,6 +74,7 @@ namespace da::platform {
         });
         //clear font textures from cpu data
         ImGui_ImplVulkan_DestroyFontUploadObjects();
+        m_vulkanGraphics.submitRenderFunction(m_funcPtr);
 	}
 
     bool open = true;
@@ -76,9 +83,8 @@ namespace da::platform {
 	{
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();
-
         ImGui::NewFrame();
-        
+
         //imgui commands
         ImGui::ShowDemoWindow(&open);
         ImGui::Render();
@@ -86,12 +92,20 @@ namespace da::platform {
 
 	void CImGuiVulkanApi::onShutdown()
 	{
+        m_vulkanGraphics.removeRenderFunction(m_funcPtr);
+        delete m_funcPtr;
         vkDeviceWaitIdle(m_vulkanGraphics.getDevice());
         // Todo:: shutdown before vulkan and glfw
         vkDestroyDescriptorPool(m_vulkanGraphics.getDevice(), m_imguiPool, nullptr);
         ImGui_ImplVulkan_Shutdown();
         ImGui_ImplGlfw_Shutdown();
 	}
+
+	void CImGuiVulkanApi::renderImGui(VkCommandBuffer cmd)
+	{
+        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), cmd);
+	}
+
 }
 
 #endif

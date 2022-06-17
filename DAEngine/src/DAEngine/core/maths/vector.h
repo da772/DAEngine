@@ -1,26 +1,27 @@
 #pragma once
 
 namespace da::core::maths {
-
-	template <typename T = float>
-	T sqrt(T x) {
-		T cur{ x }, prev{ 0 };
-		while (cur != prev)
-		{
-			prev = cur;
-			cur = 0.5f * (cur + x / cur);
+	namespace impl {
+		template <typename T = float>
+		T sqrt(T x) {
+			T cur{ x }, prev{ 0 };
+			while (cur != prev && cur != 0)
+			{
+				prev = cur;
+				cur = (T)0.5f * (cur + x / cur);
+			}
+			return cur;
 		}
-		return cur;
-	}
 
-	template <typename T = float>
-	T abs(T x) {
-		return x * (x > 0 ? 1 : -1);
-	}
+		template <typename T = float>
+		T abs(T x) {
+			return x * (x > 0 ? 1 : -1);
+		}
 
-	template <typename T = float>
-	T lerp(T a, T b, T amt) {
-		return a + amt * (b - a);
+		template <typename T = float>
+		T lerp(T a, T b, T amt) {
+			return a + amt * (b - a);
+		}
 	}
 
 	template <typename T>
@@ -158,8 +159,8 @@ namespace da::core::maths {
 		static inline TVector2<T> project(const TVector2<T>& a, const TVector2<T>& b) { return (b * (TVector2<T>::dot(a, b) / TVector2<T>::dot(b, b))); }
 		static inline TVector2<T> reject(const TVector2<T>& a, const TVector2<T>& b) { return (a - b * (TVector2<T>::dot(a, b) / TVector2<T>::dot(b, b))); }
 		static inline TVector2<T> reflect(const TVector2<T>& v, const TVector2<T>& n) { return v - ((TVector2<T>::dot(v, n)) + (TVector2<T>::dot(v, n))) * n; }
-		static inline T distance(const TVector2<T>& a, const TVector2<T>& b) { return sqrt<T>(((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y))); };
-		static inline TVector2<T> lerp(const TVector2<T>& a, const TVector2<T>& b, T amt) { return TVector2<T>(maths::lerp<T>(a.x, b.x, amt), maths::lerp<T>(a.y, b.y, amt)); }
+		static inline T distance(const TVector2<T>& a, const TVector2<T>& b) { return impl::sqrt<T>(((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y))); };
+		static inline TVector2<T> lerp(const TVector2<T>& a, const TVector2<T>& b, T amt) { return TVector2<T>(maths::impl::lerp<T>(a.x, b.x, amt), maths::impl::lerp<T>(a.y, b.y, amt)); }
 		inline const T* data() const { return &x; }
 	};
 
@@ -341,8 +342,8 @@ namespace da::core::maths {
 		static inline TVector3<T> project(const TVector3<T>& a, const TVector3<T>& b) { return (b * (TVector3<T>::dot(a, b) / TVector3<T>::dot(b, b))); }
 		static inline TVector3<T> reject(const TVector3<T>& a, const TVector3<T>& b) { return (a - b * (TVector3<T>::dot(a, b) / TVector3<T>::dot(b, b))); }
 		static inline TVector3<T> reflect(const TVector3<T>& v, const TVector3<T>& n) { return v - ((TVector3<T>::dot(v, n)) + (TVector3<T>::dot(v, n))) * n; }
-		static inline T distance(const TVector3<T>& a, const TVector3<T>& b) { return sqrt<T>(((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y)) + ((a.z - b.z) * (a.z - b.z))); };
-		static inline TVector3<T> lerp(const TVector3<T>& a, const TVector3<T>& b, T amt) { return TVector3<T>(maths::lerp<T>(a.x, b.x, amt), maths::lerp<T>(a.y, b.y, amt), maths::lerp<T>(a.z, b.z, amt)); }
+		static inline T distance(const TVector3<T>& a, const TVector3<T>& b) { return impl::sqrt<T>(((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y)) + ((a.z - b.z) * (a.z - b.z))); };
+		static inline TVector3<T> lerp(const TVector3<T>& a, const TVector3<T>& b, T amt) { return TVector3<T>(maths::impl::lerp<T>(a.x, b.x, amt), maths::impl::lerp<T>(a.y, b.y, amt), maths::impl::lerp<T>(a.z, b.z, amt)); }
 		inline TVector2<T> xy() const { return { x,y }; }
 		inline const T* data() const { return &x; }
 	};
@@ -574,8 +575,8 @@ namespace da::core::maths {
 		inline TVector4<T> normalize() const { return (*this) / length(); }
 		static inline T dot(const TVector4<T>& a, const TVector4<T>& b) { return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w; }
 		static inline TVector4<T> reflect(const TVector4<T>& v, const TVector4<T>& n) { return v - ((TVector4<T>::dot(v, n)) + (TVector4<T>::dot(v, n))) * n; }
-		static inline T distance(const TVector4<T>& a, const TVector4<T>& b) { return sqrt<T>(((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y)) + ((a.z - b.z) * (a.z - b.z)) + ((a.w - b.w) * (a.w - b.w))); };
-		static inline TVector4<T> lerp(const TVector4<T>& a, const TVector4<T>& b, T amt) { return TVector4<T>(maths::lerp<T>(a.x, b.x, amt), maths::lerp<T>(a.y, b.y, amt), maths::lerp<T>(a.z, b.z, amt), maths::lerp<T>(a.w, b.w, amt)); }
+		static inline T distance(const TVector4<T>& a, const TVector4<T>& b) { return impl::sqrt<T>(((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y)) + ((a.z - b.z) * (a.z - b.z)) + ((a.w - b.w) * (a.w - b.w))); };
+		static inline TVector4<T> lerp(const TVector4<T>& a, const TVector4<T>& b, T amt) { return TVector4<T>(maths::impl::lerp<T>(a.x, b.x, amt), maths::impl::lerp<T>(a.y, b.y, amt), maths::impl::lerp<T>(a.z, b.z, amt), maths::impl::lerp<T>(a.w, b.w, amt)); }
 		static inline TVector4<T> project(const TVector4<T>& a, const TVector4<T>& b) { return (b * (TVector4<T>::dot(a, b) / TVector4<T>::dot(b, b))); }
 		static inline TVector4<T> reject(const TVector4<T>& a, const TVector4<T>& b) { return (a - b * (TVector4<T>::dot(a, b) / TVector4<T>::dot(b, b))); }
 		inline TVector2<T> xy() const { return { x,y }; }

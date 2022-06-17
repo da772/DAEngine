@@ -4,7 +4,7 @@
 
 
 #ifdef DA_GRAPHICS_VULKAN
-#include "vulkan_graphics_api.h"
+#include "platform/graphics/vulkan/vulkan_graphics_api.h"
 #endif
 
 namespace da::platform
@@ -15,6 +15,7 @@ namespace da::platform
 #ifdef DA_GRAPHICS_VULKAN
 		return new CVulkanGraphicsApi(window);
 #endif
+		return nullptr;
 		
 	}
 

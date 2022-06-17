@@ -33,9 +33,10 @@ project "DAEngineTests"
 
 	defines 
 	{
+		"_CRT_SECURE_NO_WARNINGS",
 		"DA_TEST"
 	}
-	
+
 	files 
 	{
 		"src/**.h",

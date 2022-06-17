@@ -1,9 +1,8 @@
 #pragma once
-#include "graphics_api.h"
+#include "platform/graphics/graphics_api.h"
 #include "platform/window/window.h"
 #include "platform/platform.h"
 
-#ifdef DA_WINDOW_GLFW
 
 namespace da::platform {
 
@@ -13,6 +12,7 @@ namespace da::platform {
 		void initialize();
 		void update();
 		void shutdown();
+		void lateUpdate();
 
 	protected:
 		inline virtual void onInitialize() {};
@@ -20,11 +20,10 @@ namespace da::platform {
 		inline virtual void onShutdown() {};
 
 	protected:
-		inline CImGuiApi(const CGraphicsApi& graphicsApi) : m_graphicsApi(graphicsApi), m_window(m_graphicsApi.getWindow()) {};
- 		const CGraphicsApi& m_graphicsApi;
+		inline CImGuiApi(CGraphicsApi& graphicsApi) : m_graphicsApi(graphicsApi), m_window(m_graphicsApi.getWindow()) {};
+ 		CGraphicsApi& m_graphicsApi;
 		const CWindow& m_window;
 	};
 
 
 }
-#endif

@@ -1,6 +1,6 @@
 #include "dapch.h"
 #include "imgui_module.h"
-#include "platform/graphics/imgui_factory.h"
+#include "platform/imgui/imgui_factory.h"
 
 namespace da::modules
 {
@@ -23,6 +23,11 @@ namespace da::modules
 	void CImGuiModule::shutdown()
 	{
 		m_imGuiApi->shutdown();
+	}
+
+	void CImGuiModule::lateUpdate()
+	{
+		m_imGuiApi->lateUpdate();
 	}
 
 }

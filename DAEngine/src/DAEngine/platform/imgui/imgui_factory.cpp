@@ -9,7 +9,7 @@
 namespace da::platform
 {
 
-	da::platform::CImGuiApi* CImGuiFactory::Create(const CGraphicsApi& graphicsApi)
+	da::platform::CImGuiApi* CImGuiFactory::Create(CGraphicsApi& graphicsApi)
 	{
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
 		return new CImGuiVulkanApi(graphicsApi);

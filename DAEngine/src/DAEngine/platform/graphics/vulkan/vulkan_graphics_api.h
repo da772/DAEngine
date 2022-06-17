@@ -2,12 +2,15 @@
 #include "platform/platform.h"
 
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
-#include "graphics_api.h"
-#include "vulkan/vulkan.h"
+#include "platform/graphics/graphics_api.h"
+#include <vulkan/vulkan.h>
 #include <optional>
+#include <memory>
 
 namespace da::platform
 {
+
+	class CVulkanGraphicsPipeline;
 
 	struct QueueFamilyIndices {
 		std::optional<uint32_t> graphicsFamily;
@@ -86,6 +89,7 @@ namespace da::platform
 		inline const VkSwapchainKHR& getSwapChain() const { return m_swapChain; }
         inline const VkCommandPool& getCommandPool() const {return m_commandPool; }
         inline const VkRenderPass& getRenderPass() const {return m_renderPass;}
+		inline const VkExtent2D getSwapChainExt() const { return m_swapChainExtent; }
 
 	private:
 		void createInstance();
@@ -149,6 +153,9 @@ namespace da::platform
         void endSingleTimeCommands(VkCommandBuffer commandBuffer) const;
         void immediateSubmit(std::function<void (VkCommandBuffer cmd)>&& func) const;
         VkSampleCountFlagBits getMaxUsableSampleCount() const;
+		void submitRenderFunction(std::function<void(VkCommandBuffer cmd)>* func);
+		void removeRenderFunction(std::function<void(VkCommandBuffer cmd)>* func);
+
 	private:
 		VkInstance m_instance;
 		VkDebugUtilsMessengerEXT m_debugMessenger;
@@ -162,10 +169,9 @@ namespace da::platform
 		TList<VkImageView> m_swapChainImageViews;
 		VkFormat m_swapChainImageFormat;
 		VkExtent2D m_swapChainExtent;
-		VkPipelineLayout m_pipelineLayout;
+		
 		VkCommandPool m_commandPool;
 		VkSwapchainKHR m_swapChain;
-		VkPipeline m_graphicsPipeline;
 		VkRenderPass m_renderPass;
 		TList<VkCommandBuffer> m_commandBuffers;
 		TList<VkSemaphore> m_imageAvailableSemaphores;
@@ -177,7 +183,6 @@ namespace da::platform
 		VkDeviceMemory m_vertexBufferMemory;
 		VkBuffer m_indexBuffer;
 		VkDeviceMemory m_indexBufferMemory;
-		VkDescriptorSetLayout m_descriptorSetLayout;
 		TList<VkBuffer> m_uniformBuffers;
 		TList<VkDeviceMemory> m_uniformBuffersMemory;
 		VkDescriptorPool m_descriptorPool;
@@ -191,6 +196,11 @@ namespace da::platform
 		VkImageView m_depthImageView;
 		VkSampleCountFlagBits m_msaaSamples = VK_SAMPLE_COUNT_1_BIT;
         uint32_t m_imageIndex;
+
+		VkPipeline m_graphicsPipeline;
+		VkDescriptorSetLayout m_descriptorSetLayout;
+		VkPipelineLayout m_pipelineLayout;
+		
         
 		// Render target
 		VkImage m_colorImage;
@@ -203,6 +213,8 @@ namespace da::platform
 
 		TList<Vertex> m_vertices;
 		TList<uint32_t> m_indices;
+
+		TList<std::function<void(VkCommandBuffer cmd)>*> m_renderFunctions;
 
 
 	};

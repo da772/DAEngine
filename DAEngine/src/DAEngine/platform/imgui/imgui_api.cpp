@@ -33,6 +33,11 @@ namespace da::platform
 		LOG_INFO(ELogChannel::Graphics, "ImGui Shutdown v%s", IMGUI_VERSION);
 	}
 
+	void CImGuiApi::lateUpdate()
+	{
+		ImGui::EndFrame();
+	}
+
 }
 
 #endif

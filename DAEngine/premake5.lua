@@ -1,5 +1,10 @@
-group "ThirdParty"
+newoption {
+	trigger = "unit-test",
+	description = "builds for unit tests"
+}
 
+if not _OPTIONS['unit-test'] then
+group "ThirdParty"
 filter "system:macosx"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
@@ -9,16 +14,16 @@ filter "system:windows"
 filter "system:linux"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
-
 group ""
 
 IncludeDir = {}
-IncludeDir["GLFW"] = "%{wks.location}/DAEngine/thirdparty/GLFW/include"
-IncludeDir["Vulkan"] = "%{wks.location}/DAEngine/thirdparty/Vulkan"
-IncludeDir["ImGui"] = "%{wks.location}/DAEngine/thirdparty/DearImGui"
-IncludeDir["glm"] = "%{wks.location}/DAEngine/thirdparty/glm"
-IncludeDir["stb"] = "%{wks.location}/DAEngine/thirdparty/stb"
-IncludeDir["tiny_obj_loader"] = "%{wks.location}/DAEngine/thirdparty/tiny_obj_loader"
+	IncludeDir["GLFW"] = "%{wks.location}/DAEngine/thirdparty/GLFW/include"
+	IncludeDir["Vulkan"] = "%{wks.location}/DAEngine/thirdparty/Vulkan"
+	IncludeDir["ImGui"] = "%{wks.location}/DAEngine/thirdparty/DearImGui"
+	IncludeDir["glm"] = "%{wks.location}/DAEngine/thirdparty/glm"
+	IncludeDir["stb"] = "%{wks.location}/DAEngine/thirdparty/stb"
+	IncludeDir["tiny_obj_loader"] = "%{wks.location}/DAEngine/thirdparty/tiny_obj_loader"
+end
 
 project "DAEngine"
 	kind "StaticLib"
@@ -43,6 +48,7 @@ project "DAEngine"
 		"_CRT_SECURE_NO_WARNINGS",
 	}
 
+	if not _OPTIONS['unit-test'] then
 	includedirs
 	{
 		"%{prj.location}/src",
@@ -56,6 +62,17 @@ project "DAEngine"
 	{
 		"%{IncludeDir.Vulkan}/lib"
 	}
+	else
+	defines
+	{
+		"DA_TEST"
+	}
+	includedirs
+	{
+		"%{prj.location}/src",
+		"%{prj.location}/src/DAEngine"
+	}
+	end
 
 	filter "system:macosx"
 		systemversion "latest"
@@ -70,6 +87,7 @@ project "DAEngine"
 			["SKIP_INSTALL"] = "YES"
 		}
 
+		if not _OPTIONS['unit-test'] then
 		links 
 		{
 			"GLFW",
@@ -89,6 +107,7 @@ project "DAEngine"
 		{
 			"%{IncludeDir.Vulkan}/lib"
 		}
+		end
 
 		filter "configurations:Debug"
 			defines "DA_DEBUG"
@@ -117,12 +136,14 @@ project "DAEngine"
 			"DA_PLATFORM_WINDOWS"
 		}
 		
+		if not _OPTIONS['unit-test'] then
 		links
 		{
 			"GLFW",
 			"vulkan-1",
 			"ImGui"
 		}
+
 		
 		libdirs
 		{
@@ -136,6 +157,7 @@ project "DAEngine"
 			"%{IncludeDir.Vulkan}/include",
 			"%{IncludeDir.ImGui}"
 		}
+		end
 
 		filter "configurations:Debug"
 			defines "DA_DEBUG"
@@ -161,6 +183,7 @@ project "DAEngine"
 				"DA_PLATFORM_LINUX"
 			}
 			
+			if not _OPTIONS['unit-test'] then
 			links
 			{
 				"GLFW",
@@ -174,6 +197,7 @@ project "DAEngine"
 				"%{IncludeDir.Vulkan}/include",
 				"%{IncludeDir.ImGui}"
 			}
+			end
 			
 			filter "configurations:Debug"
 				defines "DA_DEBUG"

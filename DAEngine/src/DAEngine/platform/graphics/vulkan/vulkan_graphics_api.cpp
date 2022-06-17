@@ -23,7 +23,6 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 #include <unordered_map>
-#include <imgui.h>
 #include <backends/imgui_impl_vulkan.h>
 
 namespace std {
@@ -165,7 +164,9 @@ namespace da::platform {
 
 		vkResetCommandBuffer(m_commandBuffers[m_currentFrame], 0);
 		beginRecordingCommandBuffer(m_commandBuffers[m_currentFrame], m_imageIndex);
-            ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), m_commandBuffers[m_currentFrame]);
+		for (size_t i = 0; i < m_renderFunctions.size(); i++) {
+			m_renderFunctions[i]->operator()(m_commandBuffers[m_currentFrame]);
+		}
         stopRecordingCommandBuffer(m_commandBuffers[m_currentFrame]);
         
 		VkSubmitInfo submitInfo{};
@@ -206,7 +207,6 @@ namespace da::platform {
             recreateSwapChain();
         }
     
-        ImGui::EndFrame();
 		m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
 
@@ -1002,7 +1002,6 @@ namespace da::platform {
 		renderPassInfo.framebuffer = m_swapChainFramebuffers[imageIndex];
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = m_swapChainExtent;
-		renderPassInfo.renderArea.extent = m_swapChainExtent;
 
 		TArray<VkClearValue> clearValues(2);
 		clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
@@ -1022,11 +1021,6 @@ namespace da::platform {
 			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSets[m_currentFrame], 0, nullptr);
 
 			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
-
-		
-
-        
-       
 	}
 
 	void CVulkanGraphicsApi::createCommandBuffers()
@@ -1795,6 +1789,18 @@ namespace da::platform {
 
 		createImage(m_swapChainExtent.width, m_swapChainExtent.height, 1, m_msaaSamples, colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_colorImage, m_colorImageMemory);
 		m_colorImageView = createImageView(m_colorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+	}
+
+	void CVulkanGraphicsApi::submitRenderFunction(std::function<void(VkCommandBuffer cmd)>* func)
+	{
+		m_renderFunctions.push(func);
+	}
+
+	void CVulkanGraphicsApi::removeRenderFunction(std::function<void(VkCommandBuffer cmd)>* func)
+	{
+		const auto& it = m_renderFunctions.find(func);
+		if (it != m_renderFunctions.end())
+			m_renderFunctions.remove(it);
 	}
 
 }

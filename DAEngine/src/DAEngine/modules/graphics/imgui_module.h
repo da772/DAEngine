@@ -15,6 +15,7 @@ namespace da::modules
 		CImGuiModule(const CGraphicsModule& graphicsModule);
 
 		void update() override;
+		void lateUpdate() override;
 		void initalize() override;
 		void shutdown() override;
 
