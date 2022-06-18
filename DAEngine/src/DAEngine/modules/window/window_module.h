@@ -2,7 +2,7 @@
 
 #include "DaEngine/core/events/event_handler.h"
 #include "DaEngine/modules/module.h"
-#include "DaEngine/platform/window/window.h"
+#include "DaEngine/core/window/window.h"
 
 using namespace da::core::events;
 
@@ -10,7 +10,7 @@ namespace da::modules {
 	class CWindowModule : public IModule
 	{
 	public:
-		CWindowModule(const platform::FWindowData& windowData);
+		CWindowModule(const core::FWindowData& windowData);
 
 		virtual void update() override;
 		virtual void lateUpdate() override;
@@ -20,10 +20,10 @@ namespace da::modules {
 
 		CEventHandler& getEventHandler();
 
-		const platform::CWindow& getWindow() const;
+		const core::CWindow& getWindow() const;
 
 	private:
-		platform::CWindow* m_Window;
+		core::CWindow* m_Window;
 
 	};
 }

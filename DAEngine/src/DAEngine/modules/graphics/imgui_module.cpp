@@ -1,11 +1,11 @@
 #include "dapch.h"
 #include "imgui_module.h"
-#include "platform/imgui/imgui_factory.h"
+#include "core/imgui/imgui_factory.h"
 
 namespace da::modules
 {
 
-	CImGuiModule::CImGuiModule(const CGraphicsModule& graphicsModule) : m_GraphicsModule(graphicsModule), m_imGuiApi(platform::CImGuiFactory::Create(*graphicsModule.getGraphicsApi()))
+	CImGuiModule::CImGuiModule(const CGraphicsModule& graphicsModule) : m_GraphicsModule(graphicsModule), m_imGuiApi(core::CImGuiFactory::Create(*graphicsModule.getGraphicsApi()))
 	{
 
 	}

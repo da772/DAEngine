@@ -1,10 +1,10 @@
 #pragma once
-#include "platform/graphics/graphics_api.h"
-#include "platform/window/window.h"
-#include "platform/platform.h"
+#include "core/graphics/graphics_api.h"
+#include "core/window/window.h"
+#include "core/core.h"
 
 
-namespace da::platform {
+namespace da::core {
 
 	class CImGuiApi
 	{

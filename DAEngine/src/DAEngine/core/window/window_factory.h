@@ -1,7 +1,7 @@
 #pragma once
 #include "window.h"
 
-namespace da::platform {
+namespace da::core {
 
 	class CWindowFactory
 	{

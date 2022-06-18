@@ -108,7 +108,7 @@ namespace da::platform {
 		}
 	}
 
-	CVulkanGraphicsApi::CVulkanGraphicsApi(const CWindow& windowModule) : CGraphicsApi(windowModule)
+	CVulkanGraphicsApi::CVulkanGraphicsApi(const core::CWindow& windowModule) : core::CGraphicsApi(windowModule)
 	{
 		createInstance();
 		setupDebugCallback();
@@ -1079,7 +1079,7 @@ namespace da::platform {
 		createFramebuffers();
 	}
 
-	uint32_t CVulkanGraphicsApi::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+	uint32_t CVulkanGraphicsApi::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const {
 	
 		VkPhysicalDeviceMemoryProperties memProperties;
 		vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &memProperties);

@@ -3,7 +3,7 @@
 #include "daengine/modules/module.h"
 #include "daengine/modules/window/window_module.h"
 
-namespace da::platform
+namespace da::core
 {
 	class CGraphicsApi;
 }
@@ -20,13 +20,13 @@ namespace da::modules
 		void shutdown() override;
 		void lateShutdown() override;
 
-		inline da::platform::CGraphicsApi* getGraphicsApi() const {
+		inline da::core::CGraphicsApi* getGraphicsApi() const {
 			return m_GraphicsApi;
 		}
 
 	private:
 		const CWindowModule& m_Window;
-		platform::CGraphicsApi* m_GraphicsApi;
+		core::CGraphicsApi* m_GraphicsApi;
 
 
 	};

@@ -3,16 +3,16 @@
 #include "platform/platform.h"
 
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
-#include "imgui_vulkan_api.h"
+#include "platform/imgui/imgui_vulkan_api.h"
 #endif
 
-namespace da::platform
+namespace da::core
 {
 
-	da::platform::CImGuiApi* CImGuiFactory::Create(CGraphicsApi& graphicsApi)
+	da::core::CImGuiApi* CImGuiFactory::Create(CGraphicsApi& graphicsApi)
 	{
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
-		return new CImGuiVulkanApi(graphicsApi);
+		return new platform::CImGuiVulkanApi(graphicsApi);
 #endif
 		return nullptr;
 	}

@@ -2,7 +2,7 @@
 #include "platform/platform.h"
 
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
-#include "platform/graphics/graphics_api.h"
+#include "core/graphics/graphics_api.h"
 #include <vulkan/vulkan.h>
 #include <optional>
 #include <memory>
@@ -70,10 +70,10 @@ namespace da::platform
 	};
 
 
-	class CVulkanGraphicsApi : public CGraphicsApi
+	class CVulkanGraphicsApi : public core::CGraphicsApi
 	{
 	public:
-		CVulkanGraphicsApi(const CWindow& windowModule);
+		CVulkanGraphicsApi(const core::CWindow& windowModule);
 
 		virtual void initalize() override;
 		virtual void update() override;
@@ -117,14 +117,11 @@ namespace da::platform
 		void createTextureImageView(); 
 		void createTextureSampler();
 		void createDepthResources();
-		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t);
 		void createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSample, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
 			VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 		void beginRecordingCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
         void stopRecordingCommandBuffer(VkCommandBuffer commandBuffer);
-		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags peoperties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 		
 		void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
@@ -155,6 +152,9 @@ namespace da::platform
         VkSampleCountFlagBits getMaxUsableSampleCount() const;
 		void submitRenderFunction(std::function<void(VkCommandBuffer cmd)>* func);
 		void removeRenderFunction(std::function<void(VkCommandBuffer cmd)>* func);
+		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags peoperties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
+		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t);
 
 	private:
 		VkInstance m_instance;

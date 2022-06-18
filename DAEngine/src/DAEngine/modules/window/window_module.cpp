@@ -1,10 +1,10 @@
 #include "dapch.h"
 #include "window_module.h"
-#include "platform/window/window_factory.h"
+#include "core/window/window_factory.h"
 
 namespace da::modules
 {
-	CWindowModule::CWindowModule(const platform::FWindowData& windowData) : m_Window(platform::CWindowFactory::CreateWindow(windowData))
+	CWindowModule::CWindowModule(const core::FWindowData& windowData) : m_Window(core::CWindowFactory::CreateWindow(windowData))
 	{
 
 	}
@@ -29,7 +29,7 @@ namespace da::modules
 		
 	}
 
-	const da::platform::CWindow& CWindowModule::getWindow() const
+	const da::core::CWindow& CWindowModule::getWindow() const
 	{
 		return *m_Window;
 	}

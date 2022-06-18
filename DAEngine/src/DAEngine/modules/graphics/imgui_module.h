@@ -3,7 +3,7 @@
 #include "daengine/modules/module.h"
 #include "daengine/modules/graphics/graphics_module.h"
 
-namespace da::platform {
+namespace da::core {
 	class CImGuiApi;
 }
 
@@ -21,7 +21,7 @@ namespace da::modules
 
 	private:
 		const CGraphicsModule& m_GraphicsModule;
-		platform::CImGuiApi* m_imGuiApi;
+		core::CImGuiApi* m_imGuiApi;
 
 	};
 }

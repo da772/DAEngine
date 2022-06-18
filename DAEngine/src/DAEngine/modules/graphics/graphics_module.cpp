@@ -1,11 +1,11 @@
 #include "dapch.h"
 #include "graphics_module.h"
-#include "platform/graphics/graphics_factory.h"
+#include "core/graphics/graphics_factory.h"
 
 namespace da::modules
 {
 
-	CGraphicsModule::CGraphicsModule(const CWindowModule& windowsModule) : m_Window(windowsModule), m_GraphicsApi(platform::CGraphicsFactory::Create(windowsModule.getWindow()))
+	CGraphicsModule::CGraphicsModule(const CWindowModule& windowsModule) : m_Window(windowsModule), m_GraphicsApi(core::CGraphicsFactory::Create(windowsModule.getWindow()))
 	{
 
 	}

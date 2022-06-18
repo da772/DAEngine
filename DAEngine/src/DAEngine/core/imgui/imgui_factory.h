@@ -2,7 +2,7 @@
 
 #include "imgui_api.h"
 
-namespace da::platform {
+namespace da::core {
 
 	class CImGuiFactory {
 	public:

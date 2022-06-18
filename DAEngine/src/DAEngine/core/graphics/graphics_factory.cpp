@@ -7,13 +7,13 @@
 #include "platform/graphics/vulkan/vulkan_graphics_api.h"
 #endif
 
-namespace da::platform
+namespace da::core
 {
 
 	CGraphicsApi* CGraphicsFactory::Create(const CWindow& window)
 	{
 #ifdef DA_GRAPHICS_VULKAN
-		return new CVulkanGraphicsApi(window);
+		return new platform::CVulkanGraphicsApi(window);
 #endif
 		return nullptr;
 		

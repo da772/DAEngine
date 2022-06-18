@@ -2,7 +2,7 @@
 #include "DaEngine/core/containers.h"
 #include "DaEngine/core/events/event_handler.h"
 
-namespace da::platform {
+namespace da::core {
 	
 	using namespace da::core::events;
 	using u16 = uint16_t;

@@ -1,8 +1,8 @@
 #pragma once
 #include "core/containers.h"
-#include "platform/graphics/graphics_api.h"
+#include "core/graphics/graphics_api.h"
 
-namespace da::platform {
+namespace da::core {
 
 	class CGraphicsPipeline
 	{

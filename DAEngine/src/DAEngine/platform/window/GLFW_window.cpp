@@ -4,10 +4,12 @@
 #ifdef DA_WINDOW_GLFW
 #include "core/events/window_event.h"
 
+using namespace da::core;
+
 namespace da::platform {
 	bool CGLFW_Window::s_initialized = 0;
 
-	CGLFW_Window::CGLFW_Window(const FWindowData& windowData) : CWindow(windowData), m_Window(nullptr)
+	CGLFW_Window::CGLFW_Window(const core::FWindowData& windowData) : core::CWindow(windowData), m_Window(nullptr)
 	{
 		if (s_initialized)
 		{

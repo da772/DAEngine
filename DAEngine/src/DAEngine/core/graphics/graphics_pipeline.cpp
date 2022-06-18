@@ -1,7 +1,7 @@
 #include "dapch.h"
 #include "graphics_pipeline.h"
 
-namespace da::platform
+namespace da::core
 {
 
 	CGraphicsPipeline::CGraphicsPipeline(CGraphicsApi& graphicsApi, const CString& vertexShaderPath, const CString& fragShaderPath) : 

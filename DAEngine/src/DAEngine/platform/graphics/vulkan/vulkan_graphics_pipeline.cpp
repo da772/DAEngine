@@ -23,8 +23,8 @@ namespace da::platform {
 	}
 
 
-	CVulkanGraphicsPipeline::CVulkanGraphicsPipeline(CGraphicsApi& graphicsApi, const CString& vertexShader, const CString& fragShader) :
-		CGraphicsPipeline(graphicsApi, vertexShader, fragShader)
+	CVulkanGraphicsPipeline::CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const CString& vertexShader, const CString& fragShader) :
+		core::CGraphicsPipeline(graphicsApi, vertexShader, fragShader)
 		, m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
 	{
 

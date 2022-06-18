@@ -7,12 +7,12 @@
 #include "platform/window/GLFW_window.h"
 #endif
 
-namespace da::platform {
+namespace da::core {
 
-	da::platform::CWindow* CWindowFactory::CreateWindow(const FWindowData& windowData)
+	da::core::CWindow* CWindowFactory::CreateWindow(const FWindowData& windowData)
 	{
 #ifdef DA_WINDOW_GLFW
-		return new CGLFW_Window(windowData);
+		return new platform::CGLFW_Window(windowData);
 #endif
 		return nullptr;
 	}

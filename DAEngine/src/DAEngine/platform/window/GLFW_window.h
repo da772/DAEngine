@@ -1,16 +1,16 @@
 #pragma once
-#include "platform/platform.h"
+#include "core/core.h"
 
 #ifdef DA_WINDOW_GLFW
-#include "window.h"
+#include "core/window/window.h"
 #include <GLFW/glfw3.h>
 
 namespace da::platform {
 
-	class CGLFW_Window : public CWindow
+	class CGLFW_Window : public core::CWindow
 	{
 	public:
-		CGLFW_Window(const FWindowData& windowData);
+		CGLFW_Window(const core::FWindowData& windowData);
 
 		void initalize() override;
 		void update() override;

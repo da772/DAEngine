@@ -1,5 +1,5 @@
 #pragma once
-#include "imgui_api.h"
+#include "core/imgui/imgui_api.h"
 
 #include "platform/platform.h"
 
@@ -8,9 +8,9 @@
 
 namespace da::platform
 {
-	class CImGuiVulkanApi : public CImGuiApi {
+	class CImGuiVulkanApi : public core::CImGuiApi {
 	public:
-		CImGuiVulkanApi(CGraphicsApi& graphicsApi);
+		CImGuiVulkanApi(core::CGraphicsApi& graphicsApi);
 
 		virtual void onInitialize() override;
 		virtual void onUpdate() override;

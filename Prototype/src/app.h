@@ -9,7 +9,7 @@ class ProtoTypeApp : public da::CApp {
 public:
 	
 	inline ProtoTypeApp(int argc, const char** argv) : CApp(argc, argv) {
-		da::modules::CWindowModule* windowModule = new da::modules::CWindowModule({ "Hello World!", 720, 480, 0,0, 144, da::platform::EWindowDeco::NONE });
+		da::modules::CWindowModule* windowModule = new da::modules::CWindowModule({ "Hello World!", 720, 480, 0,0, 144, da::core::EWindowDeco::NONE });
 		addModule(windowModule);
 		
 		windowModule->getEventHandler().registerCallback(EEventCategory::Window, BIND_EVENT_FN(ProtoTypeApp, windowEvent));

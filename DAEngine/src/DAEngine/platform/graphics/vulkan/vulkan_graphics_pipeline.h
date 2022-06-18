@@ -1,21 +1,21 @@
 #pragma once
 
-#include "platform/graphics/graphics_pipeline.h"
-#include "platform/platform.h"
+#include "core/core.h"
 
 #ifdef DA_GRAPHICS_VULKAN
 
-#include "platform/graphics/graphics_api.h"
+#include "core/graphics/graphics_api.h"
+#include "core/graphics/graphics_pipeline.h"
 #include "platform/graphics/vulkan/vulkan_graphics_api.h"
 #include <vulkan/vulkan.h>
 
 namespace da::platform
 {
 
-	class CVulkanGraphicsPipeline : public CGraphicsPipeline
+	class CVulkanGraphicsPipeline : public core::CGraphicsPipeline
 	{
 	public:
-		CVulkanGraphicsPipeline(CGraphicsApi& graphicsApi, const CString& vertexShader, const CString& fragShader);
+		CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const CString& vertexShader, const CString& fragShader);
 
 		virtual void create() override;
 		virtual void destroy() override;

@@ -7,7 +7,7 @@
 #include <imgui.h>
 #include "logger.h"
 
-namespace da::platform
+namespace da::core
 {
 
 	void CImGuiApi::initialize()
