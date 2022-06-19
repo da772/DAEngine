@@ -16,6 +16,12 @@ namespace da::core::containers {
 
 		}
 
+		inline TList(const T* arr, size_t n) {
+			for (size_t i = 0; i < n; i++) {
+				push(arr[i]);
+			}
+		}
+
 		inline TList(const std::initializer_list<T>& l) {
 			resize(l.size());
 			size_t c = 0;
@@ -135,7 +141,7 @@ namespace da::core::containers {
 
 			ASSERT(n);
 
-			if (n < m_heapSize && m_heapSize < (n << 2)) {
+			if (n < m_heapSize && m_heapSize < (n << (m_shiftSize+1) )) {
 				m_size = n;
 				return;
 			};
@@ -155,9 +161,9 @@ namespace da::core::containers {
 
 		inline void clear() {
 			if (!m_ptr) return;
+			free(m_ptr);
 			m_size = 0;
 			m_heapSize = 0;
-			free(m_ptr);
 			m_ptr = nullptr;
 		}
 

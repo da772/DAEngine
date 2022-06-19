@@ -5,6 +5,7 @@ namespace da::core::containers
 {
 	CString::CString(const char* str)
 	{
+		m_shiftSize = 0;
 		const size_t len = strlen(str);
 		resize(len+1);
 
@@ -16,6 +17,7 @@ namespace da::core::containers
 
 	CString::CString(const CString& str)
 	{
+		m_shiftSize = 0;
 		const size_t len = str.size();
 		resize(len + 1);
 
@@ -27,17 +29,19 @@ namespace da::core::containers
 
 	CString::CString(const size_t& n)
 	{
+		m_shiftSize = 0;
 		resize(n);
 		m_ptr[0] = 0;
 	}
 
 	CString::CString() : TList<char>()
 	{
-
+		m_shiftSize = 0;
 	}
 
 	CString::CString(const IEnumerable<char>& e)
 	{
+		m_shiftSize = 0;
 		resize(e.size()+1);
 		size_t counter = 0;
 		for (const char& c : e) {

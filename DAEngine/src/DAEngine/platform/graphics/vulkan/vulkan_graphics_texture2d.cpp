@@ -1,6 +1,7 @@
 #include "dapch.h"
 #include "vulkan_graphics_texture2d.h"
 
+
 #ifdef DA_GRAPHICS_VULKAN
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -11,20 +12,30 @@ namespace da::platform
 	CVulkanGraphicsTexture2D::CVulkanGraphicsTexture2D(const CString& path, core::CGraphicsApi& graphicsApi) : core::CGraphicsTexture2D(path, graphicsApi)
 		, m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
 	{
-		initialize();
-	}
-
-
-	CVulkanGraphicsTexture2D::~CVulkanGraphicsTexture2D()
-	{
-		shutdown();
 	}
 
 	void CVulkanGraphicsTexture2D::initialize()
 	{
 		createTexture();
 		m_textureImageView = m_vulkanGraphicsApi.createImageView(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
+		createTextureSampler();
 	}
+
+
+	void CVulkanGraphicsTexture2D::shutdown()
+	{
+		vkDestroySampler(m_vulkanGraphicsApi.getDevice(), m_textureSampler, nullptr);
+		vkDestroyImageView(m_vulkanGraphicsApi.getDevice(), m_textureImageView, nullptr);
+
+		vkDestroyImage(m_vulkanGraphicsApi.getDevice(), m_textureImage, nullptr);
+		vkFreeMemory(m_vulkanGraphicsApi.getDevice(), m_textureImageMemory, nullptr);
+	}
+
+
+	CVulkanGraphicsTexture2D::~CVulkanGraphicsTexture2D()
+	{
+	}
+
 
 	void CVulkanGraphicsTexture2D::createTexture()
 	{
@@ -308,15 +319,6 @@ namespace da::platform
 			1, &barrier
 		);
 		m_vulkanGraphicsApi.endSingleTimeCommands(commandBuffer);
-	}
-
-	void CVulkanGraphicsTexture2D::shutdown()
-	{
-		vkDestroySampler(m_vulkanGraphicsApi.getDevice(), m_textureSampler, nullptr);
-		vkDestroyImageView(m_vulkanGraphicsApi.getDevice(), m_textureImageView, nullptr);
-
-		vkDestroyImage(m_vulkanGraphicsApi.getDevice(), m_textureImage, nullptr);
-		vkFreeMemory(m_vulkanGraphicsApi.getDevice(), m_textureImageMemory, nullptr);
 	}
 
 }

@@ -15,11 +15,10 @@ namespace da
 
 	void CApp::initalize()
 	{
-		
-		onInitalize();
 		for (IModule* m : m_modules) {
 			m->initalize();
 		}
+		onInitalize();
 	}
 	void CApp::update()
 	{

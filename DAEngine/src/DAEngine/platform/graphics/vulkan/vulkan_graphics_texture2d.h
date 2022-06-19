@@ -7,11 +7,18 @@
 
 namespace da::platform
 {
-	class CVulkanGraphicsTexture2D : core::CGraphicsTexture2D
+	class CVulkanGraphicsTexture2D : public core::CGraphicsTexture2D
 	{
 	public:
 		CVulkanGraphicsTexture2D(const CString& path, core::CGraphicsApi& graphicsApi);
 		~CVulkanGraphicsTexture2D();
+
+		void initialize();
+		void shutdown();
+
+		inline VkImage& getTextureImage() { return m_textureImage; }
+		inline VkImageView& getTextureImageView() { return m_textureImageView; }
+		inline VkSampler& getTextureImageSampler() { return m_textureSampler;}
 
 	private:
 		void createTexture();
@@ -21,8 +28,6 @@ namespace da::platform
 		void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 		void generateMipMaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
 		void createTextureSampler();
-		void shutdown();
-		void initialize();
 
 
 	private:

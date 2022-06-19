@@ -18,12 +18,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <chrono>
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
 #include <unordered_map>
 #include <backends/imgui_impl_vulkan.h>
+
+#include "vulkan_graphics_texture2d.h"
+
+#include "core/graphics/graphics_model.h"
 
 namespace std {
 	template<> struct hash<da::platform::Vertex> {
@@ -129,9 +129,11 @@ namespace da::platform {
 		createColorResources();
 		createDepthResources();
 		createFramebuffers();
-		createTextureImage();
+		m_textureImage = new CVulkanGraphicsTexture2D("assets/", *this);
+		m_textureImage->initialize();
+		/*createTextureImage();
 		createTextureImageView();
-		createTextureSampler();
+		createTextureSampler();*/
 		createVertexBuffers();
 		createIndexBuffers();
 		createUniformBuffers();
@@ -247,11 +249,13 @@ namespace da::platform {
 
 		vkDestroyDescriptorPool(m_device, m_descriptorPool, nullptr);
 
-		vkDestroySampler(m_device, m_textureSampler, nullptr);
+		m_textureImage->shutdown();
+		delete m_textureImage;
+		/*vkDestroySampler(m_device, m_textureSampler, nullptr);
 		vkDestroyImageView(m_device, m_textureImageView, nullptr);
 
 		vkDestroyImage(m_device, m_textureImage, nullptr);
-		vkFreeMemory(m_device, m_textureImageMemory, nullptr);
+		vkFreeMemory(m_device, m_textureImageMemory, nullptr);*/
 
 		vkDestroyDescriptorSetLayout(m_device, m_descriptorSetLayout, nullptr);
 
@@ -1277,8 +1281,8 @@ namespace da::platform {
 
 			VkDescriptorImageInfo imageInfo{};
 			imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-			imageInfo.imageView = m_textureImageView;
-			imageInfo.sampler = m_textureSampler;
+			imageInfo.imageView = m_textureImage->getTextureImageView();
+			imageInfo.sampler = m_textureImage->getTextureImageSampler();
 
 			TArray<VkWriteDescriptorSet> descriptorWrites(2);
 
@@ -1379,6 +1383,7 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::createTextureImage()
 	{
+		/*
 		int texWidth, texHeight, texChannels;
 
 		stbi_uc* pixels = stbi_load("assets/viking_room.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
@@ -1411,6 +1416,7 @@ namespace da::platform {
 
 		vkDestroyBuffer(m_device, stagingBuffer, nullptr);
 		vkFreeMemory(m_device, stagingBufferMemory, nullptr);
+		*/
 	}
 
 	VkCommandBuffer CVulkanGraphicsApi::beginSingleTimeCommands() const
@@ -1559,7 +1565,7 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::createTextureImageView()
 	{
-		m_textureImageView = createImageView(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
+		//m_textureImageView = createImageView(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
 	}
 
 	VkImageView CVulkanGraphicsApi::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels)
@@ -1585,6 +1591,7 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::createTextureSampler()
 	{
+		/*
 		VkSamplerCreateInfo samplerInfo{};
 		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 		samplerInfo.magFilter = VK_FILTER_LINEAR;
@@ -1608,6 +1615,7 @@ namespace da::platform {
         auto result = vkCreateSampler(m_device, &samplerInfo, nullptr, &m_textureSampler);
         
         VK_CHECK(result, VK_SUCCESS);
+		*/
 	}
 
 	VkFormat CVulkanGraphicsApi::findDepthFormat() {
@@ -1646,38 +1654,11 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::loadModel()
 	{
-		tinyobj::attrib_t attrib;
-		std::vector<tinyobj::shape_t> shapes;
-		std::vector<tinyobj::material_t> materials;
-		std::string warn, err;
+		core::CModel model("assets/viking_room.obj");
+	
+		m_vertices = TList<Vertex>((Vertex*)model.getVertices().data(), model.getVertices().size());
+		m_indices = model.getIndices();
 
-		VK_CHECK(tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "assets/viking_room.obj"), true);
-
-		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
-
-		for (const auto& shape : shapes) {
-			for (const auto& index : shape.mesh.indices) {
-				Vertex vertex{};
-				vertex.Pos = {
-					attrib.vertices[3 * index.vertex_index + 0],
-					attrib.vertices[3 * index.vertex_index + 1],
-					attrib.vertices[3 * index.vertex_index + 2]
-				};
-
-				vertex.TexCoord = {
-					attrib.texcoords[2 * index.texcoord_index + 0],
-					1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
-				};
-
-				vertex.Color = { 1.0f, 1.0f, 1.0f };
-
-				if (uniqueVertices.count(vertex) == 0) {
-					uniqueVertices[vertex] = static_cast<uint32_t>(m_vertices.size());
-					m_vertices.push(vertex);
-				}
-				m_indices.push(uniqueVertices[vertex]);
-			}
-		}
 	}
 
 	void CVulkanGraphicsApi::generateMipMaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels)

@@ -4,6 +4,10 @@
 #include <iostream>
 #include <functional>
 
+#include <daengine/core/graphics/graphics_model.h>
+#include <daengine/core/graphics/factory/factory_graphics_pipeline.h>
+#include <daengine/core/graphics/factory/factory_graphics_texture2d.h>
+
 class ProtoTypeApp : public da::CApp {
 
 public:
@@ -14,10 +18,10 @@ public:
 		
 		windowModule->getEventHandler().registerCallback(EEventCategory::Window, BIND_EVENT_FN(ProtoTypeApp, windowEvent));
 
-		da::modules::CGraphicsModule* graphicsModule = new da::modules::CGraphicsModule(*windowModule);
-		addModule(graphicsModule);
+		m_graphicsModule = new da::modules::CGraphicsModule(*windowModule);
+		addModule(m_graphicsModule);
 
-		da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(*graphicsModule);
+		da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(*m_graphicsModule);
 		addModule(imGuiModule);
 
 		//da::modules::CWindowModule* windowModule2 = new da::modules::CWindowModule({ "Hello World 2", 480, 240, 0,0, 144, da::platform::EWindowDeco::NONE });
@@ -55,11 +59,17 @@ public:
 			return;
 		}
 	}
+private:
+	da::modules::CGraphicsModule* m_graphicsModule;
 
 protected:
 	inline virtual void onInitalize() override
 	{
-		da::CLogger::LogDebug(da::ELogChannel::Application, "App Init");
+		da::core::CModel model = da::core::CModel("assets/viking_room.obj");
+		//da::core::CGraphicsPipeline* pipeline = da::core::CGraphicsPipelineFactory::Create(*m_graphicsModule->getGraphicsApi(), "shaders/vert.spv", "shaders/frag.spv", da::core::FVertexBase::getBindingDescription(), da::core::FVertexBase::getAttributeDescription());
+		//pipeline->create();
+		//da::core::CGraphicsTexture2D* texture = da::core::CTexture2DFactory::Create("assets/viking_room.png", *m_graphicsModule->getGraphicsApi());
+
 	}
 
 	inline virtual void onShutdown() override

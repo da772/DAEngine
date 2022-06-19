@@ -1,15 +1,16 @@
 #pragma once
-#include "platform/platform.h"
+#include "daengine/core/core.h"
 
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
-#include "core/graphics/graphics_api.h"
+#include "daengine/core/graphics/graphics_api.h"
 #include <vulkan/vulkan.h>
 #include <optional>
 #include <memory>
 
+
 namespace da::platform
 {
-
+	class CVulkanGraphicsTexture2D;
 	class CVulkanGraphicsPipeline;
 
 	struct QueueFamilyIndices {
@@ -187,10 +188,9 @@ namespace da::platform
 		TList<VkDeviceMemory> m_uniformBuffersMemory;
 		VkDescriptorPool m_descriptorPool;
 		TList<VkDescriptorSet> m_descriptorSets;
-		VkImage m_textureImage;
-		VkDeviceMemory m_textureImageMemory;
-		VkImageView m_textureImageView;
-		VkSampler m_textureSampler;
+
+		CVulkanGraphicsTexture2D* m_textureImage;
+
 		VkImage m_depthImage;
 		VkDeviceMemory m_depthImageMemory;
 		VkImageView m_depthImageView;

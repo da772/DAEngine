@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/containers.h"
-#include "core/graphics/graphics_api.h"
+#include "DAEngine/Core/containers.h"
+#include "DAEngine/core/graphics/graphics_api.h"
 
 namespace da::core
 {
@@ -8,7 +8,6 @@ namespace da::core
 	{
 	public:
 		CGraphicsTexture2D(const CString& path, CGraphicsApi& graphicsApi);
-
 		inline const void* getTextureNative() const { return m_textureNative; }
 
 	protected:
