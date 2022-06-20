@@ -13,29 +13,21 @@
 
 namespace da
 {
-	void* CLogger::s_outFile = nullptr;
+	std::ofstream CLogger::s_outFile;
 
 	void CLogger::initialize()
 	{
-		if (!s_outFile)
-			s_outFile = new std::ofstream(utility::GetLogFileName().cstr(), std::ofstream::out);
-
+		CLogger::s_outFile = std::ofstream(utility::GetLogFileName().cstr(), std::ofstream::out);
 	}
 
 	void CLogger::shutdown()
 	{
-		if (!s_outFile) {
-			return;
-		}
-
-		(*(std::ofstream*)s_outFile).close();
-		delete s_outFile;
-		s_outFile = nullptr;
+		CLogger::s_outFile.close();
+		s_outFile = {};
 	}
 
 	void CLogger::logInternal(const CString& message)
 	{
-		if (!s_outFile) return;
 		printf("%s", message.cstr());
 
 		std::regex match_str = std::regex("\033[[][0-9][0-9][m]?");
@@ -48,8 +40,8 @@ namespace da
 		OutputDebugStringA(result.str().c_str());
 #endif
 		
-		*(std::ofstream*)s_outFile << result.str();
-		(*(std::ofstream*)s_outFile).flush();
+		CLogger::s_outFile << result.str();
+		CLogger::s_outFile.flush();
 	}
 
 }

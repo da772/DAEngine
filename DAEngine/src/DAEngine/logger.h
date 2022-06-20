@@ -4,6 +4,7 @@
 #include "core/utility.h"
 
 #include <stdio.h>
+#include <fstream>
 
 namespace da {
 #define NAMEOF(x) #x
@@ -108,7 +109,7 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 		inline static const char* colorTypeMap[] = { "\033[39m", "\033[36m", "\033[33m", "\033[31m", "\033[35m", "\033[39m" };
 #endif
 
-		static void* s_outFile;
+		static std::ofstream s_outFile;
 	};
 
 

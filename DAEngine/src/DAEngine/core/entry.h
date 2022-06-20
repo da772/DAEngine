@@ -1,14 +1,14 @@
 #pragma once
 #include "daengine.h"
 
-#if defined(DA_PLATFORM_WINDOWS) && defined(DA_FINAL)
+#if defined(DA_PLATFORM_WINDOWS) && defined(DA_FINAL) || defined(DA_RELEASE)
 #include <windows.h>
 #endif
 #include <iostream>
 #include "daengine/core/memory/memory.h"
 
 extern da::CApp* da::createApp(int argc, const char** argv);
-#if defined(DA_PLATFORM_WINDOWS) && defined(DA_FINAL)
+#if defined(DA_PLATFORM_WINDOWS) && defined(DA_FINAL) || defined(DA_RELEASE)
 int WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd )
 #else
 int main(int argc, const char** argv)
