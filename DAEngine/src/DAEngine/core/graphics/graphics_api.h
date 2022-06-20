@@ -7,6 +7,7 @@ namespace da::core
 	{
 	public:
 		CGraphicsApi(const CWindow& nativeWindow);
+		virtual ~CGraphicsApi();
 
 		inline virtual void initalize() {};
 		inline virtual void update() {};

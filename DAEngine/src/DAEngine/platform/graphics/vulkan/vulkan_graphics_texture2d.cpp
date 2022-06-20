@@ -39,7 +39,7 @@ namespace da::platform
 
 	void CVulkanGraphicsTexture2D::createTexture()
 	{
-		stbi_uc* pixels = stbi_load("assets/viking_room.png", (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);
+		stbi_uc* pixels = stbi_load(m_path.cstr(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);
 
 		m_mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(m_width, m_height)))) + 1;
 

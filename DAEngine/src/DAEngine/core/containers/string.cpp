@@ -164,16 +164,15 @@ namespace da::core::containers
 		return *this;
 	}
 
+	// Move operator
 	da::core::containers::CString& CString::operator=(CString&& rhs)
 	{
-		resize(rhs.size() + 1);
-
-		for (size_t i = 0; i < rhs.size(); i++) {
-			m_ptr[i] = rhs[i];
-		}
-
-		rhs.clear();
-
+		m_ptr = rhs.m_ptr;
+		m_heapSize = rhs.m_heapSize;
+		m_size = rhs.m_size;
+		rhs.m_ptr = nullptr;
+		rhs.m_heapSize = 0;
+		rhs.m_size = 0;
 		return *this;
 	}
 
@@ -228,6 +227,11 @@ namespace da::core::containers
 			}
 			i++;
 		}
+	}
+
+	CString::~CString()
+	{
+
 	}
 
 	CString operator+(const CString& lhs, const CString& rhs)

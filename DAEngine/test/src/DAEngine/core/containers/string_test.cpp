@@ -8,7 +8,8 @@ CStringTest::CStringTest()
 
 bool CStringTest::RunTests()
 {
-	TEST_FUNC(StringTest);	
+	TEST_BEGIN()
+		TEST_FUNC(StringTest);
 	TEST_END();
 }
 
@@ -80,7 +81,9 @@ bool CStringTest::StringTest()
 
 	CString arrString(chArr);
 
-	TEST_ASSERT(arrString == "01234")
+	TEST_ASSERT(arrString == "01234");
 
-	TEST_END();
+
+
+	return true;
 }

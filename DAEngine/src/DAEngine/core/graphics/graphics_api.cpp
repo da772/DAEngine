@@ -9,4 +9,9 @@ namespace da::core
 
 	}
 
+	CGraphicsApi::~CGraphicsApi()
+	{
+
+	}
+
 }

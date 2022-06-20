@@ -10,8 +10,8 @@ CMathsTest::CMathsTest()
 
 bool CMathsTest::RunTests()
 {
-	TEST_FUNC(PrimeTest);
-
+	TEST_BEGIN()
+		TEST_FUNC(PrimeTest);
 	TEST_END();
 }
 
@@ -26,5 +26,5 @@ bool CMathsTest::PrimeTest()
 	TEST_ASSERT(result == 1213);
 
 
-	TEST_END();
+	return true;
 }

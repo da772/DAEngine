@@ -12,8 +12,8 @@ CGuidTest::CGuidTest()
 
 bool CGuidTest::RunTests()
 {
+	TEST_BEGIN();
 	TEST_FUNC(GuidTests);
-
 	TEST_END();
 }
 
@@ -46,5 +46,5 @@ bool CGuidTest::GuidTests()
 
 	TEST_ASSERT(guid.string() == "29000000-2348-0000-be18-000084670000");
 
-	TEST_END();
+	return true;
 }

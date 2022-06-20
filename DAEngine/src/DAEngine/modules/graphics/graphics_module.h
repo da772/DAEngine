@@ -14,7 +14,7 @@ namespace da::modules
 	{
 	public:
 		CGraphicsModule(const CWindowModule& windowsModule);
-
+		virtual ~CGraphicsModule();
 		void lateUpdate() override;
 		void initalize() override;
 		void shutdown() override;

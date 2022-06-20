@@ -8,8 +8,8 @@ CHashStringTest::CHashStringTest()
 
 bool CHashStringTest::RunTests()
 {
-	TEST_FUNC(HashStringTests);
-
+	TEST_BEGIN()
+		TEST_FUNC(HashStringTests);
 	TEST_END();
 }
 
@@ -27,5 +27,5 @@ bool CHashStringTest::HashStringTests()
 	TEST_ASSERT(a== b);
 	TEST_ASSERT(CHashString(CString("abcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbac1")) == CHashString("abcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbacabcabcabcabcabcabcbacbac1"));
 
-	TEST_END();
+	return true;
 }

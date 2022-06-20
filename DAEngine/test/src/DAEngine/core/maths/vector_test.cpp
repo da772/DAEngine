@@ -10,9 +10,10 @@ CVectorTest::CVectorTest()
 
 bool CVectorTest::RunTests()
 {
-	TEST_FUNC(Vec2Tests);
-	TEST_FUNC(Vec3Tests);
-	TEST_FUNC(Vec4Tests);
+	TEST_BEGIN();
+		TEST_FUNC(Vec2Tests);
+		TEST_FUNC(Vec3Tests);
+		TEST_FUNC(Vec4Tests);
 	TEST_END();
 }
 
@@ -92,7 +93,7 @@ bool CVectorTest::Vec4Tests()
 	vc = Vector4f::reflect(copyTest, dataTest);
 	vc = 5.f * vc;
 	
-	TEST_END();
+	return true;
 }
 
 bool CVectorTest::Vec3Tests()
@@ -170,7 +171,7 @@ bool CVectorTest::Vec3Tests()
 	vc = Vector3f::lerp(copyTest, dataTest, 5);
 	float distance = Vector3f::distance(copyTest, dataTest);
 	
-	TEST_END();
+	return true;
 }
 
 bool CVectorTest::Vec2Tests()
@@ -232,5 +233,5 @@ bool CVectorTest::Vec2Tests()
 	vc = Vector2f::lerp(_subRes, vc, 5);
 	float distance = Vector2f::distance(_subRes, vc);
 	
-	TEST_END();
+	return true;
 }

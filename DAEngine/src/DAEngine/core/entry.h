@@ -4,6 +4,8 @@
 #if defined(DA_PLATFORM_WINDOWS) && defined(DA_FINAL)
 #include <windows.h>
 #endif
+#include <iostream>
+#include "daengine/core/memory/memory.h"
 
 extern da::CApp* da::createApp(int argc, const char** argv);
 #if defined(DA_PLATFORM_WINDOWS) && defined(DA_FINAL)
@@ -17,12 +19,18 @@ int main(int argc, const char** argv)
 #define __argv argv
 #endif
 
-	da::CApp* app = da::createApp(__argc, (const char**)__argv);
-	app->initalize();
-	app->update();
-	app->shutdown();
+	std::cout << "Memory Allocated: " << da::getMemoryAllocated() << "\n" << std::endl;
+	{
+		da::CApp* app = da::createApp(__argc, (const char**)__argv);
+		app->initalize();
+		app->update();
+		app->shutdown();
 
-	delete app;
+		delete app;
+		app = nullptr;
+	}
+
+	std::cout << "Memory Allocated: " << da::getMemoryAllocated() << "\n" << std::endl;
 
 	return 0;
 }

@@ -10,6 +10,13 @@ namespace da::modules
 
 	}
 
+
+	CImGuiModule::~CImGuiModule()
+	{
+
+	}
+
+
 	void CImGuiModule::update()
 	{
 		m_imGuiApi->update();
@@ -23,6 +30,7 @@ namespace da::modules
 	void CImGuiModule::shutdown()
 	{
 		m_imGuiApi->shutdown();
+		delete m_imGuiApi;
 	}
 
 	void CImGuiModule::lateUpdate()

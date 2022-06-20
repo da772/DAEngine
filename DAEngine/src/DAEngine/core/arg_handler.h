@@ -1,5 +1,4 @@
 #pragma once
-
 namespace da::core {
 
 	class CArgHandler
@@ -7,6 +6,8 @@ namespace da::core {
 	public:
 		static void initialize(int argc, const char** argv);
 		static void shutdown();
+		static size_t getArgc();
+		static const char** getArgv();
 
 	private:
 		static int s_argc;

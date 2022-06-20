@@ -8,10 +8,11 @@ CListTest::CListTest()
 
 bool CListTest::RunTests()
 {
-	TEST_FUNC(PrimitiveTest);
-	TEST_FUNC(ObjectTest);
-	TEST_FUNC(AllocTest);
-	TEST_FUNC(AllocTestVector);
+	TEST_BEGIN()
+		TEST_FUNC(PrimitiveTest);
+		TEST_FUNC(ObjectTest);
+		TEST_FUNC(AllocTest);
+		TEST_FUNC(AllocTestVector);
 	TEST_END();
 }
 
@@ -38,7 +39,7 @@ bool CListTest::PrimitiveTest()
 
 	list1.pop();
 	TEST_ASSERT(list1.size() == 24);
-
+	
 	counter = 0;
 	for (int i = 0; i < 24; i++) {
 		TEST_ASSERT(list1[i] == (i + 25));
@@ -57,20 +58,20 @@ bool CListTest::PrimitiveTest()
 		}
 		count++;
 	}
-
+	
 	TList<int> list2 = TList<int>(list1);
-
+	
 	TEST_ASSERT(list1 == list2);
-
+	
 	TList<int> list3 = TList<int>(std::move(list2));
-
+	
 	TEnumerator<int> en = list1.find(55);
 
 	TEnumerator<int> en1 = list1.find([](const int& i) {
 		if (i == 55) return true;
 		return false;
 	});
-
+	
 	TEST_ASSERT(en != list1.end());
 	list1.remove(en);
 	TEST_ASSERT(list1.size() == 24);
@@ -81,6 +82,11 @@ bool CListTest::PrimitiveTest()
 	}
 
 	list1.clear();
+
+	TList<uint64_t> tstList;
+	tstList.resize(2);
+
+	tstList.resize(4);
 
 	return true;
 }

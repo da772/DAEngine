@@ -8,8 +8,9 @@ CArrayTest::CArrayTest()
 
 bool CArrayTest::RunTests()
 {
-	TEST_FUNC(PrimitiveTest);
-	TEST_FUNC(ObjectTest);
+	TEST_BEGIN()
+		TEST_FUNC(PrimitiveTest);
+		TEST_FUNC(ObjectTest);
 	TEST_END();
 }
 
@@ -133,10 +134,6 @@ bool CArrayTest::ObjectTest()
 		}) != m_array.end());
 
 	m_array.resize(15);
-
-	TEST_ASSERT(m_array.find([](const TestObject& o) {
-		return o == TestObject(-1, -1);
-		}) != m_array.end());
 
 	TEnumerator<TestObject> enu = m_array.find([](const TestObject& o) {
 		return o == TestObject(7, 7);

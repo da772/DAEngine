@@ -1,6 +1,7 @@
 #pragma once
 #include "daengine/core/core.h"
 #include "daengine/core/maths/maths.h"
+#include "DAEngine/core/memory/memory.h"
 #include "enumerable.h"
 #include <cstdlib>
 #include <cstring>
@@ -50,7 +51,6 @@ namespace da::core::containers {
 		inline TList(TList&& other)
 		{
 			resize(other.size());
-			m_ptr = (T*)malloc(other.size() * sizeof(T));
 			ASSERT(m_ptr);
 			memcpy(m_ptr, other.m_ptr, sizeof(T) * other.size());
 			m_heapSize = other.size();
@@ -63,7 +63,7 @@ namespace da::core::containers {
 			resize(size);
 		}
 
-		inline ~TList()
+		inline virtual ~TList()
 		{
 			clear();
 		}
@@ -149,11 +149,11 @@ namespace da::core::containers {
 			size_t newSize = n << m_shiftSize;
 
 			if (m_ptr) {
-				T* ptr = (T*)realloc(m_ptr, sizeof(T) * newSize);
+				T* ptr = (T*)reallocate(m_ptr, sizeof(T) * newSize);
 				ASSERT(ptr);
 				m_ptr = ptr;
 			}
-			else m_ptr = (T*)malloc(newSize * sizeof(T));
+			else m_ptr = (T*)allocate(newSize * sizeof(T));
 			ASSERT(m_ptr);
 			m_heapSize = newSize;
 			m_size = n;
@@ -161,7 +161,7 @@ namespace da::core::containers {
 
 		inline void clear() {
 			if (!m_ptr) return;
-			free(m_ptr);
+			deallocate((void*)m_ptr);
 			m_size = 0;
 			m_heapSize = 0;
 			m_ptr = nullptr;
@@ -198,12 +198,11 @@ namespace da::core::containers {
 		{
 			if (m_ptr) clear();
 
-			m_size = other.m_size;
-			ASSERT(m_size);
-			m_ptr = (T*)malloc(m_size * sizeof(T));
-			ASSERT(m_ptr);
-			memcpy(m_ptr, other.m_ptr, sizeof(T) * m_size);
-
+			m_shiftSize = 0;
+			resize(other.size());
+			memcpy(m_ptr, other.m_ptr, other.m_size * sizeof(T));
+			m_shiftSize = 1;
+		
 			return *this;
 		}
 
@@ -213,8 +212,10 @@ namespace da::core::containers {
 			if (m_ptr) clear();
 			m_ptr = rhs.m_ptr;
 			m_size = rhs.m_size;
+			m_heapSize = rhs.m_heapSize;
 			rhs.m_ptr = nullptr;
 			rhs.m_size = 0;
+			rhs.m_heapSize = 0;
 			return *this;
 		}
 

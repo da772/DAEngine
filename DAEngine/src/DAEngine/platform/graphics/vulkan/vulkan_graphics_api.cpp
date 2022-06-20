@@ -24,6 +24,7 @@
 #include "vulkan_graphics_texture2d.h"
 
 #include "core/graphics/graphics_model.h"
+#include "vulkan_graphics_pipeline.h"
 
 namespace std {
 	template<> struct hash<da::platform::Vertex> {
@@ -116,20 +117,25 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::initalize()
 	{
-		loadModel();
+		//loadModel();
+		core::CModel model("assets/viking_room.obj");
+		m_vertices = TList<Vertex>((Vertex*)model.getVertices().data(), model.getVertices().size());
+		m_indices = model.getIndices();
 		createSurface();
 		selectPhysicalDevice();
 		createLogicalDevice();
 		createSwapChain();
 		createImageViews();
 		createRenderPass();
-		createDescriptorSetLayout();
-		createGraphicsPipeline();
+		m_graphicsPipeline = new CVulkanGraphicsPipeline(*this, "shaders/vert.spv", "shaders/frag.spv", da::core::FVertexBase::getBindingDescription(), da::core::FVertexBase::getAttributeDescription());
+		m_graphicsPipeline->create();
+		//createDescriptorSetLayout();
+		//createGraphicsPipeline();
 		createCommandPool();
 		createColorResources();
 		createDepthResources();
 		createFramebuffers();
-		m_textureImage = new CVulkanGraphicsTexture2D("assets/", *this);
+		m_textureImage = new CVulkanGraphicsTexture2D("assets/viking_room.png", *this);
 		m_textureImage->initialize();
 		/*createTextureImage();
 		createTextureImageView();
@@ -226,9 +232,13 @@ namespace da::platform {
 			vkDestroyFramebuffer(m_device, m_swapChainFramebuffers[i], nullptr);
 		}
 
+		m_graphicsPipeline->destroy();
+		/*
 		vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
+		*/
 		vkDestroyRenderPass(m_device, m_renderPass, nullptr);
+		
 
 		for (size_t i = 0; i < m_swapChainImageViews.size(); i++) {
 			vkDestroyImageView(m_device, m_swapChainImageViews[i], nullptr);
@@ -249,15 +259,20 @@ namespace da::platform {
 
 		vkDestroyDescriptorPool(m_device, m_descriptorPool, nullptr);
 
+		//m_vertices.clear();
+		//m_indices.clear();
+
 		m_textureImage->shutdown();
 		delete m_textureImage;
+		delete m_graphicsPipeline;
+
 		/*vkDestroySampler(m_device, m_textureSampler, nullptr);
 		vkDestroyImageView(m_device, m_textureImageView, nullptr);
 
 		vkDestroyImage(m_device, m_textureImage, nullptr);
 		vkFreeMemory(m_device, m_textureImageMemory, nullptr);*/
 
-		vkDestroyDescriptorSetLayout(m_device, m_descriptorSetLayout, nullptr);
+		//vkDestroyDescriptorSetLayout(m_device, m_descriptorSetLayout, nullptr);
 
 		//
 		vkDestroyBuffer(m_device, m_indexBuffer, nullptr);
@@ -700,6 +715,7 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::createGraphicsPipeline()
 	{
+		/*
 		auto vertShaderCode = readFile("shaders/vert.spv");
 		auto fragShaderCode = readFile("shaders/frag.spv");
 
@@ -863,6 +879,7 @@ namespace da::platform {
 
 		vkDestroyShaderModule(m_device, fragShaderModule, nullptr);
 		vkDestroyShaderModule(m_device, vertShaderModule, nullptr);
+		*/
 	}
 
 	void CVulkanGraphicsApi::createRenderPass()
@@ -1015,14 +1032,14 @@ namespace da::platform {
 		renderPassInfo.pClearValues = clearValues.data();
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline->getPipeline());
 			VkBuffer vertexBuffers[] = { m_vertexBuffer };
 			VkDeviceSize offsets[] = { 0 };
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
 			vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSets[m_currentFrame], 0, nullptr);
+			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline->getPipelineLayout(), 0, 1, &m_descriptorSets[m_currentFrame], 0, nullptr);
 
 			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
 	}
@@ -1077,7 +1094,8 @@ namespace da::platform {
 		createSwapChain();
 		createImageViews();
 		createRenderPass();
-		createGraphicsPipeline();
+		m_graphicsPipeline->create();
+		//createGraphicsPipeline();
 		createDepthResources();
 		createColorResources();
 		createFramebuffers();
@@ -1176,6 +1194,7 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::createDescriptorSetLayout()
 	{
+/*
 		VkDescriptorSetLayoutBinding uboLayoutBinding{};
 		uboLayoutBinding.binding = 0;
 		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -1204,6 +1223,7 @@ namespace da::platform {
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 1;
 		pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
+		*/
 	}
 
 	void CVulkanGraphicsApi::createUniformBuffers()
@@ -1226,7 +1246,7 @@ namespace da::platform {
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
 		UniformBufferObject ubo{};
-		ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(20.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		ubo.proj = glm::perspective(glm::radians(45.0f), m_swapChainExtent.width / (float)m_swapChainExtent.height, 0.1f, 10.0f);
 
@@ -1260,7 +1280,7 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::createDescriptorSets()
 	{
-		TArray<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_descriptorSetLayout);
+		TArray<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_graphicsPipeline->getDescriptorSetLayout());
 		VkDescriptorSetAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 		allocInfo.descriptorPool = m_descriptorPool;

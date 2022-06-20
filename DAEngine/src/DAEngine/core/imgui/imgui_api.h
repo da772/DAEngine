@@ -9,6 +9,7 @@ namespace da::core {
 	class CImGuiApi
 	{
 	public:
+		inline virtual ~CImGuiApi() {};
 		void initialize();
 		void update();
 		void shutdown();

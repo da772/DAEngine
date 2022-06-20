@@ -13,6 +13,7 @@ namespace da::modules
 	{
 	public:
 		CImGuiModule(const CGraphicsModule& graphicsModule);
+		virtual ~CImGuiModule();
 
 		void update() override;
 		void lateUpdate() override;

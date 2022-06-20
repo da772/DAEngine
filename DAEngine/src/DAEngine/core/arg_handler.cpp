@@ -2,23 +2,16 @@
 #include "arg_handler.h"
 #include "logger.h"
 
+
 namespace da::core
 {
 	const char** CArgHandler::s_argv = nullptr;
 	int CArgHandler::s_argc = 0;
 
-
 	void CArgHandler::initialize(int argc, const char** argv)
 	{
 		s_argc = argc;
 		s_argv = argv;
-
-		CString argList = "Initalized with args:";
-		for (int i = 0; i < argc; i++) {
-			argList += CString("\n") + argv[i];
-		}
-
-		LOG_INFO(ELogChannel::Core, argList);
 	}
 
 	void CArgHandler::shutdown()
@@ -26,4 +19,15 @@ namespace da::core
 		s_argv = nullptr;
 		s_argc = 0;
 	}
+
+	size_t CArgHandler::getArgc()
+	{
+		return s_argc;
+	}
+
+	const char** CArgHandler::getArgv()
+	{
+		return s_argv;
+	}
+
 }

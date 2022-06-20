@@ -10,6 +10,11 @@ namespace da::modules
 
 	}
 
+	CGraphicsModule::~CGraphicsModule()
+	{
+
+	}
+
 	void CGraphicsModule::lateUpdate()
 	{
 		m_GraphicsApi->update();
@@ -28,6 +33,6 @@ namespace da::modules
 	void CGraphicsModule::lateShutdown()
 	{
 		m_GraphicsApi->shutdown();
+		delete m_GraphicsApi;
 	}
-
 }

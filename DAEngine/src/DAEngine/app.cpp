@@ -41,6 +41,7 @@ namespace da
 		onShutdown();
 		for (IModule* m : m_modules) {
 			m->lateShutdown();
+			delete m;
 		}
 	}
 
@@ -58,6 +59,13 @@ namespace da
 	{
 		CLogger::initialize();
 		core::CArgHandler::initialize(argc, argv);
+		CString args = "Initialized with argc: %d\n";
+		for (size_t i = 0; i < argc; i++) {
+			args += CString(argv[i]);
+			if (i != argc - 1)
+				args += "\n";
+		}
+		LOG_INFO(ELogChannel::Core, args, argc);
 	}
 
 	void CApp::shutdownInternal()

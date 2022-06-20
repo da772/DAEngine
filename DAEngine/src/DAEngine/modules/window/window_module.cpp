@@ -9,6 +9,12 @@ namespace da::modules
 
 	}
 
+
+	CWindowModule::~CWindowModule()
+	{
+
+	}
+
 	void CWindowModule::update()
 	{
 		m_Window->update();
@@ -37,6 +43,7 @@ namespace da::modules
 	void CWindowModule::lateShutdown()
 	{
 		m_Window->shutdown();
+		delete m_Window;
 	}
 
 	da::core::events::CEventHandler& CWindowModule::getEventHandler()

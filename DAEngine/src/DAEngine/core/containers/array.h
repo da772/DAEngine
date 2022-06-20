@@ -1,5 +1,6 @@
 #pragma once
 #include "DAEngine/core/core.h"
+#include "DAEngine/core/memory/memory.h"
 #include "enumerable.h"
 #include <initializer_list>
 
@@ -35,7 +36,7 @@ namespace da::core::containers {
 			// Copy
 			m_size = arr.m_size;
 			ASSERT(m_size);
-			m_ptr = new T[m_size];
+			m_ptr = (T*)allocate(m_size * sizeof(T));
 			ASSERT(m_ptr);
 			memcpy(m_ptr, arr.m_ptr, sizeof(T) * m_size);
 		}
@@ -55,21 +56,21 @@ namespace da::core::containers {
 		inline TArray(size_t size) { 
 			m_size = size;
 			ASSERT(m_size);
-			m_ptr = new T[m_size];
+			m_ptr = (T*)allocate(m_size * sizeof(T));
 			ASSERT(m_ptr);
 		};
 
 		inline TArray(size_t size, T value) {
 			m_size = size;
 			ASSERT(m_size);
-			m_ptr = new T[m_size];
+			m_ptr = (T*)allocate(m_size * sizeof(T));
 			ASSERT(m_ptr);
 			for (size_t i = 0; i < m_size; i++) m_ptr[i] = value;
 		};
 
 		inline void clear() { 
 			if (!m_ptr) return;
-			delete[] m_ptr; 
+			deallocate(m_ptr); 
 			m_ptr = nullptr;
 			m_size = 0;
 		};
@@ -77,11 +78,10 @@ namespace da::core::containers {
 		inline void resize(const size_t& n) {
 			ASSERT(n);
 			if (n == m_size) return;
-			T* ptr = new T[n];
 			if (m_ptr)
-				memcpy(ptr, m_ptr, sizeof(T) * (n > m_size ? m_size : n));
-			clear();
-			m_ptr = ptr;
+				m_ptr = (T*)reallocate(m_ptr, n * sizeof(T));
+			else
+				m_ptr = (T*)allocate(n * sizeof(T));
 			m_size = n;
 		}
 
@@ -128,7 +128,7 @@ namespace da::core::containers {
 
 			m_size = other.m_size;
 			ASSERT(m_size);
-			m_ptr = new T[m_size];
+			m_ptr = (T*)allocate(m_size * sizeof(T));
 			ASSERT(m_ptr);
 			memcpy(m_ptr, other.m_ptr, sizeof(T) * m_size);
 			

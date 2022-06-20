@@ -11,7 +11,7 @@ namespace da::modules {
 	{
 	public:
 		CWindowModule(const core::FWindowData& windowData);
-
+		virtual ~CWindowModule();
 		virtual void update() override;
 		virtual void lateUpdate() override;
 		virtual void initalize() override;

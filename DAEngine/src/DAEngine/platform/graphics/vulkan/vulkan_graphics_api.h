@@ -75,7 +75,6 @@ namespace da::platform
 	{
 	public:
 		CVulkanGraphicsApi(const core::CWindow& windowModule);
-
 		virtual void initalize() override;
 		virtual void update() override;
 		virtual void shutdown() override;
@@ -197,10 +196,13 @@ namespace da::platform
 		VkSampleCountFlagBits m_msaaSamples = VK_SAMPLE_COUNT_1_BIT;
         uint32_t m_imageIndex;
 
+
+		CVulkanGraphicsPipeline* m_graphicsPipeline = nullptr;
+		/*
 		VkPipeline m_graphicsPipeline;
 		VkDescriptorSetLayout m_descriptorSetLayout;
 		VkPipelineLayout m_pipelineLayout;
-		
+		*/
         
 		// Render target
 		VkImage m_colorImage;

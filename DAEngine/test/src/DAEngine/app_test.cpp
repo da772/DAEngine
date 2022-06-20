@@ -35,6 +35,7 @@ CAppTest::CAppTest()
 
 bool CAppTest::RunTests()
 {
+	TEST_BEGIN();
 	TEST_FUNC(AppTests);
 	TEST_END();
 }
@@ -52,5 +53,5 @@ bool CAppTest::AppTests()
 
 	delete app;
 
-	TEST_END();
+	return true;
 }

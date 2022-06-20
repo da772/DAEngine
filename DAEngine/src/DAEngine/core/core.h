@@ -23,8 +23,6 @@
 #define DA_GRAPHICS_VULKAN
 #endif
 
-
-
 namespace da
 {
 	class CCore {
