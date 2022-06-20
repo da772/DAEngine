@@ -7,6 +7,8 @@
 #include <stb_image.h>
 #include <algorithm>
 
+#include "core/memory/memory.h"
+
 namespace da::platform
 {
 	CVulkanGraphicsTexture2D::CVulkanGraphicsTexture2D(const CString& path, core::CGraphicsApi& graphicsApi) : core::CGraphicsTexture2D(path, graphicsApi)

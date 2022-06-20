@@ -4,6 +4,8 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
+#include "core/memory/memory.h"
+
 namespace da::core
 {
 
@@ -45,7 +47,6 @@ namespace da::core
 
 	CModel::~CModel()
 	{
-
 	}
 
 }

@@ -10,11 +10,13 @@
 #include "DAEngine/core/maths/maths_test.h"
 #include "DAEngine/core/maths/vector_test.h"
 #include "DAEngine/core/guid_test.h"
+#include "DAEngine/core/memory/memory_test.h"
 #include "DAEngine/app_test.h"
 
 
 CTestManager::CTestManager()
 {
+	RegisterTest<CMemoryTest>();
 	RegisterTest<CArrayTest>();
 	RegisterTest<CListTest>();
 	RegisterTest<CStringTest>();

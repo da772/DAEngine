@@ -78,7 +78,7 @@ namespace da::core::containers
 		ASSERT(n < m_size);
 		resize(m_size + len);
 
-		memcpy(&m_ptr[n + len], &m_ptr[n], sizeof(char) * (size() - n - 1));
+		memorycopy(&m_ptr[n + len], &m_ptr[n], sizeof(char) * (size() - n - 1));
 
 		for (size_t i = 0; i < len; i++) {
 			m_ptr[n + i] = e[i];

@@ -65,7 +65,7 @@ private:
 protected:
 	inline virtual void onInitalize() override
 	{
-		da::core::CModel model = da::core::CModel("assets/viking_room.obj");
+		//da::core::CModel model = da::core::CModel("assets/viking_room.obj");
 		//da::core::CGraphicsPipeline* pipeline = da::core::CGraphicsPipelineFactory::Create(*m_graphicsModule->getGraphicsApi(), "shaders/vert.spv", "shaders/frag.spv", da::core::FVertexBase::getBindingDescription(), da::core::FVertexBase::getAttributeDescription());
 		//pipeline->create();
 		//da::core::CGraphicsTexture2D* texture = da::core::CTexture2DFactory::Create("assets/viking_room.png", *m_graphicsModule->getGraphicsApi());

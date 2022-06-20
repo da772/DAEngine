@@ -10,6 +10,8 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
+#include "core/memory/memory.h"
+
 namespace da::platform {
 
 	CImGuiVulkanApi::CImGuiVulkanApi(core::CGraphicsApi& graphicsApi) : 
@@ -84,6 +86,16 @@ namespace da::platform {
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+        ImGui::Begin("Memory", 0);
+        for (uint8_t i = 0; i < (uint8_t)da::memory::EMemoryLayer::INVALID; i++) {
+            ImGui::Text("Layer: %s - %llu bytes", da::memory::get_memory_layer_name((memory::EMemoryLayer)i), da::memory::get_memory_layers()[i]);
+        }
+
+        ImGui::Separator();
+        ImGui::Text("Total: %llu bytes", da::memory::getMemoryAllocated());
+
+        ImGui::End();
 
         //imgui commands
         ImGui::ShowDemoWindow(&open);
