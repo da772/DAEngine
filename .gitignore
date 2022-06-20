@@ -6,11 +6,6 @@
 *.lo
 *.o
 
-
-# Precompiled Headers
-*.gch
-*.pch
-
 # Executables
 *.exe
 *.out
@@ -34,3 +29,4 @@ premake5.lua
 *.xcworkspace
 Prototype/imgui.ini
 premake5.lua
+enc_temp_folder/
