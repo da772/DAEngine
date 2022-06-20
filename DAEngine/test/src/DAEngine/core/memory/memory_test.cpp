@@ -1,6 +1,7 @@
 #include "memory_test.h"
 #include <DAEngine/core/memory/memory.h>
 #include <DAEngine/core/containers.h>
+#include <DAEngine/core/memory/global_allocator.h>
 
 CMemoryTest::CMemoryTest()
 {
@@ -65,19 +66,32 @@ bool CMemoryTest::CMemoryLayerTest()
 
 	TEST_ASSERT(da::memory::peek_memory_layer() == 0);
 
-	da::memory::push_memory_layer((da::memory::EMemoryLayer)1);
-	TList<int> lst;
+	TList<int, da::memory::CCoreAllocator> lst;
 
 	lst.push(1);
 	lst.push(2);
 	lst.push(3);
 	lst.push(4);
-
-	da::memory::pop_memory_layer();
+	{
+		size_t sz = sizeof(int) * 8 + sizeof(size_t);
+		TEST_ASSERT(da::memory::get_memory_layers()[1] == sz);
+		TList<int, da::memory::CDebugAllocator> lst2;
+		lst2.push(1);
+		lst2.push(2);
+		lst2.push(3);
+		lst2.push(4);
+		lst2.push(5);
+		lst2.push(6);
+		TEST_ASSERT(da::memory::get_memory_layers()[5] == sz);
+		lst.clear();
+		lst2.push(5);
+		TEST_ASSERT(da::memory::get_memory_layers()[5] == sz);
+		lst2.clear();
+	}
+	TEST_ASSERT(da::memory::get_memory_layers()[1] == 0);
+	TEST_ASSERT(da::memory::get_memory_layers()[5] == 0);
 	
 
-
-	lst.push(5);
 
 	return true;
 }

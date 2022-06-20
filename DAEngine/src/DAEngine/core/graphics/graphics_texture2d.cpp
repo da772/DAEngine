@@ -3,7 +3,7 @@
 
 namespace da::core
 {
-	CGraphicsTexture2D::CGraphicsTexture2D(const CString& path, CGraphicsApi& graphicsApi) : m_path(path), m_graphicsApi(graphicsApi), m_textureNative(nullptr)
+	CGraphicsTexture2D::CGraphicsTexture2D(const CBasicString<memory::CGraphicsAllocator>& path, CGraphicsApi& graphicsApi) : m_path(path), m_graphicsApi(graphicsApi), m_textureNative(nullptr)
 	{
 
 	}

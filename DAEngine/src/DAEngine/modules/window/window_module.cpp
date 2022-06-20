@@ -7,9 +7,7 @@ namespace da::modules
 {
 	CWindowModule::CWindowModule(const core::FWindowData& windowData)
 	{
-		da::memory::push_memory_layer(memory::EMemoryLayer::Graphics);
 		m_Window = core::CWindowFactory::CreateWindow(windowData);
-		da::memory::pop_memory_layer();
 	}
 
 
@@ -20,9 +18,7 @@ namespace da::modules
 
 	void CWindowModule::update()
 	{
-		da::memory::push_memory_layer(memory::EMemoryLayer::Graphics);
 		m_Window->update();
-		da::memory::pop_memory_layer();
 	}
 
 	void CWindowModule::lateUpdate()
@@ -32,9 +28,7 @@ namespace da::modules
 
 	void CWindowModule::initalize()
 	{
-		da::memory::push_memory_layer(memory::EMemoryLayer::Graphics);
 		m_Window->initalize();
-		da::memory::pop_memory_layer();
 	}
 
 	void CWindowModule::shutdown()
@@ -49,10 +43,8 @@ namespace da::modules
 
 	void CWindowModule::lateShutdown()
 	{
-		da::memory::push_memory_layer(memory::EMemoryLayer::Graphics);
 		m_Window->shutdown();
 		delete m_Window;
-		da::memory::pop_memory_layer();
 	}
 
 	da::core::events::CEventHandler& CWindowModule::getEventHandler()

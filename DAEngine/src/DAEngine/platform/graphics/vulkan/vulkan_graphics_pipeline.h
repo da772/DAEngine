@@ -15,8 +15,9 @@ namespace da::platform
 	class CVulkanGraphicsPipeline : public core::CGraphicsPipeline
 	{
 	public:
-		CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const CString& vertexShader, const CString& fragShader, core::FVertexBindingDescription vertexBinding,
-			const TArray<core::FVertexInputAttributeDescription>& inputAttribDesc);
+		CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const CBasicString<memory::CGraphicsAllocator>& vertexShader, const CBasicString<memory::CGraphicsAllocator>& fragShader, 
+			core::FVertexBindingDescription vertexBinding,
+			const TArray<core::FVertexInputAttributeDescription, memory::CGraphicsAllocator>& inputAttribDesc);
 
 		virtual void create() override;
 		virtual void destroy() override;
@@ -36,7 +37,7 @@ namespace da::platform
 	private:
 		void createDescriptorSets();
 		void createGraphicsPipeline();
-		VkShaderModule createShaderModule(const TList<char>& code, VkDevice device);
+		VkShaderModule createShaderModule(const TList<char, memory::CGraphicsAllocator>& code, VkDevice device);
 
 	private:
 		CVulkanGraphicsApi& m_vulkanGraphicsApi;

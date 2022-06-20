@@ -1,17 +1,19 @@
 #include "dapch.h"
 #include "memory.h"
 #include <cstring>
+#include "logger.h"
 
 static size_t s_memoryAllocated = 0;
 static size_t s_layers[32] = { 0 };
 static uint8_t s_layerQueue[16] = { 0 };
 static uint8_t s_layerQueuePtr = 0;
 
-static const char* s_memory_layer_name[(uint8_t)da::memory::EMemoryLayer::INVALID+1] = {
+static const char* s_memory_layer_name[(uint8_t)da::memory::EMemoryLayer::INVALID + 1] = {
 	"Global"
 	,"Core"
 	,"Graphics"
 	,"Application"
+	,"ImGui"
 	,"Debug"
 	,"INVALID"
 };
@@ -19,10 +21,10 @@ static const char* s_memory_layer_name[(uint8_t)da::memory::EMemoryLayer::INVALI
 void* allocate(size_t size)
 {
 	size_t* p = (size_t*)malloc(size + sizeof(size_t));
+	assert(p);
 	p[0] = size;
 	s_memoryAllocated += size + sizeof(size_t);
 	s_layers[s_layerQueue[s_layerQueuePtr]] += size + sizeof(size_t);
-	assert(p);
 	return (void*)(&p[1]);
 }
 

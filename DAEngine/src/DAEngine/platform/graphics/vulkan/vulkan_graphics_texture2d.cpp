@@ -11,7 +11,7 @@
 
 namespace da::platform
 {
-	CVulkanGraphicsTexture2D::CVulkanGraphicsTexture2D(const CString& path, core::CGraphicsApi& graphicsApi) : core::CGraphicsTexture2D(path, graphicsApi)
+	CVulkanGraphicsTexture2D::CVulkanGraphicsTexture2D(const CBasicString<memory::CGraphicsAllocator>& path, core::CGraphicsApi& graphicsApi) : core::CGraphicsTexture2D(path, graphicsApi)
 		, m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
 	{
 	}
@@ -26,18 +26,17 @@ namespace da::platform
 
 	void CVulkanGraphicsTexture2D::shutdown()
 	{
-		vkDestroySampler(m_vulkanGraphicsApi.getDevice(), m_textureSampler, nullptr);
-		vkDestroyImageView(m_vulkanGraphicsApi.getDevice(), m_textureImageView, nullptr);
+		vkDestroySampler(m_vulkanGraphicsApi.getDevice(), m_textureSampler, &m_vulkanGraphicsApi.getAllocCallbacks());
+		vkDestroyImageView(m_vulkanGraphicsApi.getDevice(), m_textureImageView, &m_vulkanGraphicsApi.getAllocCallbacks());
 
-		vkDestroyImage(m_vulkanGraphicsApi.getDevice(), m_textureImage, nullptr);
-		vkFreeMemory(m_vulkanGraphicsApi.getDevice(), m_textureImageMemory, nullptr);
+		vkDestroyImage(m_vulkanGraphicsApi.getDevice(), m_textureImage, &m_vulkanGraphicsApi.getAllocCallbacks());
+		vkFreeMemory(m_vulkanGraphicsApi.getDevice(), m_textureImageMemory, &m_vulkanGraphicsApi.getAllocCallbacks());
 	}
 
 
 	CVulkanGraphicsTexture2D::~CVulkanGraphicsTexture2D()
 	{
 	}
-
 
 	void CVulkanGraphicsTexture2D::createTexture()
 	{
@@ -68,8 +67,8 @@ namespace da::platform
 
 		generateMipMaps(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, m_width, m_height, m_mipLevels);
 
-		vkDestroyBuffer(m_vulkanGraphicsApi.getDevice(), stagingBuffer, nullptr);
-		vkFreeMemory(m_vulkanGraphicsApi.getDevice(), stagingBufferMemory, nullptr);
+		vkDestroyBuffer(m_vulkanGraphicsApi.getDevice(), stagingBuffer, &m_vulkanGraphicsApi.getAllocCallbacks());
+		vkFreeMemory(m_vulkanGraphicsApi.getDevice(), stagingBufferMemory, &m_vulkanGraphicsApi.getAllocCallbacks());
 	}
 
 	void CVulkanGraphicsTexture2D::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
@@ -119,7 +118,7 @@ namespace da::platform
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		imageInfo.mipLevels = mipLevels;
 
-		auto result = vkCreateImage(m_vulkanGraphicsApi.getDevice(), &imageInfo, nullptr, &image);
+		auto result = vkCreateImage(m_vulkanGraphicsApi.getDevice(), &imageInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &image);
 
 		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create image: %s", m_path.cstr());
 
@@ -131,7 +130,7 @@ namespace da::platform
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = m_vulkanGraphicsApi.findMemoryType(memRequirements.memoryTypeBits, properties);
 
-		result = vkAllocateMemory(m_vulkanGraphicsApi.getDevice(), &allocInfo, nullptr, &imageMemory);
+		result = vkAllocateMemory(m_vulkanGraphicsApi.getDevice(), &allocInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &imageMemory);
 
 		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to allocated memory for image: %s", m_path.cstr());
 
@@ -252,7 +251,7 @@ namespace da::platform
 		samplerInfo.maxLod = static_cast<float>(m_mipLevels);
 		samplerInfo.mipLodBias = 0.0f; // Optional
 
-		auto result = vkCreateSampler(m_vulkanGraphicsApi.getDevice(), &samplerInfo, nullptr, &m_textureSampler);
+		auto result = vkCreateSampler(m_vulkanGraphicsApi.getDevice(), &samplerInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &m_textureSampler);
 
 		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create texture sampler: %s", m_path.cstr());
 	}

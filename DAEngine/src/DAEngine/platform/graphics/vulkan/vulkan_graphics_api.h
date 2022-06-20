@@ -6,6 +6,7 @@
 #include <vulkan/vulkan.h>
 #include <optional>
 #include <memory>
+#include "DAEngine/core/memory/global_allocator.h"
 
 
 namespace da::platform
@@ -24,8 +25,8 @@ namespace da::platform
 
 	struct SwapChainSupportDetails {
 		VkSurfaceCapabilitiesKHR capabilities;
-		TList<VkSurfaceFormatKHR> formats;
-		TList<VkPresentModeKHR> presentModes;
+		TList<VkSurfaceFormatKHR, memory::CGraphicsAllocator> formats;
+		TList<VkPresentModeKHR, memory::CGraphicsAllocator> presentModes;
 	};
 
 
@@ -44,8 +45,8 @@ namespace da::platform
 		}
 
 
-		static TArray<VkVertexInputAttributeDescription> getAttributeDescriptions() {
-			TArray<VkVertexInputAttributeDescription> attributeDescriptions(3);
+		static TArray<VkVertexInputAttributeDescription, da::memory::CGraphicsAllocator> getAttributeDescriptions() {
+			TArray<VkVertexInputAttributeDescription, da::memory::CGraphicsAllocator> attributeDescriptions(3);
 
 			attributeDescriptions[0].binding = 0;
 			attributeDescriptions[0].location = 0;
@@ -75,6 +76,7 @@ namespace da::platform
 	{
 	public:
 		CVulkanGraphicsApi(const core::CWindow& windowModule);
+		~CVulkanGraphicsApi();
 		virtual void initalize() override;
 		virtual void update() override;
 		virtual void shutdown() override;
@@ -93,8 +95,8 @@ namespace da::platform
 
 	private:
 		void createInstance();
-		bool checkValidationLayerSupport(const TList<const char*>& validationLayers);
-		TList<const char*> getRequiredExtensions();
+		bool checkValidationLayerSupport(const TList<const char*, memory::CGraphicsAllocator>& validationLayers);
+		TList<const char*, memory::CGraphicsAllocator> getRequiredExtensions();
 		void setupDebugCallback();
 		void selectPhysicalDevice();
 		void createLogicalDevice();
@@ -129,11 +131,13 @@ namespace da::platform
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
 		void createColorResources();
 
-		VkPhysicalDevice findDevices(const TList<VkPhysicalDevice>& devices);
+		VkPhysicalDevice findDevices(const TList<VkPhysicalDevice, memory::CGraphicsAllocator>& devices);
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, std::optional<VkSurfaceKHR> surface);
-		VkFormat findSupportedFormat(const TList<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+		VkFormat findSupportedFormat(const TList<VkFormat, memory::CGraphicsAllocator>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 		VkFormat findDepthFormat();
+
+		VkShaderModule createShaderModule(const TList<char, memory::CGraphicsAllocator>& code, VkDevice device);
 
 		void generateMipMaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
 
@@ -155,6 +159,7 @@ namespace da::platform
 		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags peoperties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
 		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t);
+		VkAllocationCallbacks& getAllocCallbacks() { return m_allocCallbacks; }
 
 	private:
 		VkInstance m_instance;
@@ -165,28 +170,28 @@ namespace da::platform
 		TList<const char*> m_validationLayers;
 		VkSurfaceKHR m_surface;
 		VkQueue m_presentQueue;
-		TList<VkImage> m_swapChainImages;
-		TList<VkImageView> m_swapChainImageViews;
+		TList<VkImage, memory::CGraphicsAllocator> m_swapChainImages;
+		TList<VkImageView, memory::CGraphicsAllocator> m_swapChainImageViews;
 		VkFormat m_swapChainImageFormat;
 		VkExtent2D m_swapChainExtent;
 		
 		VkCommandPool m_commandPool;
 		VkSwapchainKHR m_swapChain;
 		VkRenderPass m_renderPass;
-		TList<VkCommandBuffer> m_commandBuffers;
-		TList<VkSemaphore> m_imageAvailableSemaphores;
-		TList<VkSemaphore> m_renderFinishedSemaphores;
-		TList<VkFence> m_inFlightFences;
-		TList<VkFramebuffer> m_swapChainFramebuffers;
+		TList<VkCommandBuffer, memory::CGraphicsAllocator> m_commandBuffers;
+		TList<VkSemaphore, memory::CGraphicsAllocator> m_imageAvailableSemaphores;
+		TList<VkSemaphore, memory::CGraphicsAllocator> m_renderFinishedSemaphores;
+		TList<VkFence, memory::CGraphicsAllocator> m_inFlightFences;
+		TList<VkFramebuffer, memory::CGraphicsAllocator> m_swapChainFramebuffers;
 		uint32_t m_queueFamilyIndices[2];
 		VkBuffer m_vertexBuffer;
 		VkDeviceMemory m_vertexBufferMemory;
 		VkBuffer m_indexBuffer;
 		VkDeviceMemory m_indexBufferMemory;
-		TList<VkBuffer> m_uniformBuffers;
-		TList<VkDeviceMemory> m_uniformBuffersMemory;
+		TList<VkBuffer, memory::CGraphicsAllocator> m_uniformBuffers;
+		TList<VkDeviceMemory, memory::CGraphicsAllocator> m_uniformBuffersMemory;
 		VkDescriptorPool m_descriptorPool;
-		TList<VkDescriptorSet> m_descriptorSets;
+		TList<VkDescriptorSet, memory::CGraphicsAllocator> m_descriptorSets;
 
 		CVulkanGraphicsTexture2D* m_textureImage;
 
@@ -213,11 +218,14 @@ namespace da::platform
 
 		uint32_t m_mipLevels = 0;
 
-		TList<Vertex> m_vertices;
-		TList<uint32_t> m_indices;
+		TList<Vertex, memory::CGraphicsAllocator> m_vertices;
+		TList<uint32_t, memory::CGraphicsAllocator> m_indices;
 
-		TList<std::function<void(VkCommandBuffer cmd)>*> m_renderFunctions;
+		TList<std::function<void(VkCommandBuffer cmd)>*, memory::CGraphicsAllocator> m_renderFunctions;
 
+
+		memory::CGraphicsAllocator m_allocator;
+		VkAllocationCallbacks m_allocCallbacks;
 
 	};
 }

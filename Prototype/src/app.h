@@ -24,6 +24,7 @@ public:
 		da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(*m_graphicsModule);
 		addModule(imGuiModule);
 
+
 		//da::modules::CWindowModule* windowModule2 = new da::modules::CWindowModule({ "Hello World 2", 480, 240, 0,0, 144, da::platform::EWindowDeco::NONE });
 		//addModule(windowModule2);
 		//da::modules::CGraphicsModule* graphisModule2 = new da::modules::CGraphicsModule(*windowModule2);

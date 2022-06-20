@@ -1,9 +1,11 @@
 #pragma once
 #include "DAEngine/core/containers.h"
+#include "DAEngine/core/memory/global_allocator.h"
 
 namespace da::core::containers
 {
-	class CHashString
+	template <typename _Allocator = memory::CGlobalAllocator>
+	class CBasicHashString
 	{
 		public:
 
@@ -20,35 +22,40 @@ namespace da::core::containers
 				return hash;
 			}
 
-			inline CHashString() : 
+			inline CBasicHashString() :
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string(""), 
 #endif
 				m_hash(0) {
 
 			}
-			inline CHashString(const char* str) {
+			inline CBasicHashString(const char* str) {
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string = str;
 #endif
 				m_hash = genHash(str);
 			}
 
-			inline CHashString(const char* str, size_t size) {
+			inline CBasicHashString(const char* str, size_t size) {
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string = str;
 #endif
 				m_hash = generateHash(str, size);
 			}
 
-			inline CHashString(const CString& str) {
+			inline CBasicHashString(const CBasicString<_Allocator>& str) {
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string = str;
 #endif
 				m_hash = generateHash(str.cstr(), str.size());
 			}
 
-			inline CHashString(const uint32_t hash) : m_hash(hash) {
+			inline CBasicHashString(const uint32_t hash) : m_hash(hash) {
+
+			}
+
+			inline ~CBasicHashString()
+			{
 
 			}
 
@@ -57,11 +64,11 @@ namespace da::core::containers
 				return m_hash;
 			}
 
-			inline bool operator ==(const CHashString& rhs) const {
+			inline bool operator ==(const CBasicHashString<_Allocator>& rhs) const {
 				return rhs.m_hash == m_hash;
 			}
 
-			inline bool operator !=(const CHashString& rhs) const {
+			inline bool operator !=(const CBasicHashString<_Allocator>& rhs) const {
 				return rhs.m_hash != m_hash;
 			}
 
@@ -83,7 +90,7 @@ namespace da::core::containers
 			uint32_t genHash(const char* str) const;
 		private:
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
-			CString m_string;
+			CBasicString<_Allocator> m_string;
 #endif
 			uint32_t m_hash;
 	};

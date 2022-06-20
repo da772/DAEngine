@@ -1,12 +1,14 @@
 #pragma once
 #include "DAEngine/core/core.h"
 #include "DAEngine/core/memory/memory.h"
+#include "DAEngine/core/memory/global_allocator.h"
 #include "enumerable.h"
 #include <initializer_list>
 
+
 namespace da::core::containers {
 
-	template<typename T>
+	template<typename T, typename _Allocator = memory::CGlobalAllocator>
 	class TArray : public IEnumerable<T> {
 	public:
 		inline TArray() : m_size(0), m_ptr(nullptr) {
@@ -16,7 +18,7 @@ namespace da::core::containers {
 		inline TArray(const std::initializer_list<T>& l) {
 			m_size = l.size();
 			ASSERT(m_size);
-			m_ptr = new T[m_size];
+			m_ptr = (T*)m_allocator.allocate(m_size*sizeof(T));
 			size_t cnt = 0;
 			for (const T& i : l) {
 				m_ptr[cnt++] = i;
@@ -24,7 +26,7 @@ namespace da::core::containers {
 		}
 
 		inline TArray(const IEnumerable<T>& e) {
-			resize();
+			resize(e.size());
 			size_t c = 0;
 			for (const T& i : e) {
 				m_ptr[c++] = i;
@@ -32,17 +34,17 @@ namespace da::core::containers {
 		}
 
 		// Copy
-		inline TArray(const TArray<T>& arr) {
+		inline TArray(const TArray<T, _Allocator>& arr) {
 			// Copy
 			m_size = arr.m_size;
 			ASSERT(m_size);
-			m_ptr = (T*)allocate(m_size * sizeof(T));
+			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
 			ASSERT(m_ptr);
 			memcpy(m_ptr, arr.m_ptr, sizeof(T) * m_size);
 		}
 
 		// Move
-		inline TArray(TArray<T>&& other) {
+		inline TArray(TArray<T, _Allocator>&& other) {
 			m_ptr = other.m_ptr;
 			m_size = other.m_size;
 			other.m_ptr = nullptr;
@@ -56,21 +58,21 @@ namespace da::core::containers {
 		inline TArray(size_t size) { 
 			m_size = size;
 			ASSERT(m_size);
-			m_ptr = (T*)allocate(m_size * sizeof(T));
+			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
 			ASSERT(m_ptr);
 		};
 
 		inline TArray(size_t size, T value) {
 			m_size = size;
 			ASSERT(m_size);
-			m_ptr = (T*)allocate(m_size * sizeof(T));
+			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
 			ASSERT(m_ptr);
 			for (size_t i = 0; i < m_size; i++) m_ptr[i] = value;
 		};
 
 		inline void clear() { 
 			if (!m_ptr) return;
-			deallocate(m_ptr); 
+			m_allocator.deallocate(m_ptr);
 			m_ptr = nullptr;
 			m_size = 0;
 		};
@@ -79,9 +81,9 @@ namespace da::core::containers {
 			ASSERT(n);
 			if (n == m_size) return;
 			if (m_ptr)
-				m_ptr = (T*)reallocate(m_ptr, n * sizeof(T));
+				m_ptr = (T*)m_allocator.reallocate(m_ptr, n * sizeof(T));
 			else
-				m_ptr = (T*)allocate(n * sizeof(T));
+				m_ptr = (T*)m_allocator.allocate(n * sizeof(T));
 			m_size = n;
 		}
 
@@ -122,13 +124,13 @@ namespace da::core::containers {
 		};
 
 		// Copy
-		inline TArray<T>& operator=(const TArray<T>& other)
+		inline TArray<T, _Allocator>& operator=(const TArray<T, _Allocator>& other)
 		{
 			if (m_ptr) clear();
 
 			m_size = other.m_size;
 			ASSERT(m_size);
-			m_ptr = (T*)allocate(m_size * sizeof(T));
+			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
 			ASSERT(m_ptr);
 			memcpy(m_ptr, other.m_ptr, sizeof(T) * m_size);
 			
@@ -136,7 +138,7 @@ namespace da::core::containers {
 		}
 
 		// Move
-		inline TArray<T>& operator=(TArray<T>&& rhs) noexcept
+		inline TArray<T, _Allocator>& operator=(TArray<T, _Allocator>&& rhs) noexcept
 		{
 			if (m_ptr) clear();
 			m_ptr = rhs.m_ptr;
@@ -146,7 +148,7 @@ namespace da::core::containers {
 			return *this;
 		}
 
-		inline bool operator==(const TArray<T>& rhs) const {
+		inline bool operator==(const TArray<T, _Allocator>& rhs) const {
 			if (m_size != rhs.m_size) return false;
 			if (m_ptr == rhs.m_ptr) return true;
 			if (!m_ptr) return false;
@@ -179,7 +181,7 @@ namespace da::core::containers {
 			return true;
 		}
 
-		inline bool operator!=(const TArray<T>& rhs) const {
+		inline bool operator!=(const TArray<T, _Allocator>& rhs) const {
 			if (m_size != rhs.m_size) return true;
 			if (m_ptr == rhs.m_ptr) return false;
 			if (!m_ptr) return true;
@@ -193,6 +195,7 @@ namespace da::core::containers {
 	private:
 		size_t m_size = 0;
 		T* m_ptr = nullptr;
+		_Allocator m_allocator;
 
 	};
 

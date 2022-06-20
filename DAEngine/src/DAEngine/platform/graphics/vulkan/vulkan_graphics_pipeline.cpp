@@ -23,8 +23,8 @@ namespace da::platform {
 	}
 
 
-	CVulkanGraphicsPipeline::CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const CString& vertexShader, const CString& fragShader, core::FVertexBindingDescription vertexBinding,
-		const TArray<core::FVertexInputAttributeDescription>& inputAttribDesc) :
+	CVulkanGraphicsPipeline::CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const CBasicString<memory::CGraphicsAllocator>& vertexShader, const CBasicString<memory::CGraphicsAllocator>& fragShader, core::FVertexBindingDescription vertexBinding,
+		const TArray<core::FVertexInputAttributeDescription, memory::CGraphicsAllocator>& inputAttribDesc) :
 		core::CGraphicsPipeline(graphicsApi, vertexShader, fragShader, vertexBinding, inputAttribDesc), m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
 	{
 		
@@ -38,19 +38,19 @@ namespace da::platform {
 
 	void CVulkanGraphicsPipeline::destroy()
 	{
-		vkDestroyPipeline(m_vulkanGraphicsApi.getDevice(), m_graphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(m_vulkanGraphicsApi.getDevice(), m_pipelineLayout, nullptr);
-		vkDestroyDescriptorSetLayout(m_vulkanGraphicsApi.getDevice(), m_descriptorSetLayout, nullptr);
+		vkDestroyPipeline(m_vulkanGraphicsApi.getDevice(), m_graphicsPipeline, &m_vulkanGraphicsApi.getAllocCallbacks());
+		vkDestroyPipelineLayout(m_vulkanGraphicsApi.getDevice(), m_pipelineLayout, &m_vulkanGraphicsApi.getAllocCallbacks());
+		vkDestroyDescriptorSetLayout(m_vulkanGraphicsApi.getDevice(), m_descriptorSetLayout, &m_vulkanGraphicsApi.getAllocCallbacks());
 	}
 
-	VkShaderModule CVulkanGraphicsPipeline::createShaderModule(const TList<char>& code, VkDevice device) {
+	VkShaderModule CVulkanGraphicsPipeline::createShaderModule(const TList<char, memory::CGraphicsAllocator>& code, VkDevice device) {
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.codeSize = code.size();
 		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
 		VkShaderModule shaderModule{};
-		auto result = vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule);
+		auto result = vkCreateShaderModule(device, &createInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &shaderModule);
 		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create ShaderModule");
 		return shaderModule;
 	}
@@ -77,7 +77,7 @@ namespace da::platform {
 		layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
 		layoutInfo.pBindings = bindings.data();
 
-		auto result = vkCreateDescriptorSetLayout(m_vulkanGraphicsApi.getDevice(), &layoutInfo, nullptr, &m_descriptorSetLayout);
+		auto result = vkCreateDescriptorSetLayout(m_vulkanGraphicsApi.getDevice(), &layoutInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &m_descriptorSetLayout);
 
 		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create DescriptorSetLayout");
 
@@ -205,7 +205,7 @@ namespace da::platform {
 		pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
 
 
-		auto result = vkCreatePipelineLayout(m_vulkanGraphicsApi.getDevice(), &pipelineLayoutInfo, nullptr, &m_pipelineLayout);
+		auto result = vkCreatePipelineLayout(m_vulkanGraphicsApi.getDevice(), &pipelineLayoutInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &m_pipelineLayout);
 
 		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create PipelineSetLayout");
 
@@ -243,12 +243,12 @@ namespace da::platform {
 
 		pipelineInfo.pDepthStencilState = &depthStencil;
 
-		result = vkCreateGraphicsPipelines(m_vulkanGraphicsApi.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline);
+		result = vkCreateGraphicsPipelines(m_vulkanGraphicsApi.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &m_graphicsPipeline);
 
 		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create GraphicsPipeline");
 
-		vkDestroyShaderModule(m_vulkanGraphicsApi.getDevice(), fragShaderModule, nullptr);
-		vkDestroyShaderModule(m_vulkanGraphicsApi.getDevice(), vertShaderModule, nullptr);
+		vkDestroyShaderModule(m_vulkanGraphicsApi.getDevice(), fragShaderModule, &m_vulkanGraphicsApi.getAllocCallbacks());
+		vkDestroyShaderModule(m_vulkanGraphicsApi.getDevice(), vertShaderModule, &m_vulkanGraphicsApi.getAllocCallbacks());
 	}
 
 }

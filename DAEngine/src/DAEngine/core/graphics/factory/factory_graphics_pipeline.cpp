@@ -1,6 +1,7 @@
 #include "dapch.h"
 #include "core/core.h"
 #include "factory_graphics_pipeline.h"
+#include "core/memory/global_allocator.h"
 
 #ifdef DA_GRAPHICS_VULKAN
 #include "platform/graphics/vulkan/vulkan_graphics_pipeline.h"

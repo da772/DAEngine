@@ -9,7 +9,7 @@
 namespace da::core
 {
 
-	CModel::CModel(const CString& path) : m_path(path)
+	CModel::CModel(const CBasicString<memory::CGraphicsAllocator>& path) : m_path(path)
 	{
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;

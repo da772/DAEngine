@@ -87,7 +87,8 @@ namespace da::platform {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        if (ImGui::Begin("Memory", 0)) {
+        bool o = ImGui::Begin("Memory", 0);
+        if (o) {
             ImGui::BeginTable("Table", 2, ImGuiTableFlags_BordersInner);
             ImGui::TableSetupColumn("Name");
             ImGui::TableSetupColumn("Allocation");

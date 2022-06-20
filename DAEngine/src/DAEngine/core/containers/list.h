@@ -2,6 +2,8 @@
 #include "daengine/core/core.h"
 #include "daengine/core/maths/maths.h"
 #include "DAEngine/core/memory/memory.h"
+#include "DAEngine/core/memory/allocator.h"
+#include "DAEngine/core/memory/global_allocator.h"
 #include "enumerable.h"
 #include <cstdlib>
 #include <cstring>
@@ -9,7 +11,7 @@
 
 namespace da::core::containers {
 
-	template<typename T>
+	template<typename T, typename _Allocator = memory::CGlobalAllocator>
 	class TList : public IEnumerable<T>
 	{
 	public:
@@ -149,11 +151,11 @@ namespace da::core::containers {
 			size_t newSize = n << m_shiftSize;
 
 			if (m_ptr) {
-				T* ptr = (T*)reallocate(m_ptr, sizeof(T) * newSize);
+				T* ptr = (T*)m_allocator.reallocate(m_ptr, sizeof(T) * newSize);
 				ASSERT(ptr);
 				m_ptr = ptr;
 			}
-			else m_ptr = (T*)allocate(newSize * sizeof(T));
+			else m_ptr = (T*)m_allocator.allocate(newSize * sizeof(T));
 			ASSERT(m_ptr);
 			m_heapSize = newSize;
 			m_size = n;
@@ -161,7 +163,7 @@ namespace da::core::containers {
 
 		inline void clear() {
 			if (!m_ptr) return;
-			deallocate((void*)m_ptr);
+			m_allocator.deallocate((void*)m_ptr);
 			m_size = 0;
 			m_heapSize = 0;
 			m_ptr = nullptr;
@@ -194,7 +196,7 @@ namespace da::core::containers {
 		}
 
 		// Copy
-		inline TList<T>& operator=(const TList<T>& other)
+		inline TList<T, _Allocator>& operator=(const TList<T, _Allocator>& other)
 		{
 			if (m_ptr) clear();
 
@@ -207,7 +209,7 @@ namespace da::core::containers {
 		}
 
 		// Move
-		inline TList<T>& operator=(TList<T>&& rhs) noexcept
+		inline TList<T, _Allocator>& operator=(TList<T, _Allocator>&& rhs) noexcept
 		{
 			if (m_ptr) clear();
 			m_ptr = rhs.m_ptr;
@@ -219,7 +221,7 @@ namespace da::core::containers {
 			return *this;
 		}
 
-		inline bool operator==(const TList<T>& rhs) const {
+		inline bool operator==(const TList<T, _Allocator>& rhs) const {
 			if (m_size != rhs.m_size) return false;
 			if (m_ptr == rhs.m_ptr) return true;
 			if (!m_ptr) return false;
@@ -230,7 +232,7 @@ namespace da::core::containers {
 			return true;
 		}
 
-		inline bool operator!=(const TList<T>& rhs) const {
+		inline bool operator!=(const TList<T, _Allocator>& rhs) const {
 			if (m_size != rhs.m_size) return true;
 			if (m_ptr == rhs.m_ptr) return false;
 			if (!m_ptr) return true;
@@ -246,6 +248,7 @@ namespace da::core::containers {
 		size_t m_heapSize = 0;
 		T* m_ptr = nullptr;
         uint8_t m_shiftSize = 1;
+		_Allocator m_allocator;
 
 	};
 }

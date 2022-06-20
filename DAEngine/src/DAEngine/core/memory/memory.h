@@ -10,7 +10,7 @@ void memorycopy(void* dst, void* src, size_t size);
 namespace da::memory
 {
 	enum class EMemoryLayer : uint8_t {
-		Global = 0,
+		Global,
 		Core,
 		Graphics,
 		Application,

@@ -1,11 +1,14 @@
 #pragma once
 
-#include "containers/array.h"
-#include "containers/enumerable.h"
-#include "containers/enumerator.h"
-#include "containers/list.h"
-#include "containers/string.h"
-#include "containers/pair.h"
-#include "containers/hashstring.h"
+#include "daengine/core/containers/array.h"
+#include "daengine/core/containers/enumerable.h"
+#include "daengine/core/containers/enumerator.h"
+#include "daengine/core/containers/list.h"
+#include "daengine/core/containers/string.h"
+#include "daengine/core/containers/pair.h"
+#include "daengine/core/containers/hashstring.h"
 
 using namespace da::core::containers;
+
+using CString = da::core::containers::CBasicString<da::memory::CGlobalAllocator>;
+using CHashString = da::core::containers::CBasicHashString<da::memory::CGlobalAllocator>;

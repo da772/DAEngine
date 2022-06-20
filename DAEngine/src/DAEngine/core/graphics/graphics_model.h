@@ -10,17 +10,17 @@ namespace da::core
 	class CModel
 	{
 	public:
-		CModel(const CString& path);
+		CModel(const CBasicString<memory::CGraphicsAllocator>& path);
 		~CModel();
 
-		inline const TList<FVertexBase> getVertices() const { return m_vertices; }
-		inline const TList<uint32_t> getIndices() const { return m_indices; }
+		inline const TList<FVertexBase, memory::CGraphicsAllocator> getVertices() const { return m_vertices; }
+		inline const TList<uint32_t, memory::CGraphicsAllocator> getIndices() const { return m_indices; }
 
 
 	private:
-		CString m_path;
-		TList<FVertexBase> m_vertices;
-		TList<uint32_t> m_indices;
+		CBasicString<memory::CGraphicsAllocator> m_path;
+		TList<FVertexBase, memory::CGraphicsAllocator> m_vertices;
+		TList<uint32_t, memory::CGraphicsAllocator> m_indices;
 
 	};
 }
