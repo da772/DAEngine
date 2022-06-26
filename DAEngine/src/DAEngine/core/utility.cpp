@@ -1,21 +1,19 @@
 #include "dapch.h"
 #include "utility.h"
 #include <chrono>
-#include <iostream>
 #include <iomanip>
 #include <ctime>
-#include <sstream>
+#include <time.h>
 
 namespace da::utility
 {
 	CString CurrentDateTime()
 	{
-        auto t = std::time(nullptr);
-        auto tm = *std::localtime(&t);
+		char buffer[2048];
+		time_t ltime = time(NULL);
+		sprintf_s(buffer, sizeof(buffer), "%s", asctime(localtime(&ltime)));
 
-        std::ostringstream oss;
-            oss << std::put_time(&tm, "%m-%d-%Y %H:%M:%S");
-		return oss.str().c_str();
+		return CString(buffer);
 	}
 
 	uint64_t GetTimeUS()

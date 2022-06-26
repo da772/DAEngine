@@ -11,7 +11,6 @@
 class ProtoTypeApp : public da::CApp {
 
 public:
-	
 	inline ProtoTypeApp(int argc, const char** argv) : CApp(argc, argv) {
 		da::modules::CWindowModule* windowModule = new da::modules::CWindowModule({ "Hello World!", 720, 480, 0,0, 144, da::core::EWindowDeco::NONE });
 		addModule(windowModule);
@@ -20,10 +19,9 @@ public:
 
 		m_graphicsModule = new da::modules::CGraphicsModule(*windowModule);
 		addModule(m_graphicsModule);
-
+		
 		da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(*m_graphicsModule);
 		addModule(imGuiModule);
-
 
 		//da::modules::CWindowModule* windowModule2 = new da::modules::CWindowModule({ "Hello World 2", 480, 240, 0,0, 144, da::platform::EWindowDeco::NONE });
 		//addModule(windowModule2);

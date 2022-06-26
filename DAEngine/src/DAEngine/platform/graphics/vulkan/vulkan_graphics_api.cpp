@@ -151,10 +151,7 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::initalize()
 	{
-		//loadModel();
-		core::CModel model("assets/viking_room.obj");
-		m_vertices = TList<Vertex, memory::CGraphicsAllocator>((Vertex*)model.getVertices().data(), model.getVertices().size());
-		m_indices = model.getIndices();
+		loadModel();
 		createSurface();
 		selectPhysicalDevice();
 		createLogicalDevice();

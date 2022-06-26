@@ -22,6 +22,7 @@ namespace da::utility {
 		CString s = "dumps/ConsoleLog_" + CurrentDateTime() + "_" + GetConfiguration() + ".log";
 		s.replace(':', '-');
 		s.remove(' ');
+		s.remove('\n');
 		return s;
 	}
 

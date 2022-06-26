@@ -77,6 +77,7 @@ project "Prototype"
 			runtime "Release"
 			optimize "On"
 			symbols "On"
+			kind "ConsoleApp"
 			
 		filter "configurations:Final"
 			defines "DA_Final"
