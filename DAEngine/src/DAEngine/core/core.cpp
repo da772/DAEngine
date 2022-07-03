@@ -5,8 +5,6 @@
 #include "logger.h"
 #include <iostream>
 
-static size_t s_bytesAllocated;
-
 void da::CCore::_assert(bool x, const char* file, long line)
 {
 	if (x) return;

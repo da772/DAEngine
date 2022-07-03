@@ -49,12 +49,13 @@ project "Prototype"
 		"DAEngine/src",
 		"%{prj.name}/src",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.tiny_obj_loader}"
+		"%{IncludeDir.assimp}"
 	}
 
 	links
 	{
-		"DAEngine"
+		"DAEngine",
+		"assimp"
 	}
 	
 	filter "system:windows"

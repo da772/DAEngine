@@ -19,7 +19,7 @@ virtual bool RunTests() override; \
 #define TEST_FUNC(x) {const uint64_t strt = utility::GetTimeUS(); if (x()) CLogger::Log("%s[%s] [PASS] [%s] Runtime %.3f ms%s", color::FG_GREEN, utility::CurrentDateTime().c_str(), #x, (utility::GetTimeUS()-strt)/1000.f, color::FG_DEFAULT); else return false; }
 #define TEST_END() } TEST_ASSERT(__memalloc__ == da::memory::getMemoryAllocated()); return true;
 
-class ITest
+class ITest 
 {
 public:
     inline virtual ~ITest() {};

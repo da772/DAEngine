@@ -24,17 +24,13 @@ namespace da::memory
 
 	void CGlobalAllocator::deallocate(void* ptr)
 	{
-		da::memory::push_memory_layer((da::memory::EMemoryLayer)m_layer);
 		::deallocate(ptr);
-		pop_memory_layer();
 		return;
 	}
 
 	void* CGlobalAllocator::reallocate(void* ptr, size_t size)
 	{
-		da::memory::push_memory_layer((da::memory::EMemoryLayer)m_layer);
 		void* p = ::reallocate(ptr, size);
-		pop_memory_layer();
 		return p;
 	}
 

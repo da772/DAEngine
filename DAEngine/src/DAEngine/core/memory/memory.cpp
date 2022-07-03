@@ -15,38 +15,38 @@ static const char* s_memory_layer_name[(uint8_t)da::memory::EMemoryLayer::INVALI
 	,"Application"
 	,"ImGui"
 	,"Debug"
+	,"STD"
 	,"INVALID"
 };
 
 void* allocate(size_t size)
 {
-	size_t* p = (size_t*)malloc(size + sizeof(size_t));
+	da::memory::FMemoryData* p = (da::memory::FMemoryData*)malloc(size + sizeof(da::memory::FMemoryData));
 	assert(p);
-	p[0] = size;
-	s_memoryAllocated += size + sizeof(size_t);
-	s_layers[s_layerQueue[s_layerQueuePtr]] += size + sizeof(size_t);
+	p[0] = { s_layerQueue[s_layerQueuePtr], size };
+	s_memoryAllocated += size + sizeof(da::memory::FMemoryData);
+	s_layers[p->m_layer] += size + sizeof(da::memory::FMemoryData);
 	return (void*)(&p[1]);
 }
 
 void deallocate(void* ptr) {
 	if (!ptr) return;
-	size_t* p = (size_t*)ptr;
-	size_t size = p[-1]; 
-	s_memoryAllocated -= size + sizeof(size_t);
-	s_layers[s_layerQueue[s_layerQueuePtr]] -= size + sizeof(size_t);
-	void* p2 = (void*)(&p[-1]);
-	free(p2);
+	da::memory::FMemoryData* p = &((da::memory::FMemoryData*)ptr)[-1];
+	size_t size = p->m_size;
+	s_memoryAllocated -= size + sizeof(da::memory::FMemoryData);
+	s_layers[p->m_layer] -= size + sizeof(da::memory::FMemoryData);
+	free(p);
 }
 
 void* reallocate(void* ptr, size_t size)
 {
-	size_t* p = (size_t*)ptr;
-	size_t oldSize = p[-1];
-	size_t* np = (size_t*)realloc(&p[-1], size + sizeof(size_t));
+	da::memory::FMemoryData* p = &((da::memory::FMemoryData*)ptr)[-1];
+	size_t oldSize = p->m_size;
+	da::memory::FMemoryData* np = (da::memory::FMemoryData*)realloc(p, size + sizeof(da::memory::FMemoryData));
 	assert(np);
-	np[0] = size;
+	np->m_size = size;
 	s_memoryAllocated += size - oldSize;
-	s_layers[s_layerQueue[s_layerQueuePtr]] += size - oldSize;
+	s_layers[np->m_layer] += size - oldSize;
 	return (void*)&np[1];
 }
 

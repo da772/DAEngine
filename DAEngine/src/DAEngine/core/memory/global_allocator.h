@@ -45,4 +45,10 @@ namespace da::memory {
 	public:
 		inline CDebugAllocator() : CGlobalAllocator((uint8_t)EMemoryLayer::Debug) {};
 	};
+
+	class CSTDAllocator : public CGlobalAllocator
+	{
+	public:
+		inline CSTDAllocator() : CGlobalAllocator((uint8_t)EMemoryLayer::STD) {};
+	};
 }

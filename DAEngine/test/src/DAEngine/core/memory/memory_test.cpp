@@ -32,31 +32,31 @@ bool CMemoryTest::CMemoryLayerTest()
 
 	da::memory::push_memory_layer((da::memory::EMemoryLayer)1);
 	void* ptr = allocate(10);
-	TEST_ASSERT(da::memory::get_memory_layers()[1] == 10 + sizeof(size_t));
+	TEST_ASSERT(da::memory::get_memory_layers()[1] == 10 + sizeof(da::memory::FMemoryData));
 	ptr = reallocate(ptr, 15);
-	TEST_ASSERT(da::memory::get_memory_layers()[1] == 15 + sizeof(size_t));
+	TEST_ASSERT(da::memory::get_memory_layers()[1] == 15 + sizeof(da::memory::FMemoryData));
 	ptr = reallocate(ptr, 5);
-	TEST_ASSERT(da::memory::get_memory_layers()[1] == 5 + sizeof(size_t));
+	TEST_ASSERT(da::memory::get_memory_layers()[1] == 5 + sizeof(da::memory::FMemoryData));
 	deallocate(ptr);
 	TEST_ASSERT(da::memory::get_memory_layers()[1] == 0);
 
 	da::memory::push_memory_layer((da::memory::EMemoryLayer)2);
 	ptr = allocate(10);
-	TEST_ASSERT(da::memory::get_memory_layers()[2] == 10 + sizeof(size_t));
+	TEST_ASSERT(da::memory::get_memory_layers()[2] == 10 + sizeof(da::memory::FMemoryData));
 	ptr = reallocate(ptr, 15);
-	TEST_ASSERT(da::memory::get_memory_layers()[2] == 15 + sizeof(size_t));
+	TEST_ASSERT(da::memory::get_memory_layers()[2] == 15 + sizeof(da::memory::FMemoryData));
 	ptr = reallocate(ptr, 5);
-	TEST_ASSERT(da::memory::get_memory_layers()[2] == 5 + sizeof(size_t));
+	TEST_ASSERT(da::memory::get_memory_layers()[2] == 5 + sizeof(da::memory::FMemoryData));
 	deallocate(ptr);
 	TEST_ASSERT(da::memory::get_memory_layers()[2] == 0);
 
 	da::memory::push_memory_layer((da::memory::EMemoryLayer)3);
 	ptr = allocate(10);
-	TEST_ASSERT(da::memory::get_memory_layers()[3] == 10 + sizeof(size_t));
+	TEST_ASSERT(da::memory::get_memory_layers()[3] == 10 + sizeof(da::memory::FMemoryData));
 	ptr = reallocate(ptr, 15);
-	TEST_ASSERT(da::memory::get_memory_layers()[3] == 15 + sizeof(size_t));
+	TEST_ASSERT(da::memory::get_memory_layers()[3] == 15 + sizeof(da::memory::FMemoryData));
 	ptr = reallocate(ptr, 5);
-	TEST_ASSERT(da::memory::get_memory_layers()[3] == 5 + sizeof(size_t));
+	TEST_ASSERT(da::memory::get_memory_layers()[3] == 5 + sizeof(da::memory::FMemoryData));
 	deallocate(ptr);
 	TEST_ASSERT(da::memory::get_memory_layers()[3] == 0);
 
@@ -73,8 +73,8 @@ bool CMemoryTest::CMemoryLayerTest()
 	lst.push(3);
 	lst.push(4);
 	{
-		size_t sz = sizeof(int) * 8 + sizeof(size_t);
-		TEST_ASSERT(da::memory::get_memory_layers()[1] == sz);
+		size_t sz = sizeof(int) * 8 + sizeof(da::memory::FMemoryData);
+		TEST_ASSERT(da::memory::get_memory_layers()[(uint8_t)da::memory::EMemoryLayer::Core] == sz);
 		TList<int, da::memory::CDebugAllocator> lst2;
 		lst2.push(1);
 		lst2.push(2);
@@ -82,7 +82,7 @@ bool CMemoryTest::CMemoryLayerTest()
 		lst2.push(4);
 		lst2.push(5);
 		lst2.push(6);
-		TEST_ASSERT(da::memory::get_memory_layers()[5] == sz);
+		TEST_ASSERT(da::memory::get_memory_layers()[(uint8_t)da::memory::EMemoryLayer::Debug] == sz);
 		lst.clear();
 		lst2.push(5);
 		TEST_ASSERT(da::memory::get_memory_layers()[5] == sz);

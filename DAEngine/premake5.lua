@@ -8,12 +8,15 @@ group "ThirdParty"
 filter "system:macosx"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
+	include "thirdparty/assimp"
 filter "system:windows"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
+	include "thirdparty/assimp"
 filter "system:linux"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
+	include "thirdparty/assimp"
 group ""
 
 IncludeDir = {}
@@ -22,7 +25,7 @@ IncludeDir = {}
 	IncludeDir["ImGui"] = "%{wks.location}/DAEngine/thirdparty/DearImGui"
 	IncludeDir["glm"] = "%{wks.location}/DAEngine/thirdparty/glm"
 	IncludeDir["stb"] = "%{wks.location}/DAEngine/thirdparty/stb"
-	IncludeDir["tiny_obj_loader"] = "%{wks.location}/DAEngine/thirdparty/tiny_obj_loader"
+	IncludeDir["assimp"] = "%{wks.location}/DAEngine/thirdparty/assimp/include"
 end
 
 project "DAEngine"
@@ -55,7 +58,7 @@ project "DAEngine"
 		"%{prj.location}/src/DAEngine",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.tiny_obj_loader}"
+		"%{IncludeDir.assimp}"
 	}
 	
 	libdirs

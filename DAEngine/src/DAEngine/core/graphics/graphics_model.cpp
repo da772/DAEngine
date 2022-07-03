@@ -1,48 +1,54 @@
 #include "dapch.h"
 #include "graphics_model.h"
 #if !defined(DA_TEST)
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
-
 #include "core/memory/memory.h"
+#include "core/file.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 
 namespace da::core
 {
 
 	CModel::CModel(const CBasicString<memory::CGraphicsAllocator>& path) : m_path(path)
 	{
-		tinyobj::attrib_t attrib;
-		std::vector<tinyobj::shape_t> shapes;
-		std::vector<tinyobj::material_t> materials;
-		std::string warn, err;
+		CFile file(m_path);
 
-		tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, m_path.cstr());
+		Assimp::Importer importer;
+	
+		const aiScene* pScene = importer.ReadFileFromMemory(file.data(), file.size()*sizeof(char), aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
 
-		std::unordered_map<FVertexBase, uint32_t> uniqueVertices{};
-
-		for (const auto& shape : shapes) {
-			for (const auto& index : shape.mesh.indices) {
+		for (size_t i = 0; i < pScene->mNumMeshes; i++)
+		{
+			
+			for (size_t v = 0; v < pScene->mMeshes[i]->mNumVertices; v++) {
 				FVertexBase vertex{};
 				vertex.Pos = {
-					attrib.vertices[3 * index.vertex_index + 0],
-					attrib.vertices[3 * index.vertex_index + 1],
-					attrib.vertices[3 * index.vertex_index + 2]
+					pScene->mMeshes[i]->mVertices[v].x,
+					pScene->mMeshes[i]->mVertices[v].y,
+					pScene->mMeshes[i]->mVertices[v].z
 				};
 
 				vertex.TexCoord = {
-					attrib.texcoords[2 * index.texcoord_index + 0],
-					1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+					pScene->mMeshes[i]->mTextureCoords[0][v].x,
+					pScene->mMeshes[i]->mTextureCoords[0][v].y
 				};
+				
 
-				vertex.Color = { 1.0f, 1.0f, 1.0f };
+				m_vertices.push(vertex);
+			}
 
-				if (uniqueVertices.count(vertex) == 0) {
-					uniqueVertices[vertex] = static_cast<uint32_t>(m_vertices.size());
-					m_vertices.push(vertex);
+			for (size_t j = 0; j < pScene->mMeshes[i]->mNumFaces; j++) {
+				for (size_t m = 0; m < pScene->mMeshes[i]->mFaces[j].mNumIndices; m++) {
+					m_indices.push(pScene->mMeshes[i]->mFaces[j].mIndices[m]);
 				}
-				m_indices.push(uniqueVertices[vertex]);
+				
 			}
 		}
+
+		importer.FreeScene();
+		memory::pop_memory_layer();
 	}
 
 	CModel::~CModel()

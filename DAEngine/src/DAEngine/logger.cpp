@@ -27,7 +27,8 @@ namespace da
 	{
 		if (s_logger)
 		{
-			fclose(s_logger->m_file);
+			if (s_logger->m_file)
+				fclose(s_logger->m_file);
 			delete s_logger;
 			s_logger = nullptr;
 		}
@@ -51,9 +52,11 @@ namespace da
 		*/
 #endif
 
-		fputs(message.cstr(), s_logger->m_file);
-		fflush(s_logger->m_file);
-
+		if (s_logger->m_file) {
+			fputs(message.cstr(), s_logger->m_file);
+			fflush(s_logger->m_file);
+		}
+		
 #ifdef DA_PLATFORM_WINDOWS
 		OutputDebugStringA(message.cstr());
 #endif

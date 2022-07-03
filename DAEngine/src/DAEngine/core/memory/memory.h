@@ -16,8 +16,16 @@ namespace da::memory
 		Application,
 		ImGui,
 		Debug,
+		STD,
 		INVALID
 	};
+
+#pragma pack(push, 1)
+	struct FMemoryData {
+		uint8_t m_layer;
+		size_t m_size;
+	};
+#pragma pack(pop)
 
 	size_t getMemoryAllocated();
 	void push_memory_layer(EMemoryLayer layer);
