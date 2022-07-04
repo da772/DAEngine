@@ -7,6 +7,7 @@
 #include <optional>
 #include <memory>
 #include "DAEngine/core/memory/global_allocator.h"
+#include "daengine/core/graphics/graphics_model.h"
 
 
 namespace da::platform
@@ -28,49 +29,6 @@ namespace da::platform
 		TList<VkSurfaceFormatKHR, memory::CGraphicsAllocator> formats;
 		TList<VkPresentModeKHR, memory::CGraphicsAllocator> presentModes;
 	};
-
-
-	struct Vertex {
-		Vector3f Pos;
-		Vector3f Color;
-		Vector2f TexCoord;
-
-		static VkVertexInputBindingDescription getBindingDescription() {
-			VkVertexInputBindingDescription bindingDescription{};
-			bindingDescription.binding = 0;
-			bindingDescription.stride = sizeof(Vertex);
-			bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-			return bindingDescription;
-		}
-
-
-		static TArray<VkVertexInputAttributeDescription, da::memory::CGraphicsAllocator> getAttributeDescriptions() {
-			TArray<VkVertexInputAttributeDescription, da::memory::CGraphicsAllocator> attributeDescriptions(3);
-
-			attributeDescriptions[0].binding = 0;
-			attributeDescriptions[0].location = 0;
-			attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-			attributeDescriptions[0].offset = offsetof(Vertex, Pos);
-
-			attributeDescriptions[1].binding = 0;
-			attributeDescriptions[1].location = 1;
-			attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-			attributeDescriptions[1].offset = offsetof(Vertex, Color);
-
-			attributeDescriptions[2].binding = 0;
-			attributeDescriptions[2].location = 2;
-			attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
-			attributeDescriptions[2].offset = offsetof(Vertex, TexCoord);
-
-			return attributeDescriptions;
-		}
-
-		bool operator==(const Vertex& other) const {
-			return Pos == other.Pos && Color == other.Color && TexCoord == other.TexCoord;
-		}
-	};
-
 
 	class CVulkanGraphicsApi : public core::CGraphicsApi
 	{
@@ -218,7 +176,7 @@ namespace da::platform
 
 		uint32_t m_mipLevels = 0;
 
-		TList<Vertex, memory::CGraphicsAllocator> m_vertices;
+		TList<core::FVertexBase, memory::CGraphicsAllocator> m_vertices;
 		TList<uint32_t, memory::CGraphicsAllocator> m_indices;
 
 		TList<std::function<void(VkCommandBuffer cmd)>*, memory::CGraphicsAllocator> m_renderFunctions;

@@ -20,7 +20,6 @@ project "GLFW"
     }
 
     filter "system:macosx"
-        systemversion "latest"
         
         files
         {

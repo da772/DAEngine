@@ -1,3 +1,6 @@
+CC="gcc"
+CXX="g++"
+
 workspace "Prototype"
 	architecture "x64"
 
@@ -204,8 +207,11 @@ project "Prototype"
 			}
 
 	filter "system:macosx"
-		systemversion "latest"
-		kind "WindowedApp"
+	
+		makesettings [[
+			CC = clang
+			CXX = clang++
+		]]
 
 		defines
 		{

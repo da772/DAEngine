@@ -14,9 +14,10 @@ namespace da::core
 	struct FVertexBase
 	{
 	public:
-		Vector3f Pos;
-		Vector3f Color;
+        // Smaller first
 		Vector2f TexCoord;
+        Vector3f Pos;
+        Vector3f Color;
 
 		inline static FVertexBindingDescription getBindingDescription()
 		{

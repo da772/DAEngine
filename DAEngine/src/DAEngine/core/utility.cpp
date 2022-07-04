@@ -11,7 +11,11 @@ namespace da::utility
 	{
 		char buffer[2048];
 		time_t ltime = time(NULL);
-		sprintf_s(buffer, sizeof(buffer), "%s", asctime(localtime(&ltime)));
+#ifdef DA_UNIX
+        snprintf(buffer, sizeof(buffer), "%s", asctime(localtime(&ltime)));
+#else
+        sprintf_s(buffer, sizeof(buffer), "%s", asctime(localtime(&ltime)));
+#endif
 
 		return CString(buffer);
 	}

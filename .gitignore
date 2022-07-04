@@ -23,10 +23,11 @@ Bin-Obj/
 *.log
 *.log.bak
 *.bak
-premake5.lua
 *.DS_STORE
 *.xcodeproj
 *.xcworkspace
 Prototype/imgui.ini
 premake5.lua
 enc_temp_folder/
+Makefile
+

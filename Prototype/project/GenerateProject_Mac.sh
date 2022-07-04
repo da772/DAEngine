@@ -4,4 +4,4 @@ cd "$here"
 cd ..
 cp -f "BuildTarget.lua" "../premake5.lua"
 cd ..
-./ThirdParty/premake5_mac xcode4 --os=macosx
+./ThirdParty/premake5_mac gmake2 --os=macosx

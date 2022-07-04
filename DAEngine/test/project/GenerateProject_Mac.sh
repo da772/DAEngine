@@ -2,4 +2,4 @@
 here="`dirname \"$0\"`"
 cd "$here"
 cd ..
-../../ThirdParty/premake5_mac xcode4
+../../ThirdParty/premake5_mac xcode4 --unit-test

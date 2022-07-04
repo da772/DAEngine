@@ -1,7 +1,9 @@
 #pragma once
 
+#ifndef DA_UNIX
 void* operator new(size_t size);
 void operator delete(void* ptr);
+#endif
 void* allocate(size_t size);
 void deallocate(void* ptr);
 void* reallocate(void* ptr, size_t size);

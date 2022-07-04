@@ -2,6 +2,7 @@
 #include "vulkan_graphics_pipeline.h"
 #ifdef DA_GRAPHICS_VULKAN
 #include <fstream>
+#include "logger.h"
 
 namespace da::platform {
 	static TList<char> readFile(const std::string& filename) {
@@ -189,7 +190,7 @@ namespace da::platform {
 		colorBlending.blendConstants[2] = 0.0f; // Optional
 		colorBlending.blendConstants[3] = 0.0f; // Optional
 
-		std::vector<VkDynamicState> dynamicStates = {
+		TArray<VkDynamicState> dynamicStates = {
 			VK_DYNAMIC_STATE_VIEWPORT,
 			VK_DYNAMIC_STATE_LINE_WIDTH
 		};

@@ -26,14 +26,6 @@
 #include "core/graphics/graphics_model.h"
 #include "vulkan_graphics_pipeline.h"
 
-namespace std {
-	template<> struct hash<da::platform::Vertex> {
-		size_t operator()(da::platform::Vertex const& vertex) const {
-			return CBasicHashString<da::memory::CGraphicsAllocator>((const char*)&vertex, sizeof(da::platform::Vertex)).hash();
-		}
-	};
-};
-
 namespace da::platform {
 
 #if DA_DEBUG || DA_RELEASE
@@ -1142,7 +1134,7 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::createVertexBuffers()
 	{
-		VkDeviceSize bufferSize = sizeof(Vertex) * m_vertices.size();
+		VkDeviceSize bufferSize = sizeof(core::FVertexBase) * m_vertices.size();
 
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
@@ -1692,7 +1684,7 @@ namespace da::platform {
 	{
 		core::CModel model("assets/viking_room.obj");
 	
-		m_vertices = TList<Vertex, memory::CGraphicsAllocator>((Vertex*)model.getVertices().data(), model.getVertices().size());
+        m_vertices = model.getVertices();
 		m_indices = model.getIndices();
 
 	}

@@ -87,7 +87,17 @@ namespace da::core::containers
 			/// </summary>
 			/// <param name="str"></param>
 			/// <returns></returns>
-			uint32_t genHash(const char* str) const;
+            inline uint32_t genHash(const char* str) const {
+                size_t size = 0;
+                for (size_t x = 0; x < 512; x++) {
+                    if (str[x] == 0) {
+                        size = x++;
+                        break;
+                    }
+                }
+
+                return generateHash(str, size);
+            }
 		private:
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 			CBasicString<_Allocator> m_string;

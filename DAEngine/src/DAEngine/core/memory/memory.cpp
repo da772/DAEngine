@@ -50,19 +50,21 @@ void* reallocate(void* ptr, size_t size)
 	return (void*)&np[1];
 }
 
-void memorycopy(void* dst, void* src, size_t size)
-{
-	memcpy(dst, src, size);
-}
-
+#ifndef DA_UNIX
 void* operator new(size_t size)
 {
-	return allocate(size);
+    return allocate(size);
 }
 
 void operator delete(void* ptr)
 {
-	deallocate(ptr);
+    deallocate(ptr);
+}
+#endif
+
+void memorycopy(void* dst, void* src, size_t size)
+{
+	memcpy(dst, src, size);
 }
 
 

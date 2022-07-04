@@ -23,7 +23,6 @@ project "ImGui"
     }
     
     filter "system:macosx"
-        systemversion "latest"
         xcodebuildsettings
         { 
             ["ALWAYS_SEARCH_USER_PATHS"] = "YES",

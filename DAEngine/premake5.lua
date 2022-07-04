@@ -78,7 +78,6 @@ project "DAEngine"
 	end
 
 	filter "system:macosx"
-		systemversion "latest"
 		defines
 		{
 			"DA_PLATFORM_MACOSX"
