@@ -13,9 +13,9 @@ static const char* s_memory_layer_name[(uint8_t)da::memory::EMemoryLayer::INVALI
 	,"Core"
 	,"Graphics"
 	,"Application"
+	,"Asset"
 	,"ImGui"
 	,"Debug"
-	,"STD"
 	,"INVALID"
 };
 

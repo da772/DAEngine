@@ -7,7 +7,7 @@
 #include <optional>
 #include <memory>
 #include "DAEngine/core/memory/global_allocator.h"
-#include "daengine/core/graphics/graphics_model.h"
+#include "daengine/core/graphics/graphics_smesh.h"
 
 
 namespace da::platform

@@ -46,9 +46,9 @@ namespace da::memory {
 		inline CDebugAllocator() : CGlobalAllocator((uint8_t)EMemoryLayer::Debug) {};
 	};
 
-	class CSTDAllocator : public CGlobalAllocator
+	class CAssetAllocator : public CGlobalAllocator
 	{
 	public:
-		inline CSTDAllocator() : CGlobalAllocator((uint8_t)EMemoryLayer::STD) {};
+		inline CAssetAllocator() : CGlobalAllocator((uint8_t)EMemoryLayer::Asset) {};
 	};
 }

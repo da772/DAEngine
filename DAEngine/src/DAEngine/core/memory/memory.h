@@ -16,9 +16,9 @@ namespace da::memory
 		Core,
 		Graphics,
 		Application,
+		Asset,
 		ImGui,
 		Debug,
-		STD,
 		INVALID
 	};
 

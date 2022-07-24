@@ -1,8 +1,8 @@
 #include "dapch.h"
-#include "graphics_model.h"
+#include "graphics_smesh.h"
 #if !defined(DA_TEST)
 #include "core/memory/memory.h"
-#include "core/file.h"
+#include "asset/asset.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -10,10 +10,9 @@
 
 namespace da::core
 {
-
-	CModel::CModel(const CBasicString<memory::CGraphicsAllocator>& path) : m_path(path)
+	CStaticMesh::CStaticMesh(const CBasicString<memory::CGraphicsAllocator>& path) : m_path(path)
 	{
-		CFile file(m_path);
+		CAsset file(path);
 
 		Assimp::Importer importer;
 	
@@ -21,7 +20,6 @@ namespace da::core
 
 		for (size_t i = 0; i < pScene->mNumMeshes; i++)
 		{
-			
 			for (size_t v = 0; v < pScene->mMeshes[i]->mNumVertices; v++) {
 				FVertexBase vertex{};
 				vertex.Pos = {
@@ -48,10 +46,9 @@ namespace da::core
 		}
 
 		importer.FreeScene();
-		memory::pop_memory_layer();
 	}
 
-	CModel::~CModel()
+	CStaticMesh::~CStaticMesh()
 	{
 	}
 

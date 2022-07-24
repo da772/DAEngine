@@ -4,7 +4,7 @@
 #include <iostream>
 #include <functional>
 
-#include <daengine/core/graphics/graphics_model.h>
+#include <daengine/core/graphics/graphics_smesh.h>
 #include <daengine/core/graphics/factory/factory_graphics_pipeline.h>
 #include <daengine/core/graphics/factory/factory_graphics_texture2d.h>
 

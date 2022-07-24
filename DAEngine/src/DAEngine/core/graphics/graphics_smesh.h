@@ -7,11 +7,11 @@
 
 namespace da::core
 {
-	class CModel
+	class CStaticMesh
 	{
 	public:
-		CModel(const CBasicString<memory::CGraphicsAllocator>& path);
-		~CModel();
+		CStaticMesh(const CBasicString<memory::CGraphicsAllocator>& path);
+		~CStaticMesh();
 
 		inline const TList<FVertexBase, memory::CGraphicsAllocator> getVertices() const { return m_vertices; }
 		inline const TList<uint32_t, memory::CGraphicsAllocator> getIndices() const { return m_indices; }

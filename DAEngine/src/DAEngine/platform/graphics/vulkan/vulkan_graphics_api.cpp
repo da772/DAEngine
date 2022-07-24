@@ -23,7 +23,7 @@
 
 #include "vulkan_graphics_texture2d.h"
 
-#include "core/graphics/graphics_model.h"
+#include "core/graphics/graphics_smesh.h"
 #include "vulkan_graphics_pipeline.h"
 
 namespace da::platform {
@@ -1682,7 +1682,7 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::loadModel()
 	{
-		core::CModel model("assets/viking_room.obj");
+		core::CStaticMesh model("assets/viking_room.obj");
 	
         m_vertices = model.getVertices();
 		m_indices = model.getIndices();
