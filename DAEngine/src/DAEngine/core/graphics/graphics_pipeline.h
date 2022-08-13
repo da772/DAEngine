@@ -5,6 +5,9 @@
 
 namespace da::core {
 
+	class IRenderable;
+	class CMaterial;
+
 	class CGraphicsPipeline
 	{
 	public:
@@ -13,13 +16,16 @@ namespace da::core {
 
 		inline virtual void create() {};
 		inline virtual void destroy() {};
+		inline virtual void update(int frame) {};
+		inline virtual void addRenderable(da::core::IRenderable* renderable, da::core::CMaterial* material) {};
+
+		inline CGraphicsApi& getGraphicsApi() { return m_graphicsApi; };
 
 	protected:
 		CString m_vertexShaderPath, m_fragShaderPath;
 		CGraphicsApi& m_graphicsApi;
 		FVertexBindingDescription m_bindingDesc;
-		TArray<FVertexInputAttributeDescription> m_inputAttrbDesc;
-
+		TArray<FVertexInputAttributeDescription, da::memory::CGraphicsAllocator> m_inputAttrbDesc;
 	};
 
 }

@@ -28,6 +28,12 @@ namespace da::memory {
 		inline CGraphicsAllocator() : CGlobalAllocator((uint8_t)EMemoryLayer::Graphics) {};
 	};
 
+	class CGPUAllocator : public CGlobalAllocator
+	{
+	public:
+		inline CGPUAllocator() : CGlobalAllocator((uint8_t)EMemoryLayer::GPU) {};
+	};
+
 	class CApplicationAllocator : public CGlobalAllocator
 	{
 	public:

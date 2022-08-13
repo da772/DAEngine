@@ -1,6 +1,7 @@
 #pragma once
 #include "enumerator.h"
 #include <stddef.h>
+#include <functional>
 
 namespace da::core::containers {
 
@@ -35,6 +36,13 @@ namespace da::core::containers {
 		}
 		
 		inline TEnumerator<T> find(bool_func func) const {
+			for (TEnumerator<T> i = begin(), e = end(); i != e; ++i) {
+				if (func(*i)) return i;
+			}
+			return end();
+		}
+
+		inline TEnumerator<T> find(std::function<bool(const T&)> func) {
 			for (TEnumerator<T> i = begin(), e = end(); i != e; ++i) {
 				if (func(*i)) return i;
 			}

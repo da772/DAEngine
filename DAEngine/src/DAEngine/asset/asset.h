@@ -11,7 +11,7 @@ namespace da
 
 	class CAsset
 	{
-	public :
+	public:
 		CAsset(const CString& path, EAssetFlags flags = EAssetFlags::None);
 
 		const size_t size() const;

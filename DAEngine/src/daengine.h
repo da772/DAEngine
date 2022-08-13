@@ -10,3 +10,4 @@
 #include "DAEngine/modules/window/window_module.h"
 #include "DAEngine/modules/graphics/graphics_module.h"
 #include "DAEngine/modules/graphics/imgui_module.h"
+#include "DAEngine/core/graphics/factory/factory_graphics_material.h"

@@ -4,23 +4,25 @@
 #include "daengine/core/containers.h"
 #include "graphics_pipeline.h"
 #include "graphics_vertex.h"
+#include "graphics_renderable.h"
+#include "graphics_material.h"
 
 namespace da::core
 {
-	class CStaticMesh
+	class CStaticMesh : public IRenderable
 	{
 	public:
 		CStaticMesh(const CBasicString<memory::CGraphicsAllocator>& path);
 		~CStaticMesh();
 
-		inline const TList<FVertexBase, memory::CGraphicsAllocator> getVertices() const { return m_vertices; }
-		inline const TList<uint32_t, memory::CGraphicsAllocator> getIndices() const { return m_indices; }
-
+		inline const TArray<FVertexBase, memory::CGraphicsAllocator>& getVertices() const override { return m_vertices; }
+		inline const TArray<uint32_t, memory::CGraphicsAllocator>& getIndices() const override { return m_indices; }
 
 	private:
+		CMaterial m_material;
 		CBasicString<memory::CGraphicsAllocator> m_path;
-		TList<FVertexBase, memory::CGraphicsAllocator> m_vertices;
-		TList<uint32_t, memory::CGraphicsAllocator> m_indices;
+		TArray<FVertexBase, memory::CGraphicsAllocator> m_vertices;
+		TArray<uint32_t, memory::CGraphicsAllocator> m_indices;
 
 	};
 }

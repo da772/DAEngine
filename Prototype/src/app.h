@@ -64,10 +64,24 @@ private:
 protected:
 	inline virtual void onInitalize() override
 	{
-		//da::core::CModel model = da::core::CModel("assets/viking_room.obj");
-		//da::core::CGraphicsPipeline* pipeline = da::core::CGraphicsPipelineFactory::Create(*m_graphicsModule->getGraphicsApi(), "shaders/vert.spv", "shaders/frag.spv", da::core::FVertexBase::getBindingDescription(), da::core::FVertexBase::getAttributeDescription());
-		//pipeline->create();
-		//da::core::CGraphicsTexture2D* texture = da::core::CTexture2DFactory::Create("assets/viking_room.png", *m_graphicsModule->getGraphicsApi());
+		auto pipeline = da::core::CGraphicsPipelineFactory::Create(*m_graphicsModule->getGraphicsApi(), "shaders/vert.spv", "shaders/frag.spv", 
+			da::core::FVertexBase::getBindingDescription(), da::core::FVertexBase::getAttributeDescription());
+
+		m_graphicsModule->getGraphicsApi()->submitPipeline(pipeline);
+		
+		da::core::CStaticMesh* model = new  da::core::CStaticMesh("assets/viking_room.obj");
+		da::core::CStaticMesh* model2 = new da::core::CStaticMesh("assets/penguin.fbx");
+		da::core::CStaticMesh* model3 = new da::core::CStaticMesh("assets/coffee.fbx");
+		da::core::CMaterial* mat1 = da::core::CMaterialFactory::Create(*pipeline, "assets/viking_room.png", "assets/viking_room.png");
+		da::core::CMaterial* mat2 = da::core::CMaterialFactory::Create(*pipeline, "assets/penguin.png", "assets/viking_room.png");
+		da::core::CMaterial* mat3 = da::core::CMaterialFactory::Create(*pipeline, "assets/coffeeA.png", "assets/coffeeN.png");
+
+		mat1->Position = da::Vector3f(0.f, 1.f, 0.f);
+		mat2->Position = da:: Vector3f(1.f, 0.f, 0.f);
+		mat3->Position = da::Vector3f(0.f, 0.f, 1.f);
+		pipeline->addRenderable(model, mat1);
+		pipeline->addRenderable(model2, mat2);
+		pipeline->addRenderable(model3, mat3);
 
 	}
 

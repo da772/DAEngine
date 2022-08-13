@@ -1,8 +1,11 @@
 #pragma once
 #include "daengine/core/window/window.h"
 
+
 namespace da::core
 {
+	class CGraphicsPipeline;
+
 	class CGraphicsApi
 	{
 	public:
@@ -12,6 +15,8 @@ namespace da::core
 		inline virtual void initalize() {};
 		inline virtual void update() {};
 		inline virtual void shutdown() {};
+
+		virtual void submitPipeline(CGraphicsPipeline* pipeline) = 0;
 
 		inline const CWindow& getWindow() const { return m_nativeWindow; }
 

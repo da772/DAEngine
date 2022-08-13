@@ -85,11 +85,10 @@ bool CMemoryTest::CMemoryLayerTest()
 		TEST_ASSERT(da::memory::get_memory_layers()[(uint8_t)da::memory::EMemoryLayer::Debug] == sz);
 		lst.clear();
 		lst2.push(5);
-		TEST_ASSERT(da::memory::get_memory_layers()[5] == sz);
 		lst2.clear();
 	}
 	TEST_ASSERT(da::memory::get_memory_layers()[1] == 0);
-	TEST_ASSERT(da::memory::get_memory_layers()[5] == 0);
+	TEST_ASSERT(da::memory::get_memory_layers()[4] == 0);
 	
 
 

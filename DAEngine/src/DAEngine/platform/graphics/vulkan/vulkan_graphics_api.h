@@ -10,6 +10,10 @@
 #include "daengine/core/graphics/graphics_smesh.h"
 
 
+namespace da::core {
+	class CMaterial;
+}
+
 namespace da::platform
 {
 	class CVulkanGraphicsTexture2D;
@@ -38,6 +42,7 @@ namespace da::platform
 		virtual void initalize() override;
 		virtual void update() override;
 		virtual void shutdown() override;
+		virtual void submitPipeline(da::core::CGraphicsPipeline* pipeline);
 
 	public:
 		inline const VkInstance& getInstance() const { return m_instance; }
@@ -50,6 +55,7 @@ namespace da::platform
         inline const VkCommandPool& getCommandPool() const {return m_commandPool; }
         inline const VkRenderPass& getRenderPass() const {return m_renderPass;}
 		inline const VkExtent2D getSwapChainExt() const { return m_swapChainExtent; }
+		
 
 	private:
 		void createInstance();
@@ -61,28 +67,18 @@ namespace da::platform
 		void createSurface();
 		void createSwapChain();
 		void createImageViews();
-		void createDescriptorSetLayout();
-		void createGraphicsPipeline();
 		void createRenderPass();
 		void createFramebuffers();
-		void createVertexBuffers();
-		void createIndexBuffers();
-		void createUniformBuffers();
-		void createDescriptorPools();
-		void createDescriptorSets();
 		void createCommandPool();
 		void createCommandBuffers();
 		void createSyncObjects();
-		void createTextureImage();
 		void createTextureImageView(); 
-		void createTextureSampler();
 		void createDepthResources();
 		void createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSample, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
 			VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 		void beginRecordingCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void stopRecordingCommandBuffer(VkCommandBuffer commandBuffer);
-		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 		
 		void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
 		void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
@@ -95,18 +91,9 @@ namespace da::platform
 		VkFormat findSupportedFormat(const TList<VkFormat, memory::CGraphicsAllocator>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 		VkFormat findDepthFormat();
 
-		VkShaderModule createShaderModule(const TList<char, memory::CGraphicsAllocator>& code, VkDevice device);
-
-		void generateMipMaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels);
-
-		void updateUniformBuffer(uint32_t frame);
-
 		void cleanupSwapChain();
 		void recreateSwapChain();
 
-		const int MAX_FRAMES_IN_FLIGHT = 2;
-
-		void loadModel();
     public:
         VkCommandBuffer beginSingleTimeCommands() const;
         void endSingleTimeCommands(VkCommandBuffer commandBuffer) const;
@@ -118,6 +105,8 @@ namespace da::platform
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
 		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t);
 		VkAllocationCallbacks& getAllocCallbacks() { return m_allocCallbacks; }
+		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+		const int MAX_FRAMES_IN_FLIGHT = 2;
 
 	private:
 		VkInstance m_instance;
@@ -142,16 +131,6 @@ namespace da::platform
 		TList<VkFence, memory::CGraphicsAllocator> m_inFlightFences;
 		TList<VkFramebuffer, memory::CGraphicsAllocator> m_swapChainFramebuffers;
 		uint32_t m_queueFamilyIndices[2];
-		VkBuffer m_vertexBuffer;
-		VkDeviceMemory m_vertexBufferMemory;
-		VkBuffer m_indexBuffer;
-		VkDeviceMemory m_indexBufferMemory;
-		TList<VkBuffer, memory::CGraphicsAllocator> m_uniformBuffers;
-		TList<VkDeviceMemory, memory::CGraphicsAllocator> m_uniformBuffersMemory;
-		VkDescriptorPool m_descriptorPool;
-		TList<VkDescriptorSet, memory::CGraphicsAllocator> m_descriptorSets;
-
-		CVulkanGraphicsTexture2D* m_textureImage;
 
 		VkImage m_depthImage;
 		VkDeviceMemory m_depthImageMemory;
@@ -160,13 +139,8 @@ namespace da::platform
         uint32_t m_imageIndex;
 
 
-		CVulkanGraphicsPipeline* m_graphicsPipeline = nullptr;
-		/*
-		VkPipeline m_graphicsPipeline;
-		VkDescriptorSetLayout m_descriptorSetLayout;
-		VkPipelineLayout m_pipelineLayout;
-		*/
-        
+		TList<CVulkanGraphicsPipeline*> m_pipelines;
+
 		// Render target
 		VkImage m_colorImage;
 		VkDeviceMemory m_colorImageMemory;
@@ -175,9 +149,6 @@ namespace da::platform
 		uint32_t m_currentFrame = 0;
 
 		uint32_t m_mipLevels = 0;
-
-		TList<core::FVertexBase, memory::CGraphicsAllocator> m_vertices;
-		TList<uint32_t, memory::CGraphicsAllocator> m_indices;
 
 		TList<std::function<void(VkCommandBuffer cmd)>*, memory::CGraphicsAllocator> m_renderFunctions;
 

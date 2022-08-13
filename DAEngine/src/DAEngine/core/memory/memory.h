@@ -15,6 +15,7 @@ namespace da::memory
 		Global,
 		Core,
 		Graphics,
+		GPU,
 		Application,
 		Asset,
 		ImGui,

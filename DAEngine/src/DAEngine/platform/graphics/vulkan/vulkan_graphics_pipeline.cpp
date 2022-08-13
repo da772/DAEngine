@@ -3,6 +3,7 @@
 #ifdef DA_GRAPHICS_VULKAN
 #include <fstream>
 #include "logger.h"
+#include "vulkan_graphics_material.h"
 
 namespace da::platform {
 	static TList<char> readFile(const std::string& filename) {
@@ -33,15 +34,19 @@ namespace da::platform {
 
 	void CVulkanGraphicsPipeline::create()
 	{
+		if (m_initialized) return;
 		createDescriptorSets();
 		createGraphicsPipeline();
+		m_initialized = true;
 	}
 
 	void CVulkanGraphicsPipeline::destroy()
 	{
+		if (!m_initialized) return;
 		vkDestroyPipeline(m_vulkanGraphicsApi.getDevice(), m_graphicsPipeline, &m_vulkanGraphicsApi.getAllocCallbacks());
 		vkDestroyPipelineLayout(m_vulkanGraphicsApi.getDevice(), m_pipelineLayout, &m_vulkanGraphicsApi.getAllocCallbacks());
 		vkDestroyDescriptorSetLayout(m_vulkanGraphicsApi.getDevice(), m_descriptorSetLayout, &m_vulkanGraphicsApi.getAllocCallbacks());
+		m_initialized = false;
 	}
 
 	VkShaderModule CVulkanGraphicsPipeline::createShaderModule(const TList<char, memory::CGraphicsAllocator>& code, VkDevice device) {
@@ -67,7 +72,7 @@ namespace da::platform {
 
 		VkDescriptorSetLayoutBinding samplerLayoutBinding{};
 		samplerLayoutBinding.binding = 1;
-		samplerLayoutBinding.descriptorCount = 1;
+		samplerLayoutBinding.descriptorCount = 4;
 		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayoutBinding.pImmutableSamplers = nullptr;
 		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -250,6 +255,100 @@ namespace da::platform {
 
 		vkDestroyShaderModule(m_vulkanGraphicsApi.getDevice(), fragShaderModule, &m_vulkanGraphicsApi.getAllocCallbacks());
 		vkDestroyShaderModule(m_vulkanGraphicsApi.getDevice(), vertShaderModule, &m_vulkanGraphicsApi.getAllocCallbacks());
+	}
+
+	void CVulkanGraphicsPipeline::render(VkCommandBuffer& commandBuffer, int frame)
+	{
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, getPipeline());
+		for (const FVulkanMeshData& data : m_renderables)
+		{
+			VkBuffer vertexBuffers[] = { data.VertexBuffer };
+			VkDeviceSize offsets[] = { 0 };
+			vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+			vkCmdBindIndexBuffer(commandBuffer, data.IndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+			CVulkanGraphicsMaterial* material = dynamic_cast<CVulkanGraphicsMaterial*>(data.Material);
+
+			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, getPipelineLayout(), 0, 1, &material->getDescriptorSets()[frame], 0, nullptr);
+
+			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(data.Renderable->getIndices().size()), 1, 0, 0, 0);
+		}
+	}
+
+	da::platform::FVulkanMeshData CVulkanGraphicsPipeline::createMeshData(da::core::IRenderable* renderable, da::core::CMaterial* material) const
+	{
+		FVulkanMeshData meshData;
+		ASSERT(renderable);
+		ASSERT(material);
+		meshData.Material = material;
+		meshData.Renderable = renderable;
+
+		{
+			VkDeviceSize bufferSize = sizeof(core::FVertexBase) * renderable->getVertices().size();
+
+			VkBuffer stagingBuffer;
+			VkDeviceMemory stagingBufferMemory;
+			m_vulkanGraphicsApi.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+			void* data;
+			vkMapMemory(m_vulkanGraphicsApi.getDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+			memcpy(data, renderable->getVertices().data(), (size_t)bufferSize);
+			vkUnmapMemory(m_vulkanGraphicsApi.getDevice(), stagingBufferMemory);
+
+			m_vulkanGraphicsApi.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, meshData.VertexBuffer, meshData.VertexMemory);
+
+			m_vulkanGraphicsApi.copyBuffer(stagingBuffer, meshData.VertexBuffer, bufferSize);
+
+			vkDestroyBuffer(m_vulkanGraphicsApi.getDevice(), stagingBuffer, &m_vulkanGraphicsApi.getAllocCallbacks());
+			vkFreeMemory(m_vulkanGraphicsApi.getDevice(), stagingBufferMemory, &m_vulkanGraphicsApi.getAllocCallbacks());
+		}
+		{
+			VkDeviceSize bufferSize = sizeof(uint32_t) * meshData.Renderable->getIndices().size();
+
+			VkBuffer stagingBuffer;
+			VkDeviceMemory stagingBufferMemory;
+			m_vulkanGraphicsApi.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+
+			void* data;
+			vkMapMemory(m_vulkanGraphicsApi.getDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+			memcpy(data, meshData.Renderable->getIndices().data(), (size_t)bufferSize);
+			vkUnmapMemory(m_vulkanGraphicsApi.getDevice(), stagingBufferMemory);
+
+			m_vulkanGraphicsApi.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, meshData.IndexBuffer, meshData.IndexMemory);
+
+			m_vulkanGraphicsApi.copyBuffer(stagingBuffer, meshData.IndexBuffer, bufferSize);
+
+			vkDestroyBuffer(m_vulkanGraphicsApi.getDevice(), stagingBuffer, &m_vulkanGraphicsApi.getAllocCallbacks());
+			vkFreeMemory(m_vulkanGraphicsApi.getDevice(), stagingBufferMemory, &m_vulkanGraphicsApi.getAllocCallbacks());
+		}
+
+		meshData.Material->initialize();
+
+		return meshData;
+	}
+
+	void CVulkanGraphicsPipeline::update(int frame)
+	{
+		for (const FVulkanMeshData& data : m_renderables)
+		{
+			data.Material->update(frame);
+		}
+	}
+
+	void CVulkanGraphicsPipeline::clean()
+	{
+		for (const FVulkanMeshData& data : m_renderables)
+		{
+			vkDestroyBuffer(m_vulkanGraphicsApi.getDevice(), data.VertexBuffer, &m_vulkanGraphicsApi.getAllocCallbacks());
+			vkFreeMemory(m_vulkanGraphicsApi.getDevice(), data.VertexMemory, &m_vulkanGraphicsApi.getAllocCallbacks());
+
+			vkDestroyBuffer(m_vulkanGraphicsApi.getDevice(), data.IndexBuffer, &m_vulkanGraphicsApi.getAllocCallbacks());
+			vkFreeMemory(m_vulkanGraphicsApi.getDevice(), data.IndexMemory, &m_vulkanGraphicsApi.getAllocCallbacks());
+
+			data.Material->shutdown();
+		}
+
+		m_renderables.clear();
 	}
 
 }

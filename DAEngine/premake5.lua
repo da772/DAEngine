@@ -8,14 +8,17 @@ group "ThirdParty"
 filter "system:macosx"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
+	include "thirdparty/zlib"
 	include "thirdparty/assimp"
 filter "system:windows"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
+	include "thirdparty/zlib"
 	include "thirdparty/assimp"
 filter "system:linux"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
+	include "thirdparty/zlib"
 	include "thirdparty/assimp"
 group ""
 
@@ -26,6 +29,7 @@ IncludeDir = {}
 	IncludeDir["glm"] = "%{wks.location}/DAEngine/thirdparty/glm"
 	IncludeDir["stb"] = "%{wks.location}/DAEngine/thirdparty/stb"
 	IncludeDir["assimp"] = "%{wks.location}/DAEngine/thirdparty/assimp/include"
+	IncludeDir["zlib"] = "%{wks.location}/DAEngine/thirdparty/zlib/include"
 end
 
 project "DAEngine"
@@ -38,7 +42,7 @@ project "DAEngine"
 	pchsource "src/dapch.cpp"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-Obj/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-obj/" .. outputdir .. "/%{prj.name}")
 
 	files 
 	{
@@ -58,6 +62,7 @@ project "DAEngine"
 		"%{prj.location}/src/DAEngine",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
+		"%{IncludeDir.zlib}",
 		"%{IncludeDir.assimp}"
 	}
 	

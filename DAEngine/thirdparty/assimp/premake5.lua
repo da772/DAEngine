@@ -50,7 +50,7 @@ project "assimp"
       "ASSIMP_BUILD_NO_NDO_IMPORTER",
       "ASSIMP_BUILD_NO_IFC_IMPORTER",
       "ASSIMP_BUILD_NO_XGL_IMPORTER",
-      "ASSIMP_BUILD_NO_FBX_IMPORTER",
+      --"ASSIMP_BUILD_NO_FBX_IMPORTER",
       "ASSIMP_BUILD_NO_ASSBIN_IMPORTER",
       "ASSIMP_BUILD_NO_GLTF_IMPORTER",
       "ASSIMP_BUILD_NO_C4D_IMPORTER",
@@ -132,6 +132,40 @@ project "assimp"
       "src/ScaleProcess.cpp",
       "src/EmbedTexturesProcess.cpp",
       "contrib/irrXML/*",
+      -- fbx
+      "src/FBXAnimation.cpp",
+      "src/FBXBinaryTokenizer.cpp",
+      "src/FBXCommon.h",
+      "src/FBXCompileConfig.h",
+      "src/FBXConverter.cpp",
+      "src/FBXConverter.h",
+      "src/FBXDeformer.cpp",
+      "src/FBXDocument.cpp",
+      "src/FBXDocument.h",
+      "src/FBXDocumentUtil.cpp",
+      "src/FBXDocumentUtil.h",
+      "src/FBXExporter.cpp",
+      "src/FBXExporter.h",
+      "src/FBXExportNode.cpp",
+      "src/FBXExportNode.h",
+      "src/FBXExportProperty.cpp",
+      "src/FBXExportProperty.h",
+      "src/FBXImporter.cpp",
+      "src/FBXImporter.h",
+      "src/FBXImportSettings.h",
+      "src/FBXMaterial.cpp",
+      "src/FBXMeshGeometry.cpp",
+      "src/FBXMeshGeometry.h",
+      "src/FBXModel.cpp",
+      "src/FBXNodeAttribute.cpp",
+      "src/FBXParser.cpp",
+      "src/FBXParser.h",
+      "src/FBXProperties.h",
+      "src/FBXProperties.cpp",
+      "src/FBXTokenizer.cpp",
+      "src/FBXTokenizer.h",
+      "src/FBXUtil.h",
+      "src/FBXUtil.cpp",
   }
 
   includedirs {
@@ -141,6 +175,9 @@ project "assimp"
       "contrib/rapidjson/include",
   }
 
+  links {
+        "zlib"
+  }
 
   filter "system:macosx"
         xcodebuildsettings

@@ -1,16 +1,15 @@
 #pragma once
-#include "DAEngine/core/graphics/graphics_pipeline.h"
-#include "DAEngine/asset/asset.h"
 
 namespace da::core
 {
 	class CMaterial
 	{
 	public:
-		inline CMaterial(const CString& albedo) {};
+		virtual void initialize() {};
+		virtual void update(int frame) {};
+		virtual void shutdown() {};
+		
+		Vector3f Position;
 
-	private:
-		CGraphicsPipeline m_pipeline;
-		CAsset m_albedo;
 	};
 }

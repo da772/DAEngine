@@ -7,10 +7,20 @@
 #include "daengine/core/graphics/graphics_api.h"
 #include "daengine/core/graphics/graphics_pipeline.h"
 #include "daengine/platform/graphics/vulkan/vulkan_graphics_api.h"
+#include "DAEngine/core/graphics/graphics_renderable.h"
 #include <vulkan/vulkan.h>
 
 namespace da::platform
 {
+	struct FVulkanMeshData
+	{
+		VkBuffer VertexBuffer;
+		VkBuffer IndexBuffer;
+		VkDeviceMemory VertexMemory;
+		VkDeviceMemory IndexMemory;
+		da::core::IRenderable* Renderable;
+		da::core::CMaterial* Material;
+	};
 
 	class CVulkanGraphicsPipeline : public core::CGraphicsPipeline
 	{
@@ -21,6 +31,8 @@ namespace da::platform
 
 		virtual void create() override;
 		virtual void destroy() override;
+		virtual void update(int frame) override;
+		void clean();
 
 		inline VkPipeline& getPipeline()  {
 			return m_graphicsPipeline;
@@ -34,16 +46,36 @@ namespace da::platform
 			return m_descriptorSetLayout;
 		}
 
+		inline virtual void addRenderable(da::core::IRenderable* renderable, da::core::CMaterial* material) override{
+			m_renderables.push(createMeshData(renderable, material));
+		}
+
+		inline void removeRenderable(da::core::IRenderable* renderable)
+		{
+			TEnumerator<FVulkanMeshData> itr = m_renderables.find([renderable](const FVulkanMeshData& data) {return data.Renderable == renderable;});
+			if (itr == m_renderables.end())
+			{
+				return;
+			}
+
+			m_renderables.remove(itr);
+		}
+
+		virtual void render(VkCommandBuffer& buffer, int frame);
+
 	private:
 		void createDescriptorSets();
 		void createGraphicsPipeline();
+		FVulkanMeshData createMeshData(da::core::IRenderable* renderable, da::core::CMaterial* material) const;
 		VkShaderModule createShaderModule(const TList<char, memory::CGraphicsAllocator>& code, VkDevice device);
+		TList<FVulkanMeshData, da::memory::CGraphicsAllocator> m_renderables;
 
 	private:
 		CVulkanGraphicsApi& m_vulkanGraphicsApi;
 		VkPipeline m_graphicsPipeline;
 		VkPipelineLayout m_pipelineLayout;
 		VkDescriptorSetLayout m_descriptorSetLayout;
+		bool m_initialized = false;
 
 	};
 

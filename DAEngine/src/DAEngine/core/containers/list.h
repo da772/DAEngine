@@ -77,7 +77,7 @@ namespace da::core::containers {
 
 		inline void push(T&& x) {
 			resize(m_size + 1);
-			m_ptr[m_size - 1] = T(x);
+			m_ptr[m_size - 1] = x;
 		}
 
 		inline void pop() {
