@@ -14,5 +14,5 @@ layout(location = 0) out vec3 fragPosition;
 void main() {
 	fragPosition = inPosition;
 	fragPosition.xy *= -1.0;
-	gl_Position = ubo.proj * vec4(fragPosition, 1.0);
+	gl_Position = ubo.proj * ubo.model * vec4(fragPosition, 1.0);
 }

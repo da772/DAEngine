@@ -7,6 +7,7 @@
 #include <daengine/core/graphics/graphics_smesh.h>
 #include <daengine/core/graphics/factory/factory_graphics_pipeline.h>
 #include <daengine/core/graphics/factory/factory_graphics_texture2d.h>
+#include "DAEngine/core/graphics/graphics_smesh_cube.h"
 
 #include <imgui.h>
 
@@ -67,14 +68,22 @@ private:
 	da::modules::CGraphicsModule* m_graphicsModule;
 	da::modules::CGraphicsModule* m_graphicsModule2;
 	da::core::CMaterial* m_boltMat = 0;
+	da::core::CMaterial* m_cubeMat = 0;
 
 protected:
 	inline virtual void onInitalize() override
 	{
 		
-		auto pipeline = da::core::CGraphicsPipelineFactory::CreatePBR(*m_graphicsModule->getGraphicsApi());
+		auto cubeMapPipeline = da::core::CGraphicsPipelineFactory::CreateCubeMap(*m_graphicsModule->getGraphicsApi());
+		m_graphicsModule->getGraphicsApi()->submitPipeline(cubeMapPipeline);
 
+		da::core::CStaticMesh* skybox = new da::core::CStaticMeshCube();
+		m_cubeMat = da::core::CMaterialFactory::CreateCubeMap(*cubeMapPipeline, "assets/cubemap_yokohama_rgba.ktx");
+		cubeMapPipeline->addRenderable(skybox, m_cubeMat);
+
+		auto pipeline = da::core::CGraphicsPipelineFactory::CreatePBR(*m_graphicsModule->getGraphicsApi());
 		m_graphicsModule->getGraphicsApi()->submitPipeline(pipeline);
+
 		
 		
 		da::core::CStaticMesh* model = new  da::core::CStaticMesh("assets/viking_room.obj");
@@ -90,20 +99,11 @@ protected:
 		mat1->Position = da::Vector3f(0.f, 0.f, 0.f);
 		mat2->Position = da:: Vector3f(1.f, 0.f, 0.f);
 		mat3->Position = da::Vector3f(0.f, 0.f, 0.f);
-		m_boltMat->Position = da::Vector3f(0.55f, 0.3f, 0.3f);
+		m_boltMat->Position = da::Vector3f(0.5f, 0.0f, -.5f);
 		//pipeline->addRenderable(model, mat1);
 		//pipeline->addRenderable(model2, mat2);
 		//pipeline->addRenderable(model3, mat3);
-		pipeline->addRenderable(model4, m_boltMat);
-		
-		/*
-		auto cubeMapPipeline = da::core::CGraphicsPipelineFactory::CreateCubeMap(*m_graphicsModule->getGraphicsApi());
-		m_graphicsModule->getGraphicsApi()->submitPipeline(cubeMapPipeline);
-
-		da::core::CStaticMesh* skybox = new da::core::CStaticMesh("assets/skybox.obj");
-		da::core::CMaterial* cubeMapMat = da::core::CMaterialFactory::CreateCubeMap(*cubeMapPipeline, "assets/environment.hdr");
-		cubeMapPipeline->addRenderable(skybox, cubeMapMat);
-		*/
+		pipeline->addRenderable(model4, m_boltMat);	
 		
 #ifdef WINDOW_2
 
@@ -125,7 +125,7 @@ protected:
 
 	inline virtual void onUpdate() override
 	{
-		if (!m_boltMat)
+		if (!m_boltMat || !m_cubeMat)
 		{
 			return;
 		}
@@ -134,7 +134,25 @@ protected:
 			ImGui::Text("Bolt Cutter");
 			ImGui::Text("Position");
 			ImGui::SameLine();
-			ImGui::DragFloat3("##Position", (float*)m_boltMat->Position.data(), .1f);
+			if (ImGui::DragFloat3("##Position", (float*)m_boltMat->Position.data(), .1f))
+			{
+				m_cubeMat->Position = m_boltMat->Position;
+			}
+
+			ImGui::Text("Camera");
+			ImGui::Text("Position");
+			ImGui::SameLine();
+			if (ImGui::DragFloat3("##CamPosition", (float*)m_boltMat->CamPosition.data(), .1f))
+			{
+				m_cubeMat->CamPosition = m_boltMat->CamPosition;
+			}
+
+			ImGui::Text("Rotation");
+			ImGui::SameLine();
+			if (ImGui::DragFloat3("##CamRotation", (float*)m_boltMat->CamRot.data(), .1f))
+			{
+				m_cubeMat->CamRot = m_boltMat->CamRot;
+			}
 
 		}
 

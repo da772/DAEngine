@@ -103,7 +103,7 @@ namespace da::platform
 		void removeRenderFunction(std::function<void(VkCommandBuffer cmd)>* func);
 		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags peoperties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
-		VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t);
+		VkImageView createImageView(VkImage image, VkImageViewType type, uint32_t layerCount, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t);
 		VkAllocationCallbacks& getAllocCallbacks() { return m_allocCallbacks; }
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 		const int MAX_FRAMES_IN_FLIGHT = 2;

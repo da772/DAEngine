@@ -19,7 +19,7 @@ namespace da::platform
 	void CVulkanGraphicsTexture2D::initialize()
 	{
 		createTexture();
-		m_textureImageView = m_vulkanGraphicsApi.createImageView(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
+		m_textureImageView = m_vulkanGraphicsApi.createImageView(m_textureImage, VK_IMAGE_VIEW_TYPE_2D, 1, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
 		createTextureSampler();
 	}
 

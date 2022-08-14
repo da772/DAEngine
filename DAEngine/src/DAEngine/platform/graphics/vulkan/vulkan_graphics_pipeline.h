@@ -65,6 +65,8 @@ namespace da::platform
 
 	protected:
 		virtual void createDescriptorSets(VkDescriptorSetLayoutBinding& uboLayoutBinding, VkDescriptorSetLayoutBinding& samplerLayoutBindings);
+		virtual void updateRasterizer(VkPipelineRasterizationStateCreateInfo& rasterizer) {};
+		virtual void updateDepthStencil(VkPipelineDepthStencilStateCreateInfo& depthStencil) {};
 
 	private:
 		void createGraphicsPipeline();

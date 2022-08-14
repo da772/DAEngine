@@ -13,14 +13,16 @@ namespace da::core
 	{
 	public:
 		CStaticMesh(const CBasicString<memory::CGraphicsAllocator>& path);
+		inline CStaticMesh() {};
 		~CStaticMesh();
 
 		inline const TArray<FVertexBase, memory::CGraphicsAllocator>& getVertices() const override { return m_vertices; }
 		inline const TArray<uint32_t, memory::CGraphicsAllocator>& getIndices() const override { return m_indices; }
 
 	private:
-		CMaterial m_material;
 		CBasicString<memory::CGraphicsAllocator> m_path;
+
+	protected:
 		TArray<FVertexBase, memory::CGraphicsAllocator> m_vertices;
 		TArray<uint32_t, memory::CGraphicsAllocator> m_indices;
 

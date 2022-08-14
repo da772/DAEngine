@@ -172,6 +172,8 @@ namespace da::platform {
 		rasterizer.depthBiasClamp = 0.0f; // Optional
 		rasterizer.depthBiasSlopeFactor = 0.0f; // Optional
 
+		updateRasterizer(rasterizer);
+
 		VkPipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		multisampling.rasterizationSamples = m_vulkanGraphicsApi.getMaxUsableSampleCount();
@@ -253,6 +255,8 @@ namespace da::platform {
 		depthStencil.stencilTestEnable = VK_FALSE;
 		depthStencil.front = {}; // Optional
 		depthStencil.back = {}; // Optional
+
+		updateDepthStencil(depthStencil);
 
 		pipelineInfo.pDepthStencilState = &depthStencil;
 

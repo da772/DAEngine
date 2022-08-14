@@ -10,8 +10,8 @@ namespace da::platform
 
 	CVulkanGraphicsPipelineCubemap::CVulkanGraphicsPipelineCubemap(da::core::CGraphicsApi& pipeline) :
 		CVulkanGraphicsPipeline(pipeline
-			, "shaders/skybox_vert.spv"
-			, "shaders/skybox_frag.spv"
+			, "shaders/skybox.vert.spv"
+			, "shaders/skybox.frag.spv"
 			, getBindingDescriptions()
 			, getAttributeDescriptions()
 		)
@@ -53,6 +53,18 @@ namespace da::platform
 		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayoutBinding.pImmutableSamplers = nullptr;
 		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	}
+
+	void CVulkanGraphicsPipelineCubemap::updateRasterizer(VkPipelineRasterizationStateCreateInfo& rasterizer)
+	{
+		rasterizer.cullMode = VK_CULL_MODE_NONE;
+	}
+
+	void CVulkanGraphicsPipelineCubemap::updateDepthStencil(VkPipelineDepthStencilStateCreateInfo& depthStencil)
+	{
+		depthStencil.depthWriteEnable = VK_FALSE;
+		depthStencil.depthTestEnable = VK_FALSE;
+		depthStencil.stencilTestEnable = VK_FALSE;
 	}
 
 }

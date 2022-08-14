@@ -660,7 +660,7 @@ namespace da::platform {
 		m_swapChainImageViews.resize(m_swapChainImages.size());
 
 		for (uint32_t i = 0; i < m_swapChainImages.size(); i++) {
-			m_swapChainImageViews[i] = createImageView(m_swapChainImages[i], m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+			m_swapChainImageViews[i] = createImageView(m_swapChainImages[i],VK_IMAGE_VIEW_TYPE_2D ,1, m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
 		}
 	}
 
@@ -807,7 +807,7 @@ namespace da::platform {
 		renderPassInfo.renderArea.extent = m_swapChainExtent;
 
 		TArray<VkClearValue, memory::CGraphicsAllocator> clearValues(2);
-		clearValues[0].color = { {0.70f, 0.83f, 0.87f, 1.0f} };
+		clearValues[0].color = { {0.70f, 0.83f, 0.87f, 0.0f} };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
@@ -1147,18 +1147,18 @@ namespace da::platform {
 		//m_textureImageView = createImageView(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
 	}
 
-	VkImageView CVulkanGraphicsApi::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels)
+	VkImageView CVulkanGraphicsApi::createImageView(VkImage image, VkImageViewType viewType, uint32_t layerCount, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels)
 	{
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		viewInfo.image = image;
-		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		viewInfo.viewType = viewType;
 		viewInfo.format = format;
 		viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		viewInfo.subresourceRange.baseMipLevel = 0;
 		viewInfo.subresourceRange.levelCount = mipLevels;
 		viewInfo.subresourceRange.baseArrayLayer = 0;
-		viewInfo.subresourceRange.layerCount = 1;
+		viewInfo.subresourceRange.layerCount = layerCount;
 		viewInfo.subresourceRange.aspectMask = aspectFlags;
 
 		VkImageView imageView;
@@ -1199,7 +1199,7 @@ namespace da::platform {
 		VkFormat depthFormat = findDepthFormat();
 
 		createImage(m_swapChainExtent.width, m_swapChainExtent.height, 1, m_msaaSamples, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_depthImage, m_depthImageMemory);
-		m_depthImageView = createImageView(m_depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
+		m_depthImageView = createImageView(m_depthImage, VK_IMAGE_VIEW_TYPE_2D, 1, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 	}
 
 	VkSampleCountFlagBits CVulkanGraphicsApi::getMaxUsableSampleCount() const
@@ -1222,7 +1222,7 @@ namespace da::platform {
 		VkFormat colorFormat = m_swapChainImageFormat;
 
 		createImage(m_swapChainExtent.width, m_swapChainExtent.height, 1, m_msaaSamples, colorFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_colorImage, m_colorImageMemory);
-		m_colorImageView = createImageView(m_colorImage, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+		m_colorImageView = createImageView(m_colorImage, VK_IMAGE_VIEW_TYPE_2D, 1, colorFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
 	}
 
 	void CVulkanGraphicsApi::submitRenderFunction(std::function<void(VkCommandBuffer cmd)>* func)

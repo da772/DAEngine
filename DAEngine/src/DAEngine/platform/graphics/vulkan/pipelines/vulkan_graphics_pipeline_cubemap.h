@@ -13,6 +13,8 @@ namespace da::platform
 
 	protected:
 		virtual void createDescriptorSets(VkDescriptorSetLayoutBinding& uboLayoutBinding, VkDescriptorSetLayoutBinding& samplerLayoutBinding) override;
+		virtual void updateRasterizer(VkPipelineRasterizationStateCreateInfo& rasterizer) override;
+		virtual void updateDepthStencil(VkPipelineDepthStencilStateCreateInfo& depthStencil) override;
 	};
 }
 

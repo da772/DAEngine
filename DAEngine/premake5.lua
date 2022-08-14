@@ -10,16 +10,19 @@ filter "system:macosx"
 	include "thirdparty/DearImGui"
 	include "thirdparty/zlib"
 	include "thirdparty/assimp"
+	include "thirdparty/ktx"
 filter "system:windows"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
 	include "thirdparty/zlib"
 	include "thirdparty/assimp"
+	include "thirdparty/ktx"
 filter "system:linux"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
 	include "thirdparty/zlib"
 	include "thirdparty/assimp"
+	include "thirdparty/ktx"
 group ""
 
 IncludeDir = {}
@@ -30,6 +33,7 @@ IncludeDir = {}
 	IncludeDir["stb"] = "%{wks.location}/DAEngine/thirdparty/stb"
 	IncludeDir["assimp"] = "%{wks.location}/DAEngine/thirdparty/assimp/include"
 	IncludeDir["zlib"] = "%{wks.location}/DAEngine/thirdparty/zlib/include"
+	IncludeDir["ktx"] = "%{wks.location}/DAEngine/thirdparty/ktx/include"
 end
 
 project "DAEngine"
@@ -63,7 +67,8 @@ project "DAEngine"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.zlib}",
-		"%{IncludeDir.assimp}"
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.ktx}",
 	}
 	
 	libdirs
@@ -100,7 +105,8 @@ project "DAEngine"
 			"GLFW",
 			"libvulkan.1.3.216.dylib",
 			"libMoltenVK.dylib",
-			"ImGui"
+			"ImGui",
+			"ktx"
 		}
 		
 		includedirs
@@ -148,7 +154,8 @@ project "DAEngine"
 		{
 			"GLFW",
 			"vulkan-1",
-			"ImGui"
+			"ImGui",
+			"ktx"
 		}
 
 		
@@ -195,7 +202,8 @@ project "DAEngine"
 			{
 				"GLFW",
 				"vulkan-1",
-				"ImGui"
+				"ImGui",
+				"ktx"
 			}
 			
 			includedirs

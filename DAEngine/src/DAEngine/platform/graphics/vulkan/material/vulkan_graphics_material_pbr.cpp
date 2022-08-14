@@ -56,8 +56,12 @@ namespace da::platform
 			* glm::rotate(glm::mat4(1.0f), glm::radians(90.f), glm::vec3(0.0f, 0.0f, 1.0f))
 			* glm::rotate(glm::mat4(1.0f), time * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		ubo.model = glm::scale(ubo.model, glm::vec3(.25f, .25f, .25f));
-		ubo.view = glm::lookAt(glm::vec3(0.0f, 1.5f, 0.5f), glm::vec3(0.0f, 0.0f, 0.35f), glm::vec3(0.0f, 0.0f, 1.0f));
-		ubo.proj = glm::perspective(glm::radians(60.0f), m_vulkanApi.getSwapChainExt().width / (float)m_vulkanApi.getSwapChainExt().height, 0.1f, 10.0f);
+		ubo.view = glm::translate(glm::mat4(1.0f), glm::vec3(CamPosition.x, CamPosition.y, CamPosition.z))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.x), glm::vec3(1.f, 0.f, 0.f))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.y), glm::vec3(0.f, 1.f, 0.f))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.z), glm::vec3(0.f, 0.f, 1.f));
+
+		ubo.proj = glm::perspective(glm::radians(90.0f), m_vulkanApi.getSwapChainExt().width / (float)m_vulkanApi.getSwapChainExt().height, 0.1f, 1000.0f);
 
 		ubo.proj[1][1] *= -1;
 

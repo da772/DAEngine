@@ -12,7 +12,7 @@ namespace da::platform
 	CVulkanGraphicsMaterialCubeMap::CVulkanGraphicsMaterialCubeMap(da::core::CGraphicsPipeline& pipeline
 		, const CBasicString <da::memory::CGraphicsAllocator>& texture)
 		: CVulkanGraphicsMaterial(pipeline)
-		, m_texture(CVulkanGraphicsTexture2D(texture, pipeline.getGraphicsApi()))
+		, m_texture(CVulkanGraphicsTextureCube(texture, pipeline.getGraphicsApi()))
 	{
 
 	}
@@ -36,15 +36,17 @@ namespace da::platform
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 		UniformBufferObject ubo{};
-		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(Position.x, Position.y, Position.z))
-			* glm::rotate(glm::mat4(1.0f), glm::radians(90.f), glm::vec3(0.0f, 0.0f, 1.0f))
-			* glm::rotate(glm::mat4(1.0f), time * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		ubo.model = glm::scale(ubo.model, glm::vec3(1.f, 1.f, 1.f));
-		ubo.view = glm::lookAt(glm::vec3(0.0f, 1.5f, 0.5f), glm::vec3(0.0f, 0.0f, 0.35f), glm::vec3(0.0f, 0.0f, 1.0f));
-		ubo.proj = glm::perspective(glm::radians(60.0f), m_vulkanApi.getSwapChainExt().width / (float)m_vulkanApi.getSwapChainExt().height, 0.1f, 10.0f);
+		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+		ubo.view = glm::translate(glm::mat4(1.0f), glm::vec3(CamPosition.x, CamPosition.y, CamPosition.z))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.x), glm::vec3(1.f,0.f,0.f))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.y), glm::vec3(0.f, 1.f, 0.f))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.z), glm::vec3(0.f, 0.f, 1.f));
+		ubo.proj = glm::perspective(glm::radians(45.0f), m_vulkanApi.getSwapChainExt().width / (float)m_vulkanApi.getSwapChainExt().height, 0.1f, 100.f);
 
 		ubo.proj[1][1] *= -1;
 
+		ubo.model = ubo.view;
+		ubo.model[3] = glm::vec4(0.f, 0.f, 0.f, 1.f);
 		void* data;
 		vkMapMemory(m_vulkanApi.getDevice(), m_uniformBuffersMemory[frame], 0, sizeof(ubo), 0, &data);
 		memcpy(data, &ubo, sizeof(ubo));

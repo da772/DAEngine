@@ -10,6 +10,8 @@ namespace da::core
 		virtual void shutdown() {};
 		
 		Vector3f Position;
+		Vector3f CamPosition;
+		Vector3f CamRot;
 
 	};
 }
