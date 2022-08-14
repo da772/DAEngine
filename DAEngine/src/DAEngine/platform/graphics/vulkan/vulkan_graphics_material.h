@@ -18,13 +18,7 @@ namespace da::platform
 	class CVulkanGraphicsMaterial : public da::core::CMaterial
 	{
 	public:
-		CVulkanGraphicsMaterial(da::core::CGraphicsPipeline& pipeline
-			, const CBasicString <da::memory::CGraphicsAllocator>& albedo
-			, const CBasicString <da::memory::CGraphicsAllocator>& normal
-			, const CBasicString <da::memory::CGraphicsAllocator>& roughness
-			, const CBasicString <da::memory::CGraphicsAllocator>& metallic
-			, const CBasicString <da::memory::CGraphicsAllocator>& ao
-		);
+		CVulkanGraphicsMaterial(da::core::CGraphicsPipeline& pipeline);
 		virtual void initialize() override;
 		virtual void update(int frame) override;
 		virtual void shutdown() override;
@@ -32,24 +26,21 @@ namespace da::platform
 
 		inline const TArray<VkDescriptorSet, memory::CGraphicsAllocator>& getDescriptorSets() const {return m_descriptorSets;};
 		
+	protected:
+		virtual TArray<VkDescriptorPoolSize, memory::CGraphicsAllocator> getDescriptorPools();
+		virtual void getDescriptorSet(int frame);
 
-	private:
 		CVulkanGraphicsPipeline& m_vulkanPipeline;
 		CVulkanGraphicsApi& m_vulkanApi;
-		CVulkanGraphicsTexture2D m_albedo;
-		CVulkanGraphicsTexture2D m_normal;
-		CVulkanGraphicsTexture2D m_roughness;
-		CVulkanGraphicsTexture2D m_metallic;
-		CVulkanGraphicsTexture2D m_ao;
+		TList<VkBuffer, memory::CGraphicsAllocator> m_uniformBuffers;
+		TArray<VkDescriptorSet, memory::CGraphicsAllocator> m_descriptorSets;
+		TList<VkDeviceMemory, memory::CGraphicsAllocator> m_uniformBuffersMemory;
 
 	private:
-		TList<VkBuffer, memory::CGraphicsAllocator> m_uniformBuffers;
-		TList<VkDeviceMemory, memory::CGraphicsAllocator> m_uniformBuffersMemory;
 		VkDescriptorPool m_descriptorPool;
-		TArray<VkDescriptorSet, memory::CGraphicsAllocator> m_descriptorSets;
 		void createUniformBuffers();
 		void createDescriptorPools();
-		void createDesciprtorSets();
+		void createDescriptorSets();
 	};
 
 

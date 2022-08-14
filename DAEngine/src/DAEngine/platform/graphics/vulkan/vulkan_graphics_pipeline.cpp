@@ -61,21 +61,13 @@ namespace da::platform {
 		return shaderModule;
 	}
 
+
 	void CVulkanGraphicsPipeline::createDescriptorSets()
 	{
 		VkDescriptorSetLayoutBinding uboLayoutBinding{};
-		uboLayoutBinding.binding = 0;
-		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		uboLayoutBinding.descriptorCount = 1;
-		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-		uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
-
 		VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-		samplerLayoutBinding.binding = 1;
-		samplerLayoutBinding.descriptorCount = 5;
-		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		samplerLayoutBinding.pImmutableSamplers = nullptr;
-		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		createDescriptorSets(uboLayoutBinding, samplerLayoutBinding);
 
 		TArray<VkDescriptorSetLayoutBinding> bindings = { uboLayoutBinding, samplerLayoutBinding };
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
@@ -91,6 +83,21 @@ namespace da::platform {
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 1;
 		pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
+	}
+
+	void CVulkanGraphicsPipeline::createDescriptorSets(VkDescriptorSetLayoutBinding& uboLayoutBinding, VkDescriptorSetLayoutBinding& samplerLayoutBinding)
+	{
+		uboLayoutBinding.binding = 0;
+		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		uboLayoutBinding.descriptorCount = 1;
+		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
+
+		samplerLayoutBinding.binding = 1;
+		samplerLayoutBinding.descriptorCount = 5;
+		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		samplerLayoutBinding.pImmutableSamplers = nullptr;
+		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	}
 
 	void CVulkanGraphicsPipeline::createGraphicsPipeline()

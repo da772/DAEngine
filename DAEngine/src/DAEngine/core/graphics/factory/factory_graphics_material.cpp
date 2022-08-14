@@ -4,13 +4,14 @@
 #include "DAEngine/core/core.h"
 
 #ifdef DA_GRAPHICS_VULKAN
-#include "DAEngine/platform/graphics/vulkan/vulkan_graphics_material.h"
+#include "DAEngine/platform/graphics/vulkan/material/vulkan_graphics_material_pbr.h"
+#include "DAEngine/platform/graphics/vulkan/material/vulkan_graphics_material_cubemap.h"
 #endif
 
 namespace da::core
 {
 
-	da::core::CMaterial* CMaterialFactory::Create(CGraphicsPipeline& pipeline
+	da::core::CMaterial* CMaterialFactory::CreatePBR(CGraphicsPipeline& pipeline
 		, const CBasicString <da::memory::CGraphicsAllocator>& albedo
 		, const CBasicString <da::memory::CGraphicsAllocator>& normal
 		, const CBasicString <da::memory::CGraphicsAllocator>& roughness
@@ -19,8 +20,17 @@ namespace da::core
 	)
 	{
 #ifdef DA_GRAPHICS_VULKAN
-		return new da::platform::CVulkanGraphicsMaterial(pipeline, albedo, normal, roughness, metallic, ao);
+		return new da::platform::CVulkanGraphicsMaterialPBR(pipeline, albedo, normal, roughness, metallic, ao);
 #endif
+		return nullptr;
+	}
+
+	da::core::CMaterial* CMaterialFactory::CreateCubeMap(CGraphicsPipeline& pipeline, const CBasicString <da::memory::CGraphicsAllocator>& albedo)
+	{
+#ifdef DA_GRAPHICS_VULKAN
+		return new da::platform::CVulkanGraphicsMaterialCubeMap(pipeline, albedo);
+#endif
+
 		return nullptr;
 	}
 

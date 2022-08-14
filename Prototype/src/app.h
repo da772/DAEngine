@@ -66,25 +66,26 @@ public:
 private:
 	da::modules::CGraphicsModule* m_graphicsModule;
 	da::modules::CGraphicsModule* m_graphicsModule2;
-	da::core::CMaterial* m_boltMat;
+	da::core::CMaterial* m_boltMat = 0;
 
 protected:
 	inline virtual void onInitalize() override
 	{
-		auto pipeline = da::core::CGraphicsPipelineFactory::Create(*m_graphicsModule->getGraphicsApi(), "shaders/vert.spv", "shaders/frag.spv", 
-			da::core::FVertexBase::getBindingDescription(), da::core::FVertexBase::getAttributeDescription());
+		
+		auto pipeline = da::core::CGraphicsPipelineFactory::CreatePBR(*m_graphicsModule->getGraphicsApi());
 
 		m_graphicsModule->getGraphicsApi()->submitPipeline(pipeline);
 		
+		
 		da::core::CStaticMesh* model = new  da::core::CStaticMesh("assets/viking_room.obj");
-		da::core::CStaticMesh* model2 = new da::core::CStaticMesh("assets/penguin.fbx");
 		da::core::CStaticMesh* model3 = new da::core::CStaticMesh("assets/coffee.fbx");
 		da::core::CStaticMesh* model4 = new da::core::CStaticMesh("assets/bolt.fbx");
-		da::core::CMaterial* mat1 = da::core::CMaterialFactory::Create(*pipeline, "assets/viking_room.png", "assets/viking_room.png");
-		da::core::CMaterial* mat2 = da::core::CMaterialFactory::Create(*pipeline, "assets/penguin.png", "assets/viking_room.png");
-		da::core::CMaterial* mat3 = da::core::CMaterialFactory::Create(*pipeline, "assets/coffeeA.png", "assets/coffeeN.png", "assets/coffeeR.png", "assets/coffeeM.png");
-		m_boltMat = da::core::CMaterialFactory::Create(*pipeline, "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg", "assets/boltM.jpg", "assets/boltAO.jpg");
-		da::core::CMaterial* mat4 = da::core::CMaterialFactory::Create(*pipeline, "assets/boltA.jpg");
+		da::core::CMaterial* mat1 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/viking_room.png", "assets/viking_room.png");
+		da::core::CMaterial* mat2 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/penguin.png", "assets/viking_room.png");
+		da::core::CMaterial* mat3 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/coffeeA.png", "assets/coffeeN.png", "assets/coffeeR.png", "assets/coffeeM.png");
+		m_boltMat = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg", "assets/boltM.jpg", "assets/boltAO.jpg");
+		da::core::CMaterial* mat4 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/boltA.jpg");
+		
 
 		mat1->Position = da::Vector3f(0.f, 0.f, 0.f);
 		mat2->Position = da:: Vector3f(1.f, 0.f, 0.f);
@@ -94,8 +95,16 @@ protected:
 		//pipeline->addRenderable(model2, mat2);
 		//pipeline->addRenderable(model3, mat3);
 		pipeline->addRenderable(model4, m_boltMat);
-		//pipeline->addRenderable(model4, mat4);
+		
+		/*
+		auto cubeMapPipeline = da::core::CGraphicsPipelineFactory::CreateCubeMap(*m_graphicsModule->getGraphicsApi());
+		m_graphicsModule->getGraphicsApi()->submitPipeline(cubeMapPipeline);
 
+		da::core::CStaticMesh* skybox = new da::core::CStaticMesh("assets/skybox.obj");
+		da::core::CMaterial* cubeMapMat = da::core::CMaterialFactory::CreateCubeMap(*cubeMapPipeline, "assets/environment.hdr");
+		cubeMapPipeline->addRenderable(skybox, cubeMapMat);
+		*/
+		
 #ifdef WINDOW_2
 
 		auto pipeline2 = da::core::CGraphicsPipelineFactory::Create(*m_graphicsModule2->getGraphicsApi(), "shaders/vert.spv", "shaders/frag.spv",
@@ -116,6 +125,10 @@ protected:
 
 	inline virtual void onUpdate() override
 	{
+		if (!m_boltMat)
+		{
+			return;
+		}
 		if (ImGui::Begin("Object Viewer"))
 		{
 			ImGui::Text("Bolt Cutter");

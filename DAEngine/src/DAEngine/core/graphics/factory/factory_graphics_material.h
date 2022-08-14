@@ -7,7 +7,7 @@ namespace da::core {
 	class CMaterialFactory
 	{
 	public:
-		static CMaterial* Create(CGraphicsPipeline& pipeline
+		static CMaterial* CreatePBR(CGraphicsPipeline& pipeline
 			, const CBasicString <da::memory::CGraphicsAllocator> &albedo = "assets/black.png"
 			, const CBasicString <da::memory::CGraphicsAllocator>& normal = "assets/black.png"
 			, const CBasicString <da::memory::CGraphicsAllocator>& roughness = "assets/black.png"
@@ -15,5 +15,7 @@ namespace da::core {
 			, const CBasicString <da::memory::CGraphicsAllocator>& ao = "assets/black.png"
 		
 		);
+		
+		static CMaterial* CreateCubeMap(CGraphicsPipeline& pipeline, const CBasicString <da::memory::CGraphicsAllocator>& albedo = "assets/black.png");
 	};
 }

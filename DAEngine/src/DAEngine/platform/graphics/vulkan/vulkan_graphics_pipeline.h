@@ -63,14 +63,15 @@ namespace da::platform
 
 		virtual void render(VkCommandBuffer& buffer, int frame);
 
+	protected:
+		virtual void createDescriptorSets(VkDescriptorSetLayoutBinding& uboLayoutBinding, VkDescriptorSetLayoutBinding& samplerLayoutBindings);
+
 	private:
-		void createDescriptorSets();
 		void createGraphicsPipeline();
+		void createDescriptorSets();
 		FVulkanMeshData createMeshData(da::core::IRenderable* renderable, da::core::CMaterial* material) const;
 		VkShaderModule createShaderModule(const TList<char, memory::CGraphicsAllocator>& code, VkDevice device);
 		TList<FVulkanMeshData, da::memory::CGraphicsAllocator> m_renderables;
-
-	private:
 		CVulkanGraphicsApi& m_vulkanGraphicsApi;
 		VkPipeline m_graphicsPipeline;
 		VkPipelineLayout m_pipelineLayout;
