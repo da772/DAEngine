@@ -52,13 +52,15 @@ project "Prototype"
 		"DAEngine/src",
 		"%{prj.name}/src",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.assimp}"
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.ImGui}",
 	}
 
 	links
 	{
 		"DAEngine",
-		"assimp"
+		"assimp",
+		"ImGui"
 	}
 	
 	filter "system:windows"

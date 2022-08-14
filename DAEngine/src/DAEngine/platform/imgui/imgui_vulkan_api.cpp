@@ -104,11 +104,9 @@ namespace da::platform {
             ImGui::Text("Total: %llu bytes", da::memory::getMemoryAllocated());
         }
         ImGui::End();
-        
 
-        //imgui commands
-        ImGui::ShowDemoWindow(&open);
-        ImGui::Render();
+		//imgui commands
+		ImGui::ShowDemoWindow(&open);
 	}
 
 	void CImGuiVulkanApi::onShutdown()
@@ -124,6 +122,7 @@ namespace da::platform {
 
 	void CImGuiVulkanApi::renderImGui(VkCommandBuffer cmd)
 	{
+        ImGui::Render();
         ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), cmd);
 	}
 

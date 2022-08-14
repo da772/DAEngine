@@ -23,6 +23,7 @@ namespace da::platform
 			, const CBasicString <da::memory::CGraphicsAllocator>& normal
 			, const CBasicString <da::memory::CGraphicsAllocator>& roughness
 			, const CBasicString <da::memory::CGraphicsAllocator>& metallic
+			, const CBasicString <da::memory::CGraphicsAllocator>& ao
 		);
 		virtual void initialize() override;
 		virtual void update(int frame) override;
@@ -39,6 +40,7 @@ namespace da::platform
 		CVulkanGraphicsTexture2D m_normal;
 		CVulkanGraphicsTexture2D m_roughness;
 		CVulkanGraphicsTexture2D m_metallic;
+		CVulkanGraphicsTexture2D m_ao;
 
 	private:
 		TList<VkBuffer, memory::CGraphicsAllocator> m_uniformBuffers;

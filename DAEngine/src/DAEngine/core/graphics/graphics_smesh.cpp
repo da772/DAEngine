@@ -49,6 +49,21 @@ namespace da::core
 					};
 				}
 
+				if (pScene->mMeshes[i]->HasTangentsAndBitangents())
+				{
+					vertex.Tangent = {
+						pScene->mMeshes[i]->mTangents[v].x,
+						pScene->mMeshes[i]->mTangents[v].y,
+						pScene->mMeshes[i]->mTangents[v].z,
+					};
+
+					vertex.BitTangent = {
+						pScene->mMeshes[i]->mBitangents[v].x,
+						pScene->mMeshes[i]->mBitangents[v].y,
+						pScene->mMeshes[i]->mBitangents[v].z,
+					};
+				}
+
 				vertices.push(vertex);
 			}
 

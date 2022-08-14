@@ -15,10 +15,11 @@ namespace da::core
 		, const CBasicString <da::memory::CGraphicsAllocator>& normal
 		, const CBasicString <da::memory::CGraphicsAllocator>& roughness
 		, const CBasicString <da::memory::CGraphicsAllocator>& metallic
+		, const CBasicString <da::memory::CGraphicsAllocator>& ao
 	)
 	{
 #ifdef DA_GRAPHICS_VULKAN
-		return new da::platform::CVulkanGraphicsMaterial(pipeline, albedo, normal, roughness, metallic);
+		return new da::platform::CVulkanGraphicsMaterial(pipeline, albedo, normal, roughness, metallic, ao);
 #endif
 		return nullptr;
 	}

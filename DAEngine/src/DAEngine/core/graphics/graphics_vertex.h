@@ -19,6 +19,8 @@ namespace da::core
         Vector3f Pos;
         Vector3f Color;
 		Vector3f Normal;
+		Vector3f Tangent;
+		Vector3f BitTangent;
 
 		inline static FVertexBindingDescription getBindingDescription()
 		{
@@ -31,7 +33,7 @@ namespace da::core
 
 		inline static TArray<FVertexInputAttributeDescription> getAttributeDescription()
 		{
-			TArray<FVertexInputAttributeDescription> attributeDescriptions(4);
+			TArray<FVertexInputAttributeDescription> attributeDescriptions(6);
 			// Position
 			attributeDescriptions[0].binding = 0;
 			attributeDescriptions[0].location = 0;
@@ -56,6 +58,17 @@ namespace da::core
 			attributeDescriptions[3].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106,
 			attributeDescriptions[3].offset = offsetof(FVertexBase, Normal);
 
+			// Tangent
+			attributeDescriptions[4].binding = 0;
+			attributeDescriptions[4].location = 4;
+			attributeDescriptions[4].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106,
+			attributeDescriptions[4].offset = offsetof(FVertexBase, Tangent);
+
+			// BitTangent
+			attributeDescriptions[5].binding = 0;
+			attributeDescriptions[5].location = 5;
+			attributeDescriptions[5].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106,
+			attributeDescriptions[5].offset = offsetof(FVertexBase, BitTangent);
 
 			return attributeDescriptions;
 		}

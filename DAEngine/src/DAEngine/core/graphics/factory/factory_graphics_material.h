@@ -12,6 +12,7 @@ namespace da::core {
 			, const CBasicString <da::memory::CGraphicsAllocator>& normal = "assets/black.png"
 			, const CBasicString <da::memory::CGraphicsAllocator>& roughness = "assets/black.png"
 			, const CBasicString <da::memory::CGraphicsAllocator>& metallic = "assets/black.png"
+			, const CBasicString <da::memory::CGraphicsAllocator>& ao = "assets/black.png"
 		
 		);
 	};
