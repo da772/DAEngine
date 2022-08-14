@@ -33,6 +33,7 @@ public:
 		m_graphicsModule2 = new da::modules::CGraphicsModule(*windowModule2);
 		addModule(m_graphicsModule2);
 		
+		
 		windowModule2->getEventHandler().registerCallback(EEventType::WindowClose, [windowModule2](const da::core::events::CEvent& e) {
 			windowModule2->lateShutdown();
 			});
@@ -89,14 +90,11 @@ protected:
 		da::core::CStaticMesh* model = new  da::core::CStaticMesh("assets/viking_room.obj");
 		da::core::CStaticMesh* model3 = new da::core::CStaticMesh("assets/coffee.fbx");
 		da::core::CStaticMesh* model4 = new da::core::CStaticMesh("assets/bolt.fbx");
-		da::core::CMaterial* mat1 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/viking_room.png", "assets/viking_room.png");
 		da::core::CMaterial* mat2 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/penguin.png", "assets/viking_room.png");
 		da::core::CMaterial* mat3 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/coffeeA.png", "assets/coffeeN.png", "assets/coffeeR.png", "assets/coffeeM.png");
 		m_boltMat = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg", "assets/boltM.jpg", "assets/boltAO.jpg");
 		da::core::CMaterial* mat4 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/boltA.jpg");
 		
-
-		mat1->Position = da::Vector3f(0.f, 0.f, 0.f);
 		mat2->Position = da:: Vector3f(1.f, 0.f, 0.f);
 		mat3->Position = da::Vector3f(0.f, 0.f, 0.f);
 		m_boltMat->Position = da::Vector3f(0.5f, 0.0f, -.5f);
@@ -107,13 +105,13 @@ protected:
 		
 #ifdef WINDOW_2
 
-		auto pipeline2 = da::core::CGraphicsPipelineFactory::Create(*m_graphicsModule2->getGraphicsApi(), "shaders/vert.spv", "shaders/frag.spv",
-			da::core::FVertexBase::getBindingDescription(), da::core::FVertexBase::getAttributeDescription());
-
+		auto pipeline2 = da::core::CGraphicsPipelineFactory::CreatePBR(*m_graphicsModule2->getGraphicsApi());
 		m_graphicsModule2->getGraphicsApi()->submitPipeline(pipeline2);
 
-		da::core::CMaterial* mat4 = da::core::CMaterialFactory::Create(*pipeline2, "assets/penguin.png", "assets/viking_room.png");
-		pipeline2->addRenderable(model2, mat4);
+		da::core::CMaterial* mat1 = da::core::CMaterialFactory::CreatePBR(*pipeline2, "assets/coffeeA.png", "assets/coffeeN.png", "assets/coffeeR.png", "assets/coffeeM.png");
+		mat1->Position = { 0.f, 0.f, .35f };
+		mat1->CamRot = { 0.f, 180.f, 0.f };
+		pipeline2->addRenderable(model3, mat1);
 #endif
 	}
 
