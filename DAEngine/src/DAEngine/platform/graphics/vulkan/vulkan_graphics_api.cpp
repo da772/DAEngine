@@ -807,7 +807,7 @@ namespace da::platform {
 		renderPassInfo.renderArea.extent = m_swapChainExtent;
 
 		TArray<VkClearValue, memory::CGraphicsAllocator> clearValues(2);
-		clearValues[0].color = { {0.25f, 0.25f, 0.25f, 1.0f} };
+		clearValues[0].color = { {0.70f, 0.83f, 0.87f, 1.0f} };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
