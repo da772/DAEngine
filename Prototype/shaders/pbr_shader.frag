@@ -1,12 +1,13 @@
 #version 450
 
-
 layout(location = 0) in vec3 fragPosition;
 layout(location = 1) in vec3 fragColor;
 layout(location = 2) in vec2 fragTexCoord;
 layout(location = 3) in vec3 fragNormal;
-layout(location = 4) in vec3 fragTangent;
-layout(location = 5) in vec3 fragBitTangent;
+
+layout(location = 4) in vec3 tangentLightPos;
+layout(location = 5) in vec3 tangentViewPos;
+layout(location = 6) in vec3 tangentFragPos;
 
 layout(binding = 1) uniform sampler2D[5] texSampler;
 
@@ -83,51 +84,52 @@ void main() {
     float ao        = texture(texSampler[4], fragTexCoord).r;
 
 	vec3 N = getNormalFromMap();
-    vec3 V = normalize(vec3(0.0, 1.5,0.5) - fragPosition);
+    vec3 V = normalize(vec3(0.0, 0.0,0.0) - fragPosition);
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
     vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 
-	vec3 lightPos = vec3(0.0, 1.5, 0.5);
+	vec3 lightPos = vec3(0.0,0.0,10.0);
 	vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
+    for (int i = 0; i < 4; i++){
+        // calculate per-light radiance
+        vec3 L = normalize(lightPos - fragPosition);
+        vec3 H = normalize(V + L);
+        float distance = length(lightPos - fragPosition);
+        float attenuation = 1.0 / (distance * distance);
+        vec3 radiance = lightColor * attenuation;
 
-	// calculate per-light radiance
-	vec3 L = normalize(lightPos - fragPosition);
-	vec3 H = normalize(V + L);
-	float distance = length(lightPos - fragPosition);
-	float attenuation = 1.0 / (distance * distance);
-	vec3 radiance = lightColor * attenuation;
+        // Cook-Torrance BRDF
+        float NDF = DistributionGGX(N, H, roughness);   
+        float G   = GeometrySmith(N, V, L, roughness);      
+        vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+        
+        vec3 numerator    = NDF * G * F; 
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
+        vec3 specular = numerator / denominator;
+        
+        // kS is equal to Fresnel
+        vec3 kS = F;
+        // for energy conservation, the diffuse and specular light can't
+        // be above 1.0 (unless the surface emits light); to preserve this
+        // relationship the diffuse component (kD) should equal 1.0 - kS.
+        vec3 kD = vec3(1.0) - kS;
+        // multiply kD by the inverse metalness such that only non-metals 
+        // have diffuse lighting, or a linear blend if partly metal (pure metals
+        // have no diffuse light).
+        kD *= 1.0 - metallic;	  
 
-	// Cook-Torrance BRDF
-	float NDF = DistributionGGX(N, H, roughness);   
-	float G   = GeometrySmith(N, V, L, roughness);      
-	vec3 F    = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
-	   
-	vec3 numerator    = NDF * G * F; 
-	float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
-	vec3 specular = numerator / denominator;
-	
-	// kS is equal to Fresnel
-	vec3 kS = F;
-	// for energy conservation, the diffuse and specular light can't
-	// be above 1.0 (unless the surface emits light); to preserve this
-	// relationship the diffuse component (kD) should equal 1.0 - kS.
-	vec3 kD = vec3(1.0) - kS;
-	// multiply kD by the inverse metalness such that only non-metals 
-	// have diffuse lighting, or a linear blend if partly metal (pure metals
-	// have no diffuse light).
-	kD *= 1.0 - metallic;	  
+        // scale light by NdotL
+        float NdotL = max(dot(N, L), 0.0);        
 
-	// scale light by NdotL
-	float NdotL = max(dot(N, L), 0.0);        
-
-	// add to outgoing radiance Lo
-	Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+        // add to outgoing radiance Lo
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+    }
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).

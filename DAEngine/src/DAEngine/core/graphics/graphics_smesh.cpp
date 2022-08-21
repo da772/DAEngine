@@ -19,7 +19,7 @@ namespace da::core
 		TList<FVertexBase, memory::CGraphicsAllocator> vertices;
 		TList<uint32_t, memory::CGraphicsAllocator> indices;
 
-		const aiScene* pScene = importer.ReadFileFromMemory(file.data(), file.size()*sizeof(char), aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
+		const aiScene* pScene = importer.ReadFileFromMemory(file.data(), file.size()*sizeof(char), aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 		for (size_t i = 0; i < pScene->mNumMeshes; i++)
 		{

@@ -8,8 +8,8 @@ namespace da::platform
 
 	CVulkanGraphicsPipelinePBR::CVulkanGraphicsPipelinePBR(da::core::CGraphicsApi& pipeline) :
 		CVulkanGraphicsPipeline(pipeline
-			, "shaders/pbr_vert.spv"
-			, "shaders/pbr_frag.spv"
+			, "shaders/pbr_shader.vert.spv"
+			, "shaders/pbr_shader.frag.spv"
 			, getBindingDescription()
 			, getAttributeDescription()
 		)

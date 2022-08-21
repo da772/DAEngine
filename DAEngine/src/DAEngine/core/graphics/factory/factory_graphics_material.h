@@ -8,11 +8,11 @@ namespace da::core {
 	{
 	public:
 		static CMaterial* CreatePBR(CGraphicsPipeline& pipeline
-			, const CBasicString <da::memory::CGraphicsAllocator> &albedo = "assets/black.png"
-			, const CBasicString <da::memory::CGraphicsAllocator>& normal = "assets/black.png"
-			, const CBasicString <da::memory::CGraphicsAllocator>& roughness = "assets/black.png"
-			, const CBasicString <da::memory::CGraphicsAllocator>& metallic = "assets/black.png"
-			, const CBasicString <da::memory::CGraphicsAllocator>& ao = "assets/black.png"
+			, const CBasicString <da::memory::CGraphicsAllocator> &albedo = "assets/white.png"
+			, const CBasicString <da::memory::CGraphicsAllocator>& normal = "assets/white.png"
+			, const CBasicString <da::memory::CGraphicsAllocator>& roughness = "assets/white.png"
+			, const CBasicString <da::memory::CGraphicsAllocator>& metallic = "assets/white.png"
+			, const CBasicString <da::memory::CGraphicsAllocator>& ao = "assets/white.png"
 		
 		);
 		

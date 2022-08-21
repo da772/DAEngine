@@ -57,7 +57,7 @@ namespace da::platform
 
 	void CVulkanGraphicsPipelineCubemap::updateRasterizer(VkPipelineRasterizationStateCreateInfo& rasterizer)
 	{
-		rasterizer.cullMode = VK_CULL_MODE_NONE;
+		rasterizer.cullMode = VK_CULL_MODE_FRONT_BIT;
 	}
 
 	void CVulkanGraphicsPipelineCubemap::updateDepthStencil(VkPipelineDepthStencilStateCreateInfo& depthStencil)

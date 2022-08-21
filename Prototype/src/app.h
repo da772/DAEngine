@@ -70,37 +70,42 @@ private:
 	da::modules::CGraphicsModule* m_graphicsModule2;
 	da::core::CMaterial* m_boltMat = 0;
 	da::core::CMaterial* m_cubeMat = 0;
+	da::core::CMaterial* m_cubeMat2 = 0;
 
 protected:
 	inline virtual void onInitalize() override
 	{
 		{
-			auto cubeMapPipeline = da::core::CGraphicsPipelineFactory::CreateCubeMap(*m_graphicsModule->getGraphicsApi());
-			m_graphicsModule->getGraphicsApi()->submitPipeline(cubeMapPipeline);
+			
+			{
+				auto cubeMapPipeline = da::core::CGraphicsPipelineFactory::CreateCubeMap(*m_graphicsModule->getGraphicsApi());
+				m_graphicsModule->getGraphicsApi()->submitPipeline(cubeMapPipeline);
+				da::core::CStaticMesh* skybox = new da::core::CStaticMeshCube();
+				m_cubeMat = da::core::CMaterialFactory::CreateCubeMap(*cubeMapPipeline, "assets/cubemap.ktx");
+				cubeMapPipeline->addRenderable(skybox, m_cubeMat);
+			}
 
-			da::core::CStaticMesh* skybox = new da::core::CStaticMeshCube();
-			m_cubeMat = da::core::CMaterialFactory::CreateCubeMap(*cubeMapPipeline, "assets/cubemap.ktx");
-			cubeMapPipeline->addRenderable(skybox, m_cubeMat);
+			{
+				auto pipeline = da::core::CGraphicsPipelineFactory::CreatePBR(*m_graphicsModule->getGraphicsApi());
+				m_graphicsModule->getGraphicsApi()->submitPipeline(pipeline);
+				da::core::CStaticMesh* model4 = new da::core::CStaticMesh("assets/bolt.fbx");
+				da::core::CStaticMesh* modelCube = new da::core::CStaticMesh("assets/cube.obj");
+				m_boltMat = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg", "assets/boltM.jpg", "assets/boltAO.jpg");
+				m_cubeMat2 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/ceramic/ceramicA.png", "assets/ceramic/ceramicN.png", 
+					"assets/white.png", "assets/ceramic/ceramicM.png", "assets/ceramic/ceramicAO.png");
 
-			auto pipeline = da::core::CGraphicsPipelineFactory::CreatePBR(*m_graphicsModule->getGraphicsApi());
-			m_graphicsModule->getGraphicsApi()->submitPipeline(pipeline);
-
-
-
-			da::core::CStaticMesh* model = new  da::core::CStaticMesh("assets/viking_room.obj");
-			da::core::CStaticMesh* model4 = new da::core::CStaticMesh("assets/bolt.fbx");
-			da::core::CMaterial* mat2 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/penguin.png", "assets/viking_room.png");
-			da::core::CMaterial* mat3 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/coffeeA.png", "assets/coffeeN.png", "assets/coffeeR.png", "assets/coffeeM.png");
-			m_boltMat = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg", "assets/boltM.jpg", "assets/boltAO.jpg");
-			da::core::CMaterial* mat4 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/boltA.jpg");
-
-			mat2->Position = da::Vector3f(1.f, 0.f, 0.f);
-			mat3->Position = da::Vector3f(0.f, 0.f, 0.f);
-			m_boltMat->Position = da::Vector3f(0.5f, 0.0f, -.5f);
-			//pipeline->addRenderable(model, mat1);
-			//pipeline->addRenderable(model2, mat2);
-			//pipeline->addRenderable(model3, mat3);
-			pipeline->addRenderable(model4, m_boltMat);
+				m_boltMat->Position = da::Vector3f(0.5f, 0.0f, -.5f);
+				m_boltMat->Scale = da::Vector3f(0.25f, 0.25f, .25f);
+				m_boltMat->RotationSpeed = 20.f;
+				m_boltMat->Rotation.z = 90.f;
+				m_cubeMat2->Position = da::Vector3f(0.0f, -1.5f, 0.f);
+				m_cubeMat2->Scale = da::Vector3f(1.f, 1.f, 1.f);
+				//pipeline->addRenderable(model, mat1);
+				//pipeline->addRenderable(model2, mat2);
+				//pipeline->addRenderable(model3, at3);
+				pipeline->addRenderable(model4, m_boltMat);
+				pipeline->addRenderable(modelCube, m_cubeMat2);
+			}
 		}
 		
 #ifdef WINDOW_2
@@ -144,7 +149,6 @@ protected:
 			ImGui::SameLine();
 			if (ImGui::DragFloat3("##Position", (float*)m_boltMat->Position.data(), .1f))
 			{
-				m_cubeMat->Position = m_boltMat->Position;
 			}
 
 			ImGui::Text("Camera");
@@ -153,6 +157,7 @@ protected:
 			if (ImGui::DragFloat3("##CamPosition", (float*)m_boltMat->CamPosition.data(), .1f))
 			{
 				m_cubeMat->CamPosition = m_boltMat->CamPosition;
+				m_cubeMat2->CamPosition = m_boltMat->CamPosition;
 			}
 
 			ImGui::Text("Rotation");
@@ -160,6 +165,7 @@ protected:
 			if (ImGui::DragFloat3("##CamRotation", (float*)m_boltMat->CamRot.data(), .1f))
 			{
 				m_cubeMat->CamRot = m_boltMat->CamRot;
+				m_cubeMat2->CamRot = m_boltMat->CamRot;
 			}
 
 		}
