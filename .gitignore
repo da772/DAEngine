@@ -31,3 +31,4 @@ premake5.lua
 enc_temp_folder/
 Makefile
 
+Prototype/assets/cubemap.ktx

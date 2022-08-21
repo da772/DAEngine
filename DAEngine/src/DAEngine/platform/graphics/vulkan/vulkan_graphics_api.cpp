@@ -158,12 +158,17 @@ namespace da::platform {
 		vkResetFences(m_device, 1, &m_inFlightFences[m_currentFrame]);
 
 		vkResetCommandBuffer(m_commandBuffers[m_currentFrame], 0);
-		beginRecordingCommandBuffer(m_commandBuffers[m_currentFrame], m_imageIndex);
-		for (size_t i = 0; i < m_renderFunctions.size(); i++) {
-			m_renderFunctions[i]->operator()(m_commandBuffers[m_currentFrame]);
+		// Main RenderPass
+		{
+			beginRecordingCommandBuffer(m_commandBuffers[m_currentFrame], m_imageIndex, m_renderPass);
+			for (size_t i = 0; i < m_pipelines.size(); i++) {
+				m_pipelines[i]->render(m_commandBuffers[m_currentFrame], m_currentFrame);
+			}
+			for (size_t i = 0; i < m_renderFunctions.size(); i++) {
+				m_renderFunctions[i]->operator()(m_commandBuffers[m_currentFrame]);
+			}
+			stopRecordingCommandBuffer(m_commandBuffers[m_currentFrame]);
 		}
-        stopRecordingCommandBuffer(m_commandBuffers[m_currentFrame]);
-        
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -790,7 +795,7 @@ namespace da::platform {
         VK_CHECK(result, VK_SUCCESS);
     }
 
-	void CVulkanGraphicsApi::beginRecordingCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+	void CVulkanGraphicsApi::beginRecordingCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass) {
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
@@ -801,7 +806,7 @@ namespace da::platform {
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = m_renderPass;
+		renderPassInfo.renderPass = renderPass;
 		renderPassInfo.framebuffer = m_swapChainFramebuffers[imageIndex];
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = m_swapChainExtent;
@@ -814,9 +819,6 @@ namespace da::platform {
 		renderPassInfo.pClearValues = clearValues.data();
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-		for (size_t i = 0; i < m_pipelines.size(); i++) {
-			m_pipelines[i]->render(commandBuffer, m_currentFrame);
-		}
 	}
 
 	void CVulkanGraphicsApi::createCommandBuffers()

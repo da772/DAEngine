@@ -79,7 +79,7 @@ protected:
 			m_graphicsModule->getGraphicsApi()->submitPipeline(cubeMapPipeline);
 
 			da::core::CStaticMesh* skybox = new da::core::CStaticMeshCube();
-			m_cubeMat = da::core::CMaterialFactory::CreateCubeMap(*cubeMapPipeline, "assets/cubemap_yokohama_rgba.ktx");
+			m_cubeMat = da::core::CMaterialFactory::CreateCubeMap(*cubeMapPipeline, "assets/cubemap.ktx");
 			cubeMapPipeline->addRenderable(skybox, m_cubeMat);
 
 			auto pipeline = da::core::CGraphicsPipelineFactory::CreatePBR(*m_graphicsModule->getGraphicsApi());
