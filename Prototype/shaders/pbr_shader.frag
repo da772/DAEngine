@@ -79,29 +79,29 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 
 void main() {
 	vec3 albedo     = pow(texture(texSampler[0], fragTexCoord).rgb, vec3(2.2));
-    float metallic  = texture(texSampler[3], fragTexCoord).r;
-    float roughness = texture(texSampler[2], fragTexCoord).r;
-    float ao        = texture(texSampler[4], fragTexCoord).r;
+    float metallic  = length(texture(texSampler[3], fragTexCoord))/4.0;
+    float roughness = length(texture(texSampler[2], fragTexCoord))/4.0;
+    float ao        = length(texture(texSampler[4], fragTexCoord))/4.0;
 
 	vec3 N = getNormalFromMap();
-    vec3 V = normalize(vec3(0.0, 0.0,0.0) - fragPosition);
+    vec3 V = normalize(-fragPosition);
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
     vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 
-	vec3 lightPos = vec3(0.0,0.0,10.0);
+	vec3 lightPos = vec3(0.0,0.0,0.0);
 	vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < 1; i++){
         // calculate per-light radiance
         vec3 L = normalize(lightPos - fragPosition);
         vec3 H = normalize(V + L);
         float distance = length(lightPos - fragPosition);
-        float attenuation = 1.0 / (distance * distance);
+        float attenuation = 20.0 / (distance * distance);
         vec3 radiance = lightColor * attenuation;
 
         // Cook-Torrance BRDF
@@ -133,7 +133,7 @@ void main() {
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.07) * albedo * ao;
 
     vec3 color = ambient + Lo;
 

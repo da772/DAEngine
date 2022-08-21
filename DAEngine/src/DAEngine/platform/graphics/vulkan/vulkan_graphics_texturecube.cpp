@@ -249,8 +249,8 @@ namespace da::platform {
 		samplerInfo.compareEnable = VK_FALSE;
 		samplerInfo.compareOp = VK_COMPARE_OP_NEVER;
 
-		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-		samplerInfo.minLod = 0;//static_cast<float>(m_mipLevels / 2);
+		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
+		samplerInfo.minLod = static_cast<float>(m_mipLevels / 4);
 		samplerInfo.maxLod = static_cast<float>(m_mipLevels);
 		samplerInfo.mipLodBias = 0.0f; // Optional
 
