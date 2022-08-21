@@ -91,8 +91,7 @@ protected:
 				da::core::CStaticMesh* model4 = new da::core::CStaticMesh("assets/bolt.fbx");
 				da::core::CStaticMesh* modelCube = new da::core::CStaticMesh("assets/cube.obj");
 				m_boltMat = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg", "assets/boltM.jpg", "assets/boltAO.jpg");
-				m_cubeMat2 = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/ceramic/ceramicA.png", "assets/ceramic/ceramicN.png", 
-					"assets/white.png", "assets/ceramic/ceramicM.png", "assets/ceramic/ceramicAO.png");
+				m_cubeMat2 = da::core::CMaterialFactory::CreatePBR(*pipeline);
 
 				m_boltMat->Position = da::Vector3f(0.5f, 0.0f, -.5f);
 				m_boltMat->Scale = da::Vector3f(0.25f, 0.25f, .25f);

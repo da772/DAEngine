@@ -8,6 +8,7 @@ layout(location = 3) in vec3 fragNormal;
 layout(location = 4) in vec3 tangentLightPos;
 layout(location = 5) in vec3 tangentViewPos;
 layout(location = 6) in vec3 tangentFragPos;
+layout(location = 7) in mat3 tangentTBN;
 
 layout(binding = 1) uniform sampler2D[5] texSampler;
 
@@ -22,16 +23,7 @@ const float PI = 3.14159265359;
 vec3 getNormalFromMap()
 {
     vec3 tangentNormal = texture(texSampler[1], fragTexCoord).xyz * 2.0 - 1.0;
-
-    vec3 Q1  = dFdx(fragPosition);
-    vec3 Q2  = dFdy(fragPosition);
-    vec2 st1 = dFdx(fragTexCoord);
-    vec2 st2 = dFdy(fragTexCoord);
-
-    vec3 N   = normalize(fragNormal);
-    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
-    vec3 B  = -normalize(cross(N, T));
-    mat3 TBN = mat3(T, B, N);
+    mat3 TBN = tangentTBN;
 
     return normalize(TBN * tangentNormal);
 }
@@ -101,7 +93,7 @@ void main() {
         vec3 L = normalize(lightPos - fragPosition);
         vec3 H = normalize(V + L);
         float distance = length(lightPos - fragPosition);
-        float attenuation = 20.0 / (distance * distance);
+        float attenuation = 1.0 / (distance * distance);
         vec3 radiance = lightColor * attenuation;
 
         // Cook-Torrance BRDF
@@ -133,7 +125,7 @@ void main() {
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.07) * albedo * ao;
+    vec3 ambient = vec3(0.035) * albedo * ao;
 
     vec3 color = ambient + Lo;
 

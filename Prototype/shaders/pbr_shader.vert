@@ -21,6 +21,7 @@ layout(location = 3) out vec3 fragNormal;
 layout(location = 4) out vec3 tangentLightPos;
 layout(location = 5) out vec3 tangentViewPos;
 layout(location = 6) out vec3 tangentFragPos;
+layout(location = 7) out mat3 tangentTBN;
 
 
 void main() {
@@ -39,6 +40,7 @@ void main() {
     tangentLightPos = TBN * vec3(0.0, 1.5, 0.5);
     tangentViewPos = TBN * vec3(0.0,0.0,0.0);
     tangentFragPos = TBN * fragPosition;
+    tangentTBN = TBN;
 
 	gl_Position = ubo.proj * ubo.view * vec4(fragPosition, 1.0);
 }
