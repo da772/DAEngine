@@ -25,6 +25,7 @@ namespace da::platform
 	void CVulkanGraphicsMaterial::initialize()
 	{
 		createUniformBuffers();
+		createLightUniformBuffers();
 		createDescriptorPools();
 		createDescriptorSets();
 	}
@@ -56,6 +57,8 @@ namespace da::platform
 		for (size_t i = 0; i < m_vulkanApi.MAX_FRAMES_IN_FLIGHT; i++) {
 			vkDestroyBuffer(m_vulkanApi.getDevice(), m_uniformBuffers[i], &m_vulkanApi.getAllocCallbacks());
 			vkFreeMemory(m_vulkanApi.getDevice(), m_uniformBuffersMemory[i], &m_vulkanApi.getAllocCallbacks());
+			vkDestroyBuffer(m_vulkanApi.getDevice(), m_lightUniformBuffers[i], &m_vulkanApi.getAllocCallbacks());
+			vkFreeMemory(m_vulkanApi.getDevice(), m_lightBuffersMemory[i], &m_vulkanApi.getAllocCallbacks());
 		}
 
 		vkDestroyDescriptorPool(m_vulkanApi.getDevice(), m_descriptorPool, &m_vulkanApi.getAllocCallbacks());
@@ -73,6 +76,20 @@ namespace da::platform
 		}
 	}
 
+
+	void CVulkanGraphicsMaterial::createLightUniformBuffers()
+	{
+		VkPhysicalDeviceProperties properties;
+		vkGetPhysicalDeviceProperties(m_vulkanApi.getPhysicalDevice(), &properties);
+		VkDeviceSize bufferSize = sizeof(LightUniformBuffer);
+
+		m_lightUniformBuffers.resize(m_vulkanApi.MAX_FRAMES_IN_FLIGHT);
+		m_lightBuffersMemory.resize(m_vulkanApi.MAX_FRAMES_IN_FLIGHT);
+
+		for (size_t i = 0; i < m_vulkanApi.MAX_FRAMES_IN_FLIGHT; i++) {
+			m_vulkanApi.createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_lightUniformBuffers[i], m_lightBuffersMemory[i]);
+		}
+	}
 
 	da::core::containers::TArray<VkDescriptorPoolSize, da::memory::CGraphicsAllocator> CVulkanGraphicsMaterial::getDescriptorPools()
 	{

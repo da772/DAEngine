@@ -68,19 +68,30 @@ namespace da::platform
 		return attributeDescriptions;
 	}
 
-	void CVulkanGraphicsPipelinePBR::createDescriptorSets(VkDescriptorSetLayoutBinding& uboLayoutBinding, VkDescriptorSetLayoutBinding& samplerLayoutBinding)
+	TArray<VkDescriptorSetLayoutBinding> CVulkanGraphicsPipelinePBR::addDescriptorSets()
 	{
+		VkDescriptorSetLayoutBinding uboLayoutBinding = {};
 		uboLayoutBinding.binding = 0;
 		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		uboLayoutBinding.descriptorCount = 1;
 		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 		uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
 
-		samplerLayoutBinding.binding = 1;
+		VkDescriptorSetLayoutBinding lightLayoutBinding = {};
+		lightLayoutBinding.binding = 1;
+		lightLayoutBinding.descriptorCount = 1;
+		lightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		lightLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		lightLayoutBinding.pImmutableSamplers = nullptr; // Optional
+
+		VkDescriptorSetLayoutBinding samplerLayoutBinding = {};
+		samplerLayoutBinding.binding = 2;
 		samplerLayoutBinding.descriptorCount = 5;
 		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayoutBinding.pImmutableSamplers = nullptr;
 		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		return { uboLayoutBinding, lightLayoutBinding, samplerLayoutBinding };
 	}
 
 }

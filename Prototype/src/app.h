@@ -98,7 +98,7 @@ protected:
 				m_boltMat->RotationSpeed = 20.f;
 				m_boltMat->Rotation.z = 90.f;
 				m_cubeMat2->Position = da::Vector3f(0.0f, -1.5f, 0.f);
-				m_cubeMat2->Scale = da::Vector3f(1.f, 1.f, 1.f);
+				m_cubeMat2->Scale = da::Vector3f(100.f, 1.f, 100.f);
 				//pipeline->addRenderable(model, mat1);
 				//pipeline->addRenderable(model2, mat2);
 				//pipeline->addRenderable(model3, at3);

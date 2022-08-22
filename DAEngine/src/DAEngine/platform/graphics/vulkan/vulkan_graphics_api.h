@@ -68,6 +68,7 @@ namespace da::platform
 		void createSwapChain();
 		void createImageViews();
 		void createRenderPass();
+		void createShadowRenderPass();
 		void createFramebuffers();
 		void createCommandPool();
 		void createCommandBuffers();
@@ -125,6 +126,7 @@ namespace da::platform
 		VkCommandPool m_commandPool;
 		VkSwapchainKHR m_swapChain;
 		VkRenderPass m_renderPass;
+		VkRenderPass m_shadowRenderPass;
 		TList<VkCommandBuffer, memory::CGraphicsAllocator> m_commandBuffers;
 		TList<VkSemaphore, memory::CGraphicsAllocator> m_imageAvailableSemaphores;
 		TList<VkSemaphore, memory::CGraphicsAllocator> m_renderFinishedSemaphores;

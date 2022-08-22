@@ -74,7 +74,7 @@ namespace da::platform {
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		void* pUserData) {
 
-		if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+		if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT) {
 			CLogger::LogError(ELogChannel::Graphics, "Vulkan Validation Layer: %s", pCallbackData->pMessage);
 		}
 
@@ -125,7 +125,7 @@ namespace da::platform {
 		createSwapChain();
 		createImageViews();
 		createRenderPass();
-	
+		//createShadowRenderPass();
 		createCommandPool();
 		createColorResources();
 		createDepthResources();
@@ -158,7 +158,7 @@ namespace da::platform {
 		vkResetFences(m_device, 1, &m_inFlightFences[m_currentFrame]);
 
 		vkResetCommandBuffer(m_commandBuffers[m_currentFrame], 0);
-		// Main RenderPass
+		// Geometry RenderPass
 		{
 			beginRecordingCommandBuffer(m_commandBuffers[m_currentFrame], m_imageIndex, m_renderPass);
 			for (size_t i = 0; i < m_pipelines.size(); i++) {
@@ -168,6 +168,10 @@ namespace da::platform {
 				m_renderFunctions[i]->operator()(m_commandBuffers[m_currentFrame]);
 			}
 			stopRecordingCommandBuffer(m_commandBuffers[m_currentFrame]);
+		}
+		// Shadow Renderpass
+		{
+
 		}
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -743,6 +747,55 @@ namespace da::platform {
 		renderPassInfo.pDependencies = &dependency;
 
         auto result = vkCreateRenderPass(m_device, &renderPassInfo, &m_allocCallbacks, &m_renderPass);
+
+		VK_CHECK(result, VK_SUCCESS);
+	}
+
+	void CVulkanGraphicsApi::createShadowRenderPass()
+	{
+	
+
+		VkAttachmentDescription depthAttachment{};
+		depthAttachment.format = findDepthFormat();
+		depthAttachment.samples = m_msaaSamples;
+		depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+		VkAttachmentReference depthAttachmentRef{};
+		depthAttachmentRef.attachment = 1;
+		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+		
+		VkSubpassDescription subpass{};
+		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subpass.colorAttachmentCount = 0;
+		subpass.pDepthStencilAttachment = &depthAttachmentRef;
+
+		VkSubpassDependency dependency{};
+		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+		dependency.dstSubpass = 0;
+
+		dependency.srcStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		dependency.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+		dependency.dstStageMask = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+		dependency.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+
+		TArray<VkAttachmentDescription, memory::CGraphicsAllocator> attachments = { depthAttachment };
+		VkRenderPassCreateInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+		renderPassInfo.pAttachments = attachments.data();
+		renderPassInfo.subpassCount = 1;
+		renderPassInfo.pSubpasses = &subpass;
+		renderPassInfo.dependencyCount = 1;
+		renderPassInfo.pDependencies = &dependency;
+
+		auto result = vkCreateRenderPass(m_device, &renderPassInfo, &m_allocCallbacks, &m_shadowRenderPass);
 
 		VK_CHECK(result, VK_SUCCESS);
 	}

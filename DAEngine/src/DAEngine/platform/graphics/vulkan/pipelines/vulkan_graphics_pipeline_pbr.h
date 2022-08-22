@@ -10,7 +10,7 @@ namespace da::platform
 		CVulkanGraphicsPipelinePBR(da::core::CGraphicsApi& pipeline);
 
 	protected:
-		virtual void createDescriptorSets(VkDescriptorSetLayoutBinding& uboLayoutBinding, VkDescriptorSetLayoutBinding& samplerLayoutBinding) override;
+		virtual TArray<VkDescriptorSetLayoutBinding> addDescriptorSets() override;
 	};
 }
 

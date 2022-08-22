@@ -64,7 +64,7 @@ namespace da::platform
 		virtual void render(VkCommandBuffer& buffer, int frame);
 
 	protected:
-		virtual void createDescriptorSets(VkDescriptorSetLayoutBinding& uboLayoutBinding, VkDescriptorSetLayoutBinding& samplerLayoutBindings);
+		virtual TArray<VkDescriptorSetLayoutBinding> addDescriptorSets();
 		virtual void updateRasterizer(VkPipelineRasterizationStateCreateInfo& rasterizer) {};
 		virtual void updateDepthStencil(VkPipelineDepthStencilStateCreateInfo& depthStencil) {};
 

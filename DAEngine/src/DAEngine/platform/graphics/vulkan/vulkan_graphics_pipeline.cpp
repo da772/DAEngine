@@ -66,10 +66,9 @@ namespace da::platform {
 	{
 		VkDescriptorSetLayoutBinding uboLayoutBinding{};
 		VkDescriptorSetLayoutBinding samplerLayoutBinding{};
+		
 
-		createDescriptorSets(uboLayoutBinding, samplerLayoutBinding);
-
-		TArray<VkDescriptorSetLayoutBinding> bindings = { uboLayoutBinding, samplerLayoutBinding };
+		TArray<VkDescriptorSetLayoutBinding> bindings = addDescriptorSets();
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
@@ -78,26 +77,26 @@ namespace da::platform {
 		auto result = vkCreateDescriptorSetLayout(m_vulkanGraphicsApi.getDevice(), &layoutInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &m_descriptorSetLayout);
 
 		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create DescriptorSetLayout");
-
-		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 1;
-		pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
 	}
 
-	void CVulkanGraphicsPipeline::createDescriptorSets(VkDescriptorSetLayoutBinding& uboLayoutBinding, VkDescriptorSetLayoutBinding& samplerLayoutBinding)
+	TArray<VkDescriptorSetLayoutBinding> CVulkanGraphicsPipeline::addDescriptorSets()
 	{
+
+		VkDescriptorSetLayoutBinding uboLayoutBinding = {};
 		uboLayoutBinding.binding = 0;
 		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		uboLayoutBinding.descriptorCount = 1;
 		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 		uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
 
+		VkDescriptorSetLayoutBinding samplerLayoutBinding = {};
 		samplerLayoutBinding.binding = 1;
 		samplerLayoutBinding.descriptorCount = 5;
 		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayoutBinding.pImmutableSamplers = nullptr;
 		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		return { uboLayoutBinding, samplerLayoutBinding };
 	}
 
 	void CVulkanGraphicsPipeline::createGraphicsPipeline()

@@ -15,6 +15,16 @@ namespace da::platform
 		glm::mat4 proj;
 	};
 
+	struct LightData {
+		glm::vec4 color;
+		glm::vec4 pos;
+	};
+
+	struct LightUniformBuffer {
+		LightData data[255];
+		uint32_t count;
+	};
+
 	class CVulkanGraphicsMaterial : public da::core::CMaterial
 	{
 	public:
@@ -33,12 +43,15 @@ namespace da::platform
 		CVulkanGraphicsPipeline& m_vulkanPipeline;
 		CVulkanGraphicsApi& m_vulkanApi;
 		TList<VkBuffer, memory::CGraphicsAllocator> m_uniformBuffers;
+		TList<VkBuffer, memory::CGraphicsAllocator> m_lightUniformBuffers;
 		TArray<VkDescriptorSet, memory::CGraphicsAllocator> m_descriptorSets;
 		TList<VkDeviceMemory, memory::CGraphicsAllocator> m_uniformBuffersMemory;
+		TList<VkDeviceMemory, memory::CGraphicsAllocator> m_lightBuffersMemory;
 
 	private:
 		VkDescriptorPool m_descriptorPool;
 		void createUniformBuffers();
+		void createLightUniformBuffers();
 		void createDescriptorPools();
 		void createDescriptorSets();
 	};

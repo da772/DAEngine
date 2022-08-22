@@ -10,7 +10,18 @@ layout(location = 5) in vec3 tangentViewPos;
 layout(location = 6) in vec3 tangentFragPos;
 layout(location = 7) in mat3 tangentTBN;
 
-layout(binding = 1) uniform sampler2D[5] texSampler;
+struct LightsData
+{
+    vec4 color;
+    vec4 pos;
+};
+
+layout(binding = 1) uniform LightsUniform{
+    LightsData data[255];
+    uint count;
+} lightBuffer;
+
+layout(binding = 2) uniform sampler2D[5] texSampler;
 
 layout(location = 0) out vec4 outColor;
 
@@ -83,17 +94,16 @@ void main() {
     vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 
-	vec3 lightPos = vec3(0.0,0.0,0.0);
-	vec3 lightColor = vec3(1.0, 1.0, 1.0);
-
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for (int i = 0; i < 1; i++){
+    for (int i = 0; i < lightBuffer.count; i++){
+        vec3 lightPos = lightBuffer.data[i].pos.xyz;
+	    vec3 lightColor = lightBuffer.data[i].color.xyz;
         // calculate per-light radiance
         vec3 L = normalize(lightPos - fragPosition);
         vec3 H = normalize(V + L);
         float distance = length(lightPos - fragPosition);
-        float attenuation = 1.0 / (distance * distance);
+        float attenuation = lightBuffer.data[i].color.a / (distance * distance);
         vec3 radiance = lightColor * attenuation;
 
         // Cook-Torrance BRDF

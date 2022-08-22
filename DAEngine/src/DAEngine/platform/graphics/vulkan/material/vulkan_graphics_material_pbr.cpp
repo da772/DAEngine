@@ -45,6 +45,8 @@ namespace da::platform
 		CVulkanGraphicsMaterial::shutdown();
 	}
 
+	LightUniformBuffer lbo;
+
 	void CVulkanGraphicsMaterialPBR::update(int frame)
 	{
 		static auto startTime = std::chrono::high_resolution_clock::now();
@@ -71,15 +73,39 @@ namespace da::platform
 		vkMapMemory(m_vulkanApi.getDevice(), m_uniformBuffersMemory[frame], 0, sizeof(ubo), 0, &data);
 		memcpy(data, &ubo, sizeof(ubo));
 		vkUnmapMemory(m_vulkanApi.getDevice(), m_uniformBuffersMemory[frame]);
+		
+		if (lbo.count != 16) {
+			//LightUniformBuffer lbo;
+
+			int i = 0;
+			for (int x = -2; x < 2; x++) {
+				for (int y = -2; y < 2; y++) {
+					if (i >= 255) {
+						break;
+					}
+					lbo.data[i].pos = { (float)x,0.15f,(float)y, 1.f };
+					lbo.data[i].color = { ((double)rand() / (RAND_MAX)),((double)rand() / (RAND_MAX)),((double)rand() / (RAND_MAX)) , 1.f };
+					i++;
+				}
+			}
+
+			lbo.count = 16;
+		}
+		vkMapMemory(m_vulkanApi.getDevice(), m_lightBuffersMemory[frame], 0, sizeof(lbo), 0, &data);
+		memcpy(data, &lbo, sizeof(lbo));
+		vkUnmapMemory(m_vulkanApi.getDevice(), m_lightBuffersMemory[frame]);
+		
 	}
 
 	da::core::containers::TArray<VkDescriptorPoolSize, da::memory::CGraphicsAllocator> CVulkanGraphicsMaterialPBR::getDescriptorPools()
 	{
-		TArray<VkDescriptorPoolSize, memory::CGraphicsAllocator> poolSizes(2);
+		TArray<VkDescriptorPoolSize, memory::CGraphicsAllocator> poolSizes(3);
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		poolSizes[0].descriptorCount = static_cast<uint32_t>(m_vulkanApi.MAX_FRAMES_IN_FLIGHT);
-		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		poolSizes[1].descriptorCount = static_cast<uint32_t>(m_vulkanApi.MAX_FRAMES_IN_FLIGHT);
+		poolSizes[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		poolSizes[2].descriptorCount = static_cast<uint32_t>(m_vulkanApi.MAX_FRAMES_IN_FLIGHT);
 		return poolSizes;
 	}
 
@@ -115,61 +141,106 @@ namespace da::platform
 		aoImageInfo.imageView = m_ao.getTextureImageView();
 		aoImageInfo.sampler = m_ao.getTextureImageSampler();
 
-		TArray<VkWriteDescriptorSet, memory::CGraphicsAllocator> descriptorWrites(6);
+		TList<VkWriteDescriptorSet, memory::CGraphicsAllocator> descriptorWrites;
+
 		// Buffers
-		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[0].dstSet = m_descriptorSets[i];
-		descriptorWrites[0].dstBinding = 0;
-		descriptorWrites[0].dstArrayElement = 0;
-		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		descriptorWrites[0].descriptorCount = 1;
-		descriptorWrites[0].pBufferInfo = &bufferInfo;
-		descriptorWrites[0].pNext = NULL;
-		// Albedo
-		descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[1].dstSet = m_descriptorSets[i];
-		descriptorWrites[1].dstBinding = 1;
-		descriptorWrites[1].dstArrayElement = 0;
-		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[1].descriptorCount = 1;
-		descriptorWrites[1].pImageInfo = &albedoImageInfo;
-		descriptorWrites[1].pNext = NULL;
-		// Normal
-		descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[2].dstSet = m_descriptorSets[i];
-		descriptorWrites[2].dstBinding = 1;
-		descriptorWrites[2].dstArrayElement = 1;
-		descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[2].descriptorCount = 1;
-		descriptorWrites[2].pImageInfo = &normalImageInfo;
-		descriptorWrites[2].pNext = NULL;
-		// Roughness
-		descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[3].dstSet = m_descriptorSets[i];
-		descriptorWrites[3].dstBinding = 1;
-		descriptorWrites[3].dstArrayElement = 2;
-		descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[3].descriptorCount = 1;
-		descriptorWrites[3].pImageInfo = &roughnessImageInfo;
-		descriptorWrites[3].pNext = NULL;
-		// Metallic
-		descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[4].dstSet = m_descriptorSets[i];
-		descriptorWrites[4].dstBinding = 1;
-		descriptorWrites[4].dstArrayElement = 3;
-		descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[4].descriptorCount = 1;
-		descriptorWrites[4].pImageInfo = &metallicImageInfo;
-		descriptorWrites[4].pNext = NULL;
-		// AO
-		descriptorWrites[5].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[5].dstSet = m_descriptorSets[i];
-		descriptorWrites[5].dstBinding = 1;
-		descriptorWrites[5].dstArrayElement = 4;
-		descriptorWrites[5].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[5].descriptorCount = 1;
-		descriptorWrites[5].pImageInfo = &aoImageInfo;
-		descriptorWrites[5].pNext = NULL;
+		{
+			VkWriteDescriptorSet descriptorWrite = {};
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_descriptorSets[i];
+			descriptorWrite.dstBinding = 0;
+			descriptorWrite.dstArrayElement = 0;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrite.descriptorCount = 1;
+			descriptorWrite.pBufferInfo = &bufferInfo;
+			descriptorWrite.pNext = NULL;
+			descriptorWrites.push(descriptorWrite);
+		}
+
+		{
+			VkWriteDescriptorSet descriptorWrite = {};
+			// Lights
+			VkDescriptorBufferInfo lightBufferInfo{};
+			lightBufferInfo.buffer = m_lightUniformBuffers[i];
+			lightBufferInfo.offset = 0;
+			lightBufferInfo.range = sizeof(LightUniformBuffer);
+
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_descriptorSets[i];
+			descriptorWrite.dstBinding = 1;
+			descriptorWrite.dstArrayElement = 0;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrite.descriptorCount = 1;
+			descriptorWrite.pBufferInfo = &lightBufferInfo;
+			descriptorWrite.pNext = NULL;
+			descriptorWrites.push(descriptorWrite);
+		}
+		{
+			VkWriteDescriptorSet descriptorWrite = {};
+			// Albedo
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_descriptorSets[i];
+			descriptorWrite.dstBinding = 2;
+			descriptorWrite.dstArrayElement = 0;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrite.descriptorCount = 1;
+			descriptorWrite.pImageInfo = &albedoImageInfo;
+			descriptorWrite.pNext = NULL;
+			descriptorWrites.push(descriptorWrite);
+		}
+		{
+			VkWriteDescriptorSet descriptorWrite = {};
+			// Normal
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_descriptorSets[i];
+			descriptorWrite.dstBinding = 2;
+			descriptorWrite.dstArrayElement = 1;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrite.descriptorCount = 1;
+			descriptorWrite.pImageInfo = &normalImageInfo;
+			descriptorWrite.pNext = NULL;
+			descriptorWrites.push(descriptorWrite);
+		}
+		{
+			VkWriteDescriptorSet descriptorWrite = {};
+			// Roughness
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_descriptorSets[i];
+			descriptorWrite.dstBinding = 2;
+			descriptorWrite.dstArrayElement = 2;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrite.descriptorCount = 1;
+			descriptorWrite.pImageInfo = &roughnessImageInfo;
+			descriptorWrite.pNext = NULL;
+			descriptorWrites.push(descriptorWrite);
+		}
+		
+		{
+			VkWriteDescriptorSet descriptorWrite = {};
+			// Metallic
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_descriptorSets[i];
+			descriptorWrite.dstBinding = 2;
+			descriptorWrite.dstArrayElement = 3;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrite.descriptorCount = 1;
+			descriptorWrite.pImageInfo = &metallicImageInfo;
+			descriptorWrite.pNext = NULL;
+			descriptorWrites.push(descriptorWrite);
+		}
+		{
+			VkWriteDescriptorSet descriptorWrite = {};
+			// AO
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = m_descriptorSets[i];
+			descriptorWrite.dstBinding = 2;
+			descriptorWrite.dstArrayElement = 4;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrite.descriptorCount = 1;
+			descriptorWrite.pImageInfo = &aoImageInfo;
+			descriptorWrite.pNext = NULL;
+			descriptorWrites.push(descriptorWrite);
+		}
 
 		vkUpdateDescriptorSets(m_vulkanApi.getDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}

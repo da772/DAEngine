@@ -40,19 +40,23 @@ namespace da::platform
 		return attributeDescriptions;
 	}
 
-	void CVulkanGraphicsPipelineCubemap::createDescriptorSets(VkDescriptorSetLayoutBinding& uboLayoutBinding, VkDescriptorSetLayoutBinding& samplerLayoutBinding)
+	TArray<VkDescriptorSetLayoutBinding> CVulkanGraphicsPipelineCubemap::addDescriptorSets()
 	{
+		VkDescriptorSetLayoutBinding uboLayoutBinding = {};
 		uboLayoutBinding.binding = 0;
 		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		uboLayoutBinding.descriptorCount = 1;
 		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 		uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
 
+		VkDescriptorSetLayoutBinding samplerLayoutBinding = {};
 		samplerLayoutBinding.binding = 1;
 		samplerLayoutBinding.descriptorCount = 1;
 		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayoutBinding.pImmutableSamplers = nullptr;
 		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		return { uboLayoutBinding, samplerLayoutBinding };
 	}
 
 	void CVulkanGraphicsPipelineCubemap::updateRasterizer(VkPipelineRasterizationStateCreateInfo& rasterizer)
