@@ -83,7 +83,7 @@ namespace da::platform
 					if (i >= 255) {
 						break;
 					}
-					lbo.data[i].pos = { (float)x,0.15f,(float)y, 1.f };
+					lbo.data[i].pos = { (float)x,0.15f,(float)y, 10.f };
 					lbo.data[i].color = { ((double)rand() / (RAND_MAX)),((double)rand() / (RAND_MAX)),((double)rand() / (RAND_MAX)) , 1.f };
 					i++;
 				}

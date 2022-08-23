@@ -18,10 +18,7 @@ layout(location = 1) out vec3 fragColor;
 layout(location = 2) out vec2 fragTexCoord;
 layout(location = 3) out vec3 fragNormal;
 
-layout(location = 4) out vec3 tangentLightPos;
-layout(location = 5) out vec3 tangentViewPos;
-layout(location = 6) out vec3 tangentFragPos;
-layout(location = 7) out mat3 tangentTBN;
+layout(location = 4) out mat3 tangentTBN;
 
 
 void main() {
@@ -36,11 +33,7 @@ void main() {
     T = normalize(T - dot(T, N) * N);
     vec3 B = cross(N, T);
 
-    mat3 TBN = transpose(mat3(T, B, N));
-    tangentLightPos = TBN * vec3(0.0, 1.5, 0.5);
-    tangentViewPos = TBN * vec3(0.0,0.0,0.0);
-    tangentFragPos = TBN * fragPosition;
-    tangentTBN = TBN;
+    tangentTBN = transpose(mat3(T, B, N));
 
 	gl_Position = ubo.proj * ubo.view * vec4(fragPosition, 1.0);
 }

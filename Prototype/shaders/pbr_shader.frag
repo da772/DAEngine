@@ -5,10 +5,7 @@ layout(location = 1) in vec3 fragColor;
 layout(location = 2) in vec2 fragTexCoord;
 layout(location = 3) in vec3 fragNormal;
 
-layout(location = 4) in vec3 tangentLightPos;
-layout(location = 5) in vec3 tangentViewPos;
-layout(location = 6) in vec3 tangentFragPos;
-layout(location = 7) in mat3 tangentTBN;
+layout(location = 4) in mat3 tangentTBN;
 
 struct LightsData
 {
