@@ -18,6 +18,7 @@ namespace da::platform
 	struct LightData {
 		glm::vec4 color;
 		glm::vec4 pos;
+		glm::vec4 dir;
 	};
 
 	struct LightUniformBuffer {

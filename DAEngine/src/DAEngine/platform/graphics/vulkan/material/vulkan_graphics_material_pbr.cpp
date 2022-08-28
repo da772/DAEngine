@@ -60,11 +60,13 @@ namespace da::platform
 			* glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
 			* glm::rotate(glm::mat4(1.0f), time * glm::radians(RotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
 		ubo.model = glm::scale(ubo.model, glm::vec3(Scale.x, Scale.y, Scale.z));
-		ubo.view = glm::translate(glm::mat4(1.0f), glm::vec3(CamPosition.x, CamPosition.y, CamPosition.z))
+		ubo.view = glm::lookAt(glm::vec3(CamPosition.x, CamPosition.y, CamPosition.z), glm::vec3(Position.x, Position.y, Position.z), { 0.f, 0.f, 1.f });
+			/*glm::translate(glm::mat4(1.0f), glm::vec3(CamPosition.x, CamPosition.y, CamPosition.z))
 			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.x), glm::vec3(1.f, 0.f, 0.f))
 			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.y), glm::vec3(0.f, 1.f, 0.f))
 			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.z), glm::vec3(0.f, 0.f, 1.f));
-
+			*/
+		
 		ubo.proj = glm::perspective(glm::radians(90.0f), m_vulkanApi.getSwapChainExt().width / (float)m_vulkanApi.getSwapChainExt().height, 0.1f, 1000.0f);
 
 		ubo.proj[1][1] *= -1;
@@ -73,7 +75,7 @@ namespace da::platform
 		vkMapMemory(m_vulkanApi.getDevice(), m_uniformBuffersMemory[frame], 0, sizeof(ubo), 0, &data);
 		memcpy(data, &ubo, sizeof(ubo));
 		vkUnmapMemory(m_vulkanApi.getDevice(), m_uniformBuffersMemory[frame]);
-		
+		/*
 		if (lbo.count != 16) {
 			//LightUniformBuffer lbo;
 
@@ -91,6 +93,23 @@ namespace da::platform
 
 			lbo.count = 16;
 		}
+		*/
+
+		glm::vec3 eyeScale;
+		glm::quat eyeRot;
+		glm::vec3 eyePos;
+		glm::vec3 skew;
+		glm::vec4 perspective;
+		glm::decompose(ubo.view, eyeScale, eyeRot, eyePos, skew, perspective);
+		eyeRot = glm::conjugate(eyeRot);
+
+		glm::vec3 euler = glm::eulerAngles(eyeRot) * 3.14159f / 180.f;
+
+		lbo.data[0].pos = { eyePos, 1.f };
+		lbo.data[0].color = { 1.f, 0.f, 0.f, 1.f };
+		lbo.data[0].dir = { euler, glm::cos(glm::radians(15.f))};
+		lbo.count = 1;
+
 		vkMapMemory(m_vulkanApi.getDevice(), m_lightBuffersMemory[frame], 0, sizeof(lbo), 0, &data);
 		memcpy(data, &lbo, sizeof(lbo));
 		vkUnmapMemory(m_vulkanApi.getDevice(), m_lightBuffersMemory[frame]);

@@ -89,21 +89,21 @@ protected:
 				auto pipeline = da::core::CGraphicsPipelineFactory::CreatePBR(*m_graphicsModule->getGraphicsApi());
 				m_graphicsModule->getGraphicsApi()->submitPipeline(pipeline);
 				da::core::CStaticMesh* model4 = new da::core::CStaticMesh("assets/bolt.fbx");
-				da::core::CStaticMesh* modelCube = new da::core::CStaticMesh("assets/cube.obj");
+				da::core::CStaticMesh* modelCube = new da::core::CStaticMeshCube();
 				m_boltMat = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg", "assets/boltM.jpg", "assets/boltAO.jpg");
 				m_cubeMat2 = da::core::CMaterialFactory::CreatePBR(*pipeline);
 
 				m_boltMat->Position = da::Vector3f(0.5f, 0.0f, -.5f);
 				m_boltMat->Scale = da::Vector3f(0.25f, 0.25f, .25f);
-				m_boltMat->RotationSpeed = 20.f;
+				m_boltMat->RotationSpeed = 0.f;//20.f;
 				m_boltMat->Rotation.z = 90.f;
-				m_cubeMat2->Position = da::Vector3f(0.0f, -1.5f, 0.f);
-				m_cubeMat2->Scale = da::Vector3f(100.f, 1.f, 100.f);
+				m_cubeMat2->Position = da::Vector3f(0.0f, 0.f, 0.f);
+				m_cubeMat2->Scale = da::Vector3f(1.f , 1.f, 1.f);
 				//pipeline->addRenderable(model, mat1);
 				//pipeline->addRenderable(model2, mat2);
 				//pipeline->addRenderable(model3, at3);
 				pipeline->addRenderable(model4, m_boltMat);
-				pipeline->addRenderable(modelCube, m_cubeMat2);
+				//pipeline->addRenderable(modelCube, m_cubeMat2);
 			}
 		}
 		

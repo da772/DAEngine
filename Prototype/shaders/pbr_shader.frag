@@ -11,6 +11,7 @@ struct LightsData
 {
     vec4 color;
     vec4 pos;
+    vec4 dir;
 };
 
 layout(binding = 1) uniform LightsUniform{
@@ -88,7 +89,7 @@ void main() {
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
-    vec3 F0 = vec3(0.04); 
+    vec3 F0 = albedo.xyz;
     F0 = mix(F0, albedo, metallic);
 
     // reflectance equation
@@ -96,8 +97,14 @@ void main() {
     for (int i = 0; i < lightBuffer.count; i++){
         vec3 lightPos = lightBuffer.data[i].pos.xyz;
 	    vec3 lightColor = lightBuffer.data[i].color.xyz;
+        vec4 lightDir = lightBuffer.data[i].dir;
         // calculate per-light radiance
         vec3 L = normalize(lightPos - fragPosition);
+
+        float theta = dot(L, normalize(-lightDir.xyz));
+
+        if (theta <= lightDir.z) continue;
+
         vec3 H = normalize(V + L);
         float distance = length(lightPos - fragPosition);
         float attenuation = lightBuffer.data[i].color.a / (distance * distance);
