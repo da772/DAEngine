@@ -34,6 +34,21 @@ namespace da::platform
 		TList<VkPresentModeKHR, memory::CGraphicsAllocator> presentModes;
 	};
 
+	struct FrameBufferAttachment {
+		VkImage image;
+		VkDeviceMemory mem;
+		VkImageView view;
+	};
+
+	struct OffscreenPass {
+		int32_t width, height;
+		VkFramebuffer frameBuffer;
+		FrameBufferAttachment depth;
+		VkRenderPass renderPass;
+		VkSampler depthSampler;
+		VkDescriptorImageInfo descriptor;
+	};
+
 	class CVulkanGraphicsApi : public core::CGraphicsApi
 	{
 	public:
@@ -68,7 +83,7 @@ namespace da::platform
 		void createSwapChain();
 		void createImageViews();
 		void createRenderPass();
-		void createShadowRenderPass();
+		void prepareOffscreenRenderpass();
 		void createFramebuffers();
 		void createCommandPool();
 		void createCommandBuffers();
@@ -78,7 +93,8 @@ namespace da::platform
 		void createImage(uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSample, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
 			VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-		void beginRecordingCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass);
+		void beginRecordingCommandBuffer(VkCommandBuffer commandBuffer, VkFramebuffer frameBuffer, VkRenderPass renderPass);
+		void beginRecordingShadowCommandBuffer(VkCommandBuffer commandBuffer, VkFramebuffer frameBuffer, VkRenderPass renderPass);
         void stopRecordingCommandBuffer(VkCommandBuffer commandBuffer);
 		
 		void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
@@ -91,6 +107,8 @@ namespace da::platform
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, std::optional<VkSurfaceKHR> surface);
 		VkFormat findSupportedFormat(const TList<VkFormat, memory::CGraphicsAllocator>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 		VkFormat findDepthFormat();
+
+		void prepareOffscreenFramebuffer();
 
 		void cleanupSwapChain();
 		void recreateSwapChain();
@@ -126,13 +144,14 @@ namespace da::platform
 		VkCommandPool m_commandPool;
 		VkSwapchainKHR m_swapChain;
 		VkRenderPass m_renderPass;
-		VkRenderPass m_shadowRenderPass;
 		TList<VkCommandBuffer, memory::CGraphicsAllocator> m_commandBuffers;
 		TList<VkSemaphore, memory::CGraphicsAllocator> m_imageAvailableSemaphores;
 		TList<VkSemaphore, memory::CGraphicsAllocator> m_renderFinishedSemaphores;
 		TList<VkFence, memory::CGraphicsAllocator> m_inFlightFences;
 		TList<VkFramebuffer, memory::CGraphicsAllocator> m_swapChainFramebuffers;
 		uint32_t m_queueFamilyIndices[2];
+
+		OffscreenPass m_shadowPass;
 
 		VkImage m_depthImage;
 		VkDeviceMemory m_depthImageMemory;

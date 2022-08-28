@@ -125,7 +125,7 @@ namespace da::platform {
 		createSwapChain();
 		createImageViews();
 		createRenderPass();
-		//createShadowRenderPass();
+		prepareOffscreenFramebuffer();
 		createCommandPool();
 		createColorResources();
 		createDepthResources();
@@ -157,10 +157,17 @@ namespace da::platform {
 		}
 		vkResetFences(m_device, 1, &m_inFlightFences[m_currentFrame]);
 
+		// Shadow Renderpass
+		{
+			beginRecordingShadowCommandBuffer(m_commandBuffers[m_currentFrame], m_shadowPass.frameBuffer, m_shadowPass.renderPass);
+
+			stopRecordingCommandBuffer(m_commandBuffers[m_currentFrame]);
+		}
+
 		vkResetCommandBuffer(m_commandBuffers[m_currentFrame], 0);
 		// Geometry RenderPass
 		{
-			beginRecordingCommandBuffer(m_commandBuffers[m_currentFrame], m_imageIndex, m_renderPass);
+			beginRecordingCommandBuffer(m_commandBuffers[m_currentFrame], m_swapChainFramebuffers[m_imageIndex], m_renderPass);
 			for (size_t i = 0; i < m_pipelines.size(); i++) {
 				m_pipelines[i]->render(m_commandBuffers[m_currentFrame], m_currentFrame);
 			}
@@ -169,10 +176,7 @@ namespace da::platform {
 			}
 			stopRecordingCommandBuffer(m_commandBuffers[m_currentFrame]);
 		}
-		// Shadow Renderpass
-		{
-
-		}
+		
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -232,6 +236,15 @@ namespace da::platform {
 			m_pipelines[i]->destroy();
 		}
 
+		vkDestroySampler(m_device, m_shadowPass.depthSampler, nullptr);
+
+		// Depth attachment
+		vkDestroyImageView(m_device, m_shadowPass.depth.view, nullptr);
+		vkDestroyImage(m_device, m_shadowPass.depth.image, nullptr);
+		vkFreeMemory(m_device, m_shadowPass.depth.mem, nullptr);
+		vkDestroyFramebuffer(m_device, m_shadowPass.frameBuffer, nullptr);
+		vkDestroyRenderPass(m_device, m_shadowPass.renderPass, nullptr);
+
 		vkDestroyRenderPass(m_device, m_renderPass, &m_allocCallbacks);
 		
 
@@ -247,6 +260,8 @@ namespace da::platform {
 		vkDeviceWaitIdle(m_device);
 
 		cleanupSwapChain();
+
+
 
 		for (size_t i = 0; i < m_pipelines.size(); i++)
 		{
@@ -751,51 +766,147 @@ namespace da::platform {
 		VK_CHECK(result, VK_SUCCESS);
 	}
 
-	void CVulkanGraphicsApi::createShadowRenderPass()
+
+	#define DEPTH_FORMAT VK_FORMAT_D16_UNORM
+
+	void CVulkanGraphicsApi::prepareOffscreenFramebuffer()
 	{
-	
+		m_shadowPass.width = 2048;
+		m_shadowPass.height = 2048;
 
-		VkAttachmentDescription depthAttachment{};
-		depthAttachment.format = findDepthFormat();
-		depthAttachment.samples = m_msaaSamples;
-		depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		// For shadow mapping we only need a depth attachment
+		VkImageCreateInfo image = {};
+		image.imageType = VK_IMAGE_TYPE_2D;
+		image.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		image.extent.width = m_shadowPass.width;
+		image.extent.height = m_shadowPass.height;
+		image.extent.depth = 1;
+		image.mipLevels = 1;
+		image.arrayLayers = 1;
+		image.samples = VK_SAMPLE_COUNT_1_BIT;
+		image.tiling = VK_IMAGE_TILING_OPTIMAL;
+		image.format = DEPTH_FORMAT;																// Depth stencil attachment
+		image.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;		// We will sample directly from the depth attachment for the shadow mapping
+		auto result = vkCreateImage(m_device, &image, nullptr, &m_shadowPass.depth.image);
 
-		VkAttachmentReference depthAttachmentRef{};
-		depthAttachmentRef.attachment = 1;
-		depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		VK_CHECK(result, VK_SUCCESS);
 
-		
-		VkSubpassDescription subpass{};
+		VkMemoryAllocateInfo memAlloc = {};
+		memAlloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		VkMemoryRequirements memReqs = {};
+		vkGetImageMemoryRequirements(m_device, m_shadowPass.depth.image, &memReqs);
+		memAlloc.allocationSize = memReqs.size;
+		memAlloc.memoryTypeIndex = findMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+		result = vkAllocateMemory(m_device, &memAlloc, &getAllocCallbacks(), &m_shadowPass.depth.mem);
+
+		VK_CHECK(result, VK_SUCCESS);
+
+		result = vkBindImageMemory(m_device, m_shadowPass.depth.image, m_shadowPass.depth.mem, 0), VK_SUCCESS;
+		VK_CHECK(result, VK_SUCCESS);
+
+		VkImageViewCreateInfo depthStencilView = {};
+		depthStencilView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		depthStencilView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		depthStencilView.format = DEPTH_FORMAT;
+		depthStencilView.subresourceRange = {};
+		depthStencilView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		depthStencilView.subresourceRange.baseMipLevel = 0;
+		depthStencilView.subresourceRange.levelCount = 1;
+		depthStencilView.subresourceRange.baseArrayLayer = 0;
+		depthStencilView.subresourceRange.layerCount = 1;
+		depthStencilView.image = m_shadowPass.depth.image;
+		result = vkCreateImageView(m_device, &depthStencilView, nullptr, &m_shadowPass.depth.view);
+
+		VK_CHECK(result, VK_SUCCESS);
+
+		// Create sampler to sample from to depth attachment
+		// Used to sample in the fragment shader for shadowed rendering
+		VkFilter shadowmap_filter = VK_FILTER_LINEAR;
+		VkSamplerCreateInfo sampler = {};
+		sampler.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		sampler.magFilter = shadowmap_filter;
+		sampler.minFilter = shadowmap_filter;
+		sampler.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		sampler.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+		sampler.addressModeV = sampler.addressModeU;
+		sampler.addressModeW = sampler.addressModeU;
+		sampler.mipLodBias = 0.0f;
+		sampler.maxAnisotropy = 1.0f;
+		sampler.minLod = 0.0f;
+		sampler.maxLod = 1.0f;
+		sampler.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+		result = vkCreateSampler(m_device, &sampler, nullptr, &m_shadowPass.depthSampler);
+
+		VK_CHECK(result, VK_SUCCESS);
+
+		prepareOffscreenRenderpass();
+
+		// Create frame buffer
+		VkFramebufferCreateInfo fbufCreateInfo = {};
+		fbufCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		fbufCreateInfo.renderPass = m_shadowPass.renderPass;
+		fbufCreateInfo.attachmentCount = 1;
+		fbufCreateInfo.pAttachments = &m_shadowPass.depth.view;
+		fbufCreateInfo.width = m_shadowPass.width;
+		fbufCreateInfo.height = m_shadowPass.height;
+		fbufCreateInfo.layers = 1;
+
+		result = vkCreateFramebuffer(m_device, &fbufCreateInfo, nullptr, &m_shadowPass.frameBuffer);
+
+		VK_CHECK(result, VK_SUCCESS);
+	}
+
+	void CVulkanGraphicsApi::prepareOffscreenRenderpass()
+	{
+		VkAttachmentDescription attachmentDescription{};
+		attachmentDescription.format = DEPTH_FORMAT;
+		attachmentDescription.samples = VK_SAMPLE_COUNT_1_BIT;
+		attachmentDescription.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							// Clear depth at beginning of the render pass
+		attachmentDescription.storeOp = VK_ATTACHMENT_STORE_OP_STORE;						// We will read from depth, so it's important to store the depth attachment results
+		attachmentDescription.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+		attachmentDescription.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+		attachmentDescription.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;					// We don't care about initial layout of the attachment
+		attachmentDescription.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;// Attachment will be transitioned to shader read at render pass end
+
+		VkAttachmentReference depthReference = {};
+		depthReference.attachment = 0;
+		depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;			// Attachment will be used as depth/stencil during render pass
+
+		VkSubpassDescription subpass = {};
 		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subpass.colorAttachmentCount = 0;
-		subpass.pDepthStencilAttachment = &depthAttachmentRef;
+		subpass.colorAttachmentCount = 0;													// No color attachments
+		subpass.pDepthStencilAttachment = &depthReference;									// Reference to our depth attachment
 
-		VkSubpassDependency dependency{};
-		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-		dependency.dstSubpass = 0;
+		// Use subpass dependencies for layout transitions
+		TArray<VkSubpassDependency> dependencies(2);
 
-		dependency.srcStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
-		dependency.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+		dependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
+		dependencies[0].dstSubpass = 0;
+		dependencies[0].srcStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		dependencies[0].dstStageMask = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+		dependencies[0].srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+		dependencies[0].dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+		dependencies[0].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
 
-		dependency.dstStageMask = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-		dependency.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+		dependencies[1].srcSubpass = 0;
+		dependencies[1].dstSubpass = VK_SUBPASS_EXTERNAL;
+		dependencies[1].srcStageMask = VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+		dependencies[1].dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		dependencies[1].srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+		dependencies[1].dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+		dependencies[1].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
 
-		TArray<VkAttachmentDescription, memory::CGraphicsAllocator> attachments = { depthAttachment };
-		VkRenderPassCreateInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-		renderPassInfo.pAttachments = attachments.data();
-		renderPassInfo.subpassCount = 1;
-		renderPassInfo.pSubpasses = &subpass;
-		renderPassInfo.dependencyCount = 1;
-		renderPassInfo.pDependencies = &dependency;
+		VkRenderPassCreateInfo renderPassCreateInfo = {};
+		renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		renderPassCreateInfo.attachmentCount = 1;
+		renderPassCreateInfo.pAttachments = &attachmentDescription;
+		renderPassCreateInfo.subpassCount = 1;
+		renderPassCreateInfo.pSubpasses = &subpass;
+		renderPassCreateInfo.dependencyCount = static_cast<uint32_t>(dependencies.size());
+		renderPassCreateInfo.pDependencies = dependencies.data();
 
-		auto result = vkCreateRenderPass(m_device, &renderPassInfo, &m_allocCallbacks, &m_shadowRenderPass);
+		auto result = vkCreateRenderPass(m_device, &renderPassCreateInfo, nullptr, &m_shadowPass.renderPass);
 
 		VK_CHECK(result, VK_SUCCESS);
 	}
@@ -848,7 +959,60 @@ namespace da::platform {
         VK_CHECK(result, VK_SUCCESS);
     }
 
-	void CVulkanGraphicsApi::beginRecordingCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass renderPass) {
+	void CVulkanGraphicsApi::beginRecordingShadowCommandBuffer(VkCommandBuffer commandBuffer, VkFramebuffer frameBuffer, VkRenderPass renderPass)
+	{
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+
+		auto res = vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+		VK_CHECK(res, VK_SUCCESS);
+
+		VkRenderPassBeginInfo renderPassBeginInfo = {};
+		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassBeginInfo.renderPass = m_shadowPass.renderPass;
+		renderPassBeginInfo.framebuffer = m_shadowPass.frameBuffer;
+		renderPassBeginInfo.renderArea.extent.width = m_shadowPass.width;
+		renderPassBeginInfo.renderArea.extent.height = m_shadowPass.height;
+		renderPassBeginInfo.clearValueCount = 1;
+	
+		TArray<VkClearValue, memory::CGraphicsAllocator> clearValues(2);
+		clearValues[0].depthStencil = { 1.0f, 0 };
+
+		renderPassBeginInfo.pClearValues = clearValues.data();
+
+		vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport = {};
+		viewport.height = (float)m_shadowPass.height;
+		viewport.width = (float)m_shadowPass.width;
+		viewport.x = 0.f;
+		viewport.y = 1.f;
+		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+		VkRect2D scissor = {};
+		scissor.extent.width = m_shadowPass.width;
+		scissor.extent.height = m_shadowPass.height;
+		scissor.offset.x = 0;
+		scissor.offset.y = 0;
+
+		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+
+		vkCmdSetDepthBias(
+			commandBuffer,
+			1.25f,
+			0.0f,
+			1.75f);
+
+		//vkCmdBindPipeline(drawCmdBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.offscreen);
+		//vkCmdBindDescriptorSets(drawCmdBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets.offscreen, 0, nullptr);
+		//scenes[sceneIndex].draw(drawCmdBuffers[i]);
+
+	}
+
+	void CVulkanGraphicsApi::beginRecordingCommandBuffer(VkCommandBuffer commandBuffer, VkFramebuffer framebuffer, VkRenderPass renderPass) {
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
@@ -860,7 +1024,7 @@ namespace da::platform {
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = renderPass;
-		renderPassInfo.framebuffer = m_swapChainFramebuffers[imageIndex];
+		renderPassInfo.framebuffer = framebuffer;
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = m_swapChainExtent;
 
@@ -924,6 +1088,7 @@ namespace da::platform {
 		createSwapChain();
 		createImageViews();
 		createRenderPass();
+		prepareOffscreenFramebuffer();
 		for (size_t i = 0; i < m_pipelines.size(); i++) {
 			m_pipelines[i]->create();
 		}
@@ -1299,6 +1464,7 @@ namespace da::platform {
 		m_pipelines.push(vkPipeline);
 		recreateSwapChain();
 	}
+
 
 }
 
