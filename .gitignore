@@ -27,7 +27,7 @@ Bin-Obj/
 *.xcodeproj
 *.xcworkspace
 Prototype/imgui.ini
-premake5.lua
+/premake5.lua
 enc_temp_folder/
 Makefile
 
