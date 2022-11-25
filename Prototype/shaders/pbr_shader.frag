@@ -15,7 +15,7 @@ struct LightsData
 };
 
 layout(binding = 1) uniform LightsUniform{
-    LightsData data[255];
+    LightsData data[8];
     uint count;
 } lightBuffer;
 
