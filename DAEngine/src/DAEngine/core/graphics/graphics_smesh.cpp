@@ -1,11 +1,12 @@
 #include "dapch.h"
 #include "graphics_smesh.h"
-#if !defined(DA_TEST)
 #include "core/memory/memory.h"
 #include "asset/asset.h"
+#if !defined(DA_TEST)
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#endif
 
 
 namespace da::core
@@ -13,7 +14,7 @@ namespace da::core
 	CStaticMesh::CStaticMesh(const CBasicString<memory::CGraphicsAllocator>& path) : m_path(path)
 	{
 		CAsset file(path);
-
+#if !defined(DA_TEST)
 		Assimp::Importer importer;
 	
 		TList<FVertexBase, memory::CGraphicsAllocator> vertices;
@@ -79,6 +80,7 @@ namespace da::core
 		m_indices = TArray<uint32_t, memory::CGraphicsAllocator>(indices);
 
 		importer.FreeScene();
+#endif
 	}
 
 	CStaticMesh::~CStaticMesh()
@@ -86,4 +88,3 @@ namespace da::core
 	}
 
 }
-#endif

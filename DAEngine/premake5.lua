@@ -48,11 +48,23 @@ project "DAEngine"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-obj/" .. outputdir .. "/%{prj.name}")
 
+	if not _OPTIONS['unit-test'] then
 	files 
 	{
 		"src/**.h",
 		"src/**.cpp"
 	}
+	else
+	files 
+	{
+		"src/*.h",
+		"src/*.cpp",
+		"src/DAEngine/*.h",
+		"src/DAEngine/*.cpp",
+		"src/DAEngine/Core/**.h",
+		"src/DAEngine/Core/**.cpp"
+	}
+	end
 	
 	defines
 	{

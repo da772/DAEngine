@@ -36,7 +36,7 @@ void deallocate(void* ptr) {
 	size_t size = p->m_size;
 	s_memoryAllocated -= size + sizeof(da::memory::FMemoryData);
 	s_layers[p->m_layer] -= size + sizeof(da::memory::FMemoryData);
-	free(p);
+	free((void*)p);
 }
 
 void* reallocate(void* ptr, size_t size)
