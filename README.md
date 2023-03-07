@@ -12,7 +12,7 @@
 -   Windows, Linux and BSD support
 
 ## Showcase
-![image](https://user-images.githubusercontent.com/8605626/211251753-96ba769e-968a-4184-8021-59a608e1fc44.png)
+![image](https://user-images.githubusercontent.com/8605626/223548824-951fb454-0c00-443e-8e9b-6161e963708a.png)
 
 ## Open-source libraries and SDKs used
 -   GLFW - <https://github.com/glfw/glfw>
