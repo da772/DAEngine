@@ -181,7 +181,8 @@ project "DAEngine"
 		
 		defines
 		{
-			"DA_PLATFORM_WINDOWS"
+			"DA_PLATFORM_WINDOWS",
+			"GLFW_EXPOSE_NATIVE_WIN32"
 		}
 		
 		if not _OPTIONS['unit-test'] then

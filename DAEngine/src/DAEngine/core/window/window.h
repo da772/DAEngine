@@ -44,6 +44,7 @@ namespace da::core {
 		virtual void shutdown() = 0;
 
 		virtual void* getNativeWindow() const = 0;
+		virtual void* getPlatformWindow() const = 0;
 
 		inline CEventHandler& getEventHandler() {
 			return m_windowData.EventHandler;

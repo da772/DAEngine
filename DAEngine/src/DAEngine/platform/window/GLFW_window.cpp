@@ -3,6 +3,7 @@
 #include "logger.h"
 #ifdef DA_WINDOW_GLFW
 #include "core/events/window_event.h"
+#include <GLFW/glfw3native.h>
 
 using namespace da::core;
 
@@ -104,6 +105,16 @@ namespace da::platform {
 	{
 		return m_Window;
 	}
+
+	void* CGLFW_Window::getPlatformWindow() const
+	{
+#ifdef DA_PLATFORM_WINDOWS
+		return glfwGetWin32Window(m_Window);;
+#else
+		return nullptr;
+#endif
+	}
+
 }
 
 #endif
