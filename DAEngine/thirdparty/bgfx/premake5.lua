@@ -4,6 +4,10 @@ project "bgfx"
 	cppdialect "C++14"
 	defines "__STDC_FORMAT_MACROS"
 	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-Obj/" .. outputdir .. "/%{prj.name}")
+
 	files
 	{
 		"include/bgfx/**.h",

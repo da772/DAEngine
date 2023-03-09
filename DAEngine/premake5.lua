@@ -80,7 +80,7 @@ project "DAEngine"
 	
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS",
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
 	if not _OPTIONS['unit-test'] then
@@ -200,7 +200,11 @@ project "DAEngine"
 			"bgfx"
 		}
 
-		
+		buildoptions
+		{
+			"/Zc:__cplusplus"
+		}
+
 		libdirs
 		{
 			"%{IncludeDir.Vulkan}/lib",

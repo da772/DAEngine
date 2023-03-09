@@ -11,11 +11,7 @@
 
 #include <imgui.h>
 
-#include <bgfx/bgfx.h>
-
 //#define WINDOW_2
-
-#define BX_TRACE(...) da::CLogger::LogInfo(da::ELogChannel::Graphics, ...);
 
 class ProtoTypeApp : public da::CApp {
 
@@ -26,9 +22,9 @@ public:
 
 		m_window->getEventHandler().registerCallback(EEventCategory::Window, BIND_EVENT_FN(ProtoTypeApp, windowEvent));
 
-		//m_graphicsModule = new da::modules::CGraphicsModule(*windowModule);
-		//addModule(m_graphicsModule);
-		
+		m_graphicsModule = new da::modules::CGraphicsModule(m_window);
+		addModule(m_graphicsModule);
+
 		//da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(*m_graphicsModule);
 		//addModule(imGuiModule);
 #ifdef WINDOW_2
@@ -59,13 +55,13 @@ public:
 
 		if (e.getType() == EEventType::WindowResize) {
 			const CWindowResizeEvent* cl = static_cast<const CWindowResizeEvent*>(&e);
-			da::CLogger::LogDebug(da::ELogChannel::Application, "WindowResize: {%d, %d}", cl->getWidth(), cl->getHeight());
+			//da::CLogger::LogDebug(da::ELogChannel::Application, "WindowResize: {%d, %d}", cl->getWidth(), cl->getHeight());
 			return;
 		}
 
 		if (e.getType() == EEventType::WindowMove) {
 			const CWindowMoveEvent* cl = static_cast<const CWindowMoveEvent*>(&e);
-			da::CLogger::LogDebug(da::ELogChannel::Application, "WindowMove: {%d, %d}", cl->getX(), cl->getY());
+			//da::CLogger::LogDebug(da::ELogChannel::Application, "WindowMove: {%d, %d}", cl->getX(), cl->getY());
 			return;
 		}
 	}
@@ -80,33 +76,7 @@ private:
 protected:
 	inline virtual void onInitalize() override
 	{
-		// Initialize bgfx using the native window handle and window resolution.
-		bgfx::Init init;
-		init.type = bgfx::RendererType::Enum::Direct3D11;
-		bgfx::PlatformData pd;
-		pd.nwh = m_window->getWindow().getPlatformWindow();
-		pd.ndt = NULL;
-		init.platformData = pd;
-		init.resolution.width = 720;
-		init.resolution.height = 480;
-		init.resolution.reset = 144;
-		
-		if (!bgfx::init(init))
-		{
-			da::CLogger::LogError(da::ELogChannel::Application, "Failed to create bgfx");
-		}
-
-		// Enable debug text.
-		bgfx::setDebug(BGFX_DEBUG_TEXT);
-
-		bgfx::setViewClear(0
-			, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
-			, 0x303030ff
-			, 1.0f
-			, 0
-		);
-		bgfx::setViewRect(0, 0, 0, 720, 480);
-
+		m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
 		return;
 		{
 			
@@ -170,13 +140,6 @@ protected:
 
 	inline virtual void onUpdate() override
 	{
-		bgfx::setViewRect(0, 0, 0, uint16_t(720), uint16_t(480));
-		bgfx::touch(0);
-		bgfx::dbgTextClear();
-		bgfx::dbgTextPrintf(0, 1, 0x0f, "Color can be changed with ANSI \x1b[9;me\x1b[10;ms\x1b[11;mc\x1b[12;ma\x1b[13;mp\x1b[14;me\x1b[0m code too.");
-		bgfx::dbgTextPrintf(80, 1, 0x0f, "\x1b[;0m    \x1b[;1m    \x1b[; 2m    \x1b[; 3m    \x1b[; 4m    \x1b[; 5m    \x1b[; 6m    \x1b[; 7m    \x1b[0m");
-		bgfx::dbgTextPrintf(80, 2, 0x0f, "\x1b[;8m    \x1b[;9m    \x1b[;10m    \x1b[;11m    \x1b[;12m    \x1b[;13m    \x1b[;14m    \x1b[;15m    \x1b[0m");
-		bgfx::frame();
 		return;
 		if (!m_boltMat || !m_cubeMat)
 		{

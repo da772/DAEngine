@@ -99,7 +99,7 @@ namespace da::platform {
 		}
 	}
 
-	CVulkanGraphicsApi::CVulkanGraphicsApi(const core::CWindow& windowModule) : core::CGraphicsApi(windowModule)
+	CVulkanGraphicsApi::CVulkanGraphicsApi(core::CWindow& windowModule) : core::CGraphicsApi(windowModule)
 	{
 		m_allocCallbacks = {
 	   nullptr,

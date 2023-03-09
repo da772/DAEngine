@@ -4,7 +4,7 @@
 
 namespace da::core
 {
-	CGraphicsApi::CGraphicsApi(const CWindow& nativeWindow) : m_nativeWindow(nativeWindow)
+	CGraphicsApi::CGraphicsApi(CWindow& nativeWindow) : m_nativeWindow(nativeWindow)
 	{
 
 	}

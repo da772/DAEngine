@@ -36,7 +36,7 @@ namespace da::modules
 		
 	}
 
-	const da::core::CWindow& CWindowModule::getWindow() const
+	da::core::CWindow& CWindowModule::getWindow() const
 	{
 		return *m_Window;
 	}

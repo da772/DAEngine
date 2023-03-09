@@ -46,6 +46,10 @@ namespace da::core {
 		virtual void* getNativeWindow() const = 0;
 		virtual void* getPlatformWindow() const = 0;
 
+		inline const FWindowData& getWindowData() const {
+			return m_windowData;
+		}
+
 		inline CEventHandler& getEventHandler() {
 			return m_windowData.EventHandler;
 		}

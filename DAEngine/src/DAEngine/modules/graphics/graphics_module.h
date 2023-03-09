@@ -13,7 +13,7 @@ namespace da::modules
 	class CGraphicsModule : public IModule
 	{
 	public:
-		CGraphicsModule(const CWindowModule& windowsModule);
+		CGraphicsModule(CWindowModule* windowsModule);
 		virtual ~CGraphicsModule();
 		void lateUpdate() override;
 		void initalize() override;
@@ -25,7 +25,7 @@ namespace da::modules
 		}
 
 	private:
-		const CWindowModule& m_Window;
+		CWindowModule* m_Window;
 		core::CGraphicsApi* m_GraphicsApi;
 
 

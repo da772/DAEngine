@@ -52,7 +52,7 @@ namespace da::platform
 	class CVulkanGraphicsApi : public core::CGraphicsApi
 	{
 	public:
-		CVulkanGraphicsApi(const core::CWindow& windowModule);
+		CVulkanGraphicsApi(da::core::CWindow& windowModule);
 		~CVulkanGraphicsApi();
 		virtual void initalize() override;
 		virtual void update() override;

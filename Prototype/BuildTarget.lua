@@ -53,10 +53,7 @@ project "Prototype"
 		"%{prj.name}/src",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.bgfx}",
-		"%{IncludeDir.bx}",
-		"%{IncludeDir.bimg}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links

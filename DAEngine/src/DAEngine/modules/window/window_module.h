@@ -20,7 +20,7 @@ namespace da::modules {
 
 		CEventHandler& getEventHandler();
 
-		const core::CWindow& getWindow() const;
+		core::CWindow& getWindow() const;
 
 	private:
 		core::CWindow* m_Window;

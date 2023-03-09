@@ -642,4 +642,5 @@ namespace da
 	using Vector2f = da::core::maths::TVector2<float>;
 	using Vector3f = da::core::maths::TVector3<float>;
 	using Vector4f = da::core::maths::TVector4<float>;
+	using Vector4u8 = da::core::maths::TVector4<uint8_t>;
 };

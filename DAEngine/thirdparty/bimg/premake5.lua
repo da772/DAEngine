@@ -3,6 +3,10 @@ project "bimg"
 	language "C++"
 	cppdialect "C++14"
 	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-Obj/" .. outputdir .. "/%{prj.name}")
+
 	files
 	{
 		"include/bimg/*.h",

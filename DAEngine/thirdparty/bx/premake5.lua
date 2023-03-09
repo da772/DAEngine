@@ -4,6 +4,10 @@ project "bx"
 	cppdialect "C++14"
 	staticruntime "on"
 	defines "__STDC_FORMAT_MACROS"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-Obj/" .. outputdir .. "/%{prj.name}")
+
 	files
 	{
 		"include/bx/*.h",
