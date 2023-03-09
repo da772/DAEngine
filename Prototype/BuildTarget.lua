@@ -54,13 +54,19 @@ project "Prototype"
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.bgfx}",
+		"%{IncludeDir.bx}",
+		"%{IncludeDir.bimg}",
 	}
 
 	links
 	{
 		"DAEngine",
 		"assimp",
-		"ImGui"
+		"ImGui",
+		"bgfx",
+		"bimg",
+		"bx"
 	}
 	
 	filter "system:windows"
@@ -70,6 +76,13 @@ project "Prototype"
 		defines
 		{
 			"DA_PLATFORM_WINDOWS"
+		}
+
+		links
+		{
+			"gdi32",
+			"kernel32",
+			"psapi"
 		}
 
 		filter "configurations:Debug"

@@ -4,6 +4,19 @@ newoption {
 }
 
 if not _OPTIONS['unit-test'] then
+IncludeDir = {}
+IncludeDir["GLFW"] = "%{wks.location}/DAEngine/thirdparty/GLFW/include"
+IncludeDir["Vulkan"] = "%{wks.location}/DAEngine/thirdparty/Vulkan"
+IncludeDir["ImGui"] = "%{wks.location}/DAEngine/thirdparty/DearImGui"
+IncludeDir["glm"] = "%{wks.location}/DAEngine/thirdparty/glm"
+IncludeDir["stb"] = "%{wks.location}/DAEngine/thirdparty/stb"
+IncludeDir["assimp"] = "%{wks.location}/DAEngine/thirdparty/assimp/include"
+IncludeDir["zlib"] = "%{wks.location}/DAEngine/thirdparty/zlib/include"
+IncludeDir["ktx"] = "%{wks.location}/DAEngine/thirdparty/ktx/include"
+IncludeDir["bx"] = "%{wks.location}/DAEngine/thirdparty/bx/include"
+IncludeDir["bimg"] = "%{wks.location}/DAEngine/thirdparty/bimg/include"
+IncludeDir["bgfx"] = "%{wks.location}/DAEngine/thirdparty/bgfx/include"
+
 group "ThirdParty"
 filter "system:macosx"
 	include "thirdparty/GLFW"
@@ -11,29 +24,28 @@ filter "system:macosx"
 	include "thirdparty/zlib"
 	include "thirdparty/assimp"
 	include "thirdparty/ktx"
+	include "thirdparty/bx"
+	include "thirdparty/bimg"
+	include "thirdparty/bgfx"
 filter "system:windows"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
 	include "thirdparty/zlib"
 	include "thirdparty/assimp"
 	include "thirdparty/ktx"
+	include "thirdparty/bx"
+	include "thirdparty/bimg"
+	include "thirdparty/bgfx"
 filter "system:linux"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
 	include "thirdparty/zlib"
 	include "thirdparty/assimp"
 	include "thirdparty/ktx"
+	include "thirdparty/bx"
+	include "thirdparty/bimg"
+	include "thirdparty/bgfx"
 group ""
-
-IncludeDir = {}
-	IncludeDir["GLFW"] = "%{wks.location}/DAEngine/thirdparty/GLFW/include"
-	IncludeDir["Vulkan"] = "%{wks.location}/DAEngine/thirdparty/Vulkan"
-	IncludeDir["ImGui"] = "%{wks.location}/DAEngine/thirdparty/DearImGui"
-	IncludeDir["glm"] = "%{wks.location}/DAEngine/thirdparty/glm"
-	IncludeDir["stb"] = "%{wks.location}/DAEngine/thirdparty/stb"
-	IncludeDir["assimp"] = "%{wks.location}/DAEngine/thirdparty/assimp/include"
-	IncludeDir["zlib"] = "%{wks.location}/DAEngine/thirdparty/zlib/include"
-	IncludeDir["ktx"] = "%{wks.location}/DAEngine/thirdparty/ktx/include"
 end
 
 project "DAEngine"
@@ -81,6 +93,9 @@ project "DAEngine"
 		"%{IncludeDir.zlib}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.ktx}",
+		"%{IncludeDir.bx}",
+		"%{IncludeDir.bimg}",
+		"%{IncludeDir.bgfx}"
 	}
 	
 	libdirs
@@ -118,7 +133,15 @@ project "DAEngine"
 			"libvulkan.1.3.216.dylib",
 			"libMoltenVK.dylib",
 			"ImGui",
-			"ktx"
+			"ktx",
+			"bx",
+			"bimg",
+			"bgfx",
+			"QuartzCore.framework",
+			"Metal.framework",
+			"Cocoa.framework",
+			"IOKit.framework",
+			"CoreVideo.framework"
 		}
 		
 		includedirs
@@ -167,7 +190,13 @@ project "DAEngine"
 			"GLFW",
 			"vulkan-1",
 			"ImGui",
-			"ktx"
+			"ktx",
+			"gdi32",
+			"kernel32",
+			"psapi",
+			"bx",
+			"bimg",
+			"bgfx"
 		}
 
 		
@@ -199,46 +228,50 @@ project "DAEngine"
 			runtime "Release"
 			optimize "On"
 
-		filter "system:linux"
-			linkgroups 'on'
-			systemversion "latest"
-			cppdialect "gnu++20"
-			
-			defines
-			{
-				"DA_PLATFORM_LINUX"
-			}
-			
-			if not _OPTIONS['unit-test'] then
-			links
-			{
-				"GLFW",
-				"vulkan-1",
-				"ImGui",
-				"ktx"
-			}
-			
-			includedirs
-			{
-				"%{IncludeDir.GLFW}",
-				"%{IncludeDir.Vulkan}/include",
-				"%{IncludeDir.ImGui}"
-			}
-			end
-			
-			filter "configurations:Debug"
-				defines "DA_DEBUG"
-				runtime "Debug"
-				symbols "On"
-			filter "configurations:Release"
-				defines "DA_RELEASE"
-				runtime "Release"
-				optimize "On"
-				symbols "On"
-			filter "configurations:Final"
-				defines "DA_FINAL"
-				runtime "Release"
-				optimize "On"
+	filter "system:linux"
+		linkgroups 'on'
+		systemversion "latest"
+		cppdialect "gnu++20"
+		
+		defines
+		{
+			"DA_PLATFORM_LINUX"
+		}
+		
+		if not _OPTIONS['unit-test'] then
+		links
+		{
+			"GLFW",
+			"vulkan-1",
+			"ImGui",
+			"ktx",
+			"dl",
+			"GL",
+			"pthread",
+			"X11"
+		}
+		
+		includedirs
+		{
+			"%{IncludeDir.GLFW}",
+			"%{IncludeDir.Vulkan}/include",
+			"%{IncludeDir.ImGui}"
+		}
+		end
+		
+		filter "configurations:Debug"
+			defines "DA_DEBUG"
+			runtime "Debug"
+			symbols "On"
+		filter "configurations:Release"
+			defines "DA_RELEASE"
+			runtime "Release"
+			optimize "On"
+			symbols "On"
+		filter "configurations:Final"
+			defines "DA_FINAL"
+			runtime "Release"
+			optimize "On"
 				
 	filter "system:ios"
 		architecture "ARM"

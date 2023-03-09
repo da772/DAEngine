@@ -11,6 +11,8 @@
 
 #include <imgui.h>
 
+#include <bgfx/bgfx.h>
+
 //#define WINDOW_2
 
 class ProtoTypeApp : public da::CApp {
@@ -19,14 +21,18 @@ public:
 	inline ProtoTypeApp(int argc, const char** argv) : CApp(argc, argv) {
 		da::modules::CWindowModule* windowModule = new da::modules::CWindowModule({ "Hello World!", 720, 480, 0,0, 144, da::core::EWindowDeco::NONE });
 		addModule(windowModule);
+
+		// Initialize bgfx using the native window handle and window resolution.
+		bgfx::Init init;
 		
+
 		windowModule->getEventHandler().registerCallback(EEventCategory::Window, BIND_EVENT_FN(ProtoTypeApp, windowEvent));
 
-		m_graphicsModule = new da::modules::CGraphicsModule(*windowModule);
-		addModule(m_graphicsModule);
+		//m_graphicsModule = new da::modules::CGraphicsModule(*windowModule);
+		//addModule(m_graphicsModule);
 		
-		da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(*m_graphicsModule);
-		addModule(imGuiModule);
+		//da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(*m_graphicsModule);
+		//addModule(imGuiModule);
 #ifdef WINDOW_2
 		da::modules::CWindowModule* windowModule2 = new da::modules::CWindowModule({ "Hello World 2", 720, 480, 0,0, 144, da::core::EWindowDeco::NONE });
 		addModule(windowModule2);
@@ -75,6 +81,7 @@ private:
 protected:
 	inline virtual void onInitalize() override
 	{
+		return;
 		{
 			
 			{
@@ -137,6 +144,7 @@ protected:
 
 	inline virtual void onUpdate() override
 	{
+		return;
 		if (!m_boltMat || !m_cubeMat)
 		{
 			return;
