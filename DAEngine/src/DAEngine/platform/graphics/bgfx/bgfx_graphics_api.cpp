@@ -138,10 +138,13 @@ namespace da::platform {
 		bgfx::Init init;
 #ifdef DA_PLATFORM_WINDOWS
 		init.type = bgfx::RendererType::Enum::Direct3D12;
+        LOG_INFO(ELogChannel::Graphics, "Initialzing BGFX with renderer: D3D12");
 #elif defined(DA_PLATFORM_MACOSX) || defined (DA_PLATFORM_IOS)
-		init.type = bgfx::RendererType::Enum::Vulkan;
+		init.type = bgfx::RendererType::Enum::Metal;
+        LOG_INFO(ELogChannel::Graphics, "Initialzing BGFX with renderer: Metal");
 #else
 		init.type = bgfx::RendererType::Enum::Vulkan;
+        LOG_INFO(ELogChannel::Graphics, "Initialzing BGFX with renderer: Vulkan");
 #endif
         
 		bgfx::PlatformData pd;
