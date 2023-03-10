@@ -138,24 +138,23 @@ namespace da::platform {
 		bgfx::Init init;
 #ifdef DA_PLATFORM_WINDOWS
 		init.type = bgfx::RendererType::Enum::Direct3D12;
-#elif defined(DA_PLATFORM_MAC) || defined (DA_PLATFORM_IOS)
-		init.type = bgfx::RendererType::Enum::Metal;
+#elif defined(DA_PLATFORM_MACOSX) || defined (DA_PLATFORM_IOS)
+		init.type = bgfx::RendererType::Enum::Vulkan;
 #else
 		init.type = bgfx::RendererType::Enum::Vulkan;
 #endif
+        
 		bgfx::PlatformData pd;
 		pd.nwh = m_nativeWindow->getPlatformWindow();
-#ifdef DA_PLATFORM_WINDOWS
-		// Set window display data for other platforms
-		pd.ndt = NULL;
-#endif
+        pd.ndt = m_nativeWindow->getPlatformDisplay();
+        
 		init.platformData = pd;
 		const da::core::FWindowData& data = m_nativeWindow->getWindowData();
 		init.resolution.width = data.Width;
 		init.resolution.height = data.Height;
 		init.resolution.reset = data.RefreshRate;
-		// issue with alloator on mulithreads
-		init.allocator = (bx::AllocatorI*)m_allocator;
+		// Issues with allocator, MACOSX Release
+		//init.allocator = (bx::AllocatorI*)m_allocator;
 		init.callback = (bgfx::CallbackI*)m_callbacks;
 
 		if (!bgfx::init(init))

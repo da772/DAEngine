@@ -43,7 +43,8 @@ project "GLFW"
         defines 
         { 
             "_GLFW_COCOA",
-            "_CRT_SECURE_NO_WARNINGS"
+            "_CRT_SECURE_NO_WARNINGS",
+            "GLFW_EXPOSE_NATIVE_COCOA"
         }
 
         filter "configurations:Debug"

@@ -235,18 +235,13 @@ project "Prototype"
 			["ALWAYS_SEARCH_USER_PATHS"] = "YES"
 		}
 
-		libdirs
-		{
-			"%{IncludeDir.Vulkan}/lib"
-		}
-
 		links
 		{
 			"Cocoa.framework",
 			"IOKit.framework",
 			"CoreVideo.framework",
-			"libvulkan.1.3.216.dylib",
-			"libMoltenVK.dylib",
+			"QuartzCore.framework",
+			"Metal.framework",
 		}
 
 		filter "configurations:Debug"

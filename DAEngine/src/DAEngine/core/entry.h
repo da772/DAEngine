@@ -1,7 +1,7 @@
 #pragma once
 #include "daengine.h"
 
-#if defined(DA_PLATFORM_WINDOWS) && defined(DA_FINAL) || defined(DA_RELEASE)
+#if defined(DA_PLATFORM_WINDOWS) && (defined(DA_FINAL) || defined(DA_RELEASE))
 #include <windows.h>
 #endif
 #include "daengine/core/memory/memory.h"

@@ -55,3 +55,7 @@ project "bx"
 	filter { "system:macosx" }
 		includedirs { "include/compat/osx" }
 		buildoptions { "-x objective-c++" }
+		xcodebuildsettings
+		{ 
+			["ALWAYS_SEARCH_USER_PATHS"] = "YES"
+		}

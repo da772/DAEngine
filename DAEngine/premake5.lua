@@ -117,7 +117,8 @@ project "DAEngine"
 	filter "system:macosx"
 		defines
 		{
-			"DA_PLATFORM_MACOSX"
+			"DA_PLATFORM_MACOSX",
+			"GLFW_EXPOSE_NATIVE_COCOA"
 		}
 
 		xcodebuildsettings
@@ -130,8 +131,6 @@ project "DAEngine"
 		links 
 		{
 			"GLFW",
-			"libvulkan.1.3.216.dylib",
-			"libMoltenVK.dylib",
 			"ImGui",
 			"ktx",
 			"bx",
@@ -155,6 +154,7 @@ project "DAEngine"
 		{
 			"%{IncludeDir.Vulkan}/lib"
 		}
+
 		end
 
 		filter "configurations:Debug"

@@ -42,6 +42,7 @@ project "bgfx"
 		optimize "On"
 		defines "BX_CONFIG_DEBUG=0"
 		
+		
 	filter "configurations:Debug"
 		defines "BX_CONFIG_DEBUG=1"
 	filter "action:vs*"
@@ -66,6 +67,14 @@ project "bgfx"
 	filter { "system:macosx" }
 		includedirs { "include/compat/osx" }
 		buildoptions { "-x objective-c++" }
+		xcodebuildsettings
+		{ 
+			["ALWAYS_SEARCH_USER_PATHS"] = "YES"
+		}
+		defines
+		{
+			"BGFX_CONFIG_MULTITHREADED=0"
+		}
 		files
 		{
 			"src/*.mm",

@@ -20,6 +20,13 @@ project "ktx"
 		"lib",
 		"%{IncludeDir.Vulkan}/include"
 	}
+
+	filter { "system:macosx" }
+		xcodebuildsettings
+		{ 
+			["ALWAYS_SEARCH_USER_PATHS"] = "YES"
+		}
+
 	
 
    

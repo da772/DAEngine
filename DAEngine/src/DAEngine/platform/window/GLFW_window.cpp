@@ -130,11 +130,23 @@ namespace da::platform {
 	void* CGLFW_Window::getPlatformWindow() const
 	{
 #ifdef DA_PLATFORM_WINDOWS
-		return glfwGetWin32Window(m_Window);;
+		return glfwGetWin32Window(m_Window);
+#elif defined (DA_PLATFORM_MACOSX)
+        return glfwGetCocoaWindow(m_Window);
 #else
 		return nullptr;
 #endif
 	}
+
+    void * CGLFW_Window::getPlatformDisplay() const {
+#ifdef DA_PLATFORM_WINDOWS
+        return nullptr;
+#elif defined (DA_PLATFORM_MACOSX)
+        return nullptr;//glfwGetCocoaMonitor(m_Window);
+#else
+        return nullptr;
+#endif
+    }
 
 }
 
