@@ -23,7 +23,7 @@ namespace da::core
 	class CGraphicsApi
 	{
 	public:
-		CGraphicsApi(CWindow& nativeWindow);
+		CGraphicsApi(CWindow* nativeWindow);
 		virtual ~CGraphicsApi();
 
 		inline virtual void initalize() {};
@@ -35,10 +35,10 @@ namespace da::core
 		virtual void submitPipeline(CGraphicsPipeline* pipeline) = 0;
 
 	public:
-		inline const CWindow& getWindow() const { return m_nativeWindow; }
+		inline CWindow* getWindow() const { return m_nativeWindow; }
 
 	protected:
-		CWindow& m_nativeWindow;
+		CWindow* m_nativeWindow;
 
 	};
 }

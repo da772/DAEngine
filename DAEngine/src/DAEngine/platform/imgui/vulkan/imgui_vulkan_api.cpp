@@ -14,9 +14,9 @@
 
 namespace da::platform {
 
-	CImGuiVulkanApi::CImGuiVulkanApi(core::CGraphicsApi& graphicsApi) : 
+	CImGuiVulkanApi::CImGuiVulkanApi(core::CGraphicsApi* graphicsApi) : 
         CImGuiApi(graphicsApi)
-        ,m_vulkanGraphics(*static_cast<platform::CVulkanGraphicsApi*>(&graphicsApi))
+        ,m_vulkanGraphics(static_cast<platform::CVulkanGraphicsApi*>(graphicsApi))
         ,m_funcPtr(new std::function<void(VkCommandBuffer cmd)>(std::bind(&CImGuiVulkanApi::renderImGui, this, std::placeholders::_1)))
 	{
 
@@ -51,32 +51,32 @@ namespace da::platform {
         pool_info.pPoolSizes = pool_sizes;
 
 
-        auto result = vkCreateDescriptorPool(m_vulkanGraphics.getDevice(), &pool_info, nullptr, &m_imguiPool);
+        auto result = vkCreateDescriptorPool(m_vulkanGraphics->getDevice(), &pool_info, nullptr, &m_imguiPool);
        // VK_CHECK(result, VK_SUCCESS);
     
         // 2: initialize imgui library
         //this initializes imgui for Vulkan GLFW
-        ImGui_ImplGlfw_InitForVulkan((GLFWwindow*)m_window.getNativeWindow(), true);
+        ImGui_ImplGlfw_InitForVulkan((GLFWwindow*)m_window->getNativeWindow(), true);
 
         //this initializes imgui for Vulkan
         ImGui_ImplVulkan_InitInfo init_info = {};
-        init_info.Instance = m_vulkanGraphics.getInstance();
-        init_info.PhysicalDevice = m_vulkanGraphics.getPhysicalDevice();
-        init_info.Device = m_vulkanGraphics.getDevice();
-        init_info.Queue = m_vulkanGraphics.getQueue();
+        init_info.Instance = m_vulkanGraphics->getInstance();
+        init_info.PhysicalDevice = m_vulkanGraphics->getPhysicalDevice();
+        init_info.Device = m_vulkanGraphics->getDevice();
+        init_info.Queue = m_vulkanGraphics->getQueue();
         init_info.DescriptorPool = m_imguiPool;
         init_info.MinImageCount = 3;
         init_info.ImageCount = 3;
-        init_info.MSAASamples = m_vulkanGraphics.getMaxUsableSampleCount();
+        init_info.MSAASamples = m_vulkanGraphics->getMaxUsableSampleCount();
         
-        ImGui_ImplVulkan_Init(&init_info, m_vulkanGraphics.getRenderPass());
+        ImGui_ImplVulkan_Init(&init_info, m_vulkanGraphics->getRenderPass());
         
-        m_vulkanGraphics.immediateSubmit([] (VkCommandBuffer cmd) {
+        m_vulkanGraphics->immediateSubmit([] (VkCommandBuffer cmd) {
             ImGui_ImplVulkan_CreateFontsTexture(cmd);
         });
         //clear font textures from cpu data
         ImGui_ImplVulkan_DestroyFontUploadObjects();
-        m_vulkanGraphics.submitRenderFunction(m_funcPtr);
+        m_vulkanGraphics->submitRenderFunction(m_funcPtr);
 	}
 
     bool open = true;
@@ -111,11 +111,11 @@ namespace da::platform {
 
 	void CImGuiVulkanApi::onShutdown()
 	{
-        m_vulkanGraphics.removeRenderFunction(m_funcPtr);
+        m_vulkanGraphics->removeRenderFunction(m_funcPtr);
         delete m_funcPtr;
-        vkDeviceWaitIdle(m_vulkanGraphics.getDevice());
+        vkDeviceWaitIdle(m_vulkanGraphics->getDevice());
         // Todo:: shutdown before vulkan and glfw
-        vkDestroyDescriptorPool(m_vulkanGraphics.getDevice(), m_imguiPool, nullptr);
+        vkDestroyDescriptorPool(m_vulkanGraphics->getDevice(), m_imguiPool, nullptr);
         ImGui_ImplVulkan_Shutdown();
         ImGui_ImplGlfw_Shutdown();
 	}

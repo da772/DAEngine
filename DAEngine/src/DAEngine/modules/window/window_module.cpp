@@ -36,9 +36,9 @@ namespace da::modules
 		
 	}
 
-	da::core::CWindow& CWindowModule::getWindow() const
+	da::core::CWindow* CWindowModule::getWindow() const
 	{
-		return *m_Window;
+		return m_Window;
 	}
 
 	void CWindowModule::lateShutdown()

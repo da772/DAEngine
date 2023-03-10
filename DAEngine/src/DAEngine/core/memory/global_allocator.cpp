@@ -34,4 +34,14 @@ namespace da::memory
 		return p;
 	}
 
+	void CGlobalAllocator::push()
+	{
+		da::memory::push_memory_layer((da::memory::EMemoryLayer)m_layer);
+	}
+
+	void CGlobalAllocator::pop()
+	{
+		da::memory::pop_memory_layer();
+	}
+
 }

@@ -12,7 +12,7 @@ namespace da::modules
 	class CImGuiModule : public IModule
 	{
 	public:
-		CImGuiModule(const CGraphicsModule& graphicsModule);
+		CImGuiModule(CGraphicsModule* graphicsModule);
 		virtual ~CImGuiModule();
 
 		void update() override;
@@ -21,7 +21,7 @@ namespace da::modules
 		void shutdown() override;
 
 	private:
-		const CGraphicsModule& m_GraphicsModule;
+		CGraphicsModule* m_GraphicsModule;
 		core::CImGuiApi* m_imGuiApi;
 
 	};

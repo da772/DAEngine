@@ -19,11 +19,12 @@ namespace da::core {
 		inline virtual void onInitialize() {};
 		inline virtual void onUpdate() {};
 		inline virtual void onShutdown() {};
+		inline virtual void onLateUpdate() { };
 
 	protected:
-		inline CImGuiApi(CGraphicsApi& graphicsApi) : m_graphicsApi(graphicsApi), m_window(m_graphicsApi.getWindow()) {};
- 		CGraphicsApi& m_graphicsApi;
-		const CWindow& m_window;
+		inline CImGuiApi(CGraphicsApi* graphicsApi) : m_graphicsApi(graphicsApi), m_window(m_graphicsApi->getWindow()) {};
+ 		CGraphicsApi* m_graphicsApi;
+		CWindow* m_window;
 	};
 
 

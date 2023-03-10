@@ -8,7 +8,7 @@ namespace da::platform {
 	class CbgfxGraphicsApi : public da::core::CGraphicsApi
 	{
 	public:
-		CbgfxGraphicsApi(core::CWindow& windowModule);
+		CbgfxGraphicsApi(core::CWindow* windowModule);
 		~CbgfxGraphicsApi();
 		virtual void initalize() override;
 		virtual void update() override;

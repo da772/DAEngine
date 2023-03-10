@@ -10,7 +10,7 @@ namespace da::platform
 {
 	class CImGuiVulkanApi : public core::CImGuiApi {
 	public:
-		CImGuiVulkanApi(core::CGraphicsApi& graphicsApi);
+		CImGuiVulkanApi(core::CGraphicsApi* graphicsApi);
 
 		virtual void onInitialize() override;
 		virtual void onUpdate() override;
@@ -18,7 +18,7 @@ namespace da::platform
 	private:
 		void renderImGui(VkCommandBuffer cmd);
 	private:
-		CVulkanGraphicsApi& m_vulkanGraphics;
+		CVulkanGraphicsApi* m_vulkanGraphics;
         VkDescriptorPool m_imguiPool;
 		std::function<void(VkCommandBuffer)>* m_funcPtr;
 	};

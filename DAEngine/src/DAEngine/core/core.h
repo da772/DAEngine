@@ -26,7 +26,7 @@
 #define DA_WINDOW_GLFW
 #define DA_GRAPHICS_VULKAN
 #define DA_GRAPHICS_BGFX
-#if DA_DEBUG
+#if DA_DEBUG || DA_RELEASE
 #define BX_CONFIG_DEBUG 1
 #else
 #define BX_CONFIG_DEBUG 0

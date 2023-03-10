@@ -85,9 +85,13 @@ namespace bgfx
 
 			for (uint32_t ii = 0; ii < BGFX_CONFIG_MAX_VIEWS; ++ii)
 			{
+				// TODO DN: This normally grabs by reference and mulitplies rather than copying,
+				// but having threading issues here? so copying for now
+				bx::float4x4_t v = m_view[ii].un.f4x4;
+				bx::float4x4_t fv = _frame->m_view[ii].m_proj.un.f4x4;
 				bx::float4x4_mul(&m_viewProj[ii].un.f4x4
-					, &m_view[ii].un.f4x4
-					, &_frame->m_view[ii].m_proj.un.f4x4
+					,&v
+					, &fv
 					);
 			}
 		}

@@ -25,8 +25,8 @@ public:
 		m_graphicsModule = new da::modules::CGraphicsModule(m_window);
 		addModule(m_graphicsModule);
 
-		//da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(*m_graphicsModule);
-		//addModule(imGuiModule);
+		da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(m_graphicsModule);
+		addModule(imGuiModule);
 #ifdef WINDOW_2
 		da::modules::CWindowModule* windowModule2 = new da::modules::CWindowModule({ "Hello World 2", 720, 480, 0,0, 144, da::core::EWindowDeco::NONE });
 		addModule(windowModule2);

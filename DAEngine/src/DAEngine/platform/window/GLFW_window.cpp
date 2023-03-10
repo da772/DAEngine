@@ -85,6 +85,27 @@ namespace da::platform {
 			CWindowMoveEvent event(x, y);
 			data.EventHandler.eventCallback(event);
 		});
+
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double x, double y) {
+			FWindowData& data = *(FWindowData*)glfwGetWindowUserPointer(window);
+
+			CInputCursorMoveEvent event(x, y);
+			data.EventHandler.eventCallback(event);
+			});
+
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int btn, int type, int mod) {
+			FWindowData& data = *(FWindowData*)glfwGetWindowUserPointer(window);
+
+			CInputMouseButtonEvent event(btn, (EInputType)type, mod);
+			data.EventHandler.eventCallback(event);
+			});
+
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scanCode, int type, int mod) {
+			FWindowData& data = *(FWindowData*)glfwGetWindowUserPointer(window);
+
+			CInputKeyboardEvent event(key, (EInputType)type, scanCode, mod);
+			data.EventHandler.eventCallback(event);
+			});
 	}
 
 	void CGLFW_Window::update()

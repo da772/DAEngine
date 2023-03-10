@@ -5,12 +5,14 @@ namespace da::core::events {
 
 	enum class EEventType : uint32_t {
 		None,
-		WindowResize, WindowClose, WindowMove
+		WindowResize, WindowClose, WindowMove,
+		InputCursorMove, InputMouseButton, InputKeyboard
 	};
 
 	enum class EEventCategory : uint32_t {
 		None,
 		Window,
+		Input
 	};
 
 	class CEvent

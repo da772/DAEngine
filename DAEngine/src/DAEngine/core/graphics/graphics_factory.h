@@ -8,7 +8,7 @@ namespace da::core
 	class CGraphicsFactory
 	{
 	public:
-		static CGraphicsApi* Create(CWindow& window);
+		static CGraphicsApi* Create(CWindow* window);
 
 	};
 }

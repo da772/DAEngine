@@ -6,9 +6,9 @@
 namespace da::modules
 {
 
-	CImGuiModule::CImGuiModule(const CGraphicsModule& graphicsModule) : m_GraphicsModule(graphicsModule)
+	CImGuiModule::CImGuiModule(CGraphicsModule* graphicsModule) : m_GraphicsModule(graphicsModule)
 	{
-		m_imGuiApi = core::CImGuiFactory::Create(*graphicsModule.getGraphicsApi());
+		m_imGuiApi = core::CImGuiFactory::Create(graphicsModule->getGraphicsApi());
 	}
 
 

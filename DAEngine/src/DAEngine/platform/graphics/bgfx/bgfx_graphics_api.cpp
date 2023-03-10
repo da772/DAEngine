@@ -2,7 +2,6 @@
 #include "bgfx_graphics_api.h"
 
 #ifdef DA_GRAPHICS_BGFX
-
 #include "logger.h"
 #include <bgfx/bgfx.h>
 #include <bx/allocator.h>
@@ -120,36 +119,42 @@ namespace da::platform {
 		virtual void captureFrame(const void* _data, uint32_t _size) {};
 	};
 
-	CbgfxGraphicsApi::CbgfxGraphicsApi(core::CWindow& windowModule) : CGraphicsApi(windowModule)
+	CbgfxGraphicsApi::CbgfxGraphicsApi(core::CWindow* windowModule) : CGraphicsApi(windowModule)
 	{	
-		da::memory::push_memory_layer(memory::EMemoryLayer::Graphics);
+		da::memory::CMemoryScope scope(memory::EMemoryLayer::Graphics);
 		m_allocator = new FDAllocator();
 		m_callbacks = new FDACallbacks();
-		da::memory::pop_memory_layer();
 	}
 
 	CbgfxGraphicsApi::~CbgfxGraphicsApi()
 	{
-		da::memory::push_memory_layer(memory::EMemoryLayer::Graphics);
+		da::memory::CMemoryScope scope(memory::EMemoryLayer::Graphics);
 		delete m_allocator;
-		da::memory::pop_memory_layer();
+		delete m_callbacks;
 	}
 
 	void CbgfxGraphicsApi::initalize()
 	{
 		bgfx::Init init;
+#ifdef DA_PLATFORM_WINDOWS
 		init.type = bgfx::RendererType::Enum::Direct3D12;
+#elif defined(DA_PLATFORM_MAC) || defined (DA_PLATFORM_IOS)
+		init.type = bgfx::RendererType::Enum::Metal;
+#else
+		init.type = bgfx::RendererType::Enum::Vulkan;
+#endif
 		bgfx::PlatformData pd;
-		pd.nwh = m_nativeWindow.getPlatformWindow();
+		pd.nwh = m_nativeWindow->getPlatformWindow();
 #ifdef DA_PLATFORM_WINDOWS
 		// Set window display data for other platforms
 		pd.ndt = NULL;
 #endif
 		init.platformData = pd;
-		const da::core::FWindowData& data = m_nativeWindow.getWindowData();
+		const da::core::FWindowData& data = m_nativeWindow->getWindowData();
 		init.resolution.width = data.Width;
 		init.resolution.height = data.Height;
 		init.resolution.reset = data.RefreshRate;
+		// issue with alloator on mulithreads
 		init.allocator = (bx::AllocatorI*)m_allocator;
 		init.callback = (bgfx::CallbackI*)m_callbacks;
 
@@ -161,7 +166,7 @@ namespace da::platform {
 
 		m_initialized = true;
 
-		m_nativeWindow.getEventHandler().registerCallback(da::core::events::EEventType::WindowResize, BIND_EVENT_FN(CbgfxGraphicsApi, windowResize));
+		m_nativeWindow->getEventHandler().registerCallback(da::core::events::EEventType::WindowResize, BIND_EVENT_FN(CbgfxGraphicsApi, windowResize));
 
 		// Enable debug text.
 		bgfx::setDebug(BGFX_DEBUG_TEXT);
@@ -200,6 +205,7 @@ namespace da::platform {
 	{
 		const da::core::events::CWindowResizeEvent* data = static_cast<const da::core::events::CWindowResizeEvent*>(&event);
 		bgfx::setViewRect(0, 0, 0, data->getWidth(), data->getHeight());
+		bgfx::reset(data->getWidth(), data->getHeight());
 	}
 
 	void CbgfxGraphicsApi::setClearColor(uint32_t target, da::core::EGraphicsClear clear, Vector4u8 color)

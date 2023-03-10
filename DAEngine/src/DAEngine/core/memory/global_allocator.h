@@ -11,6 +11,8 @@ namespace da::memory {
 		virtual void* allocate(size_t size) override;
 		virtual void deallocate(void* ptr) override;
 		virtual void* reallocate(void* ptr, size_t size) override;
+		void push();
+		void pop();
 
 	protected:
 		uint8_t m_layer = 0;

@@ -14,7 +14,7 @@
 namespace da::core
 {
 
-	CGraphicsApi* CGraphicsFactory::Create(CWindow& window)
+	CGraphicsApi* CGraphicsFactory::Create(CWindow* window)
 	{
 #ifdef DA_GRAPHICS_BGFX
 		return new platform::CbgfxGraphicsApi(window);

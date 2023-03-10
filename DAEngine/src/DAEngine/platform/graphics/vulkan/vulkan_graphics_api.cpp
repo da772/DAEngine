@@ -99,7 +99,7 @@ namespace da::platform {
 		}
 	}
 
-	CVulkanGraphicsApi::CVulkanGraphicsApi(core::CWindow& windowModule) : core::CGraphicsApi(windowModule)
+	CVulkanGraphicsApi::CVulkanGraphicsApi(core::CWindow* windowModule) : core::CGraphicsApi(windowModule)
 	{
 		m_allocCallbacks = {
 	   nullptr,
@@ -551,7 +551,7 @@ namespace da::platform {
 	void CVulkanGraphicsApi::createSurface()
 	{
 		LOG_INFO(ELogChannel::Graphics, "Vulkan creating GLFW Surface");
-        auto result =glfwCreateWindowSurface(m_instance, (GLFWwindow*)m_nativeWindow.getNativeWindow(), &m_allocCallbacks, &m_surface);
+        auto result =glfwCreateWindowSurface(m_instance, (GLFWwindow*)m_nativeWindow->getNativeWindow(), &m_allocCallbacks, &m_surface);
 		VK_CHECK(result, VK_SUCCESS);
         
 	}
@@ -562,7 +562,7 @@ namespace da::platform {
 		}
 		else {
 			int width, height;
-			glfwGetFramebufferSize((GLFWwindow*)m_nativeWindow.getNativeWindow(), &width, &height);
+			glfwGetFramebufferSize((GLFWwindow*)m_nativeWindow->getNativeWindow(), &width, &height);
 
 			VkExtent2D actualExtent = {
 				static_cast<uint32_t>(width),
@@ -1078,7 +1078,7 @@ namespace da::platform {
 	{
 		int width = 0, height = 0;
 		while (width == 0 || height == 0) {
-			glfwGetFramebufferSize((GLFWwindow*)m_nativeWindow.getNativeWindow(), &width, &height);
+			glfwGetFramebufferSize((GLFWwindow*)m_nativeWindow->getNativeWindow(), &width, &height);
 			glfwWaitEvents();
 		}
 
