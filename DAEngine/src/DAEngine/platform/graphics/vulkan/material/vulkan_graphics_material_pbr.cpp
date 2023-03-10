@@ -75,7 +75,7 @@ namespace da::platform
 		vkMapMemory(m_vulkanApi.getDevice(), m_uniformBuffersMemory[frame], 0, sizeof(ubo), 0, &data);
 		memcpy(data, &ubo, sizeof(ubo));
 		vkUnmapMemory(m_vulkanApi.getDevice(), m_uniformBuffersMemory[frame]);
-		/*
+		
 		if (lbo.count != 16) {
 			//LightUniformBuffer lbo;
 
@@ -93,7 +93,7 @@ namespace da::platform
 
 			lbo.count = 16;
 		}
-		*/
+		
 
 		glm::vec3 eyeScale;
 		glm::quat eyeRot;
@@ -108,7 +108,7 @@ namespace da::platform
 		lbo.data[0].pos = { eyePos, 1.f };
 		lbo.data[0].color = { 1.f, 0.f, 0.f, 1.f };
 		lbo.data[0].dir = { euler, glm::cos(glm::radians(15.f))};
-		lbo.count = 1;
+		lbo.count = 16;
 
 		vkMapMemory(m_vulkanApi.getDevice(), m_lightBuffersMemory[frame], 0, sizeof(lbo), 0, &data);
 		memcpy(data, &lbo, sizeof(lbo));

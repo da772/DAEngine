@@ -11,7 +11,7 @@
 
 namespace da::core::containers {
 
-	template<typename T, typename _Allocator = memory::CGlobalAllocator>
+	template<typename T, typename _Allocator = memory::CGlobalAllocator, int TShiftSize = 1>
 	class TList : public IEnumerable<T>
 	{
 	public:
@@ -128,7 +128,7 @@ namespace da::core::containers {
 		}
 
 		inline void remove(const size_t& i) {
-			remove(TEnumerator<int>(&m_ptr[i]));
+			remove(TEnumerator<T>(&m_ptr[i]));
 		}
 
 		inline size_t size() const override {
@@ -203,7 +203,7 @@ namespace da::core::containers {
 			m_shiftSize = 0;
 			resize(other.size());
 			memcpy(m_ptr, other.m_ptr, other.m_size * sizeof(T));
-			m_shiftSize = 1;
+			m_shiftSize = TShiftSize;
 		
 			return *this;
 		}
@@ -247,7 +247,7 @@ namespace da::core::containers {
 		size_t m_size = 0;
 		size_t m_heapSize = 0;
 		T* m_ptr = nullptr;
-        uint8_t m_shiftSize = 1;
+        uint8_t m_shiftSize = TShiftSize;
 		_Allocator m_allocator;
 
 	};

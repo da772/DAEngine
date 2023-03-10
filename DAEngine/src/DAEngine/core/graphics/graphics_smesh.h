@@ -1,5 +1,4 @@
 #pragma once
-#if !defined(DA_TEST)
 
 #include "daengine/core/containers.h"
 #include "graphics_pipeline.h"
@@ -28,5 +27,3 @@ namespace da::core
 
 	};
 }
-
-#endif
