@@ -5,6 +5,7 @@
 #include "logger.h"
 #include <bgfx/bgfx.h>
 #include <bx/allocator.h>
+#include "bgfx_graphics_test.h"
 
 namespace da::platform {
 
@@ -119,11 +120,14 @@ namespace da::platform {
 		virtual void captureFrame(const void* _data, uint32_t _size) {};
 	};
 
+	CBgfxGraphicsTest* s_test;
+
 	CbgfxGraphicsApi::CbgfxGraphicsApi(core::CWindow* windowModule) : CGraphicsApi(windowModule)
 	{	
 		da::memory::CMemoryScope scope(memory::EMemoryLayer::Graphics);
 		m_allocator = new FDAllocator();
 		m_callbacks = new FDACallbacks();
+		s_test = new CBgfxGraphicsTest();
 	}
 
 	CbgfxGraphicsApi::~CbgfxGraphicsApi()
@@ -131,6 +135,7 @@ namespace da::platform {
 		da::memory::CMemoryScope scope(memory::EMemoryLayer::Graphics);
 		delete m_allocator;
 		delete m_callbacks;
+		delete s_test;
 	}
 
 	void CbgfxGraphicsApi::initalize()
@@ -180,11 +185,16 @@ namespace da::platform {
 			, 0
 		);
 		bgfx::setViewRect(0, 0, 0, data.Width, data.Height);
+
+		s_test->Initialize(m_nativeWindow);
 	}
 
 	void CbgfxGraphicsApi::update()
 	{
 		bgfx::touch(0);
+
+		s_test->Render();
+
 		bgfx::dbgTextClear();
 		bgfx::dbgTextPrintf(0, 1, 0x0f, "Color can be changed with ANSI \x1b[9;me\x1b[10;ms\x1b[11;mc\x1b[12;ma\x1b[13;mp\x1b[14;me\x1b[0m code too.");
 		bgfx::dbgTextPrintf(80, 1, 0x0f, "\x1b[;0m    \x1b[;1m    \x1b[; 2m    \x1b[; 3m    \x1b[; 4m    \x1b[; 5m    \x1b[; 6m    \x1b[; 7m    \x1b[0m");
@@ -194,6 +204,7 @@ namespace da::platform {
 
 	void CbgfxGraphicsApi::shutdown()
 	{
+		s_test->Shutdown();
 		bgfx::shutdown();
 		m_initialized = false;
 	}

@@ -32,3 +32,4 @@ enc_temp_folder/
 Makefile
 
 Prototype/assets/cubemap.ktx
+*.ktx

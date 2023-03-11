@@ -1,4 +1,5 @@
 #pragma once
+#include "DAEngine/core/core.h"
 
 namespace da::core
 {
