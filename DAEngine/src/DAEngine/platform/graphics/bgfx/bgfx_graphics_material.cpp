@@ -36,7 +36,8 @@ namespace da::platform {
 
 	void CBgfxGraphicsMaterial::shutdown()
 	{
-		bgfx::destroy(bgfx::ProgramHandle(m_program ));
+        bgfx::ProgramHandle handle = {m_program};
+		bgfx::destroy(handle);
 	}
 
 	uint16_t CBgfxGraphicsMaterial::getHandle() const
