@@ -57,6 +57,18 @@ namespace da::core::events
 		EInputType m_type;
 	};
 
+	class CInputScrollEvent : public CInputEvent
+	{
+	public:
+		inline CInputScrollEvent(double xOffset, double yOffset) : CInputEvent(EEventType::InputMouseScroll), m_xOffset(xOffset), m_yOffset(yOffset) {}
+
+		inline const double getXOffset() const { return m_xOffset; }
+		inline const double getYOffset() const { return m_yOffset; }
+
+	private:
+		double m_xOffset, m_yOffset;
+	};
+
 
 
 }

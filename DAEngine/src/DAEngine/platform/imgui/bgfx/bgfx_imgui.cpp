@@ -203,7 +203,6 @@ struct OcornutImguiContext
 		}
 
 		m_viewId = 255;
-		m_lastScroll = 0;
 		m_last = bx::getHPCounter();
 
 		ImGui::SetAllocatorFunctions(memAlloc, memFree, NULL);
@@ -313,7 +312,8 @@ struct OcornutImguiContext
 		int32_t _mx
 		, int32_t _my
 		, uint8_t _button
-		, int32_t _scroll
+		, int32_t _scrollX
+		, int32_t _scrollY
 		, int _width
 		, int _height
 		, int _inputChar
@@ -340,8 +340,7 @@ struct OcornutImguiContext
 		io.AddMouseButtonEvent(ImGuiMouseButton_Left, 0 != (_button & IMGUI_MBUT_LEFT));
 		io.AddMouseButtonEvent(ImGuiMouseButton_Right, 0 != (_button & IMGUI_MBUT_RIGHT));
 		io.AddMouseButtonEvent(ImGuiMouseButton_Middle, 0 != (_button & IMGUI_MBUT_MIDDLE));
-		io.AddMouseWheelEvent(0.0f, (float)(_scroll - m_lastScroll));
-		m_lastScroll = _scroll;
+		io.AddMouseWheelEvent((float)_scrollX, (float)(_scrollY));
 
 		ImGui::NewFrame();
 
@@ -364,7 +363,6 @@ struct OcornutImguiContext
 	bgfx::UniformHandle u_imageLodEnabled;
 	ImFont* m_font[ImGui::Font::Count];
 	int64_t m_last;
-	int32_t m_lastScroll;
 	bgfx::ViewId m_viewId;
 
 };
@@ -393,9 +391,9 @@ void imguiDestroy()
 	s_ctx.destroy();
 }
 
-void imguiBeginFrame(int32_t _mx, int32_t _my, uint8_t _button, int32_t _scroll, uint16_t _width, uint16_t _height, int _inputChar, bgfx::ViewId _viewId)
+void imguiBeginFrame(int32_t _mx, int32_t _my, uint8_t _button, int32_t _scrollX, int32_t _scrollY, uint16_t _width, uint16_t _height, int _inputChar, bgfx::ViewId _viewId)
 {
-	s_ctx.beginFrame(_mx, _my, _button, _scroll, _width, _height, _inputChar, _viewId);
+	s_ctx.beginFrame(_mx, _my, _button, _scrollX, _scrollY, _width, _height, _inputChar, _viewId);
 }
 
 void imguiEndFrame()

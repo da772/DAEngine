@@ -106,6 +106,13 @@ namespace da::platform {
 			CInputKeyboardEvent event(key, (EInputType)type, scanCode, mod);
 			data.EventHandler.eventCallback(event);
 			});
+
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset) {
+			FWindowData& data = *(FWindowData*)glfwGetWindowUserPointer(window);
+
+			CInputScrollEvent  event(xOffset, yOffset);
+			data.EventHandler.eventCallback(event);
+			});
 	}
 
 	void CGLFW_Window::update()

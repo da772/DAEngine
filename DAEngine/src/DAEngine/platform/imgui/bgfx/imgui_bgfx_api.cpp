@@ -66,13 +66,16 @@ namespace da::platform {
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputKeyboard, BIND_EVENT_FN(CImGuiBgfxApi, onKeyboard));
+		m_window->getEventHandler().registerCallback(da::core::EEventType::InputMouseScroll, BIND_EVENT_FN(CImGuiBgfxApi, onMouseScroll));
 		imguiCreate(18.f, (bx::AllocatorI*)m_allocator);
 	}
 
 	void CImGuiBgfxApi::onUpdate()
 	{
-		imguiBeginFrame(m_mx, m_my, m_mb, 0, m_window->getWindowData().Width, m_window->getWindowData().Height, m_kb);
-
+		imguiBeginFrame((uint32_t)m_mx, (uint32_t)m_my, m_mb, m_msx, m_msy, m_window->getWindowData().Width, m_window->getWindowData().Height, m_kb);
+		m_msx = 0;
+		m_msy = 0;
+		m_kb = -1;
 		if (ImGui::Begin("Memory", 0)) {
 			ImGui::BeginTable("Table", 2, ImGuiTableFlags_BordersInner);
 			ImGui::TableSetupColumn("Name");
@@ -106,6 +109,7 @@ namespace da::platform {
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputKeyboard, BIND_EVENT_FN(CImGuiBgfxApi, onKeyboard));
+		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputMouseScroll, BIND_EVENT_FN(CImGuiBgfxApi, onMouseScroll));
 		imguiDestroy();
 	}
 
@@ -140,6 +144,14 @@ namespace da::platform {
 		}
 
 		m_kb = -1;
+	}
+
+	void CImGuiBgfxApi::onMouseScroll(const core::CEvent& event)
+	{
+		core::CInputScrollEvent* scrll = (core::CInputScrollEvent*)&event;
+		
+		m_msx = scrll->getXOffset();
+		m_msy = scrll->getYOffset();
 	}
 
 }
