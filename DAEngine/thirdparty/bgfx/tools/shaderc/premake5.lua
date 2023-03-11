@@ -2,17 +2,6 @@
 -- Copyright 2010-2023 Branimir Karadzic. All rights reserved.
 -- License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
 --
-
-workspace "tools"
-	architecture "x64"
-
-    configurations
-	{
-		"Debug",
-		"Release"
-	}
-
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 group "shaderc"
 
 local BGFX_DIR = "../../"
@@ -588,7 +577,7 @@ project "fcpp"
 	configuration {}
 
 project "shaderc"
-	kind "ConsoleApp"
+	kind "StaticLib"
     language "C++"
 	cppdialect "C++14"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")

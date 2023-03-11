@@ -1076,7 +1076,7 @@ namespace bgfx
 		return word;
 	}
 
-	bool compileShader(const char* _varying, const char* _comment, char* _shader, uint32_t _shaderLen, Options& _options, bx::WriterI* _shaderWriter, bx::WriterI* _messageWriter)
+	bool compileShaderEx(const char* _varying, const char* _comment, char* _shader, uint32_t _shaderLen, Options& _options, bx::WriterI* _shaderWriter, bx::WriterI* _messageWriter)
 	{
 		bx::ErrorAssert messageErr;
 
@@ -2613,7 +2613,7 @@ namespace bgfx
 		return compiled;
 	}
 
-	int compileShader(int _argc, const char* _argv[])
+	int compileShader(int _argc, const char** _argv)
 	{
 		bx::CommandLine cmdLine(_argc, _argv);
 
@@ -2844,7 +2844,7 @@ namespace bgfx
 				}
 			}
 
-			compiled = compileShader(varying, commandLineComment.c_str(), data, size, options, consoleOut ? bx::getStdOut() : writer, bx::getStdOut());
+			compiled = compileShaderEx(varying, commandLineComment.c_str(), data, size, options, consoleOut ? bx::getStdOut() : writer, bx::getStdOut());
 
 			if (!consoleOut)
 			{
@@ -2866,7 +2866,9 @@ namespace bgfx
 
 } // namespace bgfx
 
+#if 0
 int main(int _argc, const char* _argv[])
 {
 	return bgfx::compileShader(_argc, _argv);
 }
+#endif
