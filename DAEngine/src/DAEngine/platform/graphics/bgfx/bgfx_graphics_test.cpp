@@ -8,6 +8,7 @@
 #include <bx/bx.h>
 #include <bx/timer.h>
 #include <bx/math.h>
+#include <chrono>
 
 #include "DAEngine/core/window/window.h"
 #include "DAEngine/asset/asset.h"
@@ -122,18 +123,12 @@ static const uint16_t s_cubePoints[] =
 namespace da::platform
 {
 
+double start = 0;
 	void CBgfxGraphicsTest::Initialize(da::core::CWindow* window)
 	{
-
+        start = (double)std::chrono::duration_cast<std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()/1e3f;
 		m_window = window;
-		// Set view 0 clear state.
-		bgfx::setViewClear(0
-			, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
-			, 0x303030ff
-			, 1.0f
-			, 0
-		);
-
+		
 		// Create vertex stream declaration.
 		PosColorVertex::init();
 
@@ -162,7 +157,7 @@ namespace da::platform
 
 	void CBgfxGraphicsTest::Render()
 	{
-		float time = (float)((bx::getHPCounter() - m_timeOffset) / double(bx::getHPFrequency()));
+        double time = (double)std::chrono::duration_cast<std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()/1e3f - start;
 
 		const bx::Vec3 at = { 0.0f, 0.0f,   0.0f };
 		const bx::Vec3 eye = { 0.0f, 0.0f, -35.0f };
@@ -185,7 +180,7 @@ namespace da::platform
 
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
-		//bgfx::touch(0);
+		bgfx::touch(0);
 
 		bgfx::IndexBufferHandle ibh = m_ibh;
 		uint64_t state = 0
@@ -225,6 +220,8 @@ namespace da::platform
 				bgfx::submit(0, { ((CBgfxGraphicsMaterial*)m_material)->getHandle() });
 			}
 		}
+        
+        m_timeOffset = bx::getHPCounter();
 	}
 
 	void CBgfxGraphicsTest::Shutdown()

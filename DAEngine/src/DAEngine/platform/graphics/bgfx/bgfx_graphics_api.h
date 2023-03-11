@@ -24,6 +24,7 @@ namespace da::platform {
 		void* m_allocator = nullptr;
 		void* m_callbacks = nullptr;
 		bool m_initialized = false;
+        bool m_dirtyWindow = false;
 	};
 
 }

@@ -33,3 +33,4 @@ Makefile
 
 Prototype/assets/cubemap.ktx
 *.ktx
+*.make
