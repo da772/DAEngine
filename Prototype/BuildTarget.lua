@@ -63,7 +63,8 @@ project "Prototype"
 		"ImGui",
 		"bgfx",
 		"bimg",
-		"bx"
+		"bx",
+		"GLFW"
 	}
 	
 	filter "system:windows"
@@ -248,6 +249,7 @@ project "Prototype"
 			defines "DA_DEBUG"
 			runtime "Debug"
 			symbols "On"
+			debugger "LLDB"
 			
 			
 		filter "configurations:Release"

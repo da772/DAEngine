@@ -22,7 +22,7 @@ enum class EPlatformTypes : uint8_t {
 	iOS,
 	Linux,
 	Orbis,
-	OSX,
+	MacOSX,
 	Windows,
 	COUNT
 };
@@ -70,6 +70,17 @@ char* s_platformName[] = {
 };
 
 
+char* s_platformDisplayName[] = {
+	"android",
+	"wasm",
+	"ios",
+	"linux",
+	"psx",
+	"macosx",
+	"windows"
+};
+
+
 int main(int argc, const char* argv[])
 {
 	if (argc <= 1) {
@@ -87,7 +98,7 @@ int main(int argc, const char* argv[])
 		if (dirEntry.path().string().find("varying.def.sc") != std::string::npos) continue;
 
 		for (int i = 0; i < (int)EPlatformTypes::COUNT; i++) {
-			std::string folderPath = dirEntry.path().string().substr(0, dirEntry.path().string().size() - dirEntry.path().filename().string().size()) + s_platformName[i];
+			std::string folderPath = dirEntry.path().string().substr(0, dirEntry.path().string().size() - dirEntry.path().filename().string().size()) + s_platformDisplayName[i];
 			std::filesystem::create_directory(folderPath);
 			std::cout << "Creating Directory for: " << dirEntry.path().string() << " AT: " << folderPath << std::endl; 
 			for (EShaderTypes shaderType : s_platformShaderTypes[i])
@@ -103,9 +114,17 @@ int main(int argc, const char* argv[])
 
 int GenerateShader(std::vector<std::string> args, const std::filesystem::directory_entry& entry, EPlatformTypes platformType, EShaderTypes shaderType)
 {
+
+#ifndef _WIN32
+	if (shaderType == EShaderTypes::DirectX) {
+		std::cout << "WINDOWS ONLY: Failed to generate DX shader for " << entry.path() << std::endl;
+		return -1;
+	}
+#endif
+
 	std::string path = entry.path().string();
 	std::string fileName = entry.path().filename().string();
-	std::string folderPath = entry.path().string().substr(0, entry.path().string().size() - entry.path().filename().string().size()) + s_platformName[(int)platformType] + "/";
+	std::string folderPath = entry.path().string().substr(0, entry.path().string().size() - entry.path().filename().string().size()) + s_platformDisplayName[(int)platformType] + "/";
 
 	std::string newPath = folderPath + fileName + "." + s_shaderName[(int)shaderType];
 
@@ -129,17 +148,14 @@ int GenerateShader(std::vector<std::string> args, const std::filesystem::directo
 	}
 
 	args.push_back("--platform");
-#ifdef _WIN32
-	if (shaderType == EShaderTypes::Vulkan && platformType == EPlatformTypes::OSX) {
+
+	if (shaderType == EShaderTypes::Vulkan && platformType == EPlatformTypes::MacOSX) {
 		args.push_back(s_platformName[(int)EPlatformTypes::Windows]);
 	}
 	else {
 		args.push_back(s_platformName[(int)platformType]);
 	}
-#else
-	
-	args.push_back(s_platformName[(int)platformType]);
-#endif
+
 	args.push_back("--profile");
 	args.push_back(s_shaderPlatform[(int)shaderType]);
 
