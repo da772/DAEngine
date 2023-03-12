@@ -29,6 +29,7 @@ Bin-Obj/
 Prototype/imgui.ini
 /premake5.lua
 enc_temp_folder/
+.vscode/
 Makefile
 
 Prototype/assets/cubemap.ktx
