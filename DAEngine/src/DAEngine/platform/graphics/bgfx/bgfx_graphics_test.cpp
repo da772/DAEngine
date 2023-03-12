@@ -147,9 +147,9 @@ double start = 0;
 
 		// Create program from shaders.
 #ifdef DA_PLATFORM_WINDOWS
-		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/cubes/vs_cubes.dx", "shaders/cubes/fs_cubes.dx");
+		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/cubes/windows/vs_cubes.sc.dx", "shaders/cubes/windows/fs_cubes.sc.dx");
 #elif defined(DA_PLATFORM_MACOSX)
-		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/cubes/vs_cubes.mc", "shaders/cubes/fs_cubes.mc");
+		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/cubes/macosx/vs_cubes.sc.vk", "shaders/cubes/macosx/fs_cubes.sc.vk");
 #endif
 		mat->initialize();
 		m_material = (void*)mat;
