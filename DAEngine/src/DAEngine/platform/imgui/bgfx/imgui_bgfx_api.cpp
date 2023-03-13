@@ -4,6 +4,7 @@
 #if defined(DA_GRAPHICS_BGFX) && defined(DA_WINDOW_GLFW)
 #include "bgfx_imgui.h"
 #include <bx/allocator.h>
+#include "DAEngine/core/arg_handler.h"
 
 struct FDAllocator : public bx::AllocatorI
 {
@@ -68,6 +69,9 @@ namespace da::platform {
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputKeyboard, BIND_EVENT_FN(CImGuiBgfxApi, onKeyboard));
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputMouseScroll, BIND_EVENT_FN(CImGuiBgfxApi, onMouseScroll));
 		imguiCreate(18.f, (bx::AllocatorI*)m_allocator);
+
+		m_enableDemo = da::core::CArgHandler::contains("imguidemo");
+		m_enableMemory = da::core::CArgHandler::contains("memvis");
 	}
 
 	void CImGuiBgfxApi::onUpdate()
@@ -76,27 +80,28 @@ namespace da::platform {
 		m_msx = 0;
 		m_msy = 0;
 		m_kb = -1;
-		if (ImGui::Begin("Memory", 0)) {
-			ImGui::BeginTable("Table", 2, ImGuiTableFlags_BordersInner);
-			ImGui::TableSetupColumn("Name");
-			ImGui::TableSetupColumn("Allocation");
-			ImGui::TableHeadersRow();
 
-			for (uint8_t i = 0; i < (uint8_t)da::memory::EMemoryLayer::INVALID; i++) {
-				ImGui::TableNextColumn();
-				ImGui::Text("%s", da::memory::get_memory_layer_name((memory::EMemoryLayer)(i)));
-				ImGui::TableNextColumn();
-				ImGui::Text("%.2f KB", (double)da::memory::get_memory_layers()[i]/(double)1e3);
+		if (m_enableMemory) {
+			if (ImGui::Begin("Memory", 0)) {
+				ImGui::BeginTable("Table", 2, ImGuiTableFlags_BordersInner);
+				ImGui::TableSetupColumn("Name");
+				ImGui::TableSetupColumn("Allocation");
+				ImGui::TableHeadersRow();
+
+				for (uint8_t i = 0; i < (uint8_t)da::memory::EMemoryLayer::INVALID; i++) {
+					ImGui::TableNextColumn();
+					ImGui::Text("%s", da::memory::get_memory_layer_name((memory::EMemoryLayer)(i)));
+					ImGui::TableNextColumn();
+					ImGui::Text("%.2f KB", (double)da::memory::get_memory_layers()[i]/(double)1e3);
+				}
+				ImGui::EndTable();
+				ImGui::Separator();
+				ImGui::Text("Total: %.2f KB", (double)da::memory::getMemoryAllocated()/ (double)1e3);
 			}
-			ImGui::EndTable();
-			ImGui::Separator();
-			ImGui::Text("Total: %.2f KB", (double)da::memory::getMemoryAllocated()/ (double)1e3);
+			ImGui::End();
 		}
-		ImGui::End();
-
-		bool open = true;
-		//imgui commands
-		ImGui::ShowDemoWindow(&open);
+		
+		if (m_enableDemo) ImGui::ShowDemoWindow(&m_enableDemo);
 	}
 
 	void CImGuiBgfxApi::onLateUpdate()

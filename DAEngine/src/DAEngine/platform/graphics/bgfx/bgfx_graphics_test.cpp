@@ -20,10 +20,13 @@ namespace da::platform {
     const char* s_testNames[] = { "Test1" };
 
     FTestFunc s_testCreate[] = { 
+        /// Test1
         {[] () {return new CBgfxGraphicsTest01();}
         ,[] (void* p, da::core::CWindow* w) {((CBgfxGraphicsTest01*)p)->Initialize(w);}
         ,[] (void* p) {((CBgfxGraphicsTest01*)p)->Render();}
         ,[] (void* p) {((CBgfxGraphicsTest01*)p)->Shutdown();} }
+
+
          };
 
     void CBgfxGraphicsTest::Initialize(class da::core::CWindow* window) {

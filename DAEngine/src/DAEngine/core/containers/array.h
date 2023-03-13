@@ -15,6 +15,28 @@ namespace da::core::containers {
 
 		}
 
+		inline TArray(size_t size) { 
+			m_size = size;
+			ASSERT(m_size);
+			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
+			ASSERT(m_ptr);
+		};
+
+		inline TArray(int size) { 
+			m_size = (size_t)size;
+			ASSERT(m_size);
+			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
+			ASSERT(m_ptr);
+		};
+
+		inline TArray(size_t size, T value) {
+			m_size = size;
+			ASSERT(m_size);
+			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
+			ASSERT(m_ptr);
+			for (size_t i = 0; i < m_size; i++) m_ptr[i] = value;
+		};
+
 		inline TArray(const std::initializer_list<T>& l) {
 			m_size = l.size();
 			ASSERT(m_size);
@@ -54,21 +76,6 @@ namespace da::core::containers {
 		inline ~TArray() {
 			clear();
 		}
-
-		inline TArray(size_t size) { 
-			m_size = size;
-			ASSERT(m_size);
-			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
-			ASSERT(m_ptr);
-		};
-
-		inline TArray(size_t size, T value) {
-			m_size = size;
-			ASSERT(m_size);
-			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
-			ASSERT(m_ptr);
-			for (size_t i = 0; i < m_size; i++) m_ptr[i] = value;
-		};
 
 		inline void clear() { 
 			if (!m_ptr) return;

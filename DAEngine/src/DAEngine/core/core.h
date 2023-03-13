@@ -3,6 +3,8 @@
 
 #include <assert.h>
 
+#define DA_VERSION "0.01"
+
 // Extra defines go here (acts as config)
 #if !defined(DA_FINAL)
 #define ASSERT(x) CCore::_assert(x, __FILE__, __LINE__); assert(x);

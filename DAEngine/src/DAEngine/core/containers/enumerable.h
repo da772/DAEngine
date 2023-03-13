@@ -19,7 +19,6 @@ namespace da::core::containers {
 		virtual size_t size() const = 0;
 
 		inline bool contains(const T& x) const {
-			TEnumerator<T> i = begin(), e = end();
 			for (const T& i : *this) {
 				if (i == x) return true;
 			}

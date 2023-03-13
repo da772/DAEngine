@@ -5,18 +5,22 @@
 
 namespace da::core
 {
-	const char** CArgHandler::s_argv = nullptr;
+	TArray<CString, da::memory::CCoreAllocator> CArgHandler::s_args;
 	int CArgHandler::s_argc = 0;
 
 	void CArgHandler::initialize(int argc, const char** argv)
 	{
 		s_argc = argc;
-		s_argv = argv;
+		s_args = TArray<CString, da::memory::CCoreAllocator>(s_argc);
+		for (int i = 0; i < argc; i++) {
+			s_args[i] = argv[i];
+		}
+		return;
 	}
 
 	void CArgHandler::shutdown()
 	{
-		s_argv = nullptr;
+		s_args.clear();
 		s_argc = 0;
 	}
 
@@ -25,9 +29,13 @@ namespace da::core
 		return s_argc;
 	}
 
-	const char** CArgHandler::getArgv()
+	const TArray<CString, da::memory::CCoreAllocator>& CArgHandler::getArgv()
 	{
-		return s_argv;
+		return s_args;
+	}
+
+	bool CArgHandler::contains(const char* arg) {
+		return s_args.contains(arg);
 	}
 
 }

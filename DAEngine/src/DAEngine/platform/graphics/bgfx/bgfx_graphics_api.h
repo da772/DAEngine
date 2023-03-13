@@ -25,6 +25,7 @@ namespace da::platform {
 		void* m_callbacks = nullptr;
 		bool m_initialized = false;
         bool m_dirtyWindow = false;
+		uint8_t m_renderer = 0;
 	};
 
 }

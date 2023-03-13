@@ -5,9 +5,25 @@
 #include "logger.h"
 #include <bgfx/bgfx.h>
 #include <bx/allocator.h>
+#include "DAEngine/core/arg_handler.h"
 #include "bgfx_graphics_test.h"
 
 namespace da::platform {
+
+	const char* s_bgfxRenderers[] = {
+		"No-Op",
+		"Agc",
+		"D3D9",
+		"D3D11",
+		"D3D12",
+		"Gnm",
+		"Metal",
+		"Nvm",
+		"OpenGLES",
+		"OpenGL",
+		"Vulkan",
+		"Web",
+	};
 
 	struct FDAllocator : public bx::AllocatorI
 	{
@@ -68,6 +84,7 @@ namespace da::platform {
 			, const char* _format
 			, va_list _argList
 		) override {
+			if (!m_trace) return;
 			char buffer[512];
 			CString str = _format;
 			str.remove('\n');
@@ -118,6 +135,8 @@ namespace da::platform {
 		virtual void captureEnd() override {};
 
 		virtual void captureFrame(const void* _data, uint32_t _size) {};
+
+		bool m_trace = false;
 	};
 
 	CBgfxGraphicsTest* s_test;
@@ -142,15 +161,14 @@ namespace da::platform {
 	{
 		bgfx::Init init;
 #ifdef DA_PLATFORM_WINDOWS
-		init.type = bgfx::RendererType::Enum::Direct3D12;
-        LOG_INFO(ELogChannel::Graphics, "Initialzing BGFX with renderer: D3D12");
+		m_renderer = (uint8_t)bgfx::RendererType::Enum::Direct3D12;
 #elif defined(DA_PLATFORM_MACOSX) || defined (DA_PLATFORM_IOS)
-		init.type = bgfx::RendererType::Enum::Vulkan;
-        LOG_INFO(ELogChannel::Graphics, "Initialzing BGFX with renderer: Vulkan");
+		m_renderer = (uint8_t)bgfx::RendererType::Enum::Vulkan;
 #else
-		init.type = bgfx::RendererType::Enum::Vulkan;
-        LOG_INFO(ELogChannel::Graphics, "Initialzing BGFX with renderer: Vulkan");
+		m_renderer = (uint8_t)bgfx::RendererType::Enum::Vulkan;
 #endif
+
+		init.type = (bgfx::RendererType::Enum)m_renderer;
         
 		bgfx::PlatformData pd;
 		pd.nwh = m_nativeWindow->getPlatformWindow();
@@ -163,8 +181,11 @@ namespace da::platform {
 		init.resolution.reset = data.RefreshRate;
 		// Issues with allocator, MACOSX Release
 		//init.allocator = (bx::AllocatorI*)m_allocator;
+		#ifdef DA_DEBUG
+		((FDACallbacks*)m_callbacks)->m_trace = da::core::CArgHandler::contains("debugGpu");
 		init.callback = (bgfx::CallbackI*)m_callbacks;
-
+		#endif
+		LOG_INFO(ELogChannel::Graphics, "Initialzing BGFX with renderer: %s", s_bgfxRenderers[(int)init.type]);
 		if (!bgfx::init(init))
 		{
 			da::CLogger::LogError(da::ELogChannel::Graphics, "Failed to create bgfx");
@@ -177,10 +198,10 @@ namespace da::platform {
 
 		// Enable debug text.
 		bgfx::setDebug(BGFX_DEBUG_TEXT);
-
+		bgfx::reset(data.Width, data.Height);
 		bgfx::setViewClear(0
 			, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
-			, 0xff0000ff
+			, 0x0c0c0cff
 			, 1.0f
 			, 0
 		);
@@ -203,9 +224,7 @@ namespace da::platform {
 		s_test->Render();
 
 		bgfx::dbgTextClear();
-		bgfx::dbgTextPrintf(0, 1, 0x0f, "Color can be changed with ANSI \x1b[9;me\x1b[10;ms\x1b[11;mc\x1b[12;ma\x1b[13;mp\x1b[14;me\x1b[0m code too.");
-		bgfx::dbgTextPrintf(80, 1, 0x0f, "\x1b[;0m    \x1b[;1m    \x1b[; 2m    \x1b[; 3m    \x1b[; 4m    \x1b[; 5m    \x1b[; 6m    \x1b[; 7m    \x1b[0m");
-		bgfx::dbgTextPrintf(80, 2, 0x0f, "\x1b[;8m    \x1b[;9m    \x1b[;10m    \x1b[;11m    \x1b[;12m    \x1b[;13m    \x1b[;14m    \x1b[;15m    \x1b[0m");
+		bgfx::dbgTextPrintf(0, 0, 0x0f, "DAv%s - %s", DA_VERSION, s_bgfxRenderers[m_renderer]);
  
 		bgfx::frame();
 	}

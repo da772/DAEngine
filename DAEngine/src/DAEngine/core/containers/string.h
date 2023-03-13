@@ -98,11 +98,14 @@ namespace da::core::containers
 			return TList<char, _Allocator, 0>::m_ptr;
 		}
 
-		bool operator==(const CBasicString<_Allocator>& rhs) const
+		bool operator==(const TList<char, _Allocator, 0>& rhs) const
 		{
-			if (rhs.size() != size()) return false;
+			size_t s1 = TList<char, _Allocator, 0>::m_size-1;
 
-			for (size_t i = 0; i < size(); i++) {
+			size_t s2 = rhs.size();
+			if (s1 != s2) return false;
+
+			for (size_t i = 0; i < s1; i++) {
 				if (TList<char, _Allocator, 0>::m_ptr[i] != rhs[i]) return false;
 			}
 
