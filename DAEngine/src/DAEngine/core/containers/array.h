@@ -16,25 +16,23 @@ namespace da::core::containers {
 		}
 
 		inline TArray(size_t size) { 
-			m_size = size;
-			ASSERT(m_size);
-			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
-			ASSERT(m_ptr);
+			ASSERT(size);
+			resize(size);
 		};
 
 		inline TArray(int size) { 
-			m_size = (size_t)size;
-			ASSERT(m_size);
-			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
-			ASSERT(m_ptr);
+			ASSERT(size);
+			resize(size);
 		};
 
 		inline TArray(size_t size, T value) {
-			m_size = size;
-			ASSERT(m_size);
-			m_ptr = (T*)m_allocator.allocate(m_size * sizeof(T));
+			ASSERT(size);
+			resize(size);
 			ASSERT(m_ptr);
-			for (size_t i = 0; i < m_size; i++) m_ptr[i] = value;
+			for (size_t i = 0; i < size; i++) {
+				new(&m_ptr[i]) T;
+				m_ptr[i] = value;
+			}
 		};
 
 		inline TArray(const std::initializer_list<T>& l) {
@@ -43,6 +41,7 @@ namespace da::core::containers {
 			m_ptr = (T*)m_allocator.allocate(m_size*sizeof(T));
 			size_t cnt = 0;
 			for (const T& i : l) {
+				new(&m_ptr[cnt]) T;
 				m_ptr[cnt++] = i;
 			}
 		}
@@ -51,6 +50,7 @@ namespace da::core::containers {
 			resize(e.size());
 			size_t c = 0;
 			for (const T& i : e) {
+				new(&m_ptr[c]) T;
 				m_ptr[c++] = i;
 			}
 		}
@@ -87,10 +87,16 @@ namespace da::core::containers {
 		inline void resize(const size_t& n) {
 			ASSERT(n);
 			if (n == m_size) return;
-			if (m_ptr)
+			if (m_ptr) {
 				m_ptr = (T*)m_allocator.reallocate(m_ptr, n * sizeof(T));
-			else
+				ASSERT(m_ptr);
+				if (n > m_size) for (size_t i = m_size; i < n; i++) new(&m_ptr[i]) T;
+			}
+			else {
 				m_ptr = (T*)m_allocator.allocate(n * sizeof(T));
+				ASSERT(m_ptr);
+				for (size_t i = 0; i < n;  i++) new(&m_ptr[i]) T;
+			}
 			m_size = n;
 		}
 

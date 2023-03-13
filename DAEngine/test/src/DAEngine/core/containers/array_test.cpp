@@ -142,5 +142,8 @@ bool CArrayTest::ObjectTest()
 	enu->x = 17;
 	enu->y = 24;
 
+	TArray<TestObject> arr(25);
+	TEST_ASSERT(arr.size() == 25);
+
 	return true;
 }

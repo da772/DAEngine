@@ -98,6 +98,10 @@ public:
 
 	}
 
+	inline TestObject() : x(-1), y(-1) {
+
+	}
+
 	inline bool operator==(const TestObject& rhs) const {
 		return x == rhs.x && y == rhs.y;
 	}
@@ -136,6 +140,9 @@ bool CListTest::ObjectTest()
 	for (const TestObject& obj : list) {
 		TEST_ASSERT(obj.x == 15);
 	}
+
+	TList<TestObject> ls = TList<TestObject>(25);
+	TEST_ASSERT(ls.size() == 25);
 
 	
 	return true;

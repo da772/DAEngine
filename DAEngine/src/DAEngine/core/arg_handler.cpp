@@ -11,11 +11,11 @@ namespace da::core
 	void CArgHandler::initialize(int argc, const char** argv)
 	{
 		s_argc = argc;
+		if (argc <= 0) return;
 		s_args = TArray<CString, da::memory::CCoreAllocator>(s_argc);
 		for (int i = 0; i < argc; i++) {
 			s_args[i] = argv[i];
 		}
-		return;
 	}
 
 	void CArgHandler::shutdown()

@@ -151,12 +151,15 @@ namespace da::core::containers {
 			size_t newSize = n << m_shiftSize;
 
 			if (m_ptr) {
-				T* ptr = (T*)m_allocator.reallocate(m_ptr, sizeof(T) * newSize);
-				ASSERT(ptr);
-				m_ptr = ptr;
+				m_ptr = (T*)m_allocator.reallocate(m_ptr, sizeof(T) * newSize);
+				ASSERT(m_ptr);
+				if (n > m_size) for (size_t i = m_size; i < n; i++) new(&m_ptr[i]) T;
 			}
-			else m_ptr = (T*)m_allocator.allocate(newSize * sizeof(T));
-			ASSERT(m_ptr);
+			else {
+				m_ptr = (T*)m_allocator.allocate(newSize * sizeof(T));
+				ASSERT(m_ptr);
+				for (size_t i = 0; i < n; i++) new(&m_ptr[i]) T;
+			}
 			m_heapSize = newSize;
 			m_size = n;
 		}
