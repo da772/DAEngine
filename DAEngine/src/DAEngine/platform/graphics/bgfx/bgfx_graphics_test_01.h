@@ -7,7 +7,7 @@ namespace da::core { class CWindow; }
 
 namespace da::platform {
 
-	class CBgfxGraphicsTest {
+	class CBgfxGraphicsTest01 {
 
 	public:
 		void Initialize(class da::core::CWindow* window);
@@ -15,10 +15,18 @@ namespace da::platform {
 		void Shutdown();
 
 	private:
+		// Resource handles
+		bgfx::VertexBufferHandle m_vbh;
+		bgfx::IndexBufferHandle m_ibh;
+		void* m_material;
+
+		bool m_r = true;
+		bool m_g = true;
+		bool m_b = true;
+		bool m_a = true;
+		int64_t m_timeOffset;
+
 		da::core::CWindow* m_window;
-		void* m_test = nullptr;
-		bool m_show = true;
-		int m_testIndex = 0;
 	};
 
 }
