@@ -1,6 +1,6 @@
 #include "dapch.h"
 #include "vulkan_graphics_pipeline_pbr.h"
-
+#ifdef DA_GRAPHICS_VULKAN
 namespace da::platform
 {
 	TArray<da::core::FVertexInputAttributeDescription> getAttributeDescription();
@@ -95,3 +95,4 @@ namespace da::platform
 	}
 
 }
+#endif

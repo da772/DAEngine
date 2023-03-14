@@ -197,7 +197,6 @@ project "DAEngineTests"
 			}
 
 	filter "system:macosx"
-		systemversion "latest"
 		kind "ConsoleApp"
 
 		defines

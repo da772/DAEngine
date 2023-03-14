@@ -1,7 +1,7 @@
 #pragma once
 
-#include "daengine/platform/graphics/vulkan/vulkan_graphics_pipeline.h"
-
+#include "DAEngine/platform/graphics/vulkan/vulkan_graphics_pipeline.h"
+#ifdef DA_GRAPHICS_VULKAN
 namespace da::platform
 {
 	class CVulkanGraphicsPipelinePBR : public CVulkanGraphicsPipeline
@@ -13,4 +13,5 @@ namespace da::platform
 		virtual TArray<VkDescriptorSetLayoutBinding> addDescriptorSets() override;
 	};
 }
+#endif
 

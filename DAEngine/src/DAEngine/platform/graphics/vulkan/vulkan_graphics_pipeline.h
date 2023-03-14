@@ -1,12 +1,12 @@
 #pragma once
 
-#include "daengine/core/core.h"
+#include "DAEngine/core/core.h"
 
 #ifdef DA_GRAPHICS_VULKAN
 
-#include "daengine/core/graphics/graphics_api.h"
-#include "daengine/core/graphics/graphics_pipeline.h"
-#include "daengine/platform/graphics/vulkan/vulkan_graphics_api.h"
+#include "DAEngine/core/graphics/graphics_api.h"
+#include "DAEngine/core/graphics/graphics_pipeline.h"
+#include "DAEngine/platform/graphics/vulkan/vulkan_graphics_api.h"
 #include "DAEngine/core/graphics/graphics_renderable.h"
 #include <vulkan/vulkan.h>
 
