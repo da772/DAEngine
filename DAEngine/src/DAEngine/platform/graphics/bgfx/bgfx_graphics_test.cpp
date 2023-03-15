@@ -7,8 +7,14 @@
 #include <imgui.h>
 #include <functional>
 #include "bgfx_graphics_test_01.h"
+#include "bgfx_graphics_test_02.h"
 
 namespace da::platform {
+
+#define CREATE_TEST(x)   {[] () {return new x();} \
+	, [](void* p, da::core::CWindow* w) {((x*)p)->Initialize(w); } \
+	, [](void* p) {((x*)p)->Render(); } \
+	, [](void* p) {((x*)p)->Shutdown(); } }
 
     struct FTestFunc {
         std::function<void*()> Create;
@@ -17,17 +23,14 @@ namespace da::platform {
         std::function<void(void*)> Shutdown;
     };
 
-    const char* s_testNames[] = { "Test1" };
+    const char* s_testNames[] = { "Test1", "Test2"};
 
     FTestFunc s_testCreate[] = { 
         /// Test1
-        {[] () {return new CBgfxGraphicsTest01();}
-        ,[] (void* p, da::core::CWindow* w) {((CBgfxGraphicsTest01*)p)->Initialize(w);}
-        ,[] (void* p) {((CBgfxGraphicsTest01*)p)->Render();}
-        ,[] (void* p) {((CBgfxGraphicsTest01*)p)->Shutdown();} }
-
-
-         };
+        CREATE_TEST(CBgfxGraphicsTest01),
+        /// Test2
+        CREATE_TEST(CBgfxGraphicsTest02),
+    };
 
     void CBgfxGraphicsTest::Initialize(class da::core::CWindow* window) {
         m_window = window;
