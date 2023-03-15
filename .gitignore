@@ -35,3 +35,4 @@ Makefile
 Prototype/assets/cubemap.ktx
 *.ktx
 *.make
+Prototype/shaders/timestamp.txt

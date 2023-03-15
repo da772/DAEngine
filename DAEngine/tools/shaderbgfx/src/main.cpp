@@ -3,6 +3,9 @@
 
 #include <filesystem>
 #include <vector>
+#include <iostream>
+#include <iomanip>
+#include <fstream> 
 
 using recursive_directory_iterator = std::filesystem::recursive_directory_iterator;
 
@@ -41,7 +44,7 @@ std::vector<std::vector<EShaderTypes>> s_platformShaderTypes = {
 
 };
 
-char* s_shaderName[] = {
+const char* s_shaderName[] = {
 	"gl",
 	"gles",
 	"dx",
@@ -50,7 +53,7 @@ char* s_shaderName[] = {
 	"pssl"
 };
 
-char* s_shaderPlatform[] = {
+const char* s_shaderPlatform[] = {
 	"440",
 	"320_es",
 	"s_5_0",
@@ -59,7 +62,7 @@ char* s_shaderPlatform[] = {
 	"pssl"
 };
 
-char* s_platformName[] = {
+const char* s_platformName[] = {
 	"android",
 	"wasm",
 	"ios",
@@ -70,7 +73,7 @@ char* s_platformName[] = {
 };
 
 
-char* s_platformDisplayName[] = {
+const char* s_platformDisplayName[] = {
 	"android",
 	"wasm",
 	"ios",
@@ -88,14 +91,43 @@ int main(int argc, const char* argv[])
 		return -1;
 	}
 
-	for (const auto& dirEntry : recursive_directory_iterator(argv[1])) {
+	const std::filesystem::path p(argv[1]);
+	
+	std::string timeStampPath = p.string() + "/timestamp.txt";
+	uint64_t lastRun = 0;
+	if (std::filesystem::exists(timeStampPath))
+	{
+		std::ifstream infile(timeStampPath);
+
+		if (infile.good())
+		{
+			std::string sLine;
+			getline(infile, sLine);
+			lastRun = std::stoull(sLine);
+		}
+
+		infile.close();
+	}
+
+	uint64_t newTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	std::ofstream timeStamp(timeStampPath, std::ios::trunc);
+	timeStamp << std::to_string(newTime);
+	timeStamp.close();
+
+	for (const auto& dirEntry : recursive_directory_iterator(p)) {
 		if (dirEntry.is_directory()) {
 			continue;
 		}
 
-		std::cout << dirEntry.path() << std::endl;
+		//std::cout << dirEntry.path() << std::endl;
 		if (dirEntry.path().extension() != ".sc") continue;
 		if (dirEntry.path().string().find("varying.def.sc") != std::string::npos) continue;
+		std::cout << "Found: " << dirEntry.path().string() << std::endl;
+		uint64_t writeTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::clock_cast<std::chrono::system_clock>(dirEntry.last_write_time()).time_since_epoch()).count();
+		if (writeTime <= lastRun) {
+			std::cout << "Skipping: " << dirEntry.path().string() << std::endl;
+			continue;
+		}
 
 		for (int i = 0; i < (int)EPlatformTypes::COUNT; i++) {
 			std::string folderPath = dirEntry.path().string().substr(0, dirEntry.path().string().size() - dirEntry.path().filename().string().size()) + s_platformDisplayName[i];

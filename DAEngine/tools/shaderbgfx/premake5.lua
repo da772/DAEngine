@@ -18,7 +18,7 @@ local SPIRV_TOOLS    = path.join(BGFX_DIR, "3rdparty/spirv-tools")
 project "shaderbgfx"
 	kind "ConsoleApp"
     language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-Obj/" .. outputdir .. "/%{prj.name}")
 	includedirs 
