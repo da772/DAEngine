@@ -64,7 +64,8 @@ project "Prototype"
 		"bgfx",
 		"bimg",
 		"bx",
-		"GLFW"
+		"GLFW",
+		"zlib"
 	}
 	
 	filter "system:windows"
@@ -236,14 +237,40 @@ project "Prototype"
 			["ALWAYS_SEARCH_USER_PATHS"] = "YES"
 		}
 
-		links
-		{
-			"Cocoa.framework",
-			"IOKit.framework",
-			"CoreVideo.framework",
-			"QuartzCore.framework",
-			"Metal.framework",
-		}
+		if not _OPTIONS['unit-test'] then
+			links 
+			{
+				"Cocoa.framework",
+				"IOKit.framework",
+				"CoreVideo.framework",
+				"QuartzCore.framework",
+				"Metal.framework",
+			}
+
+			filter "action:gmake2"
+				links
+				{
+					"vulkan.1.3.216",
+					"MoltenVK",
+				}
+			
+			filter "action:xcode4"
+				links
+				{
+					"libvulkan.1.3.216.dylib",
+					"libMoltenVK.dylib",
+				}
+			
+			includedirs
+			{
+				"%{IncludeDir.Vulkan}/include"
+			}
+			
+			libdirs
+			{
+				"%{IncludeDir.Vulkan}/lib"
+			}
+		end
 
 		filter "configurations:Debug"
 			defines "DA_DEBUG"
