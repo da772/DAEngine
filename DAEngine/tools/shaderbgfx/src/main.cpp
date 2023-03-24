@@ -32,6 +32,12 @@ enum class EPlatformTypes : uint8_t {
 
 int GenerateShader(std::vector<std::string> args, const std::filesystem::directory_entry& entry, EPlatformTypes platformType, EShaderTypes shaderType);
 
+template<typename TP>
+std::time_t to_time_t(TP tp) {
+    using namespace std::chrono;
+    auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now() + system_clock::now());
+    return system_clock::to_time_t(sctp);
+}
 
 std::vector<std::vector<EShaderTypes>> s_platformShaderTypes = {
 	{EShaderTypes::OpenGLES}, // Android
@@ -123,7 +129,7 @@ int main(int argc, const char* argv[])
 		if (dirEntry.path().extension() != ".sc") continue;
 		if (dirEntry.path().string().find("varying.def.sc") != std::string::npos) continue;
 		std::cout << "Found: " << dirEntry.path().string() << std::endl;
-		uint64_t writeTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::clock_cast<std::chrono::system_clock>(dirEntry.last_write_time()).time_since_epoch()).count();
+		uint64_t writeTime = to_time_t(dirEntry.last_write_time());
 		if (writeTime <= lastRun) {
 			std::cout << "Skipping: " << dirEntry.path().string() << std::endl;
 			continue;

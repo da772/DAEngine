@@ -15,6 +15,12 @@ Bin/
 Bin-Obj/
 .vs/
 
+*.sc.vk
+*.sc.gles
+*.sc.gl
+*.sc.mt
+*.sc.dt
+
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user

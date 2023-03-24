@@ -8,6 +8,7 @@
 #include <functional>
 #include "bgfx_graphics_test_01.h"
 #include "bgfx_graphics_test_02.h"
+#include "bgfx_graphics_test_03.h"
 
 namespace da::platform {
 
@@ -23,13 +24,15 @@ namespace da::platform {
         std::function<void(void*)> Shutdown;
     };
 
-    const char* s_testNames[] = { "Test1", "Test2"};
+    const char* s_testNames[] = { "Test1", "Test2", "Test3"};
 
     FTestFunc s_testCreate[] = { 
         /// Test1
         CREATE_TEST(CBgfxGraphicsTest01),
         /// Test2
         CREATE_TEST(CBgfxGraphicsTest02),
+        /// Test3
+        CREATE_TEST(CBgfxGraphicsTest03),
     };
 
     void CBgfxGraphicsTest::Initialize(class da::core::CWindow* window) {
