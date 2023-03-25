@@ -1,4 +1,4 @@
-$input a_position, a_normal
+$input a_texcoord0, a_position, a_color0, a_normal
 $output v_normal
 
 /*

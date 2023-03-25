@@ -14,6 +14,8 @@ namespace da::platform
 		void Render();
 		void Shutdown();
 		void updateLightDir();
+		void drawModels(int pass, bgfx::ProgramHandle handle, uint64_t state = 0);
+		void screenSpaceQuad(float _textureWidth, float _textureHeight, float _texelHalf, bool _originBottomLeft, float _width = 1.0f, float _height = 1.0f);
 
 	private:
 		da::core::CStaticMesh* m_smesh;
@@ -28,16 +30,19 @@ namespace da::platform
 		bgfx::TextureHandle m_gbufferTex[3];
 		bgfx::TextureHandle m_shadowBufferTex[2];
 		bgfx::TextureHandle m_lightBufferTex;
-		bgfx::VertexLayout ms_layout;
+		bgfx::VertexLayout m_ms_layout;
 		bgfx::FrameBufferHandle m_gbuffer,m_lightBuffer,m_shadowBuffer;
 
 		// Light position;
 		float m_lightDir[4];
-		float m_lightElevation;
-		float m_lightAzimuth;
+		float m_lightElevation = 35.f;
+		float m_lightAzimuth = 215.0f;
 
-		float m_rsmAmount; // Amount of rsm
-		float m_vplRadius; // Radius of virtual point light
+		float m_rsmAmount = .25f; // Amount of rsm
+		float m_vplRadius = 3.0f; // Radius of virtual point light
+		float m_texelHalf = 0.f;
+
+		const bgfx::Caps* m_caps;
 	};
 }
 

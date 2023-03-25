@@ -32,9 +32,33 @@
 #define SHADOW_MAP_DIM 512
 #define LIGHT_DIST 10.0f
 
-
 namespace da::platform {
+	
+	namespace impl {
+	struct PosTexCoord0Vertex
+	{
+		float m_x;
+		float m_y;
+		float m_z;
+		float m_u;
+		float m_v;
 
+		static void init()
+		{
+			ms_layout
+				.begin()
+				.add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
+				.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+				.end();
+		}
+
+		static bgfx::VertexLayout ms_layout;
+	};
+	bgfx::VertexLayout PosTexCoord0Vertex::ms_layout;
+
+	}
+
+	using namespace da::platform::impl;
     void CBgfxGraphicsTest03::updateLightDir()
 	{
 		float el = m_lightElevation * (bx::kPi/180.0f);
@@ -48,7 +72,7 @@ namespace da::platform {
 	void CBgfxGraphicsTest03::Initialize(da::core::CWindow* window)
 	{
 		m_start = (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() / 1e3f;
-
+		PosTexCoord0Vertex::init();
         const uint64_t tsFlags = 0
 			| BGFX_TEXTURE_RT
 			| BGFX_SAMPLER_MIN_POINT
@@ -88,8 +112,6 @@ namespace da::platform {
 
 		// Create uniforms
 		u_tint          = bgfx::createUniform("u_tint",          bgfx::UniformType::Vec4);  // Tint for when you click on items
-		u_tint          = bgfx::createUniform("u_tint",          bgfx::UniformType::Vec4);  // Tint for when you click on items
-		u_lightDir      = bgfx::createUniform("u_lightDir",      bgfx::UniformType::Vec4);  // Single directional light for entire scene
 		u_lightDir      = bgfx::createUniform("u_lightDir",      bgfx::UniformType::Vec4);  // Single directional light for entire scene
 		u_sphereInfo    = bgfx::createUniform("u_sphereInfo",    bgfx::UniformType::Vec4);  // Info for RSM
 		u_invMvp        = bgfx::createUniform("u_invMvp",        bgfx::UniformType::Mat4);  // Matrix needed in light buffer
@@ -113,31 +135,7 @@ namespace da::platform {
 		m_combineProgram = new CBgfxGraphicsMaterial("shaders/rsm/macosx/vs_rsm_combine.sc.vk", "shaders/rsm/macosx/fs_rsm_combine.sc.vk");  // Combiner
 
 		m_window = window;
-		ms_layout
-				.begin()
-				.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::Color0, 3, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float)
-				.end();
 		m_smesh = new da::core::CStaticMesh("assets/bolt.fbx");
-
-		// Create static vertex buffer.
-		m_vbh = bgfx::createVertexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(m_smesh->getVertices().data(), m_smesh->getVertices().size()*sizeof(da::core::FVertexBase))
-			, ms_layout
-			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
-		);
-
-		// Create static index buffer for triangle list rendering.
-		m_ibh = bgfx::createIndexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(m_smesh->getIndices().data(), sizeof(uint32_t)*m_smesh->getIndices().size())
-			, BGFX_BUFFER_INDEX32
-		);
 
         m_gbufferTex[GBUFFER_RT_NORMAL] = bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, bgfx::TextureFormat::BGRA8, tsFlags);
 		m_gbufferTex[GBUFFER_RT_COLOR]  = bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, bgfx::TextureFormat::BGRA8, tsFlags);
@@ -185,8 +183,71 @@ namespace da::platform {
 					// the combine pass, so the flag is disabled by default.
 
 		m_shadowBuffer = bgfx::createFrameBuffer(BX_COUNTOF(m_shadowBufferTex), m_shadowBufferTex, true);
-
+		m_caps = bgfx::getCaps();
         updateLightDir();
+
+		m_ms_layout
+				.begin()
+				.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+				.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+				.add(bgfx::Attrib::Color0, 3, bgfx::AttribType::Float)
+				.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+				.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
+				.add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float)
+				.end();
+
+					// Create static vertex buffer.
+		m_vbh = bgfx::createVertexBuffer(
+			// Static data can be passed with bgfx::makeRef
+			bgfx::makeRef(m_smesh->getVertices().data(), m_smesh->getVertices().size()*sizeof(da::core::FVertexBase))
+			, m_ms_layout
+			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
+		);
+
+		// Create static index buffer for triangle list rendering.
+		m_ibh = bgfx::createIndexBuffer(
+			// Static data can be passed with bgfx::makeRef
+			bgfx::makeRef(m_smesh->getIndices().data(), sizeof(uint32_t)*m_smesh->getIndices().size())
+			, BGFX_BUFFER_INDEX32
+		);
+	}
+
+	void CBgfxGraphicsTest03::drawModels(int pass, bgfx::ProgramHandle program, uint64_t state)
+	{
+		
+		state = state == 0 ? BGFX_STATE_WRITE_R 
+			| BGFX_STATE_WRITE_G 
+			| BGFX_STATE_WRITE_B 
+			| BGFX_STATE_WRITE_A 
+			| BGFX_STATE_WRITE_Z 
+			| BGFX_STATE_DEPTH_TEST_LESS 
+			| BGFX_STATE_CULL_CCW
+			| BGFX_STATE_MSAA : state;
+
+		float mtx[16];
+		//bx::mtxRotateXY(mtx, time + 0 * 0.21f, time + 0 * 0.37f);
+		//bx::mtxRotateXY(mtx, 0,0);
+
+		static float xyz[3] = { 0,0,-25 };
+
+		mtx[12] = xyz[0];
+		mtx[13] = xyz[1];
+		mtx[14] = xyz[2];
+		
+        float v4[] = {1.f,1.f,1.f,1.f};
+        bgfx::setUniform(u_tint, v4);
+
+		// Set model matrix for rendering.
+		bgfx::setTransform(mtx);
+
+		// Set render states.
+		bgfx::setState(state);
+
+		// Set vertex and index buffer.
+		bgfx::setIndexBuffer(m_ibh);
+		bgfx::setVertexBuffer(0, m_vbh);
+
+		bgfx::submit(pass, program, 0);
 	}
 
 	void CBgfxGraphicsTest03::Render()
@@ -213,7 +274,9 @@ namespace da::platform {
 
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
-		//bgfx::touch(0);
+		bgfx::touch(0);
+
+		//drawModels(RENDER_PASS_GBUFFER, {m_gbufferProgram->getHandle()});
 
 		bgfx::IndexBufferHandle ibh = m_ibh;
 		uint64_t state = BGFX_STATE_WRITE_R 
@@ -234,23 +297,20 @@ namespace da::platform {
 		mtx[12] = xyz[0];
 		mtx[13] = xyz[1];
 		mtx[14] = xyz[2];
-
-		ImGui::InputFloat3("POS", xyz);
 		
 
 		// Set model matrix for rendering.
 		bgfx::setTransform(mtx);
 
 		// Set vertex and index buffer.
-		bgfx::setVertexBuffer(RENDER_PASS_GBUFFER, m_vbh);
+		bgfx::setVertexBuffer(0, m_vbh);
 		bgfx::setIndexBuffer(ibh);
 
 		// Set render states.
 		bgfx::setState(state);
-        float v4[] = {1.f,1.f,1.f,1.f};
-        bgfx::setUniform(u_tint, v4);
 
-		bgfx::submit(RENDER_PASS_GBUFFER, {m_gbufferProgram->getHandle()});
+		// Submit primitive for rendering to view 0.
+		bgfx::submit(RENDER_PASS_GBUFFER, { ((CBgfxGraphicsMaterial*)m_gbufferProgram)->getHandle() });
 
         // Set up transforms for shadow map
         float smView[16], smProj[16], lightEye[3], lightAt[3];
@@ -270,25 +330,13 @@ namespace da::platform {
         bgfx::setViewFrameBuffer(RENDER_PASS_SHADOW_MAP, m_shadowBuffer);
         bgfx::setViewRect(RENDER_PASS_SHADOW_MAP, 0, 0, SHADOW_MAP_DIM, SHADOW_MAP_DIM);
 
-
-        // Set model matrix for rendering.
-		bgfx::setTransform(mtx);
-
-		// Set vertex and index buffer.
-		bgfx::setVertexBuffer(RENDER_PASS_GBUFFER, m_vbh);
-		bgfx::setIndexBuffer(ibh);
-
-		// Set render states.
-		bgfx::setState(state);
-        bgfx::setUniform(u_tint, v4);
-
-		bgfx::submit(RENDER_PASS_GBUFFER, {m_shadowProgram->getHandle()});
+		drawModels(RENDER_PASS_SHADOW_MAP, {m_shadowProgram->getHandle()});
 
         // Set up matrices for light buffer
-			bgfx::setViewRect(RENDER_PASS_LIGHT_BUFFER, 0, 0, uint16_t(width), uint16_t(height));
-			bgfx::setViewTransform(RENDER_PASS_LIGHT_BUFFER, view, proj);  // Notice, same view and proj as gbuffer
-			// Set drawing into light buffer
-			bgfx::setViewFrameBuffer(RENDER_PASS_LIGHT_BUFFER, m_lightBuffer);
+		bgfx::setViewRect(RENDER_PASS_LIGHT_BUFFER, 0, 0, uint16_t(width), uint16_t(height));
+		bgfx::setViewTransform(RENDER_PASS_LIGHT_BUFFER, view, proj);  // Notice, same view and proj as gbuffer
+		// Set drawing into light buffer
+		bgfx::setViewFrameBuffer(RENDER_PASS_LIGHT_BUFFER, m_lightBuffer);
 
 			// Inverse view projection is needed in shader so set that up
 			float vp[16], invMvp[16];
@@ -331,10 +379,103 @@ namespace da::platform {
 						| BGFX_STATE_CULL_CW     // <===  If we go into the lights, there will be problems, so we draw the far back face.
 						;
 
-					//Draw lights
+					drawModels(RENDER_PASS_LIGHT_BUFFER, {m_lightProgram->getHandle()}, lightDrawState);
 				}
             }
 
+			// Draw combine pass
+
+			// Texture inputs for combine pass
+			bgfx::setTexture(0, s_normal,    bgfx::getTexture(m_gbuffer, GBUFFER_RT_NORMAL) );
+			bgfx::setTexture(1, s_color,     bgfx::getTexture(m_gbuffer, GBUFFER_RT_COLOR) );
+			bgfx::setTexture(2, s_light,     bgfx::getTexture(m_lightBuffer, 0) );
+			bgfx::setTexture(3, s_depth,     bgfx::getTexture(m_gbuffer, GBUFFER_RT_DEPTH) );
+			bgfx::setTexture(4, s_shadowMap, bgfx::getTexture(m_shadowBuffer, SHADOW_RT_DEPTH)
+				, BGFX_SAMPLER_COMPARE_LEQUAL
+				);
+
+			// Uniforms for combine pass
+			bgfx::setUniform(u_lightDir, m_lightDir);
+			bgfx::setUniform(u_invMvp, invMvp);
+			bgfx::setUniform(u_lightMtx, lightMtx);
+			const float invDim[4] = {1.0f/SHADOW_MAP_DIM, 0.0f, 0.0f, 0.0f};
+			bgfx::setUniform(u_shadowDimsInv, invDim);
+			float rsmAmount[4] = {m_rsmAmount,m_rsmAmount,m_rsmAmount,m_rsmAmount};
+			bgfx::setUniform(u_rsmAmount, rsmAmount);
+
+			// Set up state for combine pass
+			// point of this is to avoid doing depth test, which is in the default state
+			bgfx::setState(0
+				| BGFX_STATE_WRITE_RGB
+				| BGFX_STATE_WRITE_A
+				);
+
+
+			// Set up transform matrix for fullscreen quad
+			float orthoProj[16];
+			bx::mtxOrtho(orthoProj, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 100.0f, 0.0f, caps->homogeneousDepth);
+			bgfx::setViewTransform(RENDER_PASS_COMBINE, NULL, orthoProj);
+			bgfx::setViewRect(RENDER_PASS_COMBINE, 0, 0, uint16_t(width), uint16_t(height) );
+			screenSpaceQuad((float)width, (float)height, m_texelHalf, m_caps->originBottomLeft);
+			bgfx::submit(RENDER_PASS_COMBINE, {m_combineProgram->getHandle()});
+
+			updateLightDir();
+
+	}
+
+	void CBgfxGraphicsTest03::screenSpaceQuad(float _textureWidth, float _textureHeight, float _texelHalf, bool _originBottomLeft, float _width, float _height)
+	{
+		if (3 == bgfx::getAvailTransientVertexBuffer(3, PosTexCoord0Vertex::ms_layout) )
+		{
+			bgfx::TransientVertexBuffer vb;
+			bgfx::allocTransientVertexBuffer(&vb, 3, PosTexCoord0Vertex::ms_layout);
+			PosTexCoord0Vertex* vertex = (PosTexCoord0Vertex*)vb.data;
+
+			const float minx = -_width;
+			const float maxx =  _width;
+			const float miny = 0.0f;
+			const float maxy = _height*2.0f;
+
+			const float texelHalfW = _texelHalf/_textureWidth;
+			const float texelHalfH = _texelHalf/_textureHeight;
+			const float minu = -1.0f + texelHalfW;
+			const float maxu =  1.0f + texelHalfH;
+
+			const float zz = 0.0f;
+
+			float minv = texelHalfH;
+			float maxv = 2.0f + texelHalfH;
+
+			if (_originBottomLeft)
+			{
+				float temp = minv;
+				minv = maxv;
+				maxv = temp;
+
+				minv -= 1.0f;
+				maxv -= 1.0f;
+			}
+
+			vertex[0].m_x = minx;
+			vertex[0].m_y = miny;
+			vertex[0].m_z = zz;
+			vertex[0].m_u = minu;
+			vertex[0].m_v = minv;
+
+			vertex[1].m_x = maxx;
+			vertex[1].m_y = miny;
+			vertex[1].m_z = zz;
+			vertex[1].m_u = maxu;
+			vertex[1].m_v = minv;
+
+			vertex[2].m_x = maxx;
+			vertex[2].m_y = maxy;
+			vertex[2].m_z = zz;
+			vertex[2].m_u = maxu;
+			vertex[2].m_v = maxv;
+
+			bgfx::setVertexBuffer(0, &vb);
+		}
 	}
 
 	void CBgfxGraphicsTest03::Shutdown()
