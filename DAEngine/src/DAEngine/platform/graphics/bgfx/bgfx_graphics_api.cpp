@@ -181,7 +181,7 @@ namespace da::platform {
 		init.resolution.reset = data.RefreshRate;
 		// Issues with allocator, MACOSX Release
 		#if DA_DEBUG
-		init.allocator = (bx::AllocatorI*)m_allocator;
+		//init.allocator = (bx::AllocatorI*)m_allocator;
 		#endif
 		#ifdef DA_DEBUG
 		((FDACallbacks*)m_callbacks)->m_trace = !da::core::CArgHandler::contains("debugGpu");

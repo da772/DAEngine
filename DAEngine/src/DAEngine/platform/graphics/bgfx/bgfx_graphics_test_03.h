@@ -14,13 +14,17 @@ namespace da::platform
 		void Render();
 		void Shutdown();
 		void updateLightDir();
-		void drawModels(int pass, bgfx::ProgramHandle handle, uint64_t state = 0);
+		void drawModels(int pass, bgfx::ProgramHandle handle, Vector3f pos = { 0.f,0.f,0.f }, Vector3f scale = { 1.f,1.f,1.f }, float time = 10.8f, uint64_t state = 0, bool submit = true);
+		void drawModels(int pass, bgfx::ProgramHandle handle, bgfx::VertexBufferHandle vbh, bgfx::IndexBufferHandle ibh, Vector3f pos = { 0.f,0.f,0.f }, Vector3f scale = { 1.f,1.f,1.f }, float time = 10.8f, uint64_t state = 0, bool submit = true);
 		void screenSpaceQuad(float _textureWidth, float _textureHeight, float _texelHalf, bool _originBottomLeft, float _width = 1.0f, float _height = 1.0f);
 
 	private:
 		da::core::CStaticMesh* m_smesh;
-		bgfx::VertexBufferHandle m_vbh;
-		bgfx::IndexBufferHandle m_ibh;
+		da::core::CStaticMesh* m_sphereMesh;
+		da::core::CStaticMesh* m_cubeMesh;
+		bgfx::VertexBufferHandle m_vbh, m_spvbh, m_cbcvh;
+		bgfx::IndexBufferHandle m_ibh, m_spibh, m_cbibh;
+
 		void* m_material;
 		da::core::CWindow* m_window;
 		double m_start = 0;
@@ -39,8 +43,10 @@ namespace da::platform
 		float m_lightAzimuth = 215.0f;
 
 		float m_rsmAmount = .25f; // Amount of rsm
-		float m_vplRadius = 3.0f; // Radius of virtual point light
+		float m_vplRadius = 30.0f; // Radius of virtual point light
 		float m_texelHalf = 0.f;
+
+		Vector3f m_camPos = { 0.f,0.f,0.f };
 
 		const bgfx::Caps* m_caps;
 	};

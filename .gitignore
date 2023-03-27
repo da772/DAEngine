@@ -19,7 +19,7 @@ Bin-Obj/
 *.sc.gles
 *.sc.gl
 *.sc.mt
-*.sc.dt
+*.sc.dx
 
 *.vcxproj
 *.vcxproj.filters

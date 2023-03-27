@@ -30,7 +30,7 @@
 #define MODEL_COUNT 222  // In this demo, a model is a mesh plus a transform and a color
 
 #define SHADOW_MAP_DIM 512
-#define LIGHT_DIST 10.0f
+#define LIGHT_DIST 50.0f
 
 namespace da::platform {
 	
@@ -129,13 +129,20 @@ namespace da::platform {
 		s_rsm       = bgfx::createUniform("s_rsm",       bgfx::UniformType::Sampler);  // Reflective shadow map
 
 		// Create program from shaders.
-		m_gbufferProgram = new CBgfxGraphicsMaterial("shaders/rsm/macosx/vs_rsm_gbuffer.sc.vk", "shaders/rsm/macosx/fs_rsm_gbuffer.sc.vk");  // Gbuffer
-		m_shadowProgram  = new CBgfxGraphicsMaterial("shaders/rsm/macosx/vs_rsm_shadow.sc.vk",  "shaders/rsm/macosx/fs_rsm_shadow.sc.vk"  ); // Drawing shadow map
-		m_lightProgram   = new CBgfxGraphicsMaterial("shaders/rsm/macosx/vs_rsm_lbuffer.sc.vk", "shaders/rsm/macosx/fs_rsm_lbuffer.sc.vk");  // Light buffer
-		m_combineProgram = new CBgfxGraphicsMaterial("shaders/rsm/macosx/vs_rsm_combine.sc.vk", "shaders/rsm/macosx/fs_rsm_combine.sc.vk");  // Combiner
+		m_gbufferProgram = new CBgfxGraphicsMaterial("shaders/rsm/windows/vs_rsm_gbuffer.sc.dx", "shaders/rsm/windows/fs_rsm_gbuffer.sc.dx");  // Gbuffer
+		m_shadowProgram  = new CBgfxGraphicsMaterial("shaders/rsm/windows/vs_rsm_shadow.sc.dx",  "shaders/rsm/windows/fs_rsm_shadow.sc.dx"  ); // Drawing shadow map
+		m_lightProgram   = new CBgfxGraphicsMaterial("shaders/rsm/windows/vs_rsm_lbuffer.sc.dx", "shaders/rsm/windows/fs_rsm_lbuffer.sc.dx");  // Light buffer
+		m_combineProgram = new CBgfxGraphicsMaterial("shaders/rsm/windows/vs_rsm_combine.sc.dx", "shaders/rsm/windows/fs_rsm_combine.sc.dx");  // Combiner
+
+		m_gbufferProgram->initialize();
+		m_shadowProgram->initialize();
+		m_lightProgram->initialize();
+		m_combineProgram->initialize();
 
 		m_window = window;
 		m_smesh = new da::core::CStaticMesh("assets/bolt.fbx");
+		m_sphereMesh = new da::core::CStaticMesh("assets/sphere.obj");
+		m_cubeMesh = new da::core::CStaticMesh("assets/cube.obj");
 
         m_gbufferTex[GBUFFER_RT_NORMAL] = bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, bgfx::TextureFormat::BGRA8, tsFlags);
 		m_gbufferTex[GBUFFER_RT_COLOR]  = bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, bgfx::TextureFormat::BGRA8, tsFlags);
@@ -204,58 +211,104 @@ namespace da::platform {
 			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
 		);
 
+		m_spvbh = bgfx::createVertexBuffer(
+			// Static data can be passed with bgfx::makeRef
+			bgfx::makeRef(m_sphereMesh->getVertices().data(), m_sphereMesh->getVertices().size() * sizeof(da::core::FVertexBase))
+			, m_ms_layout
+			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
+		);
+
+		m_cbcvh = bgfx::createVertexBuffer(
+			// Static data can be passed with bgfx::makeRef
+			bgfx::makeRef(m_cubeMesh->getVertices().data(), m_cubeMesh->getVertices().size() * sizeof(da::core::FVertexBase))
+			, m_ms_layout
+			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
+		);
+
 		// Create static index buffer for triangle list rendering.
 		m_ibh = bgfx::createIndexBuffer(
 			// Static data can be passed with bgfx::makeRef
 			bgfx::makeRef(m_smesh->getIndices().data(), sizeof(uint32_t)*m_smesh->getIndices().size())
 			, BGFX_BUFFER_INDEX32
 		);
+
+		// Create static index buffer for triangle list rendering.
+		m_spibh = bgfx::createIndexBuffer(
+			// Static data can be passed with bgfx::makeRef
+			bgfx::makeRef(m_sphereMesh->getIndices().data(), sizeof(uint32_t) * m_sphereMesh->getIndices().size())
+			, BGFX_BUFFER_INDEX32
+		);
+
+		// Create static index buffer for triangle list rendering.
+		m_cbibh= bgfx::createIndexBuffer(
+			// Static data can be passed with bgfx::makeRef
+			bgfx::makeRef(m_cubeMesh->getIndices().data(), sizeof(uint32_t) * m_cubeMesh->getIndices().size())
+			, BGFX_BUFFER_INDEX32
+		);
 	}
 
-	void CBgfxGraphicsTest03::drawModels(int pass, bgfx::ProgramHandle program, uint64_t state)
+	void CBgfxGraphicsTest03::drawModels(int pass, bgfx::ProgramHandle program, Vector3f pos, Vector3f scale, float time, uint64_t state, bool submit)
 	{
-		
-		state = state == 0 ? BGFX_STATE_WRITE_R 
-			| BGFX_STATE_WRITE_G 
-			| BGFX_STATE_WRITE_B 
-			| BGFX_STATE_WRITE_A 
-			| BGFX_STATE_WRITE_Z 
-			| BGFX_STATE_DEPTH_TEST_LESS 
+		drawModels(pass, program, m_vbh, m_ibh, pos, scale, time, state, submit);
+	}
+
+	void CBgfxGraphicsTest03::drawModels(int pass, bgfx::ProgramHandle program, bgfx::VertexBufferHandle vbh, bgfx::IndexBufferHandle ibh, Vector3f pos /*= { 0.f,0.f,0.f }*/, Vector3f scale, float time /*= 10.8f*/, uint64_t state /*= 0*/, bool submit)
+	{
+		state = state == 0 ? BGFX_STATE_WRITE_R
+			| BGFX_STATE_WRITE_G
+			| BGFX_STATE_WRITE_B
+			| BGFX_STATE_WRITE_A
+			| BGFX_STATE_WRITE_Z
+			| BGFX_STATE_DEPTH_TEST_LESS
 			| BGFX_STATE_CULL_CCW
 			| BGFX_STATE_MSAA : state;
 
 		float mtx[16];
-		//bx::mtxRotateXY(mtx, time + 0 * 0.21f, time + 0 * 0.37f);
-		//bx::mtxRotateXY(mtx, 0,0);
+		//bx::mtxRotateXY(mtx, 10.8f, 10.8f);
+		bx::mtxRotateXY(mtx, time + 0 * 0.21f, time + 0 * 0.37f);
 
-		static float xyz[3] = { 0,0,-25 };
+		float mtxScale[16];
+		bx::mtxScale(mtxScale
+			, scale.x
+			, scale.y
+			, scale.z
+		);
+		float mtxTrans[16];
+		bx::mtxTranslate(mtxTrans
+			, 0.0f
+			, -10.0f
+			, 0.0f
+		);
 
-		mtx[12] = xyz[0];
-		mtx[13] = xyz[1];
-		mtx[14] = xyz[2];
-		
-        float v4[] = {1.f,1.f,1.f,1.f};
-        bgfx::setUniform(u_tint, v4);
+		mtx[12] = pos.x;
+		mtx[13] = pos.y;
+		mtx[14] = pos.z;
+
+		float mtxRes[16];
+		bx::mtxMul(mtxRes, mtxScale, mtx);
+
+		float v4[] = { 1.f,1.f,1.f,1.f };
+		bgfx::setUniform(u_tint, v4);
 
 		// Set model matrix for rendering.
-		bgfx::setTransform(mtx);
+		bgfx::setTransform(mtxRes);
 
 		// Set render states.
 		bgfx::setState(state);
 
 		// Set vertex and index buffer.
-		bgfx::setIndexBuffer(m_ibh);
-		bgfx::setVertexBuffer(0, m_vbh);
-
-		bgfx::submit(pass, program, 0);
+		bgfx::setIndexBuffer(ibh);
+		bgfx::setVertexBuffer(0, vbh);
+		if (submit)
+			bgfx::submit(pass, program, 0);
 	}
 
 	void CBgfxGraphicsTest03::Render()
 	{
 		double time = (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() / 1e3f - m_start;
 
-		const bx::Vec3 at = { 0.0f, 0.0f,   0.0f };
-		const bx::Vec3 eye = { 0.0f, 0.0f, -35.0f };
+		const bx::Vec3 at = {0.f,0.f,0.f};
+		const bx::Vec3 eye = { m_camPos.x, m_camPos.y, -35.0f };
 
 		uint32_t width = m_window->getWindowData().Width;
 		uint32_t height = m_window->getWindowData().Height;
@@ -267,50 +320,20 @@ namespace da::platform {
 		float proj[16];
 		bx::mtxProj(proj, 60.f, float(width) / float(height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
 
-        bgfx::setViewRect(RENDER_PASS_GBUFFER, 0, 0, uint16_t(width), uint16_t(height));
-        bgfx::setViewTransform(RENDER_PASS_GBUFFER, view, proj);
-        // Make sure when we draw it goes into gbuffer and not backbuffer
-        bgfx::setViewFrameBuffer(RENDER_PASS_GBUFFER, m_gbuffer);
+		bgfx::setViewRect(RENDER_PASS_GBUFFER, 0, 0, uint16_t(width), uint16_t(height));
+		bgfx::setViewTransform(RENDER_PASS_GBUFFER, view, proj);
+		// Make sure when we draw it goes into gbuffer and not backbuffer
+		bgfx::setViewFrameBuffer(RENDER_PASS_GBUFFER, m_gbuffer);
 
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
-		bgfx::touch(0);
+		//bgfx::touch(0);
 
 		//drawModels(RENDER_PASS_GBUFFER, {m_gbufferProgram->getHandle()});
-
-		bgfx::IndexBufferHandle ibh = m_ibh;
-		uint64_t state = BGFX_STATE_WRITE_R 
-			| BGFX_STATE_WRITE_G 
-			| BGFX_STATE_WRITE_B 
-			| BGFX_STATE_WRITE_A 
-			| BGFX_STATE_WRITE_Z 
-			| BGFX_STATE_DEPTH_TEST_LESS 
-			| BGFX_STATE_CULL_CCW
-			| BGFX_STATE_MSAA;
-
-		float mtx[16];
-		bx::mtxRotateXY(mtx, time + 0 * 0.21f, time + 0 * 0.37f);
-		//bx::mtxRotateXY(mtx, 0,0);
-
-		static float xyz[3] = { 0,0,-25 };
-
-		mtx[12] = xyz[0];
-		mtx[13] = xyz[1];
-		mtx[14] = xyz[2];
-		
-
-		// Set model matrix for rendering.
-		bgfx::setTransform(mtx);
-
-		// Set vertex and index buffer.
-		bgfx::setVertexBuffer(0, m_vbh);
-		bgfx::setIndexBuffer(ibh);
-
-		// Set render states.
-		bgfx::setState(state);
-
-		// Submit primitive for rendering to view 0.
-		bgfx::submit(RENDER_PASS_GBUFFER, { ((CBgfxGraphicsMaterial*)m_gbufferProgram)->getHandle() });
+		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, { 0.f, 0.f, -25.f });
+		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, { 0.f, -1.f, -20.f }, { 1.f,1.f,1.f }, time);
+		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, -10.f });
+		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_cbcvh, m_cbibh, { 0.f, -5.f, -25.f }, { 1000.f, 1.f, 1000.f }, 0.f);
 
         // Set up transforms for shadow map
         float smView[16], smProj[16], lightEye[3], lightAt[3];
@@ -323,14 +346,18 @@ namespace da::platform {
         lightAt[2] = 0.0f;
 
         bx::mtxLookAt(smView, bx::load<bx::Vec3>(lightEye), bx::load<bx::Vec3>(lightAt) );
-        const float area = 10.0f;
+        const float area = 20.0f;
         const bgfx::Caps* caps = bgfx::getCaps();
         bx::mtxOrtho(smProj, -area, area, -area, area, -100.0f, 100.0f, 0.0f, caps->homogeneousDepth);
         bgfx::setViewTransform(RENDER_PASS_SHADOW_MAP, smView, smProj);
         bgfx::setViewFrameBuffer(RENDER_PASS_SHADOW_MAP, m_shadowBuffer);
         bgfx::setViewRect(RENDER_PASS_SHADOW_MAP, 0, 0, SHADOW_MAP_DIM, SHADOW_MAP_DIM);
 
-		drawModels(RENDER_PASS_SHADOW_MAP, {m_shadowProgram->getHandle()});
+		drawModels(RENDER_PASS_SHADOW_MAP, {m_shadowProgram->getHandle()}, { 0.f, 0.f, -25.f });
+		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, { 0.f, -1.f, -20.f }, {1.f,1.f,1.f}, time);
+		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, -10.f});
+		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, m_cbcvh, m_cbibh, { 0.f, -5.f, -25.f }, { 1000.f, 1.f, 1000.f }, 0.f);
+
 
         // Set up matrices for light buffer
 		bgfx::setViewRect(RENDER_PASS_LIGHT_BUFFER, 0, 0, uint16_t(width), uint16_t(height));
@@ -379,7 +406,7 @@ namespace da::platform {
 						| BGFX_STATE_CULL_CW     // <===  If we go into the lights, there will be problems, so we draw the far back face.
 						;
 
-					drawModels(RENDER_PASS_LIGHT_BUFFER, {m_lightProgram->getHandle()}, lightDrawState);
+					drawModels(RENDER_PASS_LIGHT_BUFFER, { m_lightProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 10.f, (float)j+m_vplRadius*1.5f }, {1.f,1.f,1.f}, 10.8f, lightDrawState);
 				}
             }
 
@@ -420,6 +447,15 @@ namespace da::platform {
 			bgfx::submit(RENDER_PASS_COMBINE, {m_combineProgram->getHandle()});
 
 			updateLightDir();
+
+			if (ImGui::Begin("Cam")) {
+
+				ImGui::SliderFloat("X", &m_camPos.x, -100.f, 100.f);
+				ImGui::SliderFloat("Y", &m_camPos.y, -100.f, 100.f);
+				ImGui::SliderFloat("Z", &m_camPos.z, -100.f, 100.f);
+			}
+
+			ImGui::End();
 
 	}
 
@@ -480,6 +516,68 @@ namespace da::platform {
 
 	void CBgfxGraphicsTest03::Shutdown()
 	{
+		if (m_gbufferProgram)
+		{
+			m_gbufferProgram->shutdown();
+			delete m_gbufferProgram;
+		}
+
+		if (m_shadowProgram)
+		{
+			m_shadowProgram->shutdown();
+			delete m_shadowProgram;
+		}
+
+
+		if (m_lightProgram)
+		{
+			m_lightProgram->shutdown();
+			delete m_lightProgram;
+		}
+
+		if (m_combineProgram)
+		{
+			m_combineProgram->shutdown();
+			delete m_combineProgram;
+		}
+
+		if (m_smesh)
+		{
+			delete m_smesh;
+		}
+
+		bgfx::destroy(u_tint);
+		bgfx::destroy(u_lightDir);
+		bgfx::destroy(u_sphereInfo);
+		bgfx::destroy(u_invMvp);
+		bgfx::destroy(u_invMvpShadow);
+		bgfx::destroy(u_lightMtx);
+		bgfx::destroy(u_shadowDimsInv);
+		bgfx::destroy(u_rsmAmount);
+		bgfx::destroy(s_normal);
+		bgfx::destroy(s_depth);
+		bgfx::destroy(s_color);
+		bgfx::destroy(s_light);
+		bgfx::destroy(s_shadowMap);
+		bgfx::destroy(s_rsm);
+
+		for (size_t i = 0; i < 3; i++) {
+			bgfx::destroy(m_gbufferTex[i]);
+		}
+		for (size_t i = 0; i < 2; i++) {
+			bgfx::destroy(m_shadowBufferTex[i]);
+		}
+
+		bgfx::destroy(m_lightBufferTex);
+		bgfx::destroy(m_gbuffer);
+		bgfx::destroy(m_lightBuffer);
+		bgfx::destroy(m_shadowBuffer);
+		bgfx::destroy(m_vbh);
+		bgfx::destroy(m_ibh);
+		bgfx::destroy(m_spibh);
+		bgfx::destroy(m_spvbh);
+		bgfx::destroy(m_cbcvh);
+		bgfx::destroy(m_cbibh);
 	}
 
 }
