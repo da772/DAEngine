@@ -64,11 +64,7 @@ namespace da::platform {
 		
 		stbi_image_free(pixels);
 
-#ifdef DA_PLATFORM_WINDOWS
-		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/mesh/windows/vs_mesh.sc.dx", "shaders/mesh/windows/fs_mesh.sc.dx");
-#elif defined(DA_PLATFORM_MACOSX)
-		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/mesh/macosx/vs_mesh.sc.vk", "shaders/mesh/macosx/fs_mesh.sc.vk");
-#endif
+		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/mesh/vs_mesh.sc", "shaders/mesh/fs_mesh.sc");
 		mat->initialize();
 		m_material = (void*)mat;
 	}

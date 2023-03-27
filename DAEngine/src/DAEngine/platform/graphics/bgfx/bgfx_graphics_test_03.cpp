@@ -129,10 +129,10 @@ namespace da::platform {
 		s_rsm       = bgfx::createUniform("s_rsm",       bgfx::UniformType::Sampler);  // Reflective shadow map
 
 		// Create program from shaders.
-		m_gbufferProgram = new CBgfxGraphicsMaterial("shaders/rsm/windows/vs_rsm_gbuffer.sc.dx", "shaders/rsm/windows/fs_rsm_gbuffer.sc.dx");  // Gbuffer
-		m_shadowProgram  = new CBgfxGraphicsMaterial("shaders/rsm/windows/vs_rsm_shadow.sc.dx",  "shaders/rsm/windows/fs_rsm_shadow.sc.dx"  ); // Drawing shadow map
-		m_lightProgram   = new CBgfxGraphicsMaterial("shaders/rsm/windows/vs_rsm_lbuffer.sc.dx", "shaders/rsm/windows/fs_rsm_lbuffer.sc.dx");  // Light buffer
-		m_combineProgram = new CBgfxGraphicsMaterial("shaders/rsm/windows/vs_rsm_combine.sc.dx", "shaders/rsm/windows/fs_rsm_combine.sc.dx");  // Combiner
+		m_gbufferProgram = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_gbuffer.sc", "shaders/rsm/fs_rsm_gbuffer.sc");  // Gbuffer
+		m_shadowProgram  = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_shadow.sc",  "shaders/rsm/fs_rsm_shadow.sc"  ); // Drawing shadow map
+		m_lightProgram   = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_lbuffer.sc", "shaders/rsm/fs_rsm_lbuffer.sc");  // Light buffer
+		m_combineProgram = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_combine.sc", "shaders/rsm/fs_rsm_combine.sc");  // Combiner
 
 		m_gbufferProgram->initialize();
 		m_shadowProgram->initialize();

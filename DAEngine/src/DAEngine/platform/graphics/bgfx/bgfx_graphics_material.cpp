@@ -5,11 +5,58 @@
 #include <bgfx/bgfx.h>
 
 #include "DAEngine/asset/asset.h"
+#include "DAEngine/platform/graphics/bgfx/bgfx_graphics_api.h"
 
 namespace da::platform {
 
+
+
 	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial(const CString& vsPath, const CString& fsPath) : m_vsPath(vsPath), m_fsPath(fsPath)
 	{
+		CString platform;
+#ifdef DA_PLATFORM_WINDOWS
+		platform = "windows";
+#elif defined(DA_PLATFORM_MACOSX)
+		platform = "macosx";
+#elif defined (DA_PLATFORM_LINUX)
+		platform = "linux";
+#endif
+
+		switch (CbgfxGraphicsApi::getRendererApi())
+		{
+			case ERenderApis::D3D9:
+			case ERenderApis::D3D11:
+			case ERenderApis::D3D12:
+				m_vsPath.append(".dx");
+				m_fsPath.append(".dx");
+				break;
+			case ERenderApis::Metal:
+				m_vsPath.append(".mt");
+				m_fsPath.append(".mt");
+				break;
+			case ERenderApis::Vulkan:
+				m_vsPath.append(".vk");
+				m_fsPath.append(".vk");
+				break;
+			case ERenderApis::OpenGL:
+				m_vsPath.append(".gl");
+				m_fsPath.append(".gl");
+				break;
+		}
+
+		for (size_t i = m_vsPath.size() - 1; i >= 0; i--) {
+			if (m_vsPath[i] == '\\' || m_vsPath[i] == '/') {
+				m_vsPath.insert(platform + "/", i + 1);
+				break;
+			}
+		}
+
+		for (size_t i = m_fsPath.size() - 1; i >= 0; i--) {
+			if (m_fsPath[i] == '\\' || m_fsPath[i] == '/') {
+				m_fsPath.insert(platform + "/", i + 1);
+				break;
+			}
+		}
 
 	}
 

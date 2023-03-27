@@ -146,11 +146,8 @@ namespace da::platform
 		);
 
 		// Create program from shaders.
-#ifdef DA_PLATFORM_WINDOWS
-		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/cubes/windows/vs_cubes.sc.dx", "shaders/cubes/windows/fs_cubes.sc.dx");
-#elif defined(DA_PLATFORM_MACOSX)
-		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/cubes/macosx/vs_cubes.sc.vk", "shaders/cubes/macosx/fs_cubes.sc.vk");
-#endif
+		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/cubes/vs_cubes.sc", "shaders/cubes/fs_cubes.sc");
+
 		mat->initialize();
 		m_material = (void*)mat;
 	}

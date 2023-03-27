@@ -10,6 +10,10 @@
 
 namespace da::platform {
 
+
+	ERenderApis CbgfxGraphicsApi::s_renderer = ERenderApis::NOOP;
+
+
 	const char* s_bgfxRenderers[] = {
 		"No-Op",
 		"Agc",
@@ -161,14 +165,14 @@ namespace da::platform {
 	{
 		bgfx::Init init;
 #ifdef DA_PLATFORM_WINDOWS
-		m_renderer = (uint8_t)bgfx::RendererType::Enum::Direct3D12;
+		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Direct3D12;
 #elif defined(DA_PLATFORM_MACOSX) || defined (DA_PLATFORM_IOS)
-		m_renderer = (uint8_t)bgfx::RendererType::Enum::Vulkan;
+		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Vulkan;
 #else
-		m_renderer = (uint8_t)bgfx::RendererType::Enum::Vulkan;
+		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Vulkan;
 #endif
 
-		init.type = (bgfx::RendererType::Enum)m_renderer;
+		init.type = (bgfx::RendererType::Enum)s_renderer;
         
 		bgfx::PlatformData pd;
 		pd.nwh = m_nativeWindow->getPlatformWindow();
@@ -226,7 +230,7 @@ namespace da::platform {
 		s_test->Render();
 
 		bgfx::dbgTextClear();
-		bgfx::dbgTextPrintf(0, 0, 0x0f, "DAv%s - %s", DA_VERSION, s_bgfxRenderers[m_renderer]);
+		bgfx::dbgTextPrintf(0, 0, 0x0f, "DAv%s - %s", DA_VERSION, s_bgfxRenderers[(uint8_t)s_renderer]);
  
 		bgfx::frame();
 	}
@@ -258,6 +262,16 @@ namespace da::platform {
 		c |= color.w;
 
 		bgfx::setViewClear(target, (uint16_t)clear, c	, 1.0f, 0);
+	}
+
+	da::platform::ERenderApis CbgfxGraphicsApi::getRendererApi()
+	{
+		return s_renderer;
+	}
+
+	const char* CbgfxGraphicsApi::renderApiToString(ERenderApis api)
+	{
+		return s_bgfxRenderers[(uint8_t)api];
 	}
 
 }

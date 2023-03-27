@@ -5,6 +5,21 @@
 
 namespace da::platform {
 
+	enum class ERenderApis : uint8_t {
+		NOOP,
+		AGC,
+		D3D9,
+		D3D11,
+		D3D12,
+		Gnm,
+		Metal,
+		Nvm,
+		OpenGLES,
+		OpenGL,
+		Vulkan,
+		Web,
+	};
+
 	class CbgfxGraphicsApi : public da::core::CGraphicsApi
 	{
 	public:
@@ -13,6 +28,8 @@ namespace da::platform {
 		virtual void initalize() override;
 		virtual void update() override;
 		virtual void shutdown() override;
+		static ERenderApis getRendererApi();
+		static const char* renderApiToString(ERenderApis api);
 
 	public:
 		virtual void setClearColor(uint32_t target, da::core::EGraphicsClear clear, Vector4u8 color) override;
@@ -25,7 +42,7 @@ namespace da::platform {
 		void* m_callbacks = nullptr;
 		bool m_initialized = false;
         bool m_dirtyWindow = false;
-		uint8_t m_renderer = 0;
+		static ERenderApis s_renderer;
 	};
 
 }
