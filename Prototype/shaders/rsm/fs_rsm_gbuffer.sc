@@ -1,4 +1,4 @@
-$input v_normal
+$input v_normal,v_texcoord0
 
 /*
  * Copyright 2016 Joseph Cherlin. All rights reserved.
@@ -8,6 +8,8 @@ $input v_normal
 #include "../common.sh"
 
 uniform vec4 u_tint;
+SAMPLER2D(s_texColor,  0);
+SAMPLER2D(s_texNormal,  1);
 
 void main()
 {
@@ -18,5 +20,5 @@ void main()
 	gl_FragData[0].w = 0.0;
 
 	// Write color
-	gl_FragData[1] = u_tint;
+	gl_FragData[1] = texture2D(s_texColor, v_texcoord0);
 }

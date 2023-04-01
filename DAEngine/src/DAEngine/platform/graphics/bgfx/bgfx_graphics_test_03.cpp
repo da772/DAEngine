@@ -127,6 +127,8 @@ namespace da::platform {
 		s_light     = bgfx::createUniform("s_light",     bgfx::UniformType::Sampler);  // Light buffer
 		s_shadowMap = bgfx::createUniform("s_shadowMap", bgfx::UniformType::Sampler);  // Shadow map
 		s_rsm       = bgfx::createUniform("s_rsm",       bgfx::UniformType::Sampler);  // Reflective shadow map
+		s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);	   // Texture color
+		s_texNormal = bgfx::createUniform("s_texNormal", bgfx::UniformType::Sampler);	   // Normal color
 
 		// Create program from shaders.
 		m_gbufferProgram = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_gbuffer.sc", "shaders/rsm/fs_rsm_gbuffer.sc");  // Gbuffer
@@ -155,6 +157,22 @@ namespace da::platform {
 			m_lightBufferTex
 		};
 		m_lightBuffer = bgfx::createFrameBuffer(BX_COUNTOF(lightBufferRTs), lightBufferRTs, true);
+
+		{
+			int width = 1, height = 1, channels = 4;
+			stbi_uc* pixels = stbi_load("assets/boltA.jpg", (int*)&width, (int*)&height, (int*)&channels, STBI_rgb_alpha);
+			channels = 4;
+			const bgfx::Memory* mem = bgfx::copy(pixels, width * height * channels * sizeof(char));
+			m_colorTex = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::Enum::RGBA8, 0, mem);
+		}
+
+		{
+			int width = 1, height = 1, channels = 4;
+			stbi_uc* pixels = stbi_load("assets/boltN.png", (int*)&width, (int*)&height, (int*)&channels, STBI_rgb_alpha);
+			channels = 4;
+			const bgfx::Memory* mem = bgfx::copy(pixels, width * height * channels * sizeof(char));
+			m_normalTex = bgfx::createTexture2D(width, height, false, 1, bgfx::TextureFormat::Enum::RGBA8, 0, mem);
+		}
 
         // Make shadow buffer
 		const uint64_t rsmFlags = 0
@@ -330,10 +348,21 @@ namespace da::platform {
 		//bgfx::touch(0);
 
 		//drawModels(RENDER_PASS_GBUFFER, {m_gbufferProgram->getHandle()});
+		bgfx::setTexture(0, s_texColor, m_colorTex);
+		bgfx::setTexture(1, s_texNormal, m_normalTex);
 		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, { 0.f, 0.f, -25.f });
+		bgfx::setTexture(0, s_texColor, m_normalTex);
+		bgfx::setTexture(1, s_texNormal, m_normalTex);
 		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, { 0.f, -1.f, -20.f }, { 1.f,1.f,1.f }, time);
+		bgfx::setTexture(0, s_texColor, m_colorTex);
+		bgfx::setTexture(1, s_texNormal, m_normalTex);
 		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, -10.f });
-		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_cbcvh, m_cbibh, { 0.f, -5.f, -25.f }, { 1000.f, 1.f, 1000.f }, 0.f);
+		bgfx::setTexture(0, s_texColor, m_colorTex);
+		bgfx::setTexture(1, s_texNormal, m_normalTex);
+		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_cbcvh, m_cbibh, { 0.f, -5.f, -25.f }, { 50.f, 1.f, 50.f }, 0.f);
+		bgfx::setTexture(0, s_texColor, m_colorTex);
+		bgfx::setTexture(1, s_texNormal, m_normalTex);
+		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, m_lightElevation });
 
         // Set up transforms for shadow map
         float smView[16], smProj[16], lightEye[3], lightAt[3];
@@ -356,7 +385,7 @@ namespace da::platform {
 		drawModels(RENDER_PASS_SHADOW_MAP, {m_shadowProgram->getHandle()}, { 0.f, 0.f, -25.f });
 		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, { 0.f, -1.f, -20.f }, {1.f,1.f,1.f}, time);
 		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, -10.f});
-		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, m_cbcvh, m_cbibh, { 0.f, -5.f, -25.f }, { 1000.f, 1.f, 1000.f }, 0.f);
+		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, m_cbcvh, m_cbibh, { 0.f, -5.f, -25.f }, { 50.f, 1.f, 50.f }, 0.f);
 
 
         // Set up matrices for light buffer
@@ -405,7 +434,7 @@ namespace da::platform {
 						| BGFX_STATE_WRITE_A
 						| BGFX_STATE_CULL_CW     // <===  If we go into the lights, there will be problems, so we draw the far back face.
 						;
-
+					//bgfx::touch(0);
 					drawModels(RENDER_PASS_LIGHT_BUFFER, { m_lightProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 10.f, (float)j+m_vplRadius*1.5f }, {1.f,1.f,1.f}, 10.8f, lightDrawState);
 				}
             }
@@ -453,6 +482,14 @@ namespace da::platform {
 				ImGui::SliderFloat("X", &m_camPos.x, -100.f, 100.f);
 				ImGui::SliderFloat("Y", &m_camPos.y, -100.f, 100.f);
 				ImGui::SliderFloat("Z", &m_camPos.z, -100.f, 100.f);
+			}
+
+			ImGui::End();
+
+			if (ImGui::Begin("Light"))
+			{
+				ImGui::InputFloat("Elevation", &m_lightElevation);
+				ImGui::InputFloat("Azimuth", &m_lightAzimuth);
 			}
 
 			ImGui::End();
