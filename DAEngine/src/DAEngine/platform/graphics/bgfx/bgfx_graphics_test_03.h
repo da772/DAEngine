@@ -6,6 +6,8 @@ namespace da::core { class CWindow; class CStaticMesh; class CCamera; }
 namespace da::platform
 {
 	class CBgfxGraphicsMaterial;
+	class CBgfxPipelineGBuffer;
+	class CBgfxPipelineShadow;
 
 	class CBgfxGraphicsTest03
 	{
@@ -30,13 +32,13 @@ namespace da::platform
 		double m_start = 0;
 		bgfx::UniformHandle u_tint,u_lightDir,u_sphereInfo,u_invMvp,u_invMvpShadow,u_lightMtx,u_shadowDimsInv, u_rsmAmount;
 		bgfx::UniformHandle s_normal,s_depth,s_color,s_light,s_shadowMap,s_rsm,s_texColor,s_texNormal;
-		CBgfxGraphicsMaterial* m_gbufferProgram, *m_shadowProgram,*m_lightProgram,*m_combineProgram;
-		bgfx::TextureHandle m_gbufferTex[3];
-		bgfx::TextureHandle m_shadowBufferTex[2];
+		CBgfxGraphicsMaterial *m_lightProgram,*m_combineProgram;
+		CBgfxPipelineGBuffer* m_gbufferPipeline;
+		CBgfxPipelineShadow* m_shadowPipline;
 		bgfx::TextureHandle m_lightBufferTex;
 		bgfx::TextureHandle m_colorTex,m_normalTex;
 		bgfx::VertexLayout m_ms_layout;
-		bgfx::FrameBufferHandle m_gbuffer,m_lightBuffer,m_shadowBuffer;
+		bgfx::FrameBufferHandle m_lightBuffer;
 
 		// Light position;
 		float m_lightDir[4];

@@ -64,6 +64,15 @@ namespace da::core::containers
 				return m_hash;
 			}
 
+			inline const char* toStr() const
+			{
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+				return m_string.cstr();
+#else
+				return nullptr;
+#endif
+			}
+
 			inline bool operator ==(const CBasicHashString<_Allocator>& rhs) const {
 				return rhs.m_hash == m_hash;
 			}

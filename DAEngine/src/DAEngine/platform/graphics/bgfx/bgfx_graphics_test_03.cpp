@@ -7,21 +7,17 @@
 #include <bx/math.h>
 #include "DAEngine/core/graphics/graphics_smesh.h"
 #include "DAEngine/platform/graphics/bgfx/bgfx_graphics_material.h"
+#include "DAEngine/platform/graphics/bgfx/pipeline/bgfx_pipeline_gbuffer.h"
+#include "DAEngine/platform/graphics/bgfx/pipeline/bgfx_pipeline_shadow.h"
 #include <imgui.h>
 #include <stb_image.h>
 #include <bimg/bimg.h>
 #include "DAEngine/core/graphics/camera.h"
 
 // Render passes
-#define RENDER_PASS_GBUFFER      0  // GBuffer for normals and albedo
-#define RENDER_PASS_SHADOW_MAP   1  // Draw into the shadow map (RSM and regular shadow map at same time)
 #define RENDER_PASS_LIGHT_BUFFER 2  // Light buffer for point lights
 #define RENDER_PASS_COMBINE      3  // Directional light and final result
 
-// Gbuffer has multiple render targets
-#define GBUFFER_RT_NORMAL 0
-#define GBUFFER_RT_COLOR  1
-#define GBUFFER_RT_DEPTH  2
 
 // Shadow map has multiple render targets
 #define SHADOW_RT_RSM   0        // In this algorithm, shadows write lighting info as well.
@@ -85,28 +81,11 @@ namespace da::platform {
 			| BGFX_SAMPLER_V_CLAMP
 			;
 
-        		// Labeling for renderdoc captures, etc
-		bgfx::setViewName(RENDER_PASS_GBUFFER,      "gbuffer"     );
-		bgfx::setViewName(RENDER_PASS_SHADOW_MAP,   "shadow map"  );
+		// Labeling for renderdoc captures, etc
 		bgfx::setViewName(RENDER_PASS_LIGHT_BUFFER, "light buffer");
 		bgfx::setViewName(RENDER_PASS_COMBINE,      "post combine");
 
-        // Set up screen clears
-		bgfx::setViewClear(RENDER_PASS_GBUFFER
-			, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
-			, 0
-			, 1.0f
-			, 0
-			);
-
 		bgfx::setViewClear(RENDER_PASS_LIGHT_BUFFER
-			, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
-			, 0
-			, 1.0f
-			, 0
-			);
-
-		bgfx::setViewClear(RENDER_PASS_SHADOW_MAP
 			, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
 			, 0
 			, 1.0f
@@ -134,13 +113,14 @@ namespace da::platform {
 		s_texNormal = bgfx::createUniform("s_texNormal", bgfx::UniformType::Sampler);	   // Normal color
 
 		// Create program from shaders.
-		m_gbufferProgram = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_gbuffer.sc", "shaders/rsm/fs_rsm_gbuffer.sc");  // Gbuffer
-		m_shadowProgram  = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_shadow.sc",  "shaders/rsm/fs_rsm_shadow.sc"  ); // Drawing shadow map
+		m_gbufferPipeline = new CBgfxPipelineGBuffer();
+		m_shadowPipline = new CBgfxPipelineShadow();
+
 		m_lightProgram   = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_lbuffer.sc", "shaders/rsm/fs_rsm_lbuffer.sc");  // Light buffer
 		m_combineProgram = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_combine.sc", "shaders/rsm/fs_rsm_combine.sc");  // Combiner
 
-		m_gbufferProgram->initialize();
-		m_shadowProgram->initialize();
+		m_gbufferPipeline->initialize();
+		m_shadowPipline->initialize();
 		m_lightProgram->initialize();
 		m_combineProgram->initialize();
 
@@ -148,11 +128,6 @@ namespace da::platform {
 		m_smesh = new da::core::CStaticMesh("assets/bolt.fbx");
 		m_sphereMesh = new da::core::CStaticMesh("assets/sphere.obj");
 		m_cubeMesh = new da::core::CStaticMesh("assets/cube.obj");
-
-        m_gbufferTex[GBUFFER_RT_NORMAL] = bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, bgfx::TextureFormat::BGRA8, tsFlags);
-		m_gbufferTex[GBUFFER_RT_COLOR]  = bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, bgfx::TextureFormat::BGRA8, tsFlags);
-		m_gbufferTex[GBUFFER_RT_DEPTH]  = bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, bgfx::TextureFormat::D32F,  tsFlags);
-		m_gbuffer = bgfx::createFrameBuffer(BX_COUNTOF(m_gbufferTex), m_gbufferTex, true);
 
         // Make light buffer
 		m_lightBufferTex = bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, bgfx::TextureFormat::BGRA8, tsFlags);
@@ -187,30 +162,6 @@ namespace da::platform {
 			| BGFX_SAMPLER_V_CLAMP
 			;
 
-		// Reflective shadow map
-		m_shadowBufferTex[SHADOW_RT_RSM] = bgfx::createTexture2D(
-				  SHADOW_MAP_DIM
-				, SHADOW_MAP_DIM
-				, false
-				, 1
-				, bgfx::TextureFormat::BGRA8
-				, rsmFlags
-				);
-
-		// Typical shadow map
-		m_shadowBufferTex[SHADOW_RT_DEPTH] = bgfx::createTexture2D(
-				  SHADOW_MAP_DIM
-				, SHADOW_MAP_DIM
-				, false
-				, 1
-				, bgfx::TextureFormat::D16
-				, BGFX_TEXTURE_RT /* | BGFX_SAMPLER_COMPARE_LEQUAL*/
-				);  // Note I'm not setting BGFX_SAMPLER_COMPARE_LEQUAL.  Why?
-					// Normally a PCF shadow map such as this requires a compare.  However, this sample also
-					// reads from this texture in the lighting pass, and only uses the PCF capabilities in
-					// the combine pass, so the flag is disabled by default.
-
-		m_shadowBuffer = bgfx::createFrameBuffer(BX_COUNTOF(m_shadowBufferTex), m_shadowBufferTex, true);
 		m_caps = bgfx::getCaps();
         updateLightDir();
 
@@ -344,10 +295,10 @@ namespace da::platform {
 		float proj[16];
 		bx::mtxProj(proj, 60.f, float(width) / float(height), 0.1f, 100000.0f, bgfx::getCaps()->homogeneousDepth);
 
-		bgfx::setViewRect(RENDER_PASS_GBUFFER, 0, 0, uint16_t(width), uint16_t(height));
-		bgfx::setViewTransform(RENDER_PASS_GBUFFER, view, proj);
+		bgfx::setViewRect(m_gbufferPipeline->renderId(), 0, 0, uint16_t(width), uint16_t(height));
+		bgfx::setViewTransform(m_gbufferPipeline->renderId(), view, proj);
 		// Make sure when we draw it goes into gbuffer and not backbuffer
-		bgfx::setViewFrameBuffer(RENDER_PASS_GBUFFER, m_gbuffer);
+		bgfx::setViewFrameBuffer(m_gbufferPipeline->renderId(), m_gbufferPipeline->getFrameBufferHandle());
 
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
@@ -355,19 +306,19 @@ namespace da::platform {
 		//drawModels(RENDER_PASS_GBUFFER, {m_gbufferProgram->getHandle()});
 		bgfx::setTexture(0, s_texColor, m_colorTex);
 		bgfx::setTexture(1, s_texNormal, m_normalTex);
-		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, { 0.f, 0.f, -25.f });
+		drawModels(m_gbufferPipeline->renderId(), { m_gbufferPipeline->getMaterial()->getHandle() }, { 0.f, 0.f, -25.f });
 		bgfx::setTexture(0, s_texColor, m_normalTex);
 		bgfx::setTexture(1, s_texNormal, m_normalTex);
-		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, { 0.f, -1.f, -20.f }, { 1.f,1.f,1.f }, time);
+		drawModels(m_gbufferPipeline->renderId(), { m_gbufferPipeline->getMaterial()->getHandle() }, { 0.f, -1.f, -20.f }, { 1.f,1.f,1.f }, time);
 		bgfx::setTexture(0, s_texColor, m_colorTex);
 		bgfx::setTexture(1, s_texNormal, m_normalTex);
-		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, -10.f });
+		drawModels(m_gbufferPipeline->renderId(), { m_gbufferPipeline->getMaterial()->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, -10.f });
 		bgfx::setTexture(0, s_texColor, m_colorTex);
 		bgfx::setTexture(1, s_texNormal, m_normalTex);
-		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_cbcvh, m_cbibh, { -25.f, -50.f, -25.f }, { 100.f, 100.f, 1.f }, 0.f);
+		drawModels(m_gbufferPipeline->renderId(), { m_gbufferPipeline->getMaterial()->getHandle() }, m_cbcvh, m_cbibh, { -25.f, -50.f, -25.f }, { 100.f, 100.f, 1.f }, 0.f);
 		bgfx::setTexture(0, s_texColor, m_colorTex);
 		bgfx::setTexture(1, s_texNormal, m_normalTex);
-		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_spvbh, m_spibh, m_lightCam->getPosition());
+		drawModels(m_gbufferPipeline->renderId(), { m_gbufferPipeline->getMaterial()->getHandle() }, m_spvbh, m_spibh, m_lightCam->getPosition());
 
         // Set up transforms for shadow map
         float smProj[16], lightEye[3], lightAt[3];
@@ -386,14 +337,14 @@ namespace da::platform {
         const float area = 20.0f;
         const bgfx::Caps* caps = bgfx::getCaps();
         bx::mtxOrtho(smProj, -area, area, -area, area, -100.0f, 100.0f, 0.0f, caps->homogeneousDepth);
-        bgfx::setViewTransform(RENDER_PASS_SHADOW_MAP, smView, smProj);
-        bgfx::setViewFrameBuffer(RENDER_PASS_SHADOW_MAP, m_shadowBuffer);
-        bgfx::setViewRect(RENDER_PASS_SHADOW_MAP, 0, 0, SHADOW_MAP_DIM, SHADOW_MAP_DIM);
+        bgfx::setViewTransform(m_shadowPipline->renderId(), smView, smProj);
+        bgfx::setViewFrameBuffer(m_shadowPipline->renderId(), m_shadowPipline->getFrameBufferHandle());
+        bgfx::setViewRect(m_shadowPipline->renderId(), 0, 0, SHADOW_MAP_DIM, SHADOW_MAP_DIM);
 
-		drawModels(RENDER_PASS_SHADOW_MAP, {m_shadowProgram->getHandle()}, { 0.f, 0.f, -25.f });
-		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, { 0.f, -1.f, -20.f }, {1.f,1.f,1.f}, time);
-		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, -10.f});
-		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, m_cbcvh, m_cbibh, { -50.f, -50.f, -25.f }, { 100.f, 100.f, 1.f }, 0.f);
+		drawModels(m_shadowPipline->renderId(), { m_shadowPipline->getMaterial()->getHandle()}, { 0.f, 0.f, -25.f });
+		drawModels(m_shadowPipline->renderId(), { m_shadowPipline->getMaterial()->getHandle() }, { 0.f, -1.f, -20.f }, {1.f,1.f,1.f}, time);
+		drawModels(m_shadowPipline->renderId(), { m_shadowPipline->getMaterial()->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, -10.f});
+		drawModels(m_shadowPipline->renderId(), { m_shadowPipline->getMaterial()->getHandle() }, m_cbcvh, m_cbibh, { -50.f, -50.f, -25.f }, { 100.f, 100.f, 1.f }, 0.f);
 
 
         // Set up matrices for light buffer
@@ -420,12 +371,12 @@ namespace da::platform {
 				for (uint32_t j = 0; j < kMaxSpheres; j++)
 				{
 					// These are used in the fragment shader
-					bgfx::setTexture(0, s_normal, bgfx::getTexture(m_gbuffer, GBUFFER_RT_NORMAL) );  // Normal for lighting calculations
-					bgfx::setTexture(1, s_depth,  bgfx::getTexture(m_gbuffer, GBUFFER_RT_DEPTH) );   // Depth to reconstruct world position
+					bgfx::setTexture(0, s_normal,m_gbufferPipeline->getNormalTexture());  // Normal for lighting calculations
+					bgfx::setTexture(1, s_depth, m_gbufferPipeline->getDepthTexture());   // Depth to reconstruct world position
 
 					// Thse are used in the vert shader
-					bgfx::setTexture(2, s_shadowMap, bgfx::getTexture(m_shadowBuffer, SHADOW_RT_DEPTH) );  // Used to place sphere
-					bgfx::setTexture(3, s_rsm,       bgfx::getTexture(m_shadowBuffer, SHADOW_RT_RSM) );    // Used to scale/color sphere
+					bgfx::setTexture(2, s_shadowMap, m_shadowPipline->getDepthTexture());  // Used to place sphere
+					bgfx::setTexture(3, s_rsm,	     m_shadowPipline->getRSMTexture());    // Used to scale/color sphere
 
 					bgfx::setUniform(u_invMvp, invMvp);
 					bgfx::setUniform(u_invMvpShadow, invMvpShadow);
@@ -451,13 +402,11 @@ namespace da::platform {
 			// Draw combine pass
 
 			// Texture inputs for combine pass
-			bgfx::setTexture(0, s_normal,    bgfx::getTexture(m_gbuffer, GBUFFER_RT_NORMAL) );
-			bgfx::setTexture(1, s_color,     bgfx::getTexture(m_gbuffer, GBUFFER_RT_COLOR) );
+			bgfx::setTexture(0, s_normal, m_gbufferPipeline->getNormalTexture());
+			bgfx::setTexture(1, s_color, m_gbufferPipeline->getColorTexture());
 			bgfx::setTexture(2, s_light,     bgfx::getTexture(m_lightBuffer, 0) );
-			bgfx::setTexture(3, s_depth,     bgfx::getTexture(m_gbuffer, GBUFFER_RT_DEPTH) );
-			bgfx::setTexture(4, s_shadowMap, bgfx::getTexture(m_shadowBuffer, SHADOW_RT_DEPTH)
-				, BGFX_SAMPLER_COMPARE_LEQUAL
-				);
+			bgfx::setTexture(3, s_depth, m_gbufferPipeline->getDepthTexture());
+			bgfx::setTexture(4, s_shadowMap, m_shadowPipline->getDepthTexture(), BGFX_SAMPLER_COMPARE_LEQUAL);
 
 			// Uniforms for combine pass
 			bgfx::setUniform(u_lightDir, m_lightDir);
@@ -615,16 +564,16 @@ namespace da::platform {
 
 	void CBgfxGraphicsTest03::Shutdown()
 	{
-		if (m_gbufferProgram)
+		if (m_gbufferPipeline)
 		{
-			m_gbufferProgram->shutdown();
-			delete m_gbufferProgram;
+			m_gbufferPipeline->shutdown();
+			delete m_gbufferPipeline;
 		}
 
-		if (m_shadowProgram)
+		if (m_shadowPipline)
 		{
-			m_shadowProgram->shutdown();
-			delete m_shadowProgram;
+			m_shadowPipline->shutdown();
+			delete m_shadowPipline;
 		}
 
 
@@ -660,17 +609,9 @@ namespace da::platform {
 		bgfx::destroy(s_shadowMap);
 		bgfx::destroy(s_rsm);
 
-		for (size_t i = 0; i < 3; i++) {
-			bgfx::destroy(m_gbufferTex[i]);
-		}
-		for (size_t i = 0; i < 2; i++) {
-			bgfx::destroy(m_shadowBufferTex[i]);
-		}
 
 		bgfx::destroy(m_lightBufferTex);
-		bgfx::destroy(m_gbuffer);
 		bgfx::destroy(m_lightBuffer);
-		bgfx::destroy(m_shadowBuffer);
 		bgfx::destroy(m_vbh);
 		bgfx::destroy(m_ibh);
 		bgfx::destroy(m_spibh);
