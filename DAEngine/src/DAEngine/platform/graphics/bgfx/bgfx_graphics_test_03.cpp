@@ -9,13 +9,13 @@
 #include "DAEngine/platform/graphics/bgfx/bgfx_graphics_material.h"
 #include "DAEngine/platform/graphics/bgfx/pipeline/bgfx_pipeline_gbuffer.h"
 #include "DAEngine/platform/graphics/bgfx/pipeline/bgfx_pipeline_shadow.h"
+#include "DAEngine/platform/graphics/bgfx/pipeline/bgfx_pipeline_light.h"
 #include <imgui.h>
 #include <stb_image.h>
 #include <bimg/bimg.h>
 #include "DAEngine/core/graphics/camera.h"
 
 // Render passes
-#define RENDER_PASS_LIGHT_BUFFER 2  // Light buffer for point lights
 #define RENDER_PASS_COMBINE      3  // Directional light and final result
 
 
@@ -82,15 +82,7 @@ namespace da::platform {
 			;
 
 		// Labeling for renderdoc captures, etc
-		bgfx::setViewName(RENDER_PASS_LIGHT_BUFFER, "light buffer");
 		bgfx::setViewName(RENDER_PASS_COMBINE,      "post combine");
-
-		bgfx::setViewClear(RENDER_PASS_LIGHT_BUFFER
-			, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
-			, 0
-			, 1.0f
-			, 0
-			);
 
 		// Create uniforms
 		u_tint          = bgfx::createUniform("u_tint",          bgfx::UniformType::Vec4);  // Tint for when you click on items
@@ -115,13 +107,13 @@ namespace da::platform {
 		// Create program from shaders.
 		m_gbufferPipeline = new CBgfxPipelineGBuffer();
 		m_shadowPipline = new CBgfxPipelineShadow();
+		m_lightPipeline = new CBgfxPipelineLight();
 
-		m_lightProgram   = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_lbuffer.sc", "shaders/rsm/fs_rsm_lbuffer.sc");  // Light buffer
 		m_combineProgram = new CBgfxGraphicsMaterial("shaders/rsm/vs_rsm_combine.sc", "shaders/rsm/fs_rsm_combine.sc");  // Combiner
 
 		m_gbufferPipeline->initialize();
 		m_shadowPipline->initialize();
-		m_lightProgram->initialize();
+		m_lightPipeline->initialize();
 		m_combineProgram->initialize();
 
 		m_window = window;
@@ -129,12 +121,7 @@ namespace da::platform {
 		m_sphereMesh = new da::core::CStaticMesh("assets/sphere.obj");
 		m_cubeMesh = new da::core::CStaticMesh("assets/cube.obj");
 
-        // Make light buffer
-		m_lightBufferTex = bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, bgfx::TextureFormat::BGRA8, tsFlags);
-		bgfx::TextureHandle lightBufferRTs[] =  {
-			m_lightBufferTex
-		};
-		m_lightBuffer = bgfx::createFrameBuffer(BX_COUNTOF(lightBufferRTs), lightBufferRTs, true);
+       
 
 		{
 			int width = 1, height = 1, channels = 4;
@@ -348,10 +335,10 @@ namespace da::platform {
 
 
         // Set up matrices for light buffer
-		bgfx::setViewRect(RENDER_PASS_LIGHT_BUFFER, 0, 0, uint16_t(width), uint16_t(height));
-		bgfx::setViewTransform(RENDER_PASS_LIGHT_BUFFER, view, proj);  // Notice, same view and proj as gbuffer
+		bgfx::setViewRect(m_lightPipeline->renderId(), 0, 0, uint16_t(width), uint16_t(height));
+		bgfx::setViewTransform(m_lightPipeline->renderId(), view, proj);  // Notice, same view and proj as gbuffer
 		// Set drawing into light buffer
-		bgfx::setViewFrameBuffer(RENDER_PASS_LIGHT_BUFFER, m_lightBuffer);
+		bgfx::setViewFrameBuffer(m_lightPipeline->renderId(), m_lightPipeline->getFrameBufferHandle());
 
 			// Inverse view projection is needed in shader so set that up
 			float vp[16], invMvp[16];
@@ -404,7 +391,7 @@ namespace da::platform {
 			// Texture inputs for combine pass
 			bgfx::setTexture(0, s_normal, m_gbufferPipeline->getNormalTexture());
 			bgfx::setTexture(1, s_color, m_gbufferPipeline->getColorTexture());
-			bgfx::setTexture(2, s_light,     bgfx::getTexture(m_lightBuffer, 0) );
+			bgfx::setTexture(2, s_light,    m_lightPipeline->getTexture() );
 			bgfx::setTexture(3, s_depth, m_gbufferPipeline->getDepthTexture());
 			bgfx::setTexture(4, s_shadowMap, m_shadowPipline->getDepthTexture(), BGFX_SAMPLER_COMPARE_LEQUAL);
 
@@ -577,10 +564,10 @@ namespace da::platform {
 		}
 
 
-		if (m_lightProgram)
+		if (m_lightPipeline)
 		{
-			m_lightProgram->shutdown();
-			delete m_lightProgram;
+			m_lightPipeline->shutdown();
+			delete m_lightPipeline;
 		}
 
 		if (m_combineProgram)
@@ -609,9 +596,6 @@ namespace da::platform {
 		bgfx::destroy(s_shadowMap);
 		bgfx::destroy(s_rsm);
 
-
-		bgfx::destroy(m_lightBufferTex);
-		bgfx::destroy(m_lightBuffer);
 		bgfx::destroy(m_vbh);
 		bgfx::destroy(m_ibh);
 		bgfx::destroy(m_spibh);

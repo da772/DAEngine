@@ -8,6 +8,7 @@ namespace da::platform
 	class CBgfxGraphicsMaterial;
 	class CBgfxPipelineGBuffer;
 	class CBgfxPipelineShadow;
+	class CBgfxPipelineLight;
 
 	class CBgfxGraphicsTest03
 	{
@@ -32,13 +33,12 @@ namespace da::platform
 		double m_start = 0;
 		bgfx::UniformHandle u_tint,u_lightDir,u_sphereInfo,u_invMvp,u_invMvpShadow,u_lightMtx,u_shadowDimsInv, u_rsmAmount;
 		bgfx::UniformHandle s_normal,s_depth,s_color,s_light,s_shadowMap,s_rsm,s_texColor,s_texNormal;
-		CBgfxGraphicsMaterial *m_lightProgram,*m_combineProgram;
-		CBgfxPipelineGBuffer* m_gbufferPipeline;
-		CBgfxPipelineShadow* m_shadowPipline;
-		bgfx::TextureHandle m_lightBufferTex;
+		CBgfxGraphicsMaterial *m_combineProgram;
+		CBgfxPipelineGBuffer* m_gbufferPipeline = nullptr;
+		CBgfxPipelineShadow* m_shadowPipline = nullptr;
+		CBgfxPipelineLight* m_lightPipeline = nullptr;
 		bgfx::TextureHandle m_colorTex,m_normalTex;
 		bgfx::VertexLayout m_ms_layout;
-		bgfx::FrameBufferHandle m_lightBuffer;
 
 		// Light position;
 		float m_lightDir[4];
