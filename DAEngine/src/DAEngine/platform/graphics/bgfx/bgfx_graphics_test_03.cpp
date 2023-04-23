@@ -10,6 +10,7 @@
 #include <imgui.h>
 #include <stb_image.h>
 #include <bimg/bimg.h>
+#include "DAEngine/core/graphics/camera.h"
 
 // Render passes
 #define RENDER_PASS_GBUFFER      0  // GBuffer for normals and albedo
@@ -72,6 +73,8 @@ namespace da::platform {
 	void CBgfxGraphicsTest03::Initialize(da::core::CWindow* window)
 	{
 		m_start = (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() / 1e3f;
+		m_cam = new da::core::CCamera();
+		m_lightCam = new da::core::CCamera();
 		PosTexCoord0Vertex::init();
         const uint64_t tsFlags = 0
 			| BGFX_TEXTURE_RT
@@ -321,6 +324,8 @@ namespace da::platform {
 			bgfx::submit(pass, program, 0);
 	}
 
+	
+
 	void CBgfxGraphicsTest03::Render()
 	{
 		double time = (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() / 1e3f - m_start;
@@ -332,11 +337,12 @@ namespace da::platform {
 		uint32_t height = m_window->getWindowData().Height;
 
 		// Set view and projection matrix for view 0.
-		float view[16];
-		bx::mtxLookAt(view, eye, at);
+		
+		const float* view = m_cam->getMatrix()->Mtx;
+		//bx::mtxLookAt(view, eye, at);
 
 		float proj[16];
-		bx::mtxProj(proj, 60.f, float(width) / float(height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
+		bx::mtxProj(proj, 60.f, float(width) / float(height), 0.1f, 100000.0f, bgfx::getCaps()->homogeneousDepth);
 
 		bgfx::setViewRect(RENDER_PASS_GBUFFER, 0, 0, uint16_t(width), uint16_t(height));
 		bgfx::setViewTransform(RENDER_PASS_GBUFFER, view, proj);
@@ -346,7 +352,6 @@ namespace da::platform {
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
 		//bgfx::touch(0);
-
 		//drawModels(RENDER_PASS_GBUFFER, {m_gbufferProgram->getHandle()});
 		bgfx::setTexture(0, s_texColor, m_colorTex);
 		bgfx::setTexture(1, s_texNormal, m_normalTex);
@@ -359,22 +364,25 @@ namespace da::platform {
 		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, -10.f });
 		bgfx::setTexture(0, s_texColor, m_colorTex);
 		bgfx::setTexture(1, s_texNormal, m_normalTex);
-		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_cbcvh, m_cbibh, { 0.f, -5.f, -25.f }, { 50.f, 1.f, 50.f }, 0.f);
+		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_cbcvh, m_cbibh, { -25.f, -50.f, -25.f }, { 100.f, 100.f, 1.f }, 0.f);
 		bgfx::setTexture(0, s_texColor, m_colorTex);
 		bgfx::setTexture(1, s_texNormal, m_normalTex);
-		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, m_lightElevation });
+		drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_spvbh, m_spibh, m_lightCam->getPosition());
 
         // Set up transforms for shadow map
-        float smView[16], smProj[16], lightEye[3], lightAt[3];
-        lightEye[0] = m_lightDir[0]*LIGHT_DIST;
+        float smProj[16], lightEye[3], lightAt[3];
+		
+		const float *smView = m_lightCam->getMatrix()->Mtx;
+        lightEye[0] = m_lightDir[0] * LIGHT_DIST;
         lightEye[1] = m_lightDir[1]*LIGHT_DIST;
         lightEye[2] = m_lightDir[2]*LIGHT_DIST;
+		
 
-        lightAt[0] = 0.0f;
-        lightAt[1] = 0.0f;
-        lightAt[2] = 0.0f;
+        lightAt[0] = m_lightCam->getPosition().x;
+        lightAt[1] = m_lightCam->getPosition().y;
+        lightAt[2] = m_lightCam->getPosition().z;
 
-        bx::mtxLookAt(smView, bx::load<bx::Vec3>(lightEye), bx::load<bx::Vec3>(lightAt) );
+        //bx::mtxLookAt(smView, bx::load<bx::Vec3>(lightEye), bx::load<bx::Vec3>(lightAt) );
         const float area = 20.0f;
         const bgfx::Caps* caps = bgfx::getCaps();
         bx::mtxOrtho(smProj, -area, area, -area, area, -100.0f, 100.0f, 0.0f, caps->homogeneousDepth);
@@ -385,7 +393,7 @@ namespace da::platform {
 		drawModels(RENDER_PASS_SHADOW_MAP, {m_shadowProgram->getHandle()}, { 0.f, 0.f, -25.f });
 		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, { 0.f, -1.f, -20.f }, {1.f,1.f,1.f}, time);
 		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 0.f, -10.f});
-		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, m_cbcvh, m_cbibh, { 0.f, -5.f, -25.f }, { 50.f, 1.f, 50.f }, 0.f);
+		drawModels(RENDER_PASS_SHADOW_MAP, { m_shadowProgram->getHandle() }, m_cbcvh, m_cbibh, { -50.f, -50.f, -25.f }, { 100.f, 100.f, 1.f }, 0.f);
 
 
         // Set up matrices for light buffer
@@ -406,7 +414,7 @@ namespace da::platform {
 			bx::mtxInverse(invMvpShadow, lightMtx);
 
 			// Draw some lights (these should really be instanced but for this example they aren't...)
-			const uint32_t kMaxSpheres = 32;
+			const uint32_t kMaxSpheres = 16;
 			for (uint32_t i = 0; i < kMaxSpheres; i++)
 			{
 				for (uint32_t j = 0; j < kMaxSpheres; j++)
@@ -434,8 +442,9 @@ namespace da::platform {
 						| BGFX_STATE_WRITE_A
 						| BGFX_STATE_CULL_CW     // <===  If we go into the lights, there will be problems, so we draw the far back face.
 						;
-					//bgfx::touch(0);
-					drawModels(RENDER_PASS_LIGHT_BUFFER, { m_lightProgram->getHandle() }, m_spvbh, m_spibh, { 0.f, 10.f, (float)j+m_vplRadius*1.5f }, {1.f,1.f,1.f}, 10.8f, lightDrawState);
+					bgfx::touch(0);
+					//drawModels(RENDER_PASS_LIGHT_BUFFER, { m_lightProgram->getHandle() }, m_spvbh, m_spibh, { (float)i*20, (float)j * 20,  -20.f}, {1.f,1.f,1.f}, 10.8f, lightDrawState);
+					//drawModels(RENDER_PASS_GBUFFER, { m_gbufferProgram->getHandle() }, m_spvbh, m_spibh, { (float)i * 20, (float)j * 20, -18.f }, { 1.f,1.f,1.f }, 10.8f);
 				}
             }
 
@@ -479,10 +488,63 @@ namespace da::platform {
 
 			if (ImGui::Begin("Cam")) {
 
-				ImGui::SliderFloat("X", &m_camPos.x, -100.f, 100.f);
-				ImGui::SliderFloat("Y", &m_camPos.y, -100.f, 100.f);
-				ImGui::SliderFloat("Z", &m_camPos.z, -100.f, 100.f);
+				if (ImGui::SliderFloat("X", &m_camPos.x, -100.f, 100.f))
+				{
+					m_cam->setPosition(m_camPos);
+				}
+				if (ImGui::SliderFloat("Y", &m_camPos.y, -100.f, 100.f))
+				{
+					m_cam->setPosition(m_camPos);
+				}
+				if (ImGui::SliderFloat("Z", &m_camPos.z, -100.f, 100.f))
+				{
+					m_cam->setPosition(m_camPos);
+				}
+
+				if (ImGui::SliderFloat("Pitch", &m_camRot.x, -100.f, 100.f))
+				{
+					m_cam->setRotation(m_camRot);
+				}
+				if (ImGui::SliderFloat("Yaw", &m_camRot.y, -100.f, 100.f))
+				{
+					m_cam->setRotation(m_camRot);
+				}
+				if (ImGui::SliderFloat("Roll", &m_camRot.z, -100.f, 100.f))
+				{
+					m_cam->setRotation(m_camRot);
+				}
 			}
+			ImGui::End();
+
+			if (ImGui::Begin("Light1")) {
+
+				if (ImGui::SliderFloat("X##Light", &m_lightPos.x, -100.f, 100.f))
+				{
+					m_lightCam->setPosition(m_lightPos);
+				}
+				if (ImGui::SliderFloat("Y##Light", &m_lightPos.y, -100.f, 100.f))
+				{
+					m_lightCam->setPosition(m_lightPos);
+				}
+				if (ImGui::SliderFloat("Z##Light", &m_lightPos.z, -100.f, 100.f))
+				{
+					m_lightCam->setPosition(m_lightPos);
+				}
+
+				if (ImGui::SliderFloat("Pitch##Light", &m_lightRot.x, -100.f, 100.f))
+				{
+					m_lightCam->setRotation(m_lightRot);
+				}
+				if (ImGui::SliderFloat("Yaw##Light", &m_lightRot.y, -100.f, 100.f))
+				{
+					m_lightCam->setRotation(m_lightRot);
+				}
+				if (ImGui::SliderFloat("Roll##Light", &m_lightRot.z, -100.f, 100.f))
+				{
+					m_lightCam->setRotation(m_lightRot);
+				}
+			}
+			
 
 			ImGui::End();
 

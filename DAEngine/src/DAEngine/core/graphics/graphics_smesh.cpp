@@ -31,7 +31,6 @@ namespace da::core
 					pScene->mMeshes[i]->mVertices[v].y,
 					pScene->mMeshes[i]->mVertices[v].z
 				};
-
 			
 				if (pScene->mMeshes[i]->HasTextureCoords(0))
 				{
