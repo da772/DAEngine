@@ -35,7 +35,8 @@ namespace da::core
 	}
 
 	bool CArgHandler::contains(const char* arg) {
-		return s_args.contains(arg);
+		return true;
+		//return s_args.contains(CString(arg));
 	}
 
 }

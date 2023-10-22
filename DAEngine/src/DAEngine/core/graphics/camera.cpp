@@ -1,7 +1,9 @@
 #include "dapch.h"
 #include "camera.h"
+#ifndef DA_TEST
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#endif
 
 namespace da::core
 {
@@ -38,6 +40,7 @@ namespace da::core
 
 	void CCamera::calculateMatrix(const Vector3f& position, const Vector3f& rotation)
 	{
+#ifndef DA_TEST
 		glm::vec3 front;
 		front.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
 		front.y = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
@@ -46,6 +49,7 @@ namespace da::core
 		glm::vec3 pos(position.x, position.y, position.z);
 
 		memcpy(m_mtx.Mtx, &glm::lookAt(pos, pos + front, {0.f,0.f,1.f})[0][0], sizeof(float)*4*4);
+#endif
 	}
 
 	void CCamera::setPosition(const Vector3f& pos)

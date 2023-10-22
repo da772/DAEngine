@@ -165,7 +165,7 @@ namespace da::platform {
 	{
 		bgfx::Init init;
 #ifdef DA_PLATFORM_WINDOWS
-		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Direct3D12;
+		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Vulkan;
 #elif defined(DA_PLATFORM_MACOSX) || defined (DA_PLATFORM_IOS)
 		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Vulkan;
 #else

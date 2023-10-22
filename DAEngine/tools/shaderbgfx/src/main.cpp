@@ -6,6 +6,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream> 
+#include <cstdio>
 
 using recursive_directory_iterator = std::filesystem::recursive_directory_iterator;
 
@@ -99,6 +100,8 @@ int main(int argc, const char* argv[])
 
 	const std::filesystem::path p(argv[1]);
 	
+	std::freopen((p.string()  + "/output.txt").c_str(), "w", stdout);
+
 	std::string timeStampPath = p.string() + "/timestamp.txt";
 	uint64_t lastRun = 0;
 	if (std::filesystem::exists(timeStampPath))
@@ -178,6 +181,9 @@ int GenerateShader(std::vector<std::string> args, const std::filesystem::directo
 	}
 	else if (fileName.find("vs") != std::string::npos) {
 		args.push_back("vertex");
+	}
+	else if (fileName.find("cs") != std::string::npos) {
+		args.push_back("compute");
 	}
 	else
 	{
