@@ -38,7 +38,10 @@ namespace da::script
 
 		std::string str;
 
-		for (unsigned index = 0; index <= top; index++)
+		if (top == 0)
+			return 0;
+
+		for (unsigned index = 1; index <= top; index++)
 		{
 			int type = lua_type(L, index);
 			switch (type)

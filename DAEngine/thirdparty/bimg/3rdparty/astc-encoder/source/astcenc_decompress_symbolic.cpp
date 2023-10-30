@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // ----------------------------------------------------------------------------
-// Copyright 2011-2022 Arm Limited
+// Copyright 2011-2023 Arm Limited
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -104,10 +104,10 @@ void unpack_weights(
 	if (!is_dual_plane)
 	{
 		// Build full 64-entry weight lookup table
-		vint4 tab0(reinterpret_cast<const int*>(scb.weights +  0));
-		vint4 tab1(reinterpret_cast<const int*>(scb.weights + 16));
-		vint4 tab2(reinterpret_cast<const int*>(scb.weights + 32));
-		vint4 tab3(reinterpret_cast<const int*>(scb.weights + 48));
+		vint4 tab0 = vint4::load(scb.weights +  0);
+		vint4 tab1 = vint4::load(scb.weights + 16);
+		vint4 tab2 = vint4::load(scb.weights + 32);
+		vint4 tab3 = vint4::load(scb.weights + 48);
 
 		vint tab0p, tab1p, tab2p, tab3p;
 		vtable_prepare(tab0, tab1, tab2, tab3, tab0p, tab1p, tab2p, tab3p);
@@ -121,8 +121,8 @@ void unpack_weights(
 			promise(max_weight_count > 0);
 			for (int j = 0; j < max_weight_count; j++)
 			{
-				vint texel_weights(di.texel_weights_4t[j] + i);
-				vint texel_weights_int(di.texel_weights_int_4t[j] + i);
+				vint texel_weights(di.texel_weights_tr[j] + i);
+				vint texel_weights_int(di.texel_weight_contribs_int_tr[j] + i);
 
 				summed_value += vtable_8bt_32bi(tab0p, tab1p, tab2p, tab3p, texel_weights) * texel_weights_int;
 			}
@@ -134,14 +134,14 @@ void unpack_weights(
 	{
 		// Build a 32-entry weight lookup table per plane
 		// Plane 1
-		vint4 tab0_plane1(reinterpret_cast<const int*>(scb.weights +  0));
-		vint4 tab1_plane1(reinterpret_cast<const int*>(scb.weights + 16));
+		vint4 tab0_plane1 = vint4::load(scb.weights +  0);
+		vint4 tab1_plane1 = vint4::load(scb.weights + 16);
 		vint tab0_plane1p, tab1_plane1p;
 		vtable_prepare(tab0_plane1, tab1_plane1, tab0_plane1p, tab1_plane1p);
 
 		// Plane 2
-		vint4 tab0_plane2(reinterpret_cast<const int*>(scb.weights + 32));
-		vint4 tab1_plane2(reinterpret_cast<const int*>(scb.weights + 48));
+		vint4 tab0_plane2 = vint4::load(scb.weights + 32);
+		vint4 tab1_plane2 = vint4::load(scb.weights + 48);
 		vint tab0_plane2p, tab1_plane2p;
 		vtable_prepare(tab0_plane2, tab1_plane2, tab0_plane2p, tab1_plane2p);
 
@@ -156,8 +156,8 @@ void unpack_weights(
 			promise(max_weight_count > 0);
 			for (int j = 0; j < max_weight_count; j++)
 			{
-				vint texel_weights(di.texel_weights_4t[j] + i);
-				vint texel_weights_int(di.texel_weights_int_4t[j] + i);
+				vint texel_weights(di.texel_weights_tr[j] + i);
+				vint texel_weights_int(di.texel_weight_contribs_int_tr[j] + i);
 
 				sum_plane1 += vtable_8bt_32bi(tab0_plane1p, tab1_plane1p, texel_weights) * texel_weights_int;
 				sum_plane2 += vtable_8bt_32bi(tab0_plane2p, tab1_plane2p, texel_weights) * texel_weights_int;

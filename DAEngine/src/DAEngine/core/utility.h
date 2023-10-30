@@ -19,7 +19,7 @@ namespace da::utility {
 
 	inline CString GetLogFileName()
 	{
-		CString s = "dumps/ConsoleLog_" + CurrentDateTime() + "_" + GetConfiguration() + ".log";
+		CString s = "dumps/ConsoleLog_" + GetConfiguration() + ".log";
 		s.replace(':', '-');
 		s.remove(' ');
 		s.remove('\n');

@@ -76,7 +76,7 @@ namespace da::platform {
 
 	void CImGuiBgfxApi::onUpdate()
 	{
-		imguiBeginFrame((uint32_t)m_mx, (uint32_t)m_my, m_mb, m_msx, m_msy, m_window->getWindowData().Width, m_window->getWindowData().Height, m_kb);
+		imguiBeginFrame((uint32_t)m_mx, (uint32_t)m_my, m_mb, m_msy, m_window->getWindowData().Width, m_window->getWindowData().Height, m_kb);
 		m_msx = 0;
 		m_msy = 0;
 		m_kb = -1;

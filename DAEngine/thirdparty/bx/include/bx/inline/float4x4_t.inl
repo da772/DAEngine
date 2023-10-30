@@ -40,15 +40,12 @@ namespace bx
 
 	BX_SIMD_INLINE void float4x4_mul(float4x4_t* _result, const float4x4_t* _a, const float4x4_t* _b)
 	{
-		/*
 #if BX_CONFIG_SUPPORTS_SIMD
 		_result->col[0] = simd_mul(_a->col[0], _b);
 		_result->col[1] = simd_mul(_a->col[1], _b);
 		_result->col[2] = simd_mul(_a->col[2], _b);
 		_result->col[3] = simd_mul(_a->col[3], _b);
 #else
-		*/
-#if 1
 		const float* aa = (const float*)_a;
 		const float* bb = (const float*)_b;
 		float *rr = (float*)_result;

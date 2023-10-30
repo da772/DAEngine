@@ -33,8 +33,9 @@ namespace da::core
 		
 		*/
 
-		LOG_INFO(ELogChannel::Graphics, "ImGui Initialized v%s", IMGUI_VERSION);
+		
 		onInitialize();
+		LOG_INFO(ELogChannel::Graphics, "ImGui Initialized v%s", IMGUI_VERSION);
 		ImGui::StyleColorsDark();
 		//ImGui::SetAllocatorFunctions(imguiAllocate, imguiDeallocate, nullptr);
 	}

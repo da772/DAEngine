@@ -3,13 +3,24 @@
 local DASMDIR = "%{getrootpath()}/dynasm"
 local DASM    = path.join(DASMDIR, "dynasm.lua")
 
+GC64 = true -- Use 64 bit GC. Only available in x64 
+FFI  = true -- Enable FFI
+
 -- Okay, so:
 -- X64 + GC64 => vm_x64
 -- X64 no GC64 => vm_x86
 -- X86 + GC64 => vm_x86
 -- X86 no GC64 => vm_x86
 local function get_dasc_filename(cfg)
-    return cfg.platform == 'x64' and GC64 and 'vm_x64.dasc' or 'vm_x86.dasc'
+	if (cfg.architecture == 'x86_64') then
+		return 'vm_x64.dasc'
+	end
+	
+	if (cfg.architecture == 'ARM64') then
+		return 'vm_arm64.dasc'
+	end
+	
+	return 'CPU: ' .. cfg.architecture .. " not supported"
 end
 
 -- Produces a command to generate `buildvm_arch.h`
