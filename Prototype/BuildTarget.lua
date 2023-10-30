@@ -81,7 +81,7 @@ project "Prototype"
 		{
 			"gdi32",
 			"kernel32",
-			"psapi"
+			"psapi",
 		}
 
 		filter "configurations:Debug"
@@ -221,7 +221,6 @@ project "Prototype"
 			}
 
 	filter "system:macosx"
-	
 		makesettings [[
 			CC = clang
 			CXX = clang++
@@ -245,6 +244,7 @@ project "Prototype"
 				"CoreVideo.framework",
 				"QuartzCore.framework",
 				"Metal.framework",
+				"lua51"
 			}
 
 			filter "action:gmake2"
@@ -298,6 +298,11 @@ project "Prototype"
 			{
 				
 				"DA_PLATFORM_LINUX",
+			}
+
+			links
+			{
+				"lua51"
 			}
 			
 			filter "configurations:Debug"

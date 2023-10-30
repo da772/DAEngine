@@ -1,6 +1,7 @@
 #pragma once
 #include "DAEngine/core/containers.h"
 
+#include <vector>
 
 namespace da
 {

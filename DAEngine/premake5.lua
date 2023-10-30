@@ -17,9 +17,22 @@ IncludeDir["bx"] = "%{wks.location}/DAEngine/thirdparty/bx/include"
 IncludeDir["bimg"] = "%{wks.location}/DAEngine/thirdparty/bimg/include"
 IncludeDir["bgfx"] = "%{wks.location}/DAEngine/thirdparty/bgfx/include"
 IncludeDir["luajit"] = "%{wks.location}/DAEngine/thirdparty/luajit/include"
+IncludeDir["lua51"] = "%{wks.location}/DAEngine/thirdparty/lua51/include"
 
 group "ThirdParty"
-filter "system:macosx"
+if os.host() == "macosx" then
+	include "thirdparty/GLFW"
+	include "thirdparty/DearImGui"
+	include "thirdparty/zlib"
+	include "thirdparty/assimp"
+	include "thirdparty/ktx"
+	include "thirdparty/bx"
+	include "thirdparty/bimg"
+	include "thirdparty/bgfx"
+	include "thirdparty/lua51"
+end
+
+if os.host() == "windows" then
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
 	include "thirdparty/zlib"
@@ -29,7 +42,9 @@ filter "system:macosx"
 	include "thirdparty/bimg"
 	include "thirdparty/bgfx"
 	include "thirdparty/luajit"
-filter "system:windows"
+end
+
+if os.host() == "linux" then
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
 	include "thirdparty/zlib"
@@ -38,17 +53,9 @@ filter "system:windows"
 	include "thirdparty/bx"
 	include "thirdparty/bimg"
 	include "thirdparty/bgfx"
-	include "thirdparty/luajit"
-filter "system:linux"
-	include "thirdparty/GLFW"
-	include "thirdparty/DearImGui"
-	include "thirdparty/zlib"
-	include "thirdparty/assimp"
-	include "thirdparty/ktx"
-	include "thirdparty/bx"
-	include "thirdparty/bimg"
-	include "thirdparty/bgfx"
-	include "thirdparty/luajit"
+	include "thirdparty/lua51"
+end
+
 group ""
 end
 
@@ -100,7 +107,7 @@ project "DAEngine"
 		"%{IncludeDir.bx}",
 		"%{IncludeDir.bimg}",
 		"%{IncludeDir.bgfx}",
-		"%{IncludeDir.luajit}"
+		"%{IncludeDir.lua51}"
 	}
 	
 	libdirs
@@ -141,7 +148,7 @@ project "DAEngine"
 			"bx",
 			"bimg",
 			"bgfx",
-			"luajit",
+			"lua51",
 			"QuartzCore.framework",
 			"Metal.framework",
 			"Cocoa.framework",
@@ -261,7 +268,7 @@ project "DAEngine"
 			"GL",
 			"pthread",
 			"X11",
-			"luajit"
+			"lua51"
 		}
 		
 		includedirs
