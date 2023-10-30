@@ -11,6 +11,8 @@
 
 #include <imgui.h>
 
+#include <daengine/script/script_engine.h>
+
 //#define WINDOW_2
 
 class ProtoTypeApp : public da::CApp {
@@ -148,7 +150,7 @@ protected:
 		if (ImGui::Begin("Object Viewer"))
 		{
 			ImGui::Text("Bolt Cutter");
-			ImGui::Text("Position");
+			ImGui::Text("Position123");
 			ImGui::SameLine();
 			if (ImGui::DragFloat3("##Position", (float*)m_boltMat->Position.data(), .1f))
 			{

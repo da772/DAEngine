@@ -37,6 +37,7 @@ Prototype/imgui.ini
 enc_temp_folder/
 .vscode/
 Makefile
+node_modules/
 
 Prototype/assets/cubemap.ktx
 *.ktx

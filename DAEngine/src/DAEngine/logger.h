@@ -30,7 +30,8 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 		Platform,
 		Application,
 		Graphics,
-		Window
+		Window,
+		Script
 	};
 
 	enum class ELogType : uint8_t
@@ -103,7 +104,7 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 		}
 		static void logInternal(CString&& message);
 
-		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "Application", "Graphics", "Window"};
+		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "Application", "Graphics", "Window", "Script"};
 		inline static const char* logTypeMap[] = { "Info", "Debug", "Warning", "Error", "Assert" };
 #ifdef DA_COLORED_OUT
 		inline static const char* colorTypeMap[] = { "\033[39m", "\033[36m", "\033[33m", "\033[31m", "\033[35m", "\033[39m" };

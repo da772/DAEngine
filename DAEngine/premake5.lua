@@ -16,6 +16,7 @@ IncludeDir["ktx"] = "%{wks.location}/DAEngine/thirdparty/ktx/include"
 IncludeDir["bx"] = "%{wks.location}/DAEngine/thirdparty/bx/include"
 IncludeDir["bimg"] = "%{wks.location}/DAEngine/thirdparty/bimg/include"
 IncludeDir["bgfx"] = "%{wks.location}/DAEngine/thirdparty/bgfx/include"
+IncludeDir["luajit"] = "%{wks.location}/DAEngine/thirdparty/luajit/include"
 
 group "ThirdParty"
 filter "system:macosx"
@@ -27,6 +28,7 @@ filter "system:macosx"
 	include "thirdparty/bx"
 	include "thirdparty/bimg"
 	include "thirdparty/bgfx"
+	include "thirdparty/luajit"
 filter "system:windows"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
@@ -36,6 +38,7 @@ filter "system:windows"
 	include "thirdparty/bx"
 	include "thirdparty/bimg"
 	include "thirdparty/bgfx"
+	include "thirdparty/luajit"
 filter "system:linux"
 	include "thirdparty/GLFW"
 	include "thirdparty/DearImGui"
@@ -45,6 +48,7 @@ filter "system:linux"
 	include "thirdparty/bx"
 	include "thirdparty/bimg"
 	include "thirdparty/bgfx"
+	include "thirdparty/luajit"
 group ""
 end
 
@@ -95,7 +99,8 @@ project "DAEngine"
 		"%{IncludeDir.ktx}",
 		"%{IncludeDir.bx}",
 		"%{IncludeDir.bimg}",
-		"%{IncludeDir.bgfx}"
+		"%{IncludeDir.bgfx}",
+		"%{IncludeDir.luajit}"
 	}
 	
 	libdirs
@@ -136,6 +141,7 @@ project "DAEngine"
 			"bx",
 			"bimg",
 			"bgfx",
+			"luajit",
 			"QuartzCore.framework",
 			"Metal.framework",
 			"Cocoa.framework",
@@ -197,7 +203,8 @@ project "DAEngine"
 			"psapi",
 			"bx",
 			"bimg",
-			"bgfx"
+			"bgfx",
+			"luajit"
 		}
 
 		buildoptions
@@ -253,7 +260,8 @@ project "DAEngine"
 			"dl",
 			"GL",
 			"pthread",
-			"X11"
+			"X11",
+			"luajit"
 		}
 		
 		includedirs

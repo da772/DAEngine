@@ -3,6 +3,7 @@
 #include "logger.h"
 #include "core/arg_handler.h"
 #include "core/memory/memory.h"
+#include "script/script_engine.h"
 
 namespace da
 {
@@ -16,6 +17,7 @@ namespace da
 
 	void CApp::initalize()
 	{
+		script::CScriptEngine::initialize();
 		for (IModule* m : m_modules) {
 			m->initalize();
 		}
@@ -25,7 +27,6 @@ namespace da
 	{
 		while (m_running)
 		{
-			
 			for (IModule* m : m_modules) {
 				m->update();
 			}
@@ -45,6 +46,7 @@ namespace da
 			m->lateShutdown();
 			delete m;
 		}
+		script::CScriptEngine::shutdown();
 	}
 
 	void CApp::addModule(IModule* module)

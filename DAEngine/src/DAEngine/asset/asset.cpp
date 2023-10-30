@@ -4,7 +4,7 @@
 
 namespace da
 {
-	CAsset::CAsset(const CString& path, EAssetFlags flags) : m_path(path), m_flags(flags)
+	CAsset::CAsset(const std::string& path, EAssetFlags flags) : m_path(path), m_flags(flags)
 	{
 		if (((uint8_t)m_flags & (uint8_t)EAssetFlags::Stream) == 0)
 		{
@@ -20,17 +20,17 @@ namespace da
 		return m_size;
 	}
 
-	const char* const CAsset::data()
+	const char* CAsset::data()
 	{
 		if (!m_hasData)
 		{
 			retrieveData();
 		}
 
-		return m_data.data();
+		return &m_data[0];
 	}
 
-	const CString CAsset::path() const
+	const std::string CAsset::path() const
 	{
 		return m_path;
 	}
@@ -38,19 +38,19 @@ namespace da
 	void CAsset::retrieveData()
 	{
 		m_hasData = true;
-		FILE* f = fopen(m_path.cstr(), "rb");
+		FILE* f = fopen(m_path.c_str(), "rb");
 		fseek(f, 0, SEEK_END);
 		m_size = ftell(f);
 		fseek(f, 0, SEEK_SET);
 
-		m_data = TArray<char, memory::CAssetAllocator>(m_size + 1);
+		m_data = std::vector<char>(m_size + 1);
 		fread(m_data.data(), m_size, 1, f);
 		fclose(f);
 	}
 
 	void CAsset::retrieveInfo()
 	{
-		FILE* f = fopen(m_path.cstr(), "rb");
+		FILE* f = fopen(m_path.c_str(), "rb");
 		fseek(f, 0, SEEK_END);
 		m_size = ftell(f);
 		fseek(f, 0, SEEK_SET);

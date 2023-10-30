@@ -58,7 +58,7 @@ namespace da::platform
 		bgfx::destroy(m_lightBuffer);
 	}
 
-	constexpr const uint32_t CBgfxPipelineLight::renderId() const
+	const uint32_t CBgfxPipelineLight::renderId() const
 	{
 		return 153;
 	}

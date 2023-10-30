@@ -68,7 +68,7 @@ namespace da::platform {
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputKeyboard, BIND_EVENT_FN(CImGuiBgfxApi, onKeyboard));
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputMouseScroll, BIND_EVENT_FN(CImGuiBgfxApi, onMouseScroll));
-		imguiCreate(18.f, (bx::AllocatorI*)m_allocator);
+		imguiCreate();
 
 		m_enableDemo = da::core::CArgHandler::contains("imguidemo");
 		m_enableMemory = da::core::CArgHandler::contains("memvis");

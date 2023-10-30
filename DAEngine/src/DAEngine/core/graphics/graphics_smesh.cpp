@@ -13,7 +13,7 @@ namespace da::core
 {
 	CStaticMesh::CStaticMesh(const CBasicString<memory::CGraphicsAllocator>& path) : m_path(path)
 	{
-		CAsset file(path);
+		CAsset file(path.cstr());
 #if !defined(DA_TEST)
 		Assimp::Importer importer;
 	

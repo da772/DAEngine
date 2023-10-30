@@ -9,6 +9,7 @@
 #include "bgfx_graphics_test_01.h"
 #include "bgfx_graphics_test_02.h"
 #include "bgfx_graphics_test_03.h"
+#include "DAEngine/script/script_engine.h"
 
 namespace da::platform {
 
@@ -72,6 +73,15 @@ namespace da::platform {
 
             ImGui::End();
         }
+
+		if (ImGui::Begin("Script Loader"))
+		{
+			if (ImGui::Button("Reload!")) {
+				da::script::CScriptEngine::load_script("scripts/helloworld.lua");
+			}
+		}
+
+		ImGui::End();
 
         if (m_test) s_testCreate[m_testIndex].Render(m_test);
     }

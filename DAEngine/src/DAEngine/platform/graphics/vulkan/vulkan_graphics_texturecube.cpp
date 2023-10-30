@@ -34,7 +34,7 @@ namespace da::platform {
 	{
 		ktxResult result;
 		
-		CAsset file(m_path);
+		CAsset file(m_path.cstr());
 
 		ktxTexture_CreateFromMemory((const ktx_uint8_t*)file.data(), (ktx_size_t)file.size(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &m_ktxTexture);
 		

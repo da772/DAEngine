@@ -19,7 +19,7 @@ namespace da::platform {
 
 	}
 
-	constexpr const uint32_t CBgfxPipelineGBuffer::renderId() const
+	const uint32_t CBgfxPipelineGBuffer::renderId() const
 	{
 		return 155;
 	}

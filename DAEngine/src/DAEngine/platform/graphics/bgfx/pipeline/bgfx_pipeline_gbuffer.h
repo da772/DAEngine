@@ -17,7 +17,7 @@ namespace da::platform {
 		CBgfxPipelineGBuffer();
 		void initialize();
 		void shutdown();
-		constexpr const uint32_t renderId() const;
+		const uint32_t renderId() const;
 		const CBgfxGraphicsMaterial* getMaterial() const;
 		bgfx::TextureHandle getNormalTexture() const;
 		bgfx::TextureHandle getColorTexture() const;

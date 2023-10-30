@@ -62,7 +62,7 @@ namespace da::platform {
 
 	void CBgfxGraphicsMaterial::initialize()
 	{
-		CAsset vs(m_vsPath), fs(m_fsPath);
+		CAsset vs(m_vsPath.cstr()), fs(m_fsPath.cstr());
 
 		const bgfx::Memory* vsM = bgfx::copy(vs.data(), (uint32_t)(vs.size() + 1ull));
 		const bgfx::Memory* fsM = bgfx::copy(fs.data(), (uint32_t)(fs.size() + 1ull));

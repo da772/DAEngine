@@ -51,7 +51,7 @@ void* reallocate(void* ptr, size_t size)
 	return (void*)&np[1];
 }
 
-#ifndef DA_UNIX
+#ifdef DA_UNIX
 void* operator new(size_t size)
 {
     return allocate(size);
