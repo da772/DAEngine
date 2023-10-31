@@ -3,7 +3,6 @@
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
-#include <stdint.h>
 #include "shaderc.h"
 #include <bx/commandline.h>
 #include <bx/filepath.h>
@@ -91,8 +90,8 @@ namespace bgfx
 	struct Profile
 	{
 		ShadingLang::Enum lang;
-		uint32_t    id;
-		const char* name;
+		uint32_t id;
+		const bx::StringLiteral name;
 	};
 
 	static const Profile s_profiles[] =
@@ -1037,11 +1036,11 @@ namespace bgfx
 				{
 					lang = profile.lang;
 					bx::printf("\n");
-					bx::printf("           %-20s %s\n", profile.name, getName(profile.lang) );
+					bx::printf("           %-20S %s\n", &profile.name, getName(profile.lang) );
 				}
 				else
 				{
-					bx::printf("           %s\n", profile.name);
+					bx::printf("           %S\n", &profile.name);
 				}
 
 			}
@@ -1076,41 +1075,37 @@ namespace bgfx
 		return word;
 	}
 
-	bool compileShaderEx(const char* _varying, const char* _comment, char* _shader, uint32_t _shaderLen, Options& _options, bx::WriterI* _shaderWriter, bx::WriterI* _messageWriter)
+	bool compileShader(const char* _varying, const char* _comment, char* _shader, uint32_t _shaderLen, const Options& _options, bx::WriterI* _shaderWriter, bx::WriterI* _messageWriter)
 	{
 		bx::ErrorAssert messageErr;
 
-		uint32_t profile_id = 0;
+		uint32_t profileId = 0;
 
-		const char* profile_opt = _options.profile.c_str();
-		if ('\0' != profile_opt[0])
+		const bx::StringView profileOpt(_options.profile.c_str() );
+		if (!profileOpt.isEmpty() )
 		{
 			const uint32_t count = BX_COUNTOF(s_profiles);
-			for (profile_id=0; profile_id<count; profile_id++ )
+			for (profileId = 0; profileId < count; ++profileId)
 			{
-				if (0 == bx::strCmp(profile_opt, s_profiles[profile_id].name) )
+				if (0 == bx::strCmp(profileOpt, s_profiles[profileId].name) )
 				{
-					break;
-				}
-				else if (s_profiles[profile_id].lang == ShadingLang::HLSL
-					 &&  0 == bx::strCmp(&profile_opt[1], s_profiles[profile_id].name) )
-				{
-					// This test is here to allow hlsl profile names e.g:
-					// cs_4_0, gs_5_0, etc...
-					// There's no check to ensure that the profile name matches the shader type set via the cli.
-					// This means that you can pass `hs_5_0` when compiling a fragment shader.
 					break;
 				}
 			}
 
-			if (profile_id == count)
+			if (profileId == count)
 			{
-				bx::write(_messageWriter, &messageErr, "Unknown profile: %s\n", profile_opt);
+				bx::write(_messageWriter, &messageErr, "Unknown profile: %S\n", &profileOpt);
 				return false;
 			}
 		}
+		else
+		{
+			bx::write(_messageWriter, &messageErr, "Shader profile must be specified.\n");
+			return false;
+		}
 
-		const Profile *profile = &s_profiles[profile_id];
+		const Profile* profile = &s_profiles[profileId];
 
 		Preprocessor preprocessor(_options.inputFilePath.c_str(), profile->lang == ShadingLang::ESSL, _messageWriter);
 
@@ -1153,17 +1148,17 @@ namespace bgfx
 		||  profile->lang == ShadingLang::ESSL)
 		{
 			bx::snprintf(glslDefine, BX_COUNTOF(glslDefine)
-					, "BGFX_SHADER_LANGUAGE_GLSL=%d"
-					, profile->id
-					);
+				, "BGFX_SHADER_LANGUAGE_GLSL=%d"
+				, profile->id
+				);
 		}
 
 		char hlslDefine[128];
 		if (profile->lang == ShadingLang::HLSL)
 		{
 			bx::snprintf(hlslDefine, BX_COUNTOF(hlslDefine)
-					, "BGFX_SHADER_LANGUAGE_HLSL=%d"
-					, profile->id);
+				, "BGFX_SHADER_LANGUAGE_HLSL=%d"
+				, profile->id);
 		}
 
 		const char* platform = _options.platform.c_str();
@@ -1854,7 +1849,12 @@ namespace bgfx
 						const bool hasFragCoord   = !bx::strFind(input, "gl_FragCoord").isEmpty() || profile->id >= 400;
 						const bool hasFragDepth   = !bx::strFind(input, "gl_FragDepth").isEmpty();
 						const bool hasFrontFacing = !bx::strFind(input, "gl_FrontFacing").isEmpty();
-						const bool hasPrimitiveId = !bx::strFind(input, "gl_PrimitiveID").isEmpty();
+						const bool hasPrimitiveId = !bx::strFind(input, "gl_PrimitiveID").isEmpty() && BGFX_CAPS_PRIMITIVE_ID;
+
+						if (!hasPrimitiveId)
+						{
+							preprocessor.writef("#define gl_PrimitiveID 0\n");
+						}
 
 						bool hasFragData[8] = {};
 						uint32_t numFragData = 0;
@@ -2230,7 +2230,7 @@ namespace bgfx
 								const bool usesTextureArray       = !bx::findIdentifierMatch(input, s_textureArray).isEmpty();
 								const bool usesPacking            = !bx::findIdentifierMatch(input, s_ARB_shading_language_packing).isEmpty();
 								const bool usesViewportLayerArray = !bx::findIdentifierMatch(input, s_ARB_shader_viewport_layer_array).isEmpty();
-								const bool usesUnsignedVecs        = !bx::findIdentifierMatch(preprocessedInput, s_unsignedVecs).isEmpty();
+								const bool usesUnsignedVecs       = !bx::findIdentifierMatch(preprocessedInput, s_unsignedVecs).isEmpty();
 
 								if (profile->lang != ShadingLang::ESSL)
 								{
@@ -2242,7 +2242,6 @@ namespace bgfx
 										) );
 
 									bx::stringPrintf(code, "#version %d\n", need130 ? 130 : glsl_profile);
-									glsl_profile = 130;
 
 									if (need130)
 									{
@@ -2366,7 +2365,8 @@ namespace bgfx
 								}
 								else
 								{
-									if ((glsl_profile < 300) && usesUnsignedVecs)
+									if (glsl_profile < 300
+									&&  usesUnsignedVecs)
 									{
 										glsl_profile = 300;
 									}
@@ -2613,7 +2613,7 @@ namespace bgfx
 		return compiled;
 	}
 
-	int compileShader(int _argc, const char** _argv)
+	int compileShader(int _argc, const char* _argv[])
 	{
 		bx::CommandLine cmdLine(_argc, _argv);
 
@@ -2844,7 +2844,7 @@ namespace bgfx
 				}
 			}
 
-			compiled = compileShaderEx(varying, commandLineComment.c_str(), data, size, options, consoleOut ? bx::getStdOut() : writer, bx::getStdOut());
+			compiled = compileShader(varying, commandLineComment.c_str(), data, size, options, consoleOut ? bx::getStdOut() : writer, bx::getStdOut());
 
 			if (!consoleOut)
 			{

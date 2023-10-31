@@ -45,3 +45,4 @@ Prototype/assets/cubemap.ktx
 Prototype/shaders/timestamp.txt
 *.obj
 *.pdb
+Prototype/shaders/output.txt
