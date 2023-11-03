@@ -12,7 +12,7 @@ namespace da::platform
 		CVulkanGraphicsPipelineCubemap(da::core::CGraphicsApi& pipeline);
 
 	protected:
-		TArray<VkDescriptorSetLayoutBinding> addDescriptorSets() override;
+		std::vector<VkDescriptorSetLayoutBinding> addDescriptorSets() override;
 		virtual void updateRasterizer(VkPipelineRasterizationStateCreateInfo& rasterizer) override;
 		virtual void updateDepthStencil(VkPipelineDepthStencilStateCreateInfo& depthStencil) override;
 	};

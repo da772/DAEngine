@@ -6,7 +6,7 @@
 #include "vulkan_graphics_material.h"
 
 namespace da::platform {
-	static TList<char> readFile(const std::string& filename) {
+	static std::vector<char> readFile(const std::string& filename) {
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
 		if (!file.is_open()) {
@@ -14,7 +14,7 @@ namespace da::platform {
 		}
 
 		size_t fileSize = (size_t)file.tellg();
-		TList<char> buffer(fileSize);
+		std::vector<char> buffer(fileSize);
 
 		file.seekg(0);
 		file.read(buffer.data(), fileSize);
@@ -25,8 +25,8 @@ namespace da::platform {
 	}
 
 
-	CVulkanGraphicsPipeline::CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const CBasicString<memory::CGraphicsAllocator>& vertexShader, const CBasicString<memory::CGraphicsAllocator>& fragShader, core::FVertexBindingDescription vertexBinding,
-		const TArray<core::FVertexInputAttributeDescription, memory::CGraphicsAllocator>& inputAttribDesc) :
+	CVulkanGraphicsPipeline::CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const std::string& vertexShader, const std::string& fragShader, core::FVertexBindingDescription vertexBinding,
+		const std::vector<core::FVertexInputAttributeDescription>& inputAttribDesc) :
 		core::CGraphicsPipeline(graphicsApi, vertexShader, fragShader, vertexBinding, inputAttribDesc), m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
 	{
 		
@@ -49,7 +49,7 @@ namespace da::platform {
 		m_initialized = false;
 	}
 
-	VkShaderModule CVulkanGraphicsPipeline::createShaderModule(const TList<char, memory::CGraphicsAllocator>& code, VkDevice device) {
+	VkShaderModule CVulkanGraphicsPipeline::createShaderModule(const std::vector<char>& code, VkDevice device) {
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.codeSize = code.size();
@@ -68,7 +68,7 @@ namespace da::platform {
 		VkDescriptorSetLayoutBinding samplerLayoutBinding{};
 		
 
-		TArray<VkDescriptorSetLayoutBinding> bindings = addDescriptorSets();
+		std::vector<VkDescriptorSetLayoutBinding> bindings = addDescriptorSets();
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
@@ -79,7 +79,7 @@ namespace da::platform {
 		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create DescriptorSetLayout");
 	}
 
-	TArray<VkDescriptorSetLayoutBinding> CVulkanGraphicsPipeline::addDescriptorSets()
+	std::vector<VkDescriptorSetLayoutBinding> CVulkanGraphicsPipeline::addDescriptorSets()
 	{
 
 		VkDescriptorSetLayoutBinding uboLayoutBinding = {};
@@ -101,8 +101,8 @@ namespace da::platform {
 
 	void CVulkanGraphicsPipeline::createGraphicsPipeline()
 	{
-		auto vertShaderCode = readFile(m_vertexShaderPath.cstr());
-		auto fragShaderCode = readFile(m_fragShaderPath.cstr());
+		auto vertShaderCode = readFile(m_vertexShaderPath.c_str());
+		auto fragShaderCode = readFile(m_fragShaderPath.c_str());
 
 		VkShaderModule vertShaderModule = createShaderModule(vertShaderCode, m_vulkanGraphicsApi.getDevice());
 		VkShaderModule fragShaderModule = createShaderModule(fragShaderCode, m_vulkanGraphicsApi.getDevice());
@@ -203,7 +203,7 @@ namespace da::platform {
 		colorBlending.blendConstants[2] = 0.0f; // Optional
 		colorBlending.blendConstants[3] = 0.0f; // Optional
 
-		TArray<VkDynamicState> dynamicStates = {
+		std::vector<VkDynamicState> dynamicStates = {
 			VK_DYNAMIC_STATE_VIEWPORT,
 			VK_DYNAMIC_STATE_LINE_WIDTH
 		};

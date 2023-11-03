@@ -4,9 +4,9 @@
 
 namespace da::utility {
 
-	CString CurrentDateTime();
+	std::string CurrentDateTime();
 
-	inline CString GetConfiguration()
+	inline std::string GetConfiguration()
 	{
 #ifdef DA_DEBUG
 		return "DEBUG";
@@ -17,12 +17,9 @@ namespace da::utility {
 #endif
 	}
 
-	inline CString GetLogFileName()
+	inline std::string GetLogFileName()
 	{
-		CString s = "dumps/ConsoleLog_" + GetConfiguration() + ".log";
-		s.replace(':', '-');
-		s.remove(' ');
-		s.remove('\n');
+		std::string s = "dumps/ConsoleLog_" + GetConfiguration() + ".log";
 		return s;
 	}
 

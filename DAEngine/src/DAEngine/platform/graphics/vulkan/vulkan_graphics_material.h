@@ -35,19 +35,19 @@ namespace da::platform
 		virtual void shutdown() override;
 		void render(VkCommandBuffer& commandBuffer, int frame);
 
-		inline const TArray<VkDescriptorSet, memory::CGraphicsAllocator>& getDescriptorSets() const {return m_descriptorSets;};
+		inline const std::vector<VkDescriptorSet>& getDescriptorSets() const {return m_descriptorSets;};
 		
 	protected:
-		virtual TArray<VkDescriptorPoolSize, memory::CGraphicsAllocator> getDescriptorPools();
+		virtual std::vector<VkDescriptorPoolSize> getDescriptorPools();
 		virtual void getDescriptorSet(int frame);
 
 		CVulkanGraphicsPipeline& m_vulkanPipeline;
 		CVulkanGraphicsApi& m_vulkanApi;
-		TList<VkBuffer, memory::CGraphicsAllocator> m_uniformBuffers;
-		TList<VkBuffer, memory::CGraphicsAllocator> m_lightUniformBuffers;
-		TArray<VkDescriptorSet, memory::CGraphicsAllocator> m_descriptorSets;
-		TList<VkDeviceMemory, memory::CGraphicsAllocator> m_uniformBuffersMemory;
-		TList<VkDeviceMemory, memory::CGraphicsAllocator> m_lightBuffersMemory;
+		std::vector<VkBuffer> m_uniformBuffers;
+		std::vector<VkBuffer> m_lightUniformBuffers;
+		std::vector<VkDescriptorSet> m_descriptorSets;
+		std::vector<VkDeviceMemory> m_uniformBuffersMemory;
+		std::vector<VkDeviceMemory> m_lightBuffersMemory;
 
 	private:
 		VkDescriptorPool m_descriptorPool;

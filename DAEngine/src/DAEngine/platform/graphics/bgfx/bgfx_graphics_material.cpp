@@ -11,9 +11,9 @@ namespace da::platform {
 
 
 
-	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial(const CString& vsPath, const CString& fsPath) : m_vsPath(vsPath), m_fsPath(fsPath)
+	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial(const std::string& vsPath, const std::string& fsPath) : m_vsPath(vsPath), m_fsPath(fsPath)
 	{
-		CString platform;
+		std::string platform;
 #ifdef DA_PLATFORM_WINDOWS
 		platform = "windows";
 #elif defined(DA_PLATFORM_MACOSX)
@@ -46,14 +46,14 @@ namespace da::platform {
 
 		for (size_t i = m_vsPath.size() - 1; i >= 0; i--) {
 			if (m_vsPath[i] == '\\' || m_vsPath[i] == '/') {
-				m_vsPath.insert(platform + "/", i + 1);
+				m_vsPath.insert(i + 1, platform + "/");
 				break;
 			}
 		}
 
 		for (size_t i = m_fsPath.size() - 1; i >= 0; i--) {
 			if (m_fsPath[i] == '\\' || m_fsPath[i] == '/') {
-				m_fsPath.insert(platform + "/", i + 1);
+				m_fsPath.insert(i + 1, platform + "/");
 				break;
 			}
 		}
@@ -62,16 +62,16 @@ namespace da::platform {
 
 	void CBgfxGraphicsMaterial::initialize()
 	{
-		CAsset vs(m_vsPath.cstr()), fs(m_fsPath.cstr());
+		CAsset vs(m_vsPath.c_str()), fs(m_fsPath.c_str());
 
 		const bgfx::Memory* vsM = bgfx::copy(vs.data(), (uint32_t)(vs.size() + 1ull));
 		const bgfx::Memory* fsM = bgfx::copy(fs.data(), (uint32_t)(fs.size() + 1ull));
 
 		bgfx::ShaderHandle handle1 = bgfx::createShader(vsM);
-		bgfx::setName(handle1, m_vsPath.cstr());
+		bgfx::setName(handle1, m_vsPath.c_str());
 
 		bgfx::ShaderHandle handle2 = bgfx::createShader(fsM);
-		bgfx::setName(handle2, m_fsPath.cstr());
+		bgfx::setName(handle2, m_fsPath.c_str());
 
 		m_program = bgfx::createProgram(handle1, handle2, true).idx;
 	}

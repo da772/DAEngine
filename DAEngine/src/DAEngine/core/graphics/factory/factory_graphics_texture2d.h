@@ -6,6 +6,6 @@ namespace da::core
 	class CTexture2DFactory
 	{
 	public:
-		static CGraphicsTexture2D* Create(const CString& path, CGraphicsApi& graphicsApi);
+		static CGraphicsTexture2D* Create(const std::string& path, CGraphicsApi& graphicsApi);
 	};
 }

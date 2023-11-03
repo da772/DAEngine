@@ -3,23 +3,15 @@
 #include "util/logger.h"
 #include "util/utility.h"
 
-#include "DAEngine/core/containers/array_test.h"
-#include "DAEngine/core/containers/list_test.h"
-#include "DAEngine/core/containers/string_test.h"
 #include "DAEngine/core/maths/hashstring_test.h"
 #include "DAEngine/core/maths/maths_test.h"
 #include "DAEngine/core/maths/vector_test.h"
 #include "DAEngine/core/guid_test.h"
-#include "DAEngine/core/memory/memory_test.h"
 #include "DAEngine/app_test.h"
 
 
 CTestManager::CTestManager()
 {
-	RegisterTest<CMemoryTest>();
-	RegisterTest<CArrayTest>();
-	RegisterTest<CListTest>();
-	RegisterTest<CStringTest>();
 	RegisterTest<CMathsTest>();
 	RegisterTest<CVectorTest>();
 	RegisterTest<CHashStringTest>();

@@ -19,8 +19,8 @@ namespace da
 	{
 		if (!s_logger)
 			s_logger = new CLogger();
-		s_logger->m_file = fopen(utility::GetLogFileName().cstr(), "w");
-		//CLogger::s_outFile = std::ofstream(utility::GetLogFileName().cstr(), std::ofstream::out);
+		s_logger->m_file = fopen(utility::GetLogFileName().c_str(), "w");
+		//CLogger::s_outFile = std::ofstream(utility::GetLogFileName().c_str(), std::ofstream::out);
 	}
 
 	void CLogger::shutdown()
@@ -35,14 +35,14 @@ namespace da
 		//CLogger::s_outFile.close();
 	}
 
-	void CLogger::logInternal(CString&& message)
+	void CLogger::logInternal(std::string&& message)
 	{
 		/*
 		std::regex match_str = std::regex("\033[[][0-9][0-9][m]?");
 		std::stringstream result;
 		std::regex_replace(std::ostream_iterator<char>(result), message.begin().get(), (char*)&message[message.size()-1], match_str, "");
 		*/
-		printf(message.cstr());
+		printf(message.c_str());
 		
 #ifdef DA_COLORED_OUT
 		/* Remove colored artifacts
@@ -53,12 +53,12 @@ namespace da
 #endif
 
 		if (s_logger->m_file) {
-			fputs(message.cstr(), s_logger->m_file);
+			fputs(message.c_str(), s_logger->m_file);
 			fflush(s_logger->m_file);
 		}
 		
 #ifdef DA_PLATFORM_WINDOWS
-		OutputDebugStringA(message.cstr());
+		OutputDebugStringA(message.c_str());
 #endif
 		
 		//CLogger::s_outFile << result.str();

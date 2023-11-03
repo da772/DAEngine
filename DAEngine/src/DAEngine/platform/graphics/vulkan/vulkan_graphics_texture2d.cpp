@@ -7,11 +7,11 @@
 #include <stb_image.h>
 #include <algorithm>
 #include <cmath>
-#include "core/memory/memory.h"
+
 
 namespace da::platform
 {
-	CVulkanGraphicsTexture2D::CVulkanGraphicsTexture2D(const CBasicString<memory::CGraphicsAllocator>& path, core::CGraphicsApi& graphicsApi) : core::CGraphicsTexture2D(path, graphicsApi)
+	CVulkanGraphicsTexture2D::CVulkanGraphicsTexture2D(const std::string& path, core::CGraphicsApi& graphicsApi) : core::CGraphicsTexture2D(path, graphicsApi)
 		, m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
 	{
 	}
@@ -40,7 +40,7 @@ namespace da::platform
 
 	void CVulkanGraphicsTexture2D::createTexture()
 	{
-		stbi_uc* pixels = stbi_load(m_path.cstr(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);
+		stbi_uc* pixels = stbi_load(m_path.c_str(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);
 
 		m_mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(m_width, m_height)))) + 1;
 
@@ -120,7 +120,7 @@ namespace da::platform
 
 		auto result = vkCreateImage(m_vulkanGraphicsApi.getDevice(), &imageInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &image);
 
-		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create image: %s", m_path.cstr());
+		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create image: %s", m_path.c_str());
 
 		VkMemoryRequirements memRequirements;
 		vkGetImageMemoryRequirements(m_vulkanGraphicsApi.getDevice(), image, &memRequirements);
@@ -132,7 +132,7 @@ namespace da::platform
 
 		result = vkAllocateMemory(m_vulkanGraphicsApi.getDevice(), &allocInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &imageMemory);
 
-		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to allocated memory for image: %s", m_path.cstr());
+		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to allocated memory for image: %s", m_path.c_str());
 
 		vkBindImageMemory(m_vulkanGraphicsApi.getDevice(), image, imageMemory, 0);
 	}
@@ -253,7 +253,7 @@ namespace da::platform
 
 		auto result = vkCreateSampler(m_vulkanGraphicsApi.getDevice(), &samplerInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &m_textureSampler);
 
-		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create texture sampler: %s", m_path.cstr());
+		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create texture sampler: %s", m_path.c_str());
 	}
 
 	void CVulkanGraphicsTexture2D::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels)

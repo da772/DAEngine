@@ -10,7 +10,7 @@ namespace da::platform
 	class CVulkanGraphicsTexture2D : public core::CGraphicsTexture2D
 	{
 	public:
-		CVulkanGraphicsTexture2D(const CBasicString<memory::CGraphicsAllocator>& path, core::CGraphicsApi& graphicsApi);
+		CVulkanGraphicsTexture2D(const std::string& path, core::CGraphicsApi& graphicsApi);
 		~CVulkanGraphicsTexture2D();
 
 		void initialize();

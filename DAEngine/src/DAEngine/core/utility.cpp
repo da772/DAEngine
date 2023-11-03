@@ -7,7 +7,7 @@
 
 namespace da::utility
 {
-	CString CurrentDateTime()
+	std::string CurrentDateTime()
 	{
 		char buffer[2048];
 		time_t ltime = time(NULL);
@@ -17,7 +17,7 @@ namespace da::utility
         sprintf_s(buffer, sizeof(buffer), "%s", asctime(localtime(&ltime)));
 #endif
 
-		return CString(buffer);
+		return std::string(buffer);
 	}
 
 	uint64_t GetTimeUS()

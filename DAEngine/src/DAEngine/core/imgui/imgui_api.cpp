@@ -6,20 +6,17 @@
 
 #include <imgui.h>
 #include "logger.h"
-#include "core/memory/memory_scope.h"
 
 namespace da::core
 {
 	void* imguiAllocate(size_t sz, void* user_data)
 	{
-		memory::CMemoryScope scope(memory::EMemoryLayer::ImGui);
-		void* ptr = allocate(sz);
+		void* ptr = malloc(sz);
 		return ptr;
 	}
 
 	void imguiDeallocate(void* ptr, void* user_data) {
-		memory::CMemoryScope scope(memory::EMemoryLayer::ImGui);
-		deallocate(ptr);
+		free(ptr);
 	}
 
 	void CImGuiApi::initialize()

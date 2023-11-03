@@ -8,17 +8,17 @@ namespace da::platform
 	{
 	public:
 		CVulkanGraphicsMaterialPBR(da::core::CGraphicsPipeline& pipeline
-			, const CBasicString <da::memory::CGraphicsAllocator>& albedo
-			, const CBasicString <da::memory::CGraphicsAllocator>& normal
-			, const CBasicString <da::memory::CGraphicsAllocator>& roughness
-			, const CBasicString <da::memory::CGraphicsAllocator>& metallic
-			, const CBasicString <da::memory::CGraphicsAllocator>& ao);
+			, const std::string& albedo
+			, const std::string& normal
+			, const std::string& roughness
+			, const std::string& metallic
+			, const std::string& ao);
 
 		virtual void initialize() override;
 		virtual void shutdown() override;
 		virtual void update(int frame) override;
 
-		virtual TArray<VkDescriptorPoolSize, memory::CGraphicsAllocator> getDescriptorPools() override;
+		virtual std::vector<VkDescriptorPoolSize> getDescriptorPools() override;
 		virtual void getDescriptorSet(int frame) override;
 
 	private:

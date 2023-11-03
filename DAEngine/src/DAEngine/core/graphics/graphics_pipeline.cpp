@@ -4,8 +4,8 @@
 namespace da::core
 {
 
-	CGraphicsPipeline::CGraphicsPipeline(CGraphicsApi& graphicsApi, const CString& vertexShaderPath, const CString& fragShaderPath, FVertexBindingDescription vertexBinding, 
-		const TArray<FVertexInputAttributeDescription>& inputAttribDesc) :
+	CGraphicsPipeline::CGraphicsPipeline(CGraphicsApi& graphicsApi, const std::string& vertexShaderPath, const std::string& fragShaderPath, FVertexBindingDescription vertexBinding, 
+		const std::vector<FVertexInputAttributeDescription>& inputAttribDesc) :
 		
 		 m_vertexShaderPath(vertexShaderPath)
 		,m_fragShaderPath(fragShaderPath)

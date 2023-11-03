@@ -91,9 +91,9 @@ namespace da::platform
 		}
 	}
 
-	da::core::containers::TArray<VkDescriptorPoolSize, da::memory::CGraphicsAllocator> CVulkanGraphicsMaterial::getDescriptorPools()
+	std::vector<VkDescriptorPoolSize> CVulkanGraphicsMaterial::getDescriptorPools()
 	{
-		TArray<VkDescriptorPoolSize, memory::CGraphicsAllocator> poolSizes(2);
+		std::vector<VkDescriptorPoolSize> poolSizes(2);
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		poolSizes[0].descriptorCount = static_cast<uint32_t>(m_vulkanApi.MAX_FRAMES_IN_FLIGHT);
 		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -103,7 +103,7 @@ namespace da::platform
 
 	void CVulkanGraphicsMaterial::createDescriptorPools()
 	{
-		TArray<VkDescriptorPoolSize, memory::CGraphicsAllocator> poolSizes = getDescriptorPools();
+		std::vector<VkDescriptorPoolSize> poolSizes = getDescriptorPools();
 
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -123,7 +123,7 @@ namespace da::platform
 
 	void CVulkanGraphicsMaterial::createDescriptorSets()
 	{
-		TArray<VkDescriptorSetLayout, memory::CGraphicsAllocator> layouts(m_vulkanApi.MAX_FRAMES_IN_FLIGHT, m_vulkanPipeline.getDescriptorSetLayout());
+		std::vector<VkDescriptorSetLayout> layouts(m_vulkanApi.MAX_FRAMES_IN_FLIGHT, m_vulkanPipeline.getDescriptorSetLayout());
 		VkDescriptorSetAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 		allocInfo.descriptorPool = m_descriptorPool;
@@ -138,7 +138,7 @@ namespace da::platform
 
 		for (size_t i = 0; i < m_vulkanApi.MAX_FRAMES_IN_FLIGHT; i++) {
 
-			TArray<VkWriteDescriptorSet, memory::CGraphicsAllocator> descriptorWrites;
+			std::vector<VkWriteDescriptorSet> descriptorWrites;
 			getDescriptorSet(i);
 		}
 

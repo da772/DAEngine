@@ -5,7 +5,7 @@
 
 namespace da::platform
 {
-	static TArray<da::core::FVertexInputAttributeDescription> getAttributeDescriptions();
+	static std::vector<da::core::FVertexInputAttributeDescription> getAttributeDescriptions();
 	static da::core::FVertexBindingDescription getBindingDescriptions();
 
 	CVulkanGraphicsPipelineCubemap::CVulkanGraphicsPipelineCubemap(da::core::CGraphicsApi& pipeline) :
@@ -28,9 +28,9 @@ namespace da::platform
 		return result;
 	}
 
-	TArray<da::core::FVertexInputAttributeDescription> getAttributeDescriptions()
+	std::vector<da::core::FVertexInputAttributeDescription> getAttributeDescriptions()
 	{
-		TArray<da::core::FVertexInputAttributeDescription> attributeDescriptions(1);
+		std::vector<da::core::FVertexInputAttributeDescription> attributeDescriptions(1);
 		// Position
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;
@@ -40,7 +40,7 @@ namespace da::platform
 		return attributeDescriptions;
 	}
 
-	TArray<VkDescriptorSetLayoutBinding> CVulkanGraphicsPipelineCubemap::addDescriptorSets()
+	std::vector<VkDescriptorSetLayoutBinding> CVulkanGraphicsPipelineCubemap::addDescriptorSets()
 	{
 		VkDescriptorSetLayoutBinding uboLayoutBinding = {};
 		uboLayoutBinding.binding = 0;

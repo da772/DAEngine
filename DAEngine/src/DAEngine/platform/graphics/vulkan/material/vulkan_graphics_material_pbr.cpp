@@ -10,11 +10,11 @@
 namespace da::platform
 {
 	CVulkanGraphicsMaterialPBR::CVulkanGraphicsMaterialPBR(da::core::CGraphicsPipeline& pipeline
-		, const CBasicString <da::memory::CGraphicsAllocator>& albedo
-		, const CBasicString <da::memory::CGraphicsAllocator>& normal
-		, const CBasicString <da::memory::CGraphicsAllocator>& roughness
-		, const CBasicString <da::memory::CGraphicsAllocator>& metallic
-		, const CBasicString <da::memory::CGraphicsAllocator>& ao)
+		, const std::string& albedo
+		, const std::string& normal
+		, const std::string& roughness
+		, const std::string& metallic
+		, const std::string& ao)
 		: CVulkanGraphicsMaterial(pipeline)
 		, m_albedo(CVulkanGraphicsTexture2D(albedo, pipeline.getGraphicsApi()))
 		, m_normal(CVulkanGraphicsTexture2D(normal, pipeline.getGraphicsApi()))
@@ -116,9 +116,9 @@ namespace da::platform
 		
 	}
 
-	da::core::containers::TArray<VkDescriptorPoolSize, da::memory::CGraphicsAllocator> CVulkanGraphicsMaterialPBR::getDescriptorPools()
+	std::vector<VkDescriptorPoolSize> CVulkanGraphicsMaterialPBR::getDescriptorPools()
 	{
-		TArray<VkDescriptorPoolSize, memory::CGraphicsAllocator> poolSizes(3);
+		std::vector<VkDescriptorPoolSize> poolSizes(3);
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		poolSizes[0].descriptorCount = static_cast<uint32_t>(m_vulkanApi.MAX_FRAMES_IN_FLIGHT);
 		poolSizes[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -160,7 +160,7 @@ namespace da::platform
 		aoImageInfo.imageView = m_ao.getTextureImageView();
 		aoImageInfo.sampler = m_ao.getTextureImageSampler();
 
-		TList<VkWriteDescriptorSet, memory::CGraphicsAllocator> descriptorWrites;
+		std::vector<VkWriteDescriptorSet> descriptorWrites;
 
 		// Buffers
 		{
@@ -168,12 +168,12 @@ namespace da::platform
 			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			descriptorWrite.dstSet = m_descriptorSets[i];
 			descriptorWrite.dstBinding = 0;
-			descriptorWrite.dstArrayElement = 0;
+			descriptorWrite.dstArrayElement= 0;
 			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 			descriptorWrite.descriptorCount = 1;
 			descriptorWrite.pBufferInfo = &bufferInfo;
 			descriptorWrite.pNext = NULL;
-			descriptorWrites.push(descriptorWrite);
+			descriptorWrites.push_back(descriptorWrite);
 		}
 
 		{
@@ -192,7 +192,7 @@ namespace da::platform
 			descriptorWrite.descriptorCount = 1;
 			descriptorWrite.pBufferInfo = &lightBufferInfo;
 			descriptorWrite.pNext = NULL;
-			descriptorWrites.push(descriptorWrite);
+			descriptorWrites.push_back(descriptorWrite);
 		}
 		{
 			VkWriteDescriptorSet descriptorWrite = {};
@@ -205,7 +205,7 @@ namespace da::platform
 			descriptorWrite.descriptorCount = 1;
 			descriptorWrite.pImageInfo = &albedoImageInfo;
 			descriptorWrite.pNext = NULL;
-			descriptorWrites.push(descriptorWrite);
+			descriptorWrites.push_back(descriptorWrite);
 		}
 		{
 			VkWriteDescriptorSet descriptorWrite = {};
@@ -218,7 +218,7 @@ namespace da::platform
 			descriptorWrite.descriptorCount = 1;
 			descriptorWrite.pImageInfo = &normalImageInfo;
 			descriptorWrite.pNext = NULL;
-			descriptorWrites.push(descriptorWrite);
+			descriptorWrites.push_back(descriptorWrite);
 		}
 		{
 			VkWriteDescriptorSet descriptorWrite = {};
@@ -231,7 +231,7 @@ namespace da::platform
 			descriptorWrite.descriptorCount = 1;
 			descriptorWrite.pImageInfo = &roughnessImageInfo;
 			descriptorWrite.pNext = NULL;
-			descriptorWrites.push(descriptorWrite);
+			descriptorWrites.push_back(descriptorWrite);
 		}
 		
 		{
@@ -245,7 +245,7 @@ namespace da::platform
 			descriptorWrite.descriptorCount = 1;
 			descriptorWrite.pImageInfo = &metallicImageInfo;
 			descriptorWrite.pNext = NULL;
-			descriptorWrites.push(descriptorWrite);
+			descriptorWrites.push_back(descriptorWrite);
 		}
 		{
 			VkWriteDescriptorSet descriptorWrite = {};
@@ -258,7 +258,7 @@ namespace da::platform
 			descriptorWrite.descriptorCount = 1;
 			descriptorWrite.pImageInfo = &aoImageInfo;
 			descriptorWrite.pNext = NULL;
-			descriptorWrites.push(descriptorWrite);
+			descriptorWrites.push_back(descriptorWrite);
 		}
 
 		vkUpdateDescriptorSets(m_vulkanApi.getDevice(), static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);

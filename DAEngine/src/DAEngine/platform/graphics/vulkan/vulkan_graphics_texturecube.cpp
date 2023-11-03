@@ -6,7 +6,7 @@
 
 namespace da::platform {
 
-	CVulkanGraphicsTextureCube::CVulkanGraphicsTextureCube(const CBasicString<memory::CGraphicsAllocator>& path, da::core::CGraphicsApi& graphicsApi)
+	CVulkanGraphicsTextureCube::CVulkanGraphicsTextureCube(const std::string& path, da::core::CGraphicsApi& graphicsApi)
 		: 
 		CGraphicsTextureCube(path, graphicsApi),
 		m_vulkanGraphicsApi(*dynamic_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
@@ -34,7 +34,7 @@ namespace da::platform {
 	{
 		ktxResult result;
 		
-		CAsset file(m_path.cstr());
+		CAsset file(m_path.c_str());
 
 		ktxTexture_CreateFromMemory((const ktx_uint8_t*)file.data(), (ktx_size_t)file.size(), KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &m_ktxTexture);
 		
@@ -87,7 +87,7 @@ namespace da::platform {
 
 		auto result = vkCreateImage(m_vulkanGraphicsApi.getDevice(), &imageInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &image);
 
-		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create image: %s", m_path.cstr());
+		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create image: %s", m_path.c_str());
 
 		VkMemoryRequirements memRequirements;
 		vkGetImageMemoryRequirements(m_vulkanGraphicsApi.getDevice(), image, &memRequirements);
@@ -99,11 +99,11 @@ namespace da::platform {
 
 		result = vkAllocateMemory(m_vulkanGraphicsApi.getDevice(), &allocInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &imageMemory);
 
-		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to allocated memory for image: %s", m_path.cstr());
+		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to allocated memory for image: %s", m_path.c_str());
 
 		result = vkBindImageMemory(m_vulkanGraphicsApi.getDevice(), image, imageMemory, 0);
 
-		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to bind memory for image: %s", m_path.cstr());
+		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to bind memory for image: %s", m_path.c_str());
 	}
 
 	void CVulkanGraphicsTextureCube::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels)
@@ -181,7 +181,7 @@ namespace da::platform {
 		VkCommandBuffer commandBuffer = m_vulkanGraphicsApi.beginSingleTimeCommands();
 		
 		// Setup buffer copy regions for each face including all of its miplevels
-		TList<VkBufferImageCopy> bufferCopyRegions;
+		std::vector<VkBufferImageCopy> bufferCopyRegions;
 		uint32_t offset = 0;
 
 		for (uint32_t face = 0; face < 6; face++)
@@ -201,7 +201,7 @@ namespace da::platform {
 				bufferCopyRegion.imageExtent.height = m_ktxTexture->baseHeight >> level;
 				bufferCopyRegion.imageExtent.depth = 1;
 				bufferCopyRegion.bufferOffset = offset;
-				bufferCopyRegions.push(bufferCopyRegion);
+				bufferCopyRegions.push_back(bufferCopyRegion);
 			}
 		}
 
@@ -256,7 +256,7 @@ namespace da::platform {
 
 		auto result = vkCreateSampler(m_vulkanGraphicsApi.getDevice(), &samplerInfo, &m_vulkanGraphicsApi.getAllocCallbacks(), &m_textureSampler);
 
-		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create texture sampler: %s", m_path.cstr());
+		LOG_ASSERT(result == VK_SUCCESS, ELogChannel::Graphics, "Failed to create texture sampler: %s", m_path.c_str());
 	}
 
 	void CVulkanGraphicsTextureCube::generateMipMaps(VkImage image, VkFormat imageFormat, int32_t texWidth, int32_t texHeight, uint32_t mipLevels)

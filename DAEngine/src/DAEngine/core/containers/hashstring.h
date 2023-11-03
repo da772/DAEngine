@@ -1,10 +1,10 @@
 #pragma once
 #include "DAEngine/core/containers.h"
-#include "DAEngine/core/memory/global_allocator.h"
+#include <stdint.h>
+#include <string>
 
 namespace da::core::containers
 {
-	template <typename _Allocator = memory::CGlobalAllocator>
 	class CBasicHashString
 	{
 		public:
@@ -43,13 +43,6 @@ namespace da::core::containers
 				m_hash = generateHash(str, size);
 			}
 
-			inline CBasicHashString(const CBasicString<_Allocator>& str) {
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
-				m_string = str;
-#endif
-				m_hash = generateHash(str.cstr(), str.size());
-			}
-
 			inline CBasicHashString(const uint32_t hash) : m_hash(hash) {
 
 			}
@@ -63,21 +56,20 @@ namespace da::core::containers
 			{
 				return m_hash;
 			}
-
-			inline const char* toStr() const
-			{
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
-				return m_string.cstr();
-#else
-				return nullptr;
-#endif
-			}
+			inline const char* c_str() const
+			{
 
-			inline bool operator ==(const CBasicHashString<_Allocator>& rhs) const {
+				return m_string.c_str();
+
+			}
+#endif
+
+			inline bool operator ==(const CBasicHashString& rhs) const {
 				return rhs.m_hash == m_hash;
 			}
 
-			inline bool operator !=(const CBasicHashString<_Allocator>& rhs) const {
+			inline bool operator !=(const CBasicHashString& rhs) const {
 				return rhs.m_hash != m_hash;
 			}
 
@@ -109,7 +101,7 @@ namespace da::core::containers
             }
 		private:
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
-			CBasicString<_Allocator> m_string;
+			std::string m_string;
 #endif
 			uint32_t m_hash;
 	};

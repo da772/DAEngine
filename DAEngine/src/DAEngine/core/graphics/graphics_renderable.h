@@ -5,8 +5,8 @@ namespace da::core {
 	class IRenderable
 	{
 	public:
-		inline virtual const TArray<FVertexBase, memory::CGraphicsAllocator>& getVertices() const = 0 ;
-		inline virtual const TArray<uint32_t, memory::CGraphicsAllocator>& getIndices() const = 0;
+		inline virtual const std::vector<FVertexBase>& getVertices() const = 0 ;
+		inline virtual const std::vector<uint32_t>& getIndices() const = 0;
 	};
 
 }

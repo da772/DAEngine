@@ -23,7 +23,7 @@ namespace da::core {
 		memcpy(m_uuid, guid.m_uuid, sizeof(uint128_t));
 	}
 
-	CGuid::CGuid(const CString& guid)
+	CGuid::CGuid(const std::string& guid)
 	{
 		if (guid.size() != 36) {
 			memset(&m_uuid, 0, sizeof(uint128_t));
@@ -63,7 +63,7 @@ namespace da::core {
 		return m_uuid;
 	}
 
-	CString CGuid::string() const
+	std::string CGuid::string() const
 	{
 		char ch[33];
 
@@ -77,12 +77,12 @@ namespace da::core {
 
 		ch[32] = 0;
 		
-		CString result = ch;
+		std::string result = ch;
 
-		result.insert('-', 8);
-		result.insert('-', 13);
-		result.insert('-', 18);
-		result.insert('-', 23);
+		result.insert(result.begin()+8, '-');
+		result.insert(result.begin() + 13, '-');
+		result.insert(result.begin() + 18, '-');
+		result.insert(result.begin() + 23, '-');
 
 		return result;
 

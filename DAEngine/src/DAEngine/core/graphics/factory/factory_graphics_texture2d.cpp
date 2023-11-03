@@ -9,7 +9,7 @@
 namespace da::core
 {
 
-	da::core::CGraphicsTexture2D* CTexture2DFactory::Create(const CString& path, CGraphicsApi& graphicsApi)
+	da::core::CGraphicsTexture2D* CTexture2DFactory::Create(const std::string& path, CGraphicsApi& graphicsApi)
 	{
 #ifdef DA_GRAPHICS_VULKAN
 		return new da::platform::CVulkanGraphicsTexture2D(path, graphicsApi);

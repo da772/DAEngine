@@ -4,7 +4,7 @@
 namespace da::core
 {
 	
-	CGraphicsTextureCube::CGraphicsTextureCube(const CBasicString<memory::CGraphicsAllocator>& path, CGraphicsApi& graphicsApi) : m_path(path), m_graphicsApi(graphicsApi)
+	CGraphicsTextureCube::CGraphicsTextureCube(const std::string& path, CGraphicsApi& graphicsApi) : m_path(path), m_graphicsApi(graphicsApi)
 	{
 
 	}

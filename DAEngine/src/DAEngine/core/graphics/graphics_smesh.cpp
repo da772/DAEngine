@@ -1,6 +1,6 @@
 #include "dapch.h"
 #include "graphics_smesh.h"
-#include "core/memory/memory.h"
+
 #include "asset/asset.h"
 #if !defined(DA_TEST)
 #include <assimp/Importer.hpp>
@@ -11,14 +11,14 @@
 
 namespace da::core
 {
-	CStaticMesh::CStaticMesh(const CBasicString<memory::CGraphicsAllocator>& path) : m_path(path)
+	CStaticMesh::CStaticMesh(const std::string& path) : m_path(path)
 	{
-		CAsset file(path.cstr());
+		CAsset file(path.c_str());
 #if !defined(DA_TEST)
 		Assimp::Importer importer;
 	
-		TList<FVertexBase, memory::CGraphicsAllocator> vertices;
-		TList<uint32_t, memory::CGraphicsAllocator> indices;
+		std::vector<FVertexBase> vertices;
+		std::vector<uint32_t> indices;
 
 		const aiScene* pScene = importer.ReadFileFromMemory(file.data(), file.size()*sizeof(char), aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace);
 
@@ -64,19 +64,19 @@ namespace da::core
 					};
 				}
 
-				vertices.push(vertex);
+				vertices.push_back(vertex);
 			}
 
 			for (size_t j = 0; j < pScene->mMeshes[i]->mNumFaces; j++) {
 				for (size_t m = 0; m < pScene->mMeshes[i]->mFaces[j].mNumIndices; m++) {
-					indices.push(pScene->mMeshes[i]->mFaces[j].mIndices[m]);
+					indices.push_back(pScene->mMeshes[i]->mFaces[j].mIndices[m]);
 				}
 				
 			}
 		}
 
-		m_vertices = TArray<FVertexBase, memory::CGraphicsAllocator>(vertices);
-		m_indices = TArray<uint32_t, memory::CGraphicsAllocator>(indices);
+		m_vertices = std::vector<FVertexBase>(vertices);
+		m_indices = std::vector<uint32_t>(indices);
 
 		importer.FreeScene();
 #endif

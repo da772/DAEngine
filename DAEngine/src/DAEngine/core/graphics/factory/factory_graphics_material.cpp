@@ -12,11 +12,11 @@ namespace da::core
 {
 
 	da::core::CMaterial* CMaterialFactory::CreatePBR(CGraphicsPipeline& pipeline
-		, const CBasicString <da::memory::CGraphicsAllocator>& albedo
-		, const CBasicString <da::memory::CGraphicsAllocator>& normal
-		, const CBasicString <da::memory::CGraphicsAllocator>& roughness
-		, const CBasicString <da::memory::CGraphicsAllocator>& metallic
-		, const CBasicString <da::memory::CGraphicsAllocator>& ao
+		, const std::string& albedo
+		, const std::string& normal
+		, const std::string& roughness
+		, const std::string& metallic
+		, const std::string& ao
 	)
 	{
 #ifdef DA_GRAPHICS_VULKAN
@@ -25,7 +25,7 @@ namespace da::core
 		return nullptr;
 	}
 
-	da::core::CMaterial* CMaterialFactory::CreateCubeMap(CGraphicsPipeline& pipeline, const CBasicString <da::memory::CGraphicsAllocator>& albedo)
+	da::core::CMaterial* CMaterialFactory::CreateCubeMap(CGraphicsPipeline& pipeline, const std::string& albedo)
 	{
 #ifdef DA_GRAPHICS_VULKAN
 		return new da::platform::CVulkanGraphicsMaterialCubeMap(pipeline, albedo);

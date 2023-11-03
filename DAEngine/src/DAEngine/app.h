@@ -27,7 +27,7 @@ namespace da
 
 	private:
 		bool m_running;
-		TList<IModule*> m_modules;
+		std::vector<IModule*> m_modules;
 	};
 	
 	extern CApp* createApp(int argc, const char** argv);

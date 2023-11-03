@@ -9,18 +9,18 @@
 namespace da {
 #define NAMEOF(x) #x
 
-#define LOG_INFO(ELogChannel, msg, ...) CLogger::LogInfo(ELogChannel, CString("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
-#define LOG_DEBUG(ELogChannel, msg, ...) CLogger::LogDebug(ELogChannel, CString("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
-#define LOG_WARN(ELogChannel, msg, ...) CLogger::LogWarning(ELogChannel, CString("[%s] ") + msg __FUNCTION__  , ##__VA_ARGS__)
-#define LOG_ERROR(ELogChannel, msg, ...) CLogger::LogError(ELogChannel, CString("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
-#define LOG_ASSERT(x, ELogChannel, msg, ...) CLogger::LogAssert(x, ELogChannel, CString("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
+#define LOG_INFO(ELogChannel, msg, ...) CLogger::LogInfo(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
+#define LOG_DEBUG(ELogChannel, msg, ...) CLogger::LogDebug(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
+#define LOG_WARN(ELogChannel, msg, ...) CLogger::LogWarning(ELogChannel, std::string("[%s] ") + msg __FUNCTION__  , ##__VA_ARGS__)
+#define LOG_ERROR(ELogChannel, msg, ...) CLogger::LogError(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
+#define LOG_ASSERT(x, ELogChannel, msg, ...) CLogger::LogAssert(x, ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
 
 #define __LOGFUNC__(x, y) template <typename ...Args> \
-inline static void x(const ELogChannel& channel, const CString& message, Args ... args) {\
+inline static void x(const ELogChannel& channel, const std::string& message, Args ... args) {\
 CLogger::log(y, channel, message, args...); }
 
 #define __LOGFUNC_EMPTY__(x, y) template <typename ...Args> \
-inline static void x(const ELogChannel& channel, const CString& message, Args ... args) {}
+inline static void x(const ELogChannel& channel, const std::string& message, Args ... args) {}
 
 	enum class ELogChannel : uint8_t {
 		Core,
@@ -67,7 +67,7 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 		__LOGFUNC__(LogWarning, ELogType::Warning);
 		__LOGFUNC__(LogError, ELogType::Error);
 		template <typename ...Args> 
-		inline static void LogAssert(bool assert, const ELogChannel& channel, const CString& message, Args ... args) {
+		inline static void LogAssert(bool assert, const ELogChannel& channel, const std::string& message, Args ... args) {
 			if (assert) return;
 			CLogger::log(ELogType::Assert, channel, message, args...);
 			ASSERT(assert);
@@ -78,31 +78,31 @@ inline static void x(const ELogChannel& channel, const CString& message, Args ..
 
 	private:
 		template <typename ...Args>
-		inline static void log(ELogType type, ELogChannel channel, const CString& message, Args ... args)
+		inline static void log(ELogType type, ELogChannel channel, const std::string& message, Args ... args)
 		{
 			char buffer[5096];
 			
 #ifdef DA_COLORED_OUT
-			const CString msg = "%s[%llu] %s: [%s] " + message + "\n%s";
+			const std::string msg = "%s[%llu] %s: [%s] " + message + "\n%s";
 #if DA_PLATFORM_WINDOWS
-			sprintf_s(buffer, sizeof(buffer), msg.cstr(), colorTypeMap[(uint8_t)type], utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
+			sprintf_s(buffer, sizeof(buffer), msg.c_str(), colorTypeMap[(uint8_t)type], utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
 #else
-            snprintf(buffer, sizeof(buffer), msg.cstr(), colorTypeMap[(uint8_t)type], utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
+            snprintf(buffer, sizeof(buffer), msg.c_str(), colorTypeMap[(uint8_t)type], utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
 #endif
-			logInternal(CString(buffer));
+			logInternal(std::string(buffer));
 #else
-			const CString msg = "[%llu] %s: [%s] " + message + "\n";
+			const std::string msg = "[%llu] %s: [%s] " + message + "\n";
 #if DA_PLATFORM_WINDOWS
-			sprintf_s(buffer, sizeof(buffer), msg.cstr(), utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args...);
+			sprintf_s(buffer, sizeof(buffer), msg.c_str(), utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args...);
 #else
-			snprintf(buffer, sizeof(buffer), msg.cstr(), utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args...);
+			snprintf(buffer, sizeof(buffer), msg.c_str(), utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args...);
 #endif
-			logInternal(CString(buffer));
+			logInternal(std::string(buffer));
 #endif
 
 			
 		}
-		static void logInternal(CString&& message);
+		static void logInternal(std::string&& message);
 
 		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "Application", "Graphics", "Window", "Script"};
 		inline static const char* logTypeMap[] = { "Info", "Debug", "Warning", "Error", "Assert" };

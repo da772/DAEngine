@@ -11,19 +11,19 @@ namespace da::core
 	class CStaticMesh : public IRenderable
 	{
 	public:
-		CStaticMesh(const CBasicString<memory::CGraphicsAllocator>& path);
+		CStaticMesh(const std::string& path);
 		inline CStaticMesh() {};
 		~CStaticMesh();
 
-		inline const TArray<FVertexBase, memory::CGraphicsAllocator>& getVertices() const override { return m_vertices; }
-		inline const TArray<uint32_t, memory::CGraphicsAllocator>& getIndices() const override { return m_indices; }
+		inline const std::vector<FVertexBase>& getVertices() const override { return m_vertices; }
+		inline const std::vector<uint32_t>& getIndices() const override { return m_indices; }
 
 	private:
-		CBasicString<memory::CGraphicsAllocator> m_path;
+		std::string m_path;
 
 	protected:
-		TArray<FVertexBase, memory::CGraphicsAllocator> m_vertices;
-		TArray<uint32_t, memory::CGraphicsAllocator> m_indices;
+		std::vector<FVertexBase> m_vertices;
+		std::vector<uint32_t> m_indices;
 
 	};
 }

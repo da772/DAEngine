@@ -10,7 +10,7 @@
 namespace da::platform
 {
 	CVulkanGraphicsMaterialCubeMap::CVulkanGraphicsMaterialCubeMap(da::core::CGraphicsPipeline& pipeline
-		, const CBasicString <da::memory::CGraphicsAllocator>& texture)
+		, const std::string& texture)
 		: CVulkanGraphicsMaterial(pipeline)
 		, m_texture(CVulkanGraphicsTextureCube(texture, pipeline.getGraphicsApi()))
 	{
@@ -53,9 +53,9 @@ namespace da::platform
 		vkUnmapMemory(m_vulkanApi.getDevice(), m_uniformBuffersMemory[frame]);
 	}
 
-	da::core::containers::TArray<VkDescriptorPoolSize, da::memory::CGraphicsAllocator> CVulkanGraphicsMaterialCubeMap::getDescriptorPools()
+	std::vector<VkDescriptorPoolSize> CVulkanGraphicsMaterialCubeMap::getDescriptorPools()
 	{
-		TArray<VkDescriptorPoolSize, memory::CGraphicsAllocator> poolSizes(2);
+		std::vector<VkDescriptorPoolSize> poolSizes(2);
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		poolSizes[0].descriptorCount = static_cast<uint32_t>(m_vulkanApi.MAX_FRAMES_IN_FLIGHT);
 		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -75,12 +75,12 @@ namespace da::platform
 		textureImageInfo.imageView = m_texture.getTextureImageView();
 		textureImageInfo.sampler = m_texture.getTextureImageSampler();
 
-		TArray<VkWriteDescriptorSet, memory::CGraphicsAllocator> descriptorWrites(2);
+		std::vector<VkWriteDescriptorSet> descriptorWrites(2);
 		// Buffers
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = m_descriptorSets[i];
 		descriptorWrites[0].dstBinding = 0;
-		descriptorWrites[0].dstArrayElement = 0;
+		descriptorWrites[0].dstArrayElement= 0;
 		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		descriptorWrites[0].descriptorCount = 1;
 		descriptorWrites[0].pBufferInfo = &bufferInfo;

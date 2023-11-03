@@ -53,22 +53,21 @@ namespace da::platform {
 			, uint32_t _line
 		) override {
 			if (_ptr == NULL && _size > 0) {
-				return m_allocator.allocate(_size);
+				return malloc(_size);
 			}
 
 			if (_ptr != NULL && _size > 0) {
-				return m_allocator.reallocate(_ptr, _size);
+				return ::realloc(_ptr, _size);
 			}
 
 			if (_ptr != NULL && _size == 0) {
-				m_allocator.deallocate(_ptr);
+				free(_ptr);
 				return nullptr;
 			}
 
 			return nullptr;
 		}
 
-		da::memory::CGraphicsAllocator m_allocator;
 	};
 
 	struct FDACallbacks : public bgfx::CallbackI
@@ -90,9 +89,9 @@ namespace da::platform {
 		) override {
 			if (!m_trace) return;
 			char buffer[512];
-			CString str = _format;
-			str.remove('\n');
-			vsnprintf(buffer, 512, str.cstr(), _argList);
+			std::string str = _format;
+			std::remove(str.begin(), str.end(), '\n');
+			vsnprintf(buffer, 512, str.c_str(), _argList);
 			LOG_INFO(ELogChannel::Graphics, buffer);
 		}
 
@@ -147,7 +146,6 @@ namespace da::platform {
 
 	CbgfxGraphicsApi::CbgfxGraphicsApi(core::CWindow* windowModule) : CGraphicsApi(windowModule)
 	{	
-		da::memory::CMemoryScope scope(memory::EMemoryLayer::Graphics);
 		m_allocator = new FDAllocator();
 		m_callbacks = new FDACallbacks();
 		s_test = new CBgfxGraphicsTest();
@@ -155,7 +153,6 @@ namespace da::platform {
 
 	CbgfxGraphicsApi::~CbgfxGraphicsApi()
 	{
-		da::memory::CMemoryScope scope(memory::EMemoryLayer::Graphics);
 		delete m_allocator;
 		delete m_callbacks;
 		delete s_test;

@@ -25,9 +25,9 @@ namespace da::platform
 	class CVulkanGraphicsPipeline : public core::CGraphicsPipeline
 	{
 	public:
-		CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const CBasicString<memory::CGraphicsAllocator>& vertexShader, const CBasicString<memory::CGraphicsAllocator>& fragShader, 
+		CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const std::string& vertexShader, const std::string& fragShader, 
 			core::FVertexBindingDescription vertexBinding,
-			const TArray<core::FVertexInputAttributeDescription, memory::CGraphicsAllocator>& inputAttribDesc);
+			const std::vector<core::FVertexInputAttributeDescription>& inputAttribDesc);
 
 		virtual void create() override;
 		virtual void destroy() override;
@@ -47,24 +47,24 @@ namespace da::platform
 		}
 
 		inline virtual void addRenderable(da::core::IRenderable* renderable, da::core::CMaterial* material) override{
-			m_renderables.push(createMeshData(renderable, material));
+			m_renderables.push_back(createMeshData(renderable, material));
 		}
 
 		inline void removeRenderable(da::core::IRenderable* renderable)
 		{
-			TEnumerator<FVulkanMeshData> itr = m_renderables.find([renderable](const FVulkanMeshData& data) {return data.Renderable == renderable;});
-			if (itr == m_renderables.end())
+			const auto& it = std::find_if(m_renderables.begin(), m_renderables.end(), ([renderable](const FVulkanMeshData& data) {return data.Renderable == renderable; }));
+			if (it == m_renderables.end())
 			{
 				return;
 			}
 
-			m_renderables.remove(itr);
+			m_renderables.erase(it);
 		}
 
 		virtual void render(VkCommandBuffer& buffer, int frame);
 
 	protected:
-		virtual TArray<VkDescriptorSetLayoutBinding> addDescriptorSets();
+		virtual std::vector<VkDescriptorSetLayoutBinding> addDescriptorSets();
 		virtual void updateRasterizer(VkPipelineRasterizationStateCreateInfo& rasterizer) {};
 		virtual void updateDepthStencil(VkPipelineDepthStencilStateCreateInfo& depthStencil) {};
 
@@ -72,8 +72,8 @@ namespace da::platform
 		void createGraphicsPipeline();
 		void createDescriptorSets();
 		FVulkanMeshData createMeshData(da::core::IRenderable* renderable, da::core::CMaterial* material) const;
-		VkShaderModule createShaderModule(const TList<char, memory::CGraphicsAllocator>& code, VkDevice device);
-		TList<FVulkanMeshData, da::memory::CGraphicsAllocator> m_renderables;
+		VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device);
+		std::vector<FVulkanMeshData> m_renderables;
 		CVulkanGraphicsApi& m_vulkanGraphicsApi;
 		VkPipeline m_graphicsPipeline;
 		VkPipelineLayout m_pipelineLayout;

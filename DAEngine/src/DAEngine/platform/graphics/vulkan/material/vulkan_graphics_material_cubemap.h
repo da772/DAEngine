@@ -9,13 +9,13 @@ namespace da::platform
 	{
 	public:
 		CVulkanGraphicsMaterialCubeMap(da::core::CGraphicsPipeline& pipeline
-			, const CBasicString <da::memory::CGraphicsAllocator>& texture);
+			, const std::string& texture);
 
 		virtual void initialize() override;
 		virtual void shutdown() override;
 		virtual void update(int frame) override;
 
-		virtual TArray<VkDescriptorPoolSize, memory::CGraphicsAllocator> getDescriptorPools() override;
+		virtual std::vector<VkDescriptorPoolSize> getDescriptorPools() override;
 		virtual void getDescriptorSet(int frame) override;
 
 	private:

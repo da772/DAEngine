@@ -8,14 +8,14 @@ namespace da::core {
 	{
 	public:
 		static CMaterial* CreatePBR(CGraphicsPipeline& pipeline
-			, const CBasicString <da::memory::CGraphicsAllocator> &albedo = "assets/white.png"
-			, const CBasicString <da::memory::CGraphicsAllocator>& normal = "assets/white.png"
-			, const CBasicString <da::memory::CGraphicsAllocator>& roughness = "assets/white.png"
-			, const CBasicString <da::memory::CGraphicsAllocator>& metallic = "assets/white.png"
-			, const CBasicString <da::memory::CGraphicsAllocator>& ao = "assets/white.png"
+			, const std::string &albedo = "assets/white.png"
+			, const std::string & normal = "assets/white.png"
+			, const std::string & roughness = "assets/white.png"
+			, const std::string & metallic = "assets/white.png"
+			, const std::string & ao = "assets/white.png"
 		
 		);
 		
-		static CMaterial* CreateCubeMap(CGraphicsPipeline& pipeline, const CBasicString <da::memory::CGraphicsAllocator>& albedo = "assets/black.png");
+		static CMaterial* CreateCubeMap(CGraphicsPipeline& pipeline, const std::string& albedo = "assets/black.png");
 	};
 }

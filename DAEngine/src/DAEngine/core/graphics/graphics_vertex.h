@@ -31,9 +31,9 @@ namespace da::core
 			return result;
 		}
 
-		inline static TArray<FVertexInputAttributeDescription> getAttributeDescription()
+		inline static std::vector<FVertexInputAttributeDescription> getAttributeDescription()
 		{
-			TArray<FVertexInputAttributeDescription> attributeDescriptions(6);
+			std::vector<FVertexInputAttributeDescription> attributeDescriptions(6);
 			// Position
 			attributeDescriptions[0].binding = 0;
 			attributeDescriptions[0].location = 0;

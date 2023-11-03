@@ -4,7 +4,6 @@
 #if defined(DA_PLATFORM_WINDOWS) && (defined(DA_FINAL) || defined(DA_RELEASE))
 #include <windows.h>
 #endif
-#include "daengine/core/memory/memory.h"
 
 extern da::CApp* da::createApp(int argc, const char** argv);
 #if defined(DA_PLATFORM_WINDOWS) && defined(DA_FINAL)

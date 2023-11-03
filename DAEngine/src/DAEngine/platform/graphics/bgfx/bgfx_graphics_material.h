@@ -8,14 +8,14 @@ namespace da::platform {
 	class CBgfxGraphicsMaterial : public core::CMaterial
 	{
 	public:
-		CBgfxGraphicsMaterial(const CString& vsPath, const CString& fsPath);
+		CBgfxGraphicsMaterial(const std::string& vsPath, const std::string& fsPath);
 		virtual void initialize() override;
 		virtual void update(int frame) override;
 		virtual void shutdown() override;
 		uint16_t getHandle() const;
 
 	private:
-		CString m_vsPath, m_fsPath;
+		std::string m_vsPath, m_fsPath;
 		uint16_t m_program;
 	};
 

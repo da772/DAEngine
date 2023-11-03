@@ -24,7 +24,7 @@ namespace da::core {
 		};
 
 		struct FWindowData {
-			CString Title;
+			std::string Title;
 			u32 Width;
 			u32 Height;
 			u32 XPos;

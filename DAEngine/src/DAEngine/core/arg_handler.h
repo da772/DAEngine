@@ -10,12 +10,12 @@ namespace da::core {
 		static void initialize(int argc, const char** argv);
 		static void shutdown();
 		static size_t getArgc();
-		static const TArray<CString, da::memory::CCoreAllocator>& getArgv();
+		static const std::vector<std::string>& getArgv();
 		static bool contains(const char* arg);
 
 	private:
 		static int s_argc;
-		static TArray<CString, da::memory::CCoreAllocator> s_args;
+		static std::vector<std::string> s_args;
 
 	};
 

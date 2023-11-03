@@ -11,8 +11,8 @@ namespace da::core {
 	class CGraphicsPipeline
 	{
 	public:
-		CGraphicsPipeline(CGraphicsApi& graphicsApi, const CString& vertexShaderPath, const CString& fragShaderPath, FVertexBindingDescription vertexBinding, 
-			const TArray<FVertexInputAttributeDescription>& inputAttribDesc);
+		CGraphicsPipeline(CGraphicsApi& graphicsApi, const std::string& vertexShaderPath, const std::string& fragShaderPath, FVertexBindingDescription vertexBinding, 
+			const std::vector<FVertexInputAttributeDescription>& inputAttribDesc);
 
 		inline virtual void create() {};
 		inline virtual void destroy() {};
@@ -22,10 +22,10 @@ namespace da::core {
 		inline CGraphicsApi& getGraphicsApi() { return m_graphicsApi; };
 
 	protected:
-		CString m_vertexShaderPath, m_fragShaderPath;
+		std::string m_vertexShaderPath, m_fragShaderPath;
 		CGraphicsApi& m_graphicsApi;
 		FVertexBindingDescription m_bindingDesc;
-		TArray<FVertexInputAttributeDescription, da::memory::CGraphicsAllocator> m_inputAttrbDesc;
+		std::vector<FVertexInputAttributeDescription> m_inputAttrbDesc;
 	};
 
 }

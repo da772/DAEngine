@@ -8,7 +8,7 @@ namespace da::platform {
 	class CVulkanGraphicsTextureCube : public da::core::CGraphicsTextureCube
 	{
 	public:
-		CVulkanGraphicsTextureCube(const CBasicString<memory::CGraphicsAllocator>& path, da::core::CGraphicsApi& graphicsApi);
+		CVulkanGraphicsTextureCube(const std::string& path, da::core::CGraphicsApi& graphicsApi);
 		void initialize();
 		void shutdown();
 

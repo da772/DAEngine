@@ -43,14 +43,12 @@ namespace da::platform {
 	const bool enableValidationLayers = true;
 #endif
 
-	memory::CGPUAllocator s_allocator;
-
 	void* vkAllocate(void* pUserData,
 		size_t                                      size,
 		size_t                                      alignment,
 		VkSystemAllocationScope                     allocationScope)
 	{
-		return s_allocator.allocate(size);
+		return malloc(size);
 	}
 
 	void* vkRealloc(void* pUserData,
@@ -59,13 +57,13 @@ namespace da::platform {
 		size_t                                      alignment,
 		VkSystemAllocationScope                     allocationScope)
 	{
-		return s_allocator.reallocate(pOriginal, size);
+		return realloc(pOriginal, size);
 	}
 
 	void vkFree(void* pUserData,
 		void* pMemory)
 	{
-		s_allocator.deallocate(pMemory);
+		free(pMemory);
 	}
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
@@ -289,7 +287,7 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::createInstance()
 	{
-        m_validationLayers.push("VK_LAYER_KHRONOS_validation");
+        m_validationLayers.push_back("VK_LAYER_KHRONOS_validation");
 		if (!enableValidationLayers) {
 			VK_CHECK(checkValidationLayerSupport(m_validationLayers), true);
 		}
@@ -313,8 +311,8 @@ namespace da::platform {
 
 		auto extensions = getRequiredExtensions();
 #if DA_PLATFORM_MACOSX
-		extensions.push(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
-        extensions.push("VK_KHR_get_physical_device_properties2"); // MoltenVK
+		extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+        extensions.push_back("VK_KHR_get_physical_device_properties2"); // MoltenVK
 #endif
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
@@ -333,7 +331,7 @@ namespace da::platform {
 		ASSERT(result == VK_SUCCESS);
 	}
 
-	bool CVulkanGraphicsApi::checkValidationLayerSupport(const TList<const char*, memory::CGraphicsAllocator>& validationLayers) {
+	bool CVulkanGraphicsApi::checkValidationLayerSupport(const std::vector<const char*>& validationLayers) {
 
 		const uint32_t WIDTH = 800;
 		const uint32_t HEIGHT = 600;
@@ -341,7 +339,7 @@ namespace da::platform {
 		uint32_t layerCount;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
-		TList<VkLayerProperties, memory::CGraphicsAllocator> availableLayers(layerCount);
+		std::vector<VkLayerProperties> availableLayers(layerCount);
 		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
 		for (const char* layerName : validationLayers) {
@@ -362,21 +360,21 @@ namespace da::platform {
 		return true;
 	}
 
-	da::core::containers::TList<const char*, memory::CGraphicsAllocator> CVulkanGraphicsApi::getRequiredExtensions()
+	std::vector<const char*> CVulkanGraphicsApi::getRequiredExtensions()
 	{
 
 		uint32_t glfwExtensionCount = 0;
 		const char** glfwExtensions;
 		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-		TList<const char*, memory::CGraphicsAllocator> extensions;
+		std::vector<const char*> extensions;
 		for (uint32_t i = 0; i < glfwExtensionCount; i++)
 		{
-			extensions.push(glfwExtensions[i]);
+			extensions.push_back(glfwExtensions[i]);
 		}
 
 		if (enableValidationLayers) {
-			extensions.push(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 		}
 
 		return extensions;
@@ -400,13 +398,13 @@ namespace da::platform {
 
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
 
-		TList<const char*, memory::CGraphicsAllocator> deviceExtensions;
-		deviceExtensions.push(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+		std::vector<const char*> deviceExtensions;
+		deviceExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
 		uint32_t extensionCount;
 		vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
 
-		TList<VkExtensionProperties, memory::CGraphicsAllocator> availableExtensions(extensionCount);
+		std::vector<VkExtensionProperties> availableExtensions(extensionCount);
 		vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
 
 		std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
@@ -420,7 +418,7 @@ namespace da::platform {
 
 
 
-	VkPhysicalDevice CVulkanGraphicsApi::findDevices(const TList<VkPhysicalDevice, memory::CGraphicsAllocator>& devices)
+	VkPhysicalDevice CVulkanGraphicsApi::findDevices(const std::vector<VkPhysicalDevice>& devices)
 	{
 		int score = -3;
 		VkPhysicalDevice result = VK_NULL_HANDLE;
@@ -442,7 +440,7 @@ namespace da::platform {
 			if (extensionsSupported)
 			{
 				SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device, m_surface);
-				swapChainAdequate = !swapChainSupport.formats.isEmpty() && !swapChainSupport.presentModes.isEmpty();
+				swapChainAdequate = swapChainSupport.formats.size() > 0 && swapChainSupport.presentModes.size() > 0;
 			}
 
 			VkPhysicalDeviceFeatures supportedFeatures;
@@ -471,7 +469,7 @@ namespace da::platform {
 		uint32_t deviceCount = 0;
 		vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
 		ASSERT(deviceCount);
-		TList<VkPhysicalDevice, memory::CGraphicsAllocator> devices(deviceCount);
+		std::vector<VkPhysicalDevice> devices(deviceCount);
 		vkEnumeratePhysicalDevices(m_instance, &deviceCount, devices.data());
 
 		m_physicalDevice = findDevices(devices);
@@ -514,7 +512,7 @@ namespace da::platform {
 			createInfo.enabledLayerCount = 0;
 		}
 
-		TList<VkDeviceQueueCreateInfo, memory::CGraphicsAllocator> queueCreateInfos;
+		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
 		for (uint32_t queueFamily : uniqueQueueFamilies) {
@@ -523,13 +521,13 @@ namespace da::platform {
 			queueCreateInfo.queueFamilyIndex = queueFamily;
 			queueCreateInfo.queueCount = 1;
 			queueCreateInfo.pQueuePriorities = &queuePriority;
-			queueCreateInfos.push(queueCreateInfo);
+			queueCreateInfos.push_back(queueCreateInfo);
 		}
 
 		createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 		createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
-		TList<const char*, memory::CGraphicsAllocator> deviceExtensions = {
+		std::vector<const char*> deviceExtensions = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
 #ifdef DA_PLATFORM_MACOSX
 			,"VK_KHR_portability_subset" // Molten
@@ -576,7 +574,7 @@ namespace da::platform {
 		}
 	}
 
-	VkPresentModeKHR chooseSwapPresentMode(const TList<VkPresentModeKHR, memory::CGraphicsAllocator>& availablePresentModes) {
+	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
 		for (const auto& availablePresentMode : availablePresentModes) {
 			if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
 				return availablePresentMode;
@@ -586,7 +584,7 @@ namespace da::platform {
 		return VK_PRESENT_MODE_FIFO_KHR;
 	}
 
-	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const TList<VkSurfaceFormatKHR, memory::CGraphicsAllocator>& availableFormats) {
+	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
 		for (const auto& availableFormat : availableFormats) {
 			if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 				return availableFormat;
@@ -751,7 +749,7 @@ namespace da::platform {
 		dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 		dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
-		TArray<VkAttachmentDescription, memory::CGraphicsAllocator> attachments = { colorAttachment, depthAttachment, colorAttachmentResolve };
+		std::vector<VkAttachmentDescription> attachments = { colorAttachment, depthAttachment, colorAttachmentResolve };
 		VkRenderPassCreateInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
@@ -879,7 +877,7 @@ namespace da::platform {
 		subpass.pDepthStencilAttachment = &depthReference;									// Reference to our depth attachment
 
 		// Use subpass dependencies for layout transitions
-		TArray<VkSubpassDependency> dependencies(2);
+		std::vector<VkSubpassDependency> dependencies(2);
 
 		dependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
 		dependencies[0].dstSubpass = 0;
@@ -916,7 +914,7 @@ namespace da::platform {
 		m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
 
 		for (size_t i = 0; i < m_swapChainImageViews.size(); i++) {
-			TArray<VkImageView, memory::CGraphicsAllocator> attachments = {
+			std::vector<VkImageView> attachments = {
 				m_colorImageView,
 				m_depthImageView,
 				m_swapChainImageViews[i],
@@ -977,7 +975,7 @@ namespace da::platform {
 		renderPassBeginInfo.renderArea.extent.height = m_shadowPass.height;
 		renderPassBeginInfo.clearValueCount = 1;
 	
-		TArray<VkClearValue, memory::CGraphicsAllocator> clearValues(2);
+		std::vector<VkClearValue> clearValues(2);
 		clearValues[0].depthStencil = { 1.0f, 0 };
 
 		renderPassBeginInfo.pClearValues = clearValues.data();
@@ -1028,7 +1026,7 @@ namespace da::platform {
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-		TArray<VkClearValue, memory::CGraphicsAllocator> clearValues(2);
+		std::vector<VkClearValue> clearValues(2);
 		clearValues[0].color = { {0.70f, 0.83f, 0.87f, 0.0f} };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
@@ -1154,7 +1152,7 @@ namespace da::platform {
 		uint32_t queueFamilyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
 
-		TList<VkQueueFamilyProperties, memory::CGraphicsAllocator> queueFamilies(queueFamilyCount);
+		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
 		int i = 0;
@@ -1396,7 +1394,7 @@ namespace da::platform {
 		);
 	}
 
-	VkFormat CVulkanGraphicsApi::findSupportedFormat(const TList<VkFormat, memory::CGraphicsAllocator>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+	VkFormat CVulkanGraphicsApi::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
 		for (VkFormat format : candidates) {
 			VkFormatProperties props;
 			vkGetPhysicalDeviceFormatProperties(m_physicalDevice, format, &props);
@@ -1447,21 +1445,21 @@ namespace da::platform {
 
 	void CVulkanGraphicsApi::submitRenderFunction(std::function<void(VkCommandBuffer cmd)>* func)
 	{
-		m_renderFunctions.push(func);
+		m_renderFunctions.push_back(func);
 	}
 
 	void CVulkanGraphicsApi::removeRenderFunction(std::function<void(VkCommandBuffer cmd)>* func)
 	{
-		const auto& it = m_renderFunctions.find(func);
+		const auto& it = std::find(m_renderFunctions.begin(), m_renderFunctions.end(), func);
 		if (it != m_renderFunctions.end())
-			m_renderFunctions.remove(it);
+			m_renderFunctions.erase(it);
 	}
 
 	void CVulkanGraphicsApi::submitPipeline(da::core::CGraphicsPipeline* pipeline)
 	{
 		CVulkanGraphicsPipeline* vkPipeline = dynamic_cast<CVulkanGraphicsPipeline*>(pipeline);
 		LOG_ASSERT(vkPipeline, ELogChannel::Graphics, "Failed to cast CGraphicsPipeline to CVulkangraphicsPipeline");
-		m_pipelines.push(vkPipeline);
+		m_pipelines.push_back(vkPipeline);
 		recreateSwapChain();
 	}
 

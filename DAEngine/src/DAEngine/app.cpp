@@ -2,7 +2,6 @@
 #include "app.h"
 #include "logger.h"
 #include "core/arg_handler.h"
-#include "core/memory/memory.h"
 #include "script/script_engine.h"
 
 namespace da
@@ -17,7 +16,9 @@ namespace da
 
 	void CApp::initalize()
 	{
+#ifndef DA_TEST
 		script::CScriptEngine::initialize();
+#endif
 		for (IModule* m : m_modules) {
 			m->initalize();
 		}
@@ -46,12 +47,14 @@ namespace da
 			m->lateShutdown();
 			delete m;
 		}
+#ifndef DA_TEST
 		script::CScriptEngine::shutdown();
+#endif
 	}
 
 	void CApp::addModule(IModule* module)
 	{
-		m_modules.push(module);
+		m_modules.push_back(module);
 	}
 
 	void CApp::forceEnd()
@@ -63,9 +66,9 @@ namespace da
 	{
 		CLogger::initialize();
 		core::CArgHandler::initialize(argc, argv);
-		CString args = "Initialized with argc: %d\n";
+		std::string args = "Initialized with argc: %d\n";
 		for (size_t i = 0; i < argc; i++) {
-			args += CString(argv[i]);
+			args += std::string(argv[i]);
 			if (i != argc - 1)
 				args += "\n";
 		}

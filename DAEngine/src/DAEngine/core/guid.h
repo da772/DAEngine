@@ -11,10 +11,10 @@ namespace da::core {
 		CGuid();
 		CGuid(const uint128_t guid);
 		CGuid(const CGuid& guid);
-		CGuid(const CString& guid);
+		CGuid(const std::string& guid);
 
 		const unsigned char* const data() const;
-		CString string() const;
+		std::string string() const;
 		bool isValid() const;
 
 		bool operator==(const CGuid& rhs) const;

@@ -3,7 +3,7 @@
 #ifdef DA_GRAPHICS_VULKAN
 namespace da::platform
 {
-	TArray<da::core::FVertexInputAttributeDescription> getAttributeDescription();
+	std::vector<da::core::FVertexInputAttributeDescription> getAttributeDescription();
 	da::core::FVertexBindingDescription getBindingDescription();
 
 	CVulkanGraphicsPipelinePBR::CVulkanGraphicsPipelinePBR(da::core::CGraphicsApi& pipeline) :
@@ -26,9 +26,9 @@ namespace da::platform
 		return result;
 	}
 
-	TArray<da::core::FVertexInputAttributeDescription> getAttributeDescription()
+	std::vector<da::core::FVertexInputAttributeDescription> getAttributeDescription()
 	{
-		TArray<da::core::FVertexInputAttributeDescription> attributeDescriptions(6);
+		std::vector<da::core::FVertexInputAttributeDescription> attributeDescriptions(6);
 		// Position
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;
@@ -68,7 +68,7 @@ namespace da::platform
 		return attributeDescriptions;
 	}
 
-	TArray<VkDescriptorSetLayoutBinding> CVulkanGraphicsPipelinePBR::addDescriptorSets()
+	std::vector<VkDescriptorSetLayoutBinding> CVulkanGraphicsPipelinePBR::addDescriptorSets()
 	{
 		VkDescriptorSetLayoutBinding uboLayoutBinding = {};
 		uboLayoutBinding.binding = 0;

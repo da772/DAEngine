@@ -39,9 +39,9 @@ namespace da::platform {
 	{
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
-		LOG_INFO(ELogChannel::Platform, "Initializing Window: \"%s\" %d, %d", m_windowData.Title.cstr(), m_windowData.Width, m_windowData.Height);
+		LOG_INFO(ELogChannel::Platform, "Initializing Window: \"%s\" %d, %d", m_windowData.Title.c_str(), m_windowData.Width, m_windowData.Height);
 
-		m_Window = glfwCreateWindow((int)m_windowData.Width, (int)m_windowData.Height, m_windowData.Title.cstr(), nullptr, nullptr);
+		m_Window = glfwCreateWindow((int)m_windowData.Width, (int)m_windowData.Height, m_windowData.Title.c_str(), nullptr, nullptr);
 
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 		if (!mode)
