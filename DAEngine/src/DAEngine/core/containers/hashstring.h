@@ -3,6 +3,13 @@
 #include <stdint.h>
 #include <string>
 
+#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#define HASHSTR(x) CBasicHashString(x, CBasicHashString::generateHash(x))
+#else
+#define HASHSTR(x) CBasicHashString(CBasicHashString::generateHash(x))	
+#endif
+
+
 namespace da::core::containers
 {
 	class CBasicHashString
@@ -22,28 +29,41 @@ namespace da::core::containers
 				return hash;
 			}
 
-			inline CBasicHashString() :
+			static inline constexpr const uint32_t generateHash(const char* str)
+			{
+				size_t size = std::char_traits<char>::length(str);
+				return generateHash(str, size);
+			}
+
+			inline constexpr CBasicHashString() :
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string(""), 
 #endif
 				m_hash(0) {
 
 			}
-			inline CBasicHashString(const char* str) {
+			inline constexpr CBasicHashString(const char* str) {
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string = str;
 #endif
-				m_hash = genHash(str);
+				m_hash = generateHash(str);
 			}
 
-			inline CBasicHashString(const char* str, size_t size) {
+			inline constexpr CBasicHashString(const char* str, uint32_t hash) {
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+				m_string = str;
+#endif
+				m_hash = hash;
+			}
+
+			inline constexpr CBasicHashString(const char* str, size_t size) {
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 				m_string = str;
 #endif
 				m_hash = generateHash(str, size);
 			}
 
-			inline CBasicHashString(const uint32_t hash) : m_hash(hash) {
+			inline constexpr CBasicHashString(const uint32_t hash) : m_hash(hash) {
 
 			}
 
@@ -57,7 +77,7 @@ namespace da::core::containers
 				return m_hash;
 			}
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
-			inline const char* c_str() const
+			inline constexpr const char* c_str() const
 			{
 
 				return m_string.c_str();
@@ -88,7 +108,7 @@ namespace da::core::containers
 			/// </summary>
 			/// <param name="str"></param>
 			/// <returns></returns>
-            inline uint32_t genHash(const char* str) const {
+            inline constexpr uint32_t genHash(const char* str) const {
                 size_t size = 0;
                 for (size_t x = 0; x < 512; x++) {
                     if (str[x] == 0) {

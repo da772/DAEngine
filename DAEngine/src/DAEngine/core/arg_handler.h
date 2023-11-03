@@ -10,12 +10,11 @@ namespace da::core {
 		static void initialize(int argc, const char** argv);
 		static void shutdown();
 		static size_t getArgc();
-		static const std::vector<std::string>& getArgv();
-		static bool contains(const char* arg);
+		static bool contains(const CHashString& arg);
 
 	private:
 		static int s_argc;
-		static std::vector<std::string> s_args;
+		static std::vector<CHashString> s_args;
 
 	};
 

@@ -26,7 +26,7 @@ namespace da::platform {
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputMouseScroll, BIND_EVENT_FN(CImGuiBgfxApi, onMouseScroll));
 		imguiCreate();
 
-		m_enableDemo = da::core::CArgHandler::contains("imguidemo");
+		m_enableDemo = da::core::CArgHandler::contains(HASHSTR("imguidemo"));
 	}
 
 	void CImGuiBgfxApi::onUpdate()
