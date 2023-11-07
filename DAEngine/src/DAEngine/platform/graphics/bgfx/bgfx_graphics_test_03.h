@@ -17,28 +17,28 @@ namespace da::platform
 		void Render();
 		void Shutdown();
 		void updateLightDir();
-		void drawModels(int pass, bgfx::ProgramHandle handle, Vector3f pos = { 0.f,0.f,0.f }, Vector3f scale = { 1.f,1.f,1.f }, float time = 0.f, uint64_t state = 0, bool submit = true);
-		void drawModels(int pass, bgfx::ProgramHandle handle, bgfx::VertexBufferHandle vbh, bgfx::IndexBufferHandle ibh, Vector3f pos = { 0.f,0.f,0.f }, Vector3f scale = { 1.f,1.f,1.f }, float time = 0.f, uint64_t state = 0, bool submit = true);
+		void drawModels(int pass, ::bgfx::ProgramHandle handle, Vector3f pos = { 0.f,0.f,0.f }, Vector3f scale = { 1.f,1.f,1.f }, float time = 0.f, uint64_t state = 0, bool submit = true);
+		void drawModels(int pass, ::bgfx::ProgramHandle handle, ::bgfx::VertexBufferHandle vbh, ::bgfx::IndexBufferHandle ibh, Vector3f pos = { 0.f,0.f,0.f }, Vector3f scale = { 1.f,1.f,1.f }, float time = 0.f, uint64_t state = 0, bool submit = true);
 		void screenSpaceQuad(float _textureWidth, float _textureHeight, float _texelHalf, bool _originBottomLeft, float _width = 1.0f, float _height = 1.0f);
 
 	private:
 		da::core::CStaticMesh* m_smesh;
 		da::core::CStaticMesh* m_sphereMesh;
 		da::core::CStaticMesh* m_cubeMesh;
-		bgfx::VertexBufferHandle m_vbh, m_spvbh, m_cbcvh;
-		bgfx::IndexBufferHandle m_ibh, m_spibh, m_cbibh;
+		::bgfx::VertexBufferHandle m_vbh, m_spvbh, m_cbcvh;
+		::bgfx::IndexBufferHandle m_ibh, m_spibh, m_cbibh;
 
 		void* m_material;
 		da::core::CWindow* m_window;
 		double m_start = 0;
-		bgfx::UniformHandle u_tint,u_lightDir,u_sphereInfo,u_invMvp,u_invMvpShadow,u_lightMtx,u_shadowDimsInv, u_rsmAmount;
-		bgfx::UniformHandle s_normal,s_depth,s_color,s_light,s_shadowMap,s_rsm,s_texColor,s_texNormal;
+		::bgfx::UniformHandle u_tint,u_lightDir,u_sphereInfo,u_invMvp,u_invMvpShadow,u_lightMtx,u_shadowDimsInv, u_rsmAmount;
+		::bgfx::UniformHandle s_normal,s_depth,s_color,s_light,s_shadowMap,s_rsm,s_texColor,s_texNormal;
 		CBgfxGraphicsMaterial *m_combineProgram;
 		CBgfxPipelineGBuffer* m_gbufferPipeline = nullptr;
 		CBgfxPipelineShadow* m_shadowPipline = nullptr;
 		CBgfxPipelineLight* m_lightPipeline = nullptr;
-		bgfx::TextureHandle m_colorTex,m_normalTex;
-		bgfx::VertexLayout m_ms_layout;
+		::bgfx::TextureHandle m_colorTex,m_normalTex;
+		::bgfx::VertexLayout m_ms_layout;
 
 		// Light position;
 		float m_lightDir[4];
@@ -57,7 +57,7 @@ namespace da::platform
 
 		da::core::CCamera* m_cam,* m_lightCam;
 
-		const bgfx::Caps* m_caps;
+		const ::bgfx::Caps* m_caps;
 	};
 }
 

@@ -11,8 +11,8 @@
 
 namespace da::platform
 {
-	CVulkanGraphicsTexture2D::CVulkanGraphicsTexture2D(const std::string& path, core::CGraphicsApi& graphicsApi) : core::CGraphicsTexture2D(path, graphicsApi)
-		, m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
+	CVulkanGraphicsTexture2D::CVulkanGraphicsTexture2D(const std::string& path, core::CGraphicsApi& graphicsApi) : core::CGraphicsTexture2D(path)
+		, m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&graphicsApi))
 	{
 	}
 

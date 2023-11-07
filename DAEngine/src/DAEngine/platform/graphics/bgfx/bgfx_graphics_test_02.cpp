@@ -14,19 +14,19 @@
 
 namespace da::platform {
 
-	static bgfx::VertexLayout ms_layout;
+	static ::bgfx::VertexLayout ms_layout;
 	struct FMSLayout
 	{
 		inline static void init()
 		{
 			ms_layout
 				.begin()
-				.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::Color0, 3, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
-				.add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float)
+				.add(::bgfx::Attrib::TexCoord0, 2, ::bgfx::AttribType::Float)
+				.add(::bgfx::Attrib::Position, 3, ::bgfx::AttribType::Float)
+				.add(::bgfx::Attrib::Color0, 3, ::bgfx::AttribType::Float)
+				.add(::bgfx::Attrib::Normal, 3, ::bgfx::AttribType::Float)
+				.add(::bgfx::Attrib::Tangent, 3, ::bgfx::AttribType::Float)
+				.add(::bgfx::Attrib::Bitangent, 3, ::bgfx::AttribType::Float)
 				.end();
 		};
 	};
@@ -41,28 +41,32 @@ namespace da::platform {
 		m_smesh = new da::core::CStaticMesh("assets/viking_room.obj");
 
 		// Create static vertex buffer.
-		m_vbh = bgfx::createVertexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(m_smesh->getVertices().data(), m_smesh->getVertices().size()*sizeof(da::core::FVertexBase))
+		m_vbh = ::bgfx::createVertexBuffer(
+			// Static data can be passed with ::bgfx::makeRef
+			::bgfx::makeRef(m_smesh->getVertices().data(), m_smesh->getVertices().size()*sizeof(da::core::FVertexBase))
 			, ms_layout
 			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
 		);
 
 		// Create static index buffer for triangle list rendering.
-		m_ibh = bgfx::createIndexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(m_smesh->getIndices().data(), sizeof(uint32_t)*m_smesh->getIndices().size())
+		m_ibh = ::bgfx::createIndexBuffer(
+			// Static data can be passed with ::bgfx::makeRef
+			::bgfx::makeRef(m_smesh->getIndices().data(), sizeof(uint32_t)*m_smesh->getIndices().size())
 			, BGFX_BUFFER_INDEX32
 		);
 
-		m_uniform = bgfx::createUniform("m_uniform", bgfx::UniformType::Sampler);
+		
+		/*
 		int width = 1, height = 1, channels = 4;
 		stbi_uc* pixels = stbi_load("assets/viking_room.png", (int*)&width, (int*)&height, (int*)&channels, STBI_rgb_alpha);
 		channels = 4;
-		const bgfx::Memory* mem = bgfx::copy(pixels, width * height * channels * sizeof(char));
-		m_texture = bgfx::createTexture2D(width,height, false, 1, bgfx::TextureFormat::Enum::RGBA8, 0, mem);
-		
+		const ::bgfx::Memory* mem = ::bgfx::copy(pixels, width * height * channels * sizeof(char));
+		m_texture = ::bgfx::createTexture2D(width,height, false, 1, ::bgfx::TextureFormat::Enum::RGBA8, 0, mem);
 		stbi_image_free(pixels);
+		*/
+		m_texture = bgfx::CBgfxTexture2D("assets/viking_room.png");
+
+		m_uniform = bgfx::CBgfxUniform<uint16_t>(::bgfx::UniformType::Sampler, "m_uniform");//::bgfx::createUniform("m_uniform", ::bgfx::UniformType::Sampler);
 
 		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/mesh/vs_mesh.sc", "shaders/mesh/fs_mesh.sc");
 		mat->initialize();
@@ -85,24 +89,24 @@ namespace da::platform {
 			bx::mtxLookAt(view, eye, at);
 
 			float proj[16];
-			bx::mtxProj(proj, 60.f, float(width) / float(height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-			bgfx::setViewTransform(0, view, proj);
+			bx::mtxProj(proj, 60.f, float(width) / float(height), 0.1f, 100.0f, ::bgfx::getCaps()->homogeneousDepth);
+			::bgfx::setViewTransform(0, view, proj);
 
 			// Set view 0 default viewport.
-			bgfx::setViewRect(0, 0, 0, uint16_t(width), uint16_t(height));
+			::bgfx::setViewRect(0, 0, 0, uint16_t(width), uint16_t(height));
 		}
 
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
-		//bgfx::touch(0);
+		//::bgfx::touch(0);
 
-		bgfx::IndexBufferHandle ibh = m_ibh;
-		uint64_t state = BGFX_STATE_WRITE_R 
-			| BGFX_STATE_WRITE_G 
-			| BGFX_STATE_WRITE_B 
-			| BGFX_STATE_WRITE_A 
-			| BGFX_STATE_WRITE_Z 
-			| BGFX_STATE_DEPTH_TEST_LESS 
+		::bgfx::IndexBufferHandle ibh = m_ibh;
+		uint64_t state = BGFX_STATE_WRITE_R
+			| BGFX_STATE_WRITE_G
+			| BGFX_STATE_WRITE_B
+			| BGFX_STATE_WRITE_A
+			| BGFX_STATE_WRITE_Z
+			| BGFX_STATE_DEPTH_TEST_LESS
 			| BGFX_STATE_CULL_CCW
 			| BGFX_STATE_MSAA;
 
@@ -117,31 +121,33 @@ namespace da::platform {
 		mtx[14] = xyz[2];
 
 		ImGui::InputFloat3("POS", xyz);
-		
+
 
 		// Set model matrix for rendering.
-		bgfx::setTransform(mtx);
+		::bgfx::setTransform(mtx);
 
 		// Set texture
-		bgfx::setTexture(0, m_uniform, m_texture);
+		::bgfx::setTexture(0, { m_uniform.getHandle() }, { m_texture.getHandle() });
 
 		// Set vertex and index buffer.
-		bgfx::setVertexBuffer(0, m_vbh);
-		bgfx::setIndexBuffer(ibh);
+		::bgfx::setVertexBuffer(0, m_vbh);
+		::bgfx::setIndexBuffer(ibh);
 
 		// Set render states.
-		bgfx::setState(state);
+		::bgfx::setState(state);
 
 		// Submit primitive for rendering to view 0.
-		bgfx::submit(0, { ((CBgfxGraphicsMaterial*)m_material)->getHandle() });
+		::bgfx::submit(0, { ((CBgfxGraphicsMaterial*)m_material)->getHandle() });
 	}
 
 	void CBgfxGraphicsTest02::Shutdown()
 	{
-		bgfx::destroy(m_ibh);
-		bgfx::destroy(m_vbh);
-		bgfx::destroy(m_uniform);
-		bgfx::destroy(m_texture);
+		::bgfx::destroy(m_ibh);
+		::bgfx::destroy(m_vbh);
+		//::bgfx::destroy(m_uniform);
+		m_uniform.destroy();
+		m_texture.destroy();
+		//::bgfx::destroy(m_texture);
 		((CBgfxGraphicsMaterial*)m_material)->shutdown();
 		delete m_material;
 	}

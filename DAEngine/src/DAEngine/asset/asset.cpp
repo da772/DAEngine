@@ -15,6 +15,18 @@ namespace da
 		retrieveInfo();
 	}
 
+
+	CAsset::CAsset(const std::string& name, size_t size) : m_path(name), m_size(size)
+	{
+		m_data.resize(size, '\0');
+		m_hasData = true;
+	}
+
+	CAsset::CAsset()
+	{
+		m_hasData = true;
+	}
+
 	const size_t CAsset::size() const
 	{
 		return m_size;

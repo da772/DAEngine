@@ -60,6 +60,11 @@ namespace da::platform {
 
 	}
 
+	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial()
+	{
+
+	}
+
 	void CBgfxGraphicsMaterial::initialize()
 	{
 		CAsset vs(m_vsPath.c_str()), fs(m_fsPath.c_str());

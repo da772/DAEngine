@@ -8,6 +8,7 @@ namespace da::platform {
 	class CBgfxGraphicsMaterial : public core::CMaterial
 	{
 	public:
+		CBgfxGraphicsMaterial();
 		CBgfxGraphicsMaterial(const std::string& vsPath, const std::string& fsPath);
 		virtual void initialize() override;
 		virtual void update(int frame) override;

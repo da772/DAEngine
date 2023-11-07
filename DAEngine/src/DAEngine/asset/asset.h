@@ -13,6 +13,8 @@ namespace da
 	class CAsset
 	{
 	public:
+		CAsset();
+		CAsset(const std::string& name, size_t size);
 		CAsset(const std::string& path, EAssetFlags flags = EAssetFlags::None);
 
 		const size_t size() const;
@@ -26,8 +28,8 @@ namespace da
 	private:
 		std::string m_path;
 		std::vector<char> m_data;
-		size_t m_size;
-		bool m_hasData;
+		size_t m_size = 0;
+		bool m_hasData = false;
 		EAssetFlags m_flags;
 	};
 }

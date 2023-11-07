@@ -9,6 +9,7 @@
 #include "bgfx_graphics_test_01.h"
 #include "bgfx_graphics_test_02.h"
 #include "bgfx_graphics_test_03.h"
+#include "bgfx_graphics_test_04.h"
 #include "DAEngine/script/script_engine.h"
 
 namespace da::platform {
@@ -25,7 +26,7 @@ namespace da::platform {
         std::function<void(void*)> Shutdown;
     };
 
-    const char* s_testNames[] = { "Test1", "Test2", "Test3"};
+    const char* s_testNames[] = { "Test1", "Test2", "Test3", "Test4"};
 
     FTestFunc s_testCreate[] = { 
         /// Test1
@@ -34,6 +35,8 @@ namespace da::platform {
         CREATE_TEST(CBgfxGraphicsTest02),
         /// Test3
         CREATE_TEST(CBgfxGraphicsTest03),
+        // Test 4
+        CREATE_TEST(bgfx::CBgfxGraphicsTest04),
     };
 
     void CBgfxGraphicsTest::Initialize(class da::core::CWindow* window) {
@@ -74,14 +77,16 @@ namespace da::platform {
             ImGui::End();
         }
 
-		if (ImGui::Begin("Script Loader"))
-		{
-			if (ImGui::Button("Reload!")) {
-				da::script::CScriptEngine::load_script("scripts/helloworld.lua");
-			}
-		}
+        if (ImGui::Begin("Script Loader"))
+        {
+            if (ImGui::Button("Reload!")) {
+                da::script::CScriptEngine::unload_script(HASHSTR("scripts/helloworld.lua"));
+            }
+        }
 
 		ImGui::End();
+
+        da::script::CScriptEngine::load_script("scripts/helloworld.lua");
 
         if (m_test) s_testCreate[m_testIndex].Render(m_test);
     }

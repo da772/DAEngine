@@ -13,7 +13,7 @@ namespace da {
 #define LOG_DEBUG(ELogChannel, msg, ...) CLogger::LogDebug(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
 #define LOG_WARN(ELogChannel, msg, ...) CLogger::LogWarning(ELogChannel, std::string("[%s] ") + msg __FUNCTION__  , ##__VA_ARGS__)
 #define LOG_ERROR(ELogChannel, msg, ...) CLogger::LogError(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
-#define LOG_ASSERT(x, ELogChannel, msg, ...) CLogger::LogAssert(x, ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
+#define LOG_ASSERT(x, ELogChannel, msg, ...) CLogger::LogAssert(x, ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__); if (!x) ASSERT(x);
 
 #define __LOGFUNC__(x, y) template <typename ...Args> \
 inline static void x(const ELogChannel& channel, const std::string& message, Args ... args) {\
@@ -70,7 +70,6 @@ inline static void x(const ELogChannel& channel, const std::string& message, Arg
 		inline static void LogAssert(bool assert, const ELogChannel& channel, const std::string& message, Args ... args) {
 			if (assert) return;
 			CLogger::log(ELogType::Assert, channel, message, args...);
-			ASSERT(assert);
 		}
 
 		static void initialize();

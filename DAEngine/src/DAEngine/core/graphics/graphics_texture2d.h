@@ -7,13 +7,13 @@ namespace da::core
 	class CGraphicsTexture2D
 	{
 	public:
-		CGraphicsTexture2D(const std::string& path, CGraphicsApi& graphicsApi);
+		CGraphicsTexture2D(const std::string& path);
+		CGraphicsTexture2D(const std::string& name, uint32_t width, uint32_t height);
 		inline const void* getTextureNative() const { return m_textureNative; }
 
 	protected:
 		std::string m_path;
 		void* m_textureNative;
-		CGraphicsApi& m_graphicsApi;
 		uint32_t m_width, m_height, m_channels;
 	};
 

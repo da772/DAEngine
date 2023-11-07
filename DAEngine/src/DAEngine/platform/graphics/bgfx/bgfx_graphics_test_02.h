@@ -1,6 +1,9 @@
 #pragma once
 #ifdef DA_GRAPHICS_BGFX
 #include <bgfx/bgfx.h>
+#include "bgfx_texture2d.h"
+#include "bgfx_uniform.h"
+
 namespace da::core { class CWindow; class CStaticMesh; }
 
 namespace da::platform
@@ -14,13 +17,13 @@ namespace da::platform
 
 	private:
 		da::core::CStaticMesh* m_smesh;
-		bgfx::VertexBufferHandle m_vbh;
-		bgfx::IndexBufferHandle m_ibh;
+		::bgfx::VertexBufferHandle m_vbh;
+		::bgfx::IndexBufferHandle m_ibh;
 		void* m_material;
 		da::core::CWindow* m_window;
 		double m_start = 0;
-		bgfx::UniformHandle m_uniform;
-		bgfx::TextureHandle m_texture;
+		da::platform::bgfx::CBgfxUniform<uint16_t> m_uniform;
+		da::platform::bgfx::CBgfxTexture2D m_texture;
 
 	};
 }

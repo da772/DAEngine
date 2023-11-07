@@ -4,10 +4,12 @@
 #include <string>
 
 #if defined(DA_DEBUG) || defined(DA_REVIEW)
-#define HASHSTR(x) CBasicHashString(x, CBasicHashString::generateHash(x))
+#define HASHSTR(x) { x, CBasicHashString::generateHash(x) }
 #else
 #define HASHSTR(x) CBasicHashString(CBasicHashString::generateHash(x))	
 #endif
+
+#define HASH(x) CBasicHashString::generateHash(x)
 
 
 namespace da::core::containers

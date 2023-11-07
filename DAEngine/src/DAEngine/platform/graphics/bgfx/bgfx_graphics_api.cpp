@@ -78,7 +78,7 @@ namespace da::platform {
 			, bgfx::Fatal::Enum _code
 			, const char* _str
 		) override {
-			LOG_ERROR(da::ELogChannel::Graphics, "[bgfx] [Code: %d] %s at LINE %d %s", (int)_code, _str, (int)_line, _filePath);
+			LOG_ASSERT(false, da::ELogChannel::Graphics, "[bgfx] [Code: %d] %s at LINE %d %s", (int)_code, _str, (int)_line, _filePath);
 		}
 
 		virtual void traceVargs(
