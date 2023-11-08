@@ -9,6 +9,10 @@
 #include <daengine/core/graphics/factory/factory_graphics_texture2d.h>
 #include "DAEngine/core/graphics/graphics_smesh_cube.h"
 
+#include <daengine/core/ecs/scene.h>
+#include <daengine/core/ecs/entity.h>
+#include <daengine/core/ecs/test_component.h>
+
 #include <imgui.h>
 
 #include <daengine/script/script_engine.h>
@@ -74,10 +78,28 @@ private:
 	da::core::CMaterial* m_cubeMat = 0;
 	da::core::CMaterial* m_cubeMat2 = 0;
 	da::modules::CWindowModule* m_window = 0;
+	da::core::CScene* scene;
+	da::core::CEntity* e1,* e2;
 
 protected:
 	inline virtual void onInitalize() override
 	{
+		scene = new da::core::CScene(da::core::CGuid::Generate());
+		e1 = scene->createEntity();
+		da::core::FComponentRef<da::core::CTestComponent> tst1 = e1->addComponent<da::core::CTestComponent>("helloworld1", "helloworld2");
+		tst1->data1 = "123456";
+		da::core::FComponentRef<da::core::CTestComponent> tst11 = e1->getComponent<da::core::CTestComponent>();
+		tst11->data1 = "883818";
+		//tst1->initialize();
+		LOG_DEBUG(da::ELogChannel::Application, "%s, %s", tst1->data1.c_str(), tst1->data2.c_str());
+		e2 = scene->createEntity();
+		da::core::FComponentRef<da::core::CTestComponent> tst2 = e2->addComponent<da::core::CTestComponent>("helloworld3", "helloworld4");
+		da::core::FComponentRef<da::core::CTestComponent> tst22 = e1->getComponent<da::core::CTestComponent>();
+		tst22->data1 = "883818";
+		LOG_DEBUG(da::ELogChannel::Application, "%s, %s, %s", tst2->data1.c_str(), tst2->data2.c_str(), tst22->data1.c_str());
+
+		scene->initialize();
+
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
 		return;
 		{
@@ -136,12 +158,14 @@ protected:
 
 	inline virtual void onShutdown() override
 	{
+		scene->shutdown();
 		da::CLogger::LogDebug(da::ELogChannel::Application, "App End");
 
 	}
 
 	inline virtual void onUpdate() override
 	{
+		scene->update(0.1f);
 		return;
 		if (!m_boltMat || !m_cubeMat)
 		{

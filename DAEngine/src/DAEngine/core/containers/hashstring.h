@@ -2,6 +2,7 @@
 #include "DAEngine/core/containers.h"
 #include <stdint.h>
 #include <string>
+#include <algorithm>
 
 #if defined(DA_DEBUG) || defined(DA_REVIEW)
 #define HASHSTR(x) { x, CBasicHashString::generateHash(x) }
@@ -126,5 +127,17 @@ namespace da::core::containers
 			std::string m_string;
 #endif
 			uint32_t m_hash;
+	};
+}
+
+
+namespace std
+{
+	template<> struct hash<da::core::containers::CBasicHashString>
+	{
+		std::size_t operator()(da::core::containers::CBasicHashString const& hashStr) const noexcept
+		{
+			return hashStr.hash();
+		}
 	};
 }

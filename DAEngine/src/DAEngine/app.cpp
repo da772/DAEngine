@@ -2,6 +2,7 @@
 #include "app.h"
 #include "logger.h"
 #include "core/arg_handler.h"
+#include "core/ecs/components.h"
 #include "script/script_engine.h"
 
 namespace da
@@ -73,6 +74,7 @@ namespace da
 				args += "\n";
 		}
 		LOG_INFO(ELogChannel::Core, args, argc);
+		core::CComponents::registerComponents();
 	}
 
 	void CApp::shutdownInternal()

@@ -11,10 +11,12 @@ namespace da::core {
 		CGuid();
 		CGuid(const uint128_t guid);
 		CGuid(const CGuid& guid);
-		CGuid(const std::string& guid);
+		CGuid(const char* guid);
 
 		const unsigned char* const data() const;
-		std::string string() const;
+#if defined(DA_DEBUG) || defined(DA_REVIEW)
+		const char* c_str() const;
+#endif
 		bool isValid() const;
 
 		bool operator==(const CGuid& rhs) const;
@@ -29,10 +31,18 @@ namespace da::core {
 		static CGuid Generate();
 
 	private:
+#if defined(DA_DEBUG) || defined(DA_REVIEW)
+		void genString();
+#endif
+
+	private:
 		static unsigned int sm_seed;
 
 	private:
 		uint128_t m_uuid;
+#if defined(DA_DEBUG) || defined(DA_REVIEW)
+		char m_debugName[37];
+#endif
 
 	};
 
