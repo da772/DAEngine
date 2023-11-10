@@ -6,6 +6,9 @@ do
     function ImGui.Begin(self, title)
         return native_imgui_begin(nil, title)
     end
+    function ImGui.Button(self, title)
+        return native_imgui_button(nil, title)
+    end
     function ImGui.End(self)
         native_imgui_end(nil)
     end

@@ -90,6 +90,16 @@ namespace da::script
 		return 1;
 	}
 
+	extern "C" int lua_imgui_button(lua_State * L)
+	{
+		const char* title = luaL_checkstring(L, 2);
+
+		bool result = ImGui::Button(title);
+
+		lua_pushboolean(L, result);
+		return 1;
+	}
+
 	extern "C" int lua_imgui_end(lua_State * L)
 	{
 		ImGui::End();
@@ -129,6 +139,7 @@ namespace da::script
 		lua_register(s_instance->m_state, "require", lua_requires);
 		lua_register(s_instance->m_state, "print", lua_print);
 		lua_register(s_instance->m_state, "native_imgui_begin", lua_imgui_begin);
+		lua_register(s_instance->m_state, "native_imgui_button", lua_imgui_button);
 		lua_register(s_instance->m_state, "native_imgui_end", lua_imgui_end);
 		lua_register(s_instance->m_state, "native_imgui_label_text", lua_imgui_label_text);
 	}
@@ -160,19 +171,57 @@ namespace da::script
 		return it->second;
 	}
 
-	void CScriptEngine::load_script(const char* path)
+	void CScriptEngine::read_table(int idx) {
+		if (lua_istable(s_instance->m_state, idx))
+		{
+			lua_pushnil(s_instance->m_state);
+			while (lua_next(s_instance->m_state, idx - 1)) {
+				const char* key = lua_tostring(s_instance->m_state, idx - 1);
+				int type = lua_type(s_instance->m_state, idx);
+				switch (type)
+				{
+					// booleans
+				case LUA_TBOOLEAN:
+					LOG_ERROR(ELogChannel::Script, "bool");
+					break;
+
+					// numbers
+				case LUA_TNUMBER:
+					LOG_ERROR(ELogChannel::Script, "num");
+					break;
+
+					// strings
+				case LUA_TSTRING:
+					LOG_ERROR(ELogChannel::Script, "str");
+					break;
+
+				case LUA_TFUNCTION:
+					LOG_ERROR(ELogChannel::Script, "func");
+					break;
+					// other
+				case LUA_TTABLE:
+					//read_table(idx);
+					break;
+				default:
+					//str = str + lua_typename(L, type);
+					break;
+				}
+				lua_pop(s_instance->m_state, 1);
+			}
+
+			lua_pop(s_instance->m_state, 1);
+		}
+	}
+
+	void* CScriptEngine::load_script(const char* path)
 	{
 		int ref = CScriptEngine::get_script(path, false);
-		auto t1 = std::chrono::high_resolution_clock::now();
 		lua_rawgeti(s_instance->m_state, LUA_REGISTRYINDEX, ref);
-		if (lua_pcall(s_instance->m_state, 0, 0, 0) != LUA_OK) {
+		if (lua_pcall(s_instance->m_state, 0, 1, 0) != LUA_OK) {
 			LOG_ERROR(ELogChannel::Script, "%s failed: %s", path, lua_tostring(s_instance->m_state, -1));
 		}
 
-		auto t2 = std::chrono::high_resolution_clock::now();
-		auto ms_int = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
-
-		//LOG_INFO(ELogChannel::Script, "SCRIPT %s, EXECUTED IN %f ms", path, ms_int.count()/1000.f);
+		return s_instance->m_state;
 	}
 
 

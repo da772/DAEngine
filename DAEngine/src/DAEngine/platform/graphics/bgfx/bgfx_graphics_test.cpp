@@ -86,7 +86,7 @@ namespace da::platform {
 
 		ImGui::End();
 
-        da::script::CScriptEngine::load_script("scripts/helloworld.lua");
+//        da::script::CScriptEngine::load_script("scripts/helloworld.lua");
 
         if (m_test) s_testCreate[m_testIndex].Render(m_test);
     }

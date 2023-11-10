@@ -12,6 +12,7 @@
 #include <daengine/core/ecs/scene.h>
 #include <daengine/core/ecs/entity.h>
 #include <daengine/core/ecs/test_component.h>
+#include <daengine/core/ecs/script_component.h>
 
 #include <imgui.h>
 
@@ -97,6 +98,8 @@ protected:
 		da::core::FComponentRef<da::core::CTestComponent> tst22 = e1->getComponent<da::core::CTestComponent>();
 		tst22->data1 = "883818";
 		LOG_DEBUG(da::ELogChannel::Application, "%s, %s, %s", tst2->data1.c_str(), tst2->data2.c_str(), tst22->data1.c_str());
+
+		da::core::FComponentRef<da::core::CScriptComponent> scrpt = e2->addComponent<da::core::CScriptComponent>("scripts/helloworld.lua");
 
 		scene->initialize();
 

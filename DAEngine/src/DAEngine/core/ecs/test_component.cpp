@@ -21,7 +21,7 @@ namespace da::core {
 
 	void CTestComponent::onUpdate(float dt)
 	{
-		LOG_DEBUG(ELogChannel::Core, "Update with data %s, %s", data1.c_str(), data2.c_str());
+		//LOG_DEBUG(ELogChannel::Core, "Update with data %s, %s", data1.c_str(), data2.c_str());
 	}
 
 	void CTestComponent::onShutdown()

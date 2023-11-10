@@ -119,7 +119,9 @@ namespace da::core {
 			int rnd = rand();
 			memcpy(&guid.m_uuid[i * 4], &rnd, sizeof(int));
 		}
+#if defined(DA_DEBUG) || defined(DA_REVIEW)
 		guid.genString();
+#endif
 
 		return guid;
 	}

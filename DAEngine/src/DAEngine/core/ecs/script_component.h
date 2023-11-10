@@ -1,6 +1,7 @@
 #pragma once
 
 #include "component.h"
+#include "DAEngine/script/script_class.h"
 
 namespace da::core {
 
@@ -9,7 +10,7 @@ namespace da::core {
 		COMPONENT_H(CScriptComponent)
 
 	public:
-		CScriptComponent(const CGuid& guid, const std::string& script);
+		CScriptComponent(const std::string& script);
 
 		void onInitialize();
 		void onUpdate(float dt);
@@ -17,6 +18,7 @@ namespace da::core {
 
 	private:
 		std::string m_script;
+		da::script::CScriptClass m_scriptClass;
 
 	};
 }

@@ -6,7 +6,7 @@
       "moduleResolution": "Node",
       "types": [],
       "strict": false,
-      "outDir": "./generated",
+      //"outDir": "./generated",
     },
     "tstl": {
       "luaTarget": "JIT"

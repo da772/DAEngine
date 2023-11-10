@@ -1,14 +1,31 @@
 import { Employee } from "./lib";
 
 import { ImGui } from "./imgui";
+import { Component } from "./core";
 
-let e : Employee = new Employee(1, "Steve");
+export class MyComponent implements Component {
 
-//print("Your mom" + e.empCode + " " + e.empName + "swag");
+    e : Employee = new Employee(1, "Steve");
 
+    initialize(): void {
+        print("script init")
+    }
+    update(dt: number): void {
+        if (ImGui.Begin("Hello World!")) {
+            ImGui.LabelText("employee is sick", `${this.e.empName} is sick: ${this.e.empCode}`);
 
-if (ImGui.Begin("Hello World!")) {
-    ImGui.LabelText("employee is sick", `${e.empName} is sick`);
+            if (ImGui.Button("Press Me")) {
+                this.e.empCode++;
+            }
+
+        }
+        
+        ImGui.End();
+    }
+    shutdown(): void {
+        print("shut down");
+    }
+    
 }
 
-ImGui.End();
+export let component : MyComponent = new MyComponent();

@@ -21,7 +21,9 @@ bool CGuidTest::GuidTests()
 {
 	CGuid guid = CGuid();
 
+#if defined(DA_DEBUG) || defined(DA_REVIEW)
 	TEST_ASSERT(strcmp(guid.c_str(), "00000000-0000-0000-0000-000000000000") == 0);
+#endif
 
 	TEST_ASSERT(!guid.isValid());
 
@@ -34,9 +36,11 @@ bool CGuidTest::GuidTests()
 		CGuid guid2 = CGuid::Generate();
 		TEST_ASSERT(guid1.isValid());
 		TEST_ASSERT(guid2.isValid());
+#if defined(DA_DEBUG) || defined(DA_REVIEW)
 		TEST_ASSERT(CGuid(guid1.c_str()) == guid1);
 		TEST_ASSERT(CGuid(guid2.c_str()) != guid1);
 		TEST_ASSERT(CGuid(guid2.c_str()) == guid2);
+#endif
 	}
 
 	TEST_ASSERT(guid == CGuid(guid));
@@ -44,7 +48,9 @@ bool CGuidTest::GuidTests()
 
 	guid = CGuid("29000000-2348-0000-be18-000084670000");
 
+#if defined(DA_DEBUG) || defined(DA_REVIEW)
 	TEST_ASSERT(strcmp(guid.c_str(), "29000000-2348-0000-be18-000084670000") == 0);
+#endif
 
 	return true;
 }
