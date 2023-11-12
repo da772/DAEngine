@@ -77,17 +77,6 @@ namespace da::platform {
             ImGui::End();
         }
 
-        if (ImGui::Begin("Script Loader"))
-        {
-            if (ImGui::Button("Reload!")) {
-                da::script::CScriptEngine::unload_script(HASHSTR("scripts/helloworld.lua"));
-            }
-        }
-
-		ImGui::End();
-
-//        da::script::CScriptEngine::load_script("scripts/helloworld.lua");
-
         if (m_test) s_testCreate[m_testIndex].Render(m_test);
     }
 

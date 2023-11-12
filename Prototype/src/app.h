@@ -81,6 +81,7 @@ private:
 	da::modules::CWindowModule* m_window = 0;
 	da::core::CScene* scene;
 	da::core::CEntity* e1,* e2;
+    da::core::FComponentRef<da::core::CScriptComponent> scriptComponent;
 
 protected:
 	inline virtual void onInitalize() override
@@ -91,7 +92,7 @@ protected:
 		tst1->data1 = "123456";
 		da::core::FComponentRef<da::core::CTestComponent> tst11 = e1->getComponent<da::core::CTestComponent>();
 		tst11->data1 = "883818";
-		//tst1->initialize();
+		tst1->initialize();
 		LOG_DEBUG(da::ELogChannel::Application, "%s, %s", tst1->data1.c_str(), tst1->data2.c_str());
 		e2 = scene->createEntity();
 		da::core::FComponentRef<da::core::CTestComponent> tst2 = e2->addComponent<da::core::CTestComponent>("helloworld3", "helloworld4");
@@ -99,7 +100,7 @@ protected:
 		tst22->data1 = "883818";
 		LOG_DEBUG(da::ELogChannel::Application, "%s, %s, %s", tst2->data1.c_str(), tst2->data2.c_str(), tst22->data1.c_str());
 
-		da::core::FComponentRef<da::core::CScriptComponent> scrpt = e2->addComponent<da::core::CScriptComponent>("scripts/helloworld.lua");
+        scriptComponent = e2->addComponent<da::core::CScriptComponent>("scripts/helloworld.lua");
 
 		scene->initialize();
 
@@ -169,6 +170,16 @@ protected:
 	inline virtual void onUpdate() override
 	{
 		scene->update(0.1f);
+        
+        if (ImGui::Begin("Scripts")) {
+            if (ImGui::Button("Reload")) {
+                da::script::CScriptEngine::clear_all();
+                scriptComponent->reload();
+            }
+        }
+        
+        ImGui::End();
+        
 		return;
 		if (!m_boltMat || !m_cubeMat)
 		{

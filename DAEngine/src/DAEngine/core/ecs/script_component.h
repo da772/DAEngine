@@ -15,6 +15,8 @@ namespace da::core {
 		void onInitialize();
 		void onUpdate(float dt);
 		void onShutdown();
+        
+        void reload();
 
 	private:
 		std::string m_script;

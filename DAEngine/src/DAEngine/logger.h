@@ -94,7 +94,7 @@ inline static void x(const ELogChannel& channel, const std::string& message, Arg
 #if DA_PLATFORM_WINDOWS
 			sprintf_s(buffer, sizeof(buffer), msg.c_str(), utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args...);
 #else
-			snprintf(buffer, sizeof(buffer), msg.c_str(), utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args...);
+            snprintf(buffer, sizeof(buffer), msg.c_str(), utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args...);
 #endif
 			logInternal(std::string(buffer));
 #endif

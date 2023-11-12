@@ -52,11 +52,13 @@ namespace da::script
 			m_funcRef = luaL_ref(L, LUA_REGISTRYINDEX);
 
 			// Get Object
-			lua_rawgeti(L, LUA_REGISTRYINDEX, m_baseRef);
-			lua_pushstring(L, m_objName.c_str());
-			lua_gettable(L, -2);
-			type = lua_type(L, -1);
-			m_objRef = luaL_ref(L, LUA_REGISTRYINDEX);
+            if (m_objRef == 0) {
+                lua_rawgeti(L, LUA_REGISTRYINDEX, m_baseRef);
+                lua_pushstring(L, m_objName.c_str());
+                lua_gettable(L, -2);
+                type = lua_type(L, -1);
+                m_objRef = luaL_ref(L, LUA_REGISTRYINDEX);
+            }
 
 			// Init func
 			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
@@ -87,19 +89,21 @@ namespace da::script
 
 	}
 
-	void CScriptClass::cleanup()
+	void CScriptClass::cleanup(bool keepObj)
 	{
 		if (!m_state) return;
 
 		lua_State* L = (lua_State*)m_state;
 
 		luaL_unref(L, LUA_REGISTRYINDEX, m_baseRef);
-		luaL_unref(L, LUA_REGISTRYINDEX, m_baseRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, m_funcRef);
-		luaL_unref(L, LUA_REGISTRYINDEX, m_objRef);
+        if (!keepObj) luaL_unref(L, LUA_REGISTRYINDEX, m_objRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, m_initRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, m_updateRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, m_shutdownRef);
+        
+        m_baseRef = 0, m_funcRef = 0, m_initRef = 0, m_updateRef = 0, m_shutdownRef = 0;
+        if (!keepObj) m_objRef = 0;
 	}
 
 	void CScriptClass::classInitialize()

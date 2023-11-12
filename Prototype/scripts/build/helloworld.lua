@@ -4,7 +4,7 @@ local __TS__New = ____lualib.__TS__New
 local ____exports = {}
 local ____lib = require("lib")
 local Employee = ____lib.Employee
-local ____imgui = require("imgui")
+local ____imgui = require("core.imgui")
 local ImGui = ____imgui.ImGui
 ____exports.MyComponent = __TS__Class()
 local MyComponent = ____exports.MyComponent
@@ -21,6 +21,7 @@ function MyComponent.prototype.update(self, dt)
             "employee is sick",
             (self.e.empName .. " is sick: ") .. tostring(self.e.empCode)
         )
+        ImGui:LabelText("###end", "Hello people")
         if ImGui:Button("Press Me") then
             local ____self_e_0, ____empCode_1 = self.e, "empCode"
             ____self_e_0[____empCode_1] = ____self_e_0[____empCode_1] + 1

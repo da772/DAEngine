@@ -19,6 +19,7 @@ namespace da::script
 		static int get_script(const char* path, bool cacheResult);
 		static bool has_script(const CHashString& hash);
 		static void unload_script(const CHashString& hash);
+        static void clear_all();
 
 
 	private:

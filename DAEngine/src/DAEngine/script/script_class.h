@@ -8,7 +8,7 @@ namespace da::script
 		CScriptClass();
 
 		void setup();
-		void cleanup();
+		void cleanup(bool keepObj = false);
 
 		void classInitialize();
 		void classUpdate(float dt);

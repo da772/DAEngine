@@ -1,7 +1,7 @@
 #pragma once
 #include "scene.h"
 
-#define COMPONENT_H(x) public: static void registerComponent(); inline static const CHashString& getTypeHash() {return HASHSTR(#x);}; \
+#define COMPONENT_H(x) public: static void registerComponent(); inline static const CHashString getTypeHash() {return HASHSTR(#x);}; \
 inline const CGuid& getId() const {return m_guid;}; protected: CGuid m_guid; public: inline void initialize() { onInitialize(); }; inline void update(float dt) { onUpdate(dt);}; \
 inline void shutdown() { onShutdown(); };
 

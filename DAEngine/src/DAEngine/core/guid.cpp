@@ -137,7 +137,7 @@ namespace da::core {
 #ifdef DA_PLATFORM_WINDOWS
 			sprintf_s(&buffer[0], sizeof(buffer), "%02x", m_uuid[index++]);
 #else
-			sprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
+            snprintf(&buffer[0], sizeof(buffer), "%02x", m_uuid[index++]);
 #endif
 
 			memcpy(&m_debugName[i], &buffer[0], sizeof(char) * 2);
@@ -151,7 +151,7 @@ namespace da::core {
 #ifdef DA_PLATFORM_WINDOWS
 			sprintf_s(&buffer[0], 4, "%02x", m_uuid[index++]);
 #else
-			sprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
+            snprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
 #endif
 			memcpy(&m_debugName[i], &buffer[0], sizeof(char) * 2);
 		}
@@ -163,7 +163,7 @@ namespace da::core {
 #ifdef DA_PLATFORM_WINDOWS
 			sprintf_s(&buffer[0], 4, "%02x", m_uuid[index++]);
 #else
-			sprintf(&m_debugName[i], sizeof(m_debugName), "%02x", m_uuid[index++]);
+            snprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
 #endif
 			memcpy(&m_debugName[i], &buffer[0], sizeof(char) * 2);
 		}
@@ -174,7 +174,7 @@ namespace da::core {
 #ifdef DA_PLATFORM_WINDOWS
 			sprintf_s(&buffer[0],4, "%02x", m_uuid[index++]);
 #else
-			sprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
+            snprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
 #endif
 			memcpy(&m_debugName[i], &buffer[0], sizeof(char) * 2);
 		}
@@ -185,7 +185,7 @@ namespace da::core {
 #ifdef DA_PLATFORM_WINDOWS
 			sprintf_s(&buffer[0], 4, "%02x", m_uuid[index++]);
 #else
-			sprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
+            snprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
 #endif
 			memcpy(&m_debugName[i], &buffer[0], sizeof(char) * 2);
 		}

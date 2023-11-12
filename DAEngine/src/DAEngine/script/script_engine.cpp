@@ -25,6 +25,12 @@ namespace da::script
 		const char* path = luaL_checkstring(L, 1);
 		size_t pathLen = strlen(path);
 		memcpy(&buffer[8], path, pathLen);
+        for (size_t i = 8; i < pathLen+8; i++) {
+            if (buffer[i] == '.') {
+                buffer[i] = '/';
+                break;
+            }
+        }
 		char ext[] = ".lua";
 		memcpy(&buffer[pathLen + 8], ext, sizeof(ext));
 		buffer[pathLen + 8 + sizeof(ext)] = '\0';
@@ -127,10 +133,11 @@ namespace da::script
 		s_instance->m_state = lua_open();
 		luaL_openlibs(s_instance->m_state);
 
+#ifdef DA_PLATFORM_WINDOWS
 		lua_pushcfunction(s_instance->m_state, luaopen_jit);
 		lua_pushstring(s_instance->m_state, LUA_JITLIBNAME);
 		lua_call(s_instance->m_state, 1, 0);
-
+#endif
 		register_functions();
 	}
 
@@ -170,6 +177,11 @@ namespace da::script
 
 		return it->second;
 	}
+
+    void CScriptEngine::clear_all() {
+        s_scriptMap.clear();
+    }
+
 
 	void CScriptEngine::read_table(int idx) {
 		if (lua_istable(s_instance->m_state, idx))

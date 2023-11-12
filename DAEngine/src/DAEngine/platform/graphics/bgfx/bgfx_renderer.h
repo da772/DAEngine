@@ -72,15 +72,15 @@ namespace da::platform::bgfx {
 		glm::mat4 viewMat = glm::mat4(1.0);
 		glm::mat4 projMat = glm::mat4(1.0);
 
-		::bgfx::VertexBufferHandle blitTriangleBuffer = INVALID_HANDLE;
+        ::bgfx::VertexBufferHandle blitTriangleBuffer = {INVALID_HANDLE};
 
 	private:
 		CBgfxGraphicsMaterial blitProgram;
-		::bgfx::UniformHandle blitSampler = INVALID_HANDLE;
-		::bgfx::UniformHandle camPosUniform = INVALID_HANDLE;
-		::bgfx::UniformHandle normalMatrixUniform = INVALID_HANDLE;
-		::bgfx::UniformHandle exposureVecUniform = INVALID_HANDLE;
-		::bgfx::UniformHandle tonemappingModeVecUniform = INVALID_HANDLE;
+        ::bgfx::UniformHandle blitSampler = {INVALID_HANDLE};
+        ::bgfx::UniformHandle camPosUniform = {INVALID_HANDLE};
+        ::bgfx::UniformHandle normalMatrixUniform = {INVALID_HANDLE};
+        ::bgfx::UniformHandle exposureVecUniform = {INVALID_HANDLE};
+        ::bgfx::UniformHandle tonemappingModeVecUniform = {INVALID_HANDLE};
 
 
 	};

@@ -18,7 +18,7 @@ namespace da::platform::bgfx {
 		const ::bgfx::Memory * mem = ::bgfx::copy(pixels, m_width * m_height * m_channels * sizeof(char));
 		m_handle = ::bgfx::createTexture2D(m_width, m_height, false, 1, ::bgfx::TextureFormat::Enum::RGBA8, 0, mem).idx;
 		m_textureNative = &m_handle;
-		LOG_ASSERT(m_handle != INVALID_HANDLE, ELogChannel::Graphics, "Failed to create texture %s", m_path);
+		LOG_ASSERT(m_handle != INVALID_HANDLE, ELogChannel::Graphics, "Failed to create texture %s", m_path.c_str());
 		stbi_image_free(pixels);
 	}
 
@@ -30,7 +30,7 @@ namespace da::platform::bgfx {
 		const ::bgfx::Memory* mem = ::bgfx::copy(m_fileAsset.data(), width * height * m_channels * sizeof(char));
 		m_handle = ::bgfx::createTexture2D(width, height, false, 1, ::bgfx::TextureFormat::Enum::RGBA8, 0, mem).idx;
 		m_textureNative = &m_handle;
-		LOG_ASSERT(m_handle != INVALID_HANDLE, ELogChannel::Graphics, "Failed to create texture %s", name);
+		LOG_ASSERT(m_handle != INVALID_HANDLE, ELogChannel::Graphics, "Failed to create texture %s", name.c_str());
 		m_fileAsset = {};
 	}
 

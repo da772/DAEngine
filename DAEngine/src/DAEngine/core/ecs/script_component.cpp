@@ -9,13 +9,11 @@ namespace da::core {
 
 	CScriptComponent::CScriptComponent(const std::string& script) : m_guid(CGuid::Generate()), m_script(script)
 	{
-
+        m_scriptClass = da::script::CScriptClass(m_script, "MyComponent", "component");
 	}
 
 	void CScriptComponent::onInitialize()
 	{
-		m_scriptClass = da::script::CScriptClass(m_script, "MyComponent", "component");
-		
 		m_scriptClass.setup();
 
 		m_scriptClass.classInitialize();
@@ -31,7 +29,13 @@ namespace da::core {
 	{
 		m_scriptClass.classShutdown();
 
-		m_scriptClass.cleanup();
+		m_scriptClass.cleanup(false);
 	}
+
+    void CScriptComponent::reload() {
+        
+        m_scriptClass.cleanup(true);
+        m_scriptClass.setup();
+    }
 
 }

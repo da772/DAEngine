@@ -1,7 +1,7 @@
 import { Employee } from "./lib";
 
-import { ImGui } from "./imgui";
-import { Component } from "./core";
+import { ImGui } from "./core/imgui";
+import { Component } from "./core/component";
 
 export class MyComponent implements Component {
 
@@ -13,6 +13,7 @@ export class MyComponent implements Component {
     update(dt: number): void {
         if (ImGui.Begin("Hello World!")) {
             ImGui.LabelText("employee is sick", `${this.e.empName} is sick: ${this.e.empCode}`);
+            ImGui.LabelText("###end", "Hello people");
 
             if (ImGui.Button("Press Me")) {
                 this.e.empCode++;
