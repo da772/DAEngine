@@ -173,8 +173,12 @@ protected:
         
         if (ImGui::Begin("Scripts")) {
             if (ImGui::Button("Reload")) {
+                auto& components = scene->getComponents<da::core::CScriptComponent>();
                 da::script::CScriptEngine::clear_all();
-                scriptComponent->reload();
+                for (size_t i = 0; i < components.getCount(); i++) {
+                    da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);
+                    c->reload();
+                }
             }
         }
         

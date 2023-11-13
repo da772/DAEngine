@@ -1,5 +1,5 @@
-CC="gcc"
-CXX="g++"
+CC="clang"
+CXX="clang++"
 
 workspace "Prototype"
 	architecture "x64"

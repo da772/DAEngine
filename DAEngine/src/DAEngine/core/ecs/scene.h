@@ -18,7 +18,7 @@ namespace da::core {
 		}
 
 		template <typename T>
-		T* findComponent(const CGuid& guid) {
+		T* findComponent(const CGuid& guid) const {
 			for (size_t i = 0; i < m_components.size(); i += sizeof(T)) {
 				T* c = (T*) & m_components[i];
 				if (c->getId() == guid) {
@@ -40,8 +40,8 @@ namespace da::core {
 			return true;
 		}
 
-		void* getComponentAtIndex(size_t index) {
-			return &m_components[index * m_size];
+		const void* getComponentAtIndex(size_t index) const {
+			return &m_components.at(index * m_size);
 		}
 
 		size_t getCount() const {
@@ -94,6 +94,12 @@ namespace da::core {
 		static void registerComponentLifeCycle(const FECSLifeCycle& lifeCycle) {
 			m_componentLifeCycle[T::getTypeHash()] = lifeCycle;
 		}
+        
+        template <typename T>
+        const FComponentContainer& getComponents() {
+            const CHashString& typeHash = T::getTypeHash();
+            return m_components[typeHash];
+        }
 
 	private:
 		std::vector<CEntity*> m_entities;

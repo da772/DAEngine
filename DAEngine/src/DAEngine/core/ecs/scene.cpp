@@ -43,7 +43,7 @@ namespace da::core {
 		for (std::pair<const CHashString, FComponentContainer>& kv : m_components) {
 			FECSLifeCycle& f = m_componentLifeCycle[kv.first];
 			for (size_t i = 0; i < kv.second.getCount(); i++) {
-				f.init(kv.second.getComponentAtIndex(i));
+				f.init((void*)kv.second.getComponentAtIndex(i));
 			}
 		}
 	}
@@ -53,7 +53,7 @@ namespace da::core {
 		for (std::pair<const CHashString, FComponentContainer>& kv : m_components) {
 			FECSLifeCycle& f = m_componentLifeCycle[kv.first];
 			for (size_t i = 0; i < kv.second.getCount(); i++) {
-				f.update(kv.second.getComponentAtIndex(i), dt);
+				f.update((void*)kv.second.getComponentAtIndex(i), dt);
 			}
 		}
 	}
@@ -63,7 +63,7 @@ namespace da::core {
 		for (std::pair<const CHashString, FComponentContainer>& kv : m_components) {
 			FECSLifeCycle& f = m_componentLifeCycle[kv.first];
 			for (size_t i = 0; i < kv.second.getCount(); i++) {
-				f.shutdown(kv.second.getComponentAtIndex(i));
+				f.shutdown((void*)kv.second.getComponentAtIndex(i));
 			}
 		}
 	}
