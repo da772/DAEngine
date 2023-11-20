@@ -162,7 +162,7 @@ namespace da::platform {
 	{
 		bgfx::Init init;
 #ifdef DA_PLATFORM_WINDOWS
-		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Vulkan;
+		s_renderer = (ERenderApis)bgfx::RendererType::Enum::OpenGL;
 #elif defined(DA_PLATFORM_MACOSX) || defined (DA_PLATFORM_IOS)
 		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Metal;
 #else
@@ -185,8 +185,12 @@ namespace da::platform {
 		//init.allocator = (bx::AllocatorI*)m_allocator;
 		#endif
 		#ifdef DA_DEBUG
-		((FDACallbacks*)m_callbacks)->m_trace = !da::core::CArgHandler::contains("debugGpu");
-		init.callback = (bgfx::CallbackI*)m_callbacks;
+		if (da::core::CArgHandler::contains("debugGpu"))
+		{
+			((FDACallbacks*)m_callbacks)->m_trace = true;
+			init.callback = (bgfx::CallbackI*)m_callbacks;
+		}
+		
 		#endif
 		LOG_INFO(ELogChannel::Graphics, "Initialzing BGFX with renderer: %s", s_bgfxRenderers[(int)init.type]);
 		if (!bgfx::init(init))

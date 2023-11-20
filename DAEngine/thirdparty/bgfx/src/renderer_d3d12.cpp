@@ -836,13 +836,13 @@ namespace bgfx { namespace d3d12
 
 								if (SUCCEEDED(hr))
 								{
-//									debug1->SetEnableGPUBasedValidation(true);
+									//debug1->SetEnableGPUBasedValidation(true);
 
 									// https://discordapp.com/channels/590611987420020747/593519198995742733/703642988345032804
 									// D3D12 Bug Number: 26131261
 									// There is a bug in the D3D12 validation that causes example-21 to fail when using UAV
 									// Setting this function below to false avoids the bug
-									debug1->SetEnableSynchronizedCommandQueueValidation(false);
+									//debug1->SetEnableSynchronizedCommandQueueValidation(false);
 								}
 
 								DX_RELEASE(debug1, 1);

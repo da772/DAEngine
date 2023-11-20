@@ -8,5 +8,6 @@
 void da::CCore::_assert(bool x, const char* file, long line)
 {
 	if (x) return;
-	CLogger::LogError(ELogChannel::Core, "Assert: %s, LINE: %ld", file, line);
+	LOG_CALLSTACK(ELogType::Assert, ELogChannel::Core);
+	CLogger::log(ELogType::Assert, ELogChannel::Core, "Assert: %s, LINE: %ld", file, line);
 }

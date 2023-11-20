@@ -11,7 +11,7 @@ namespace da::core {
 	CGuid::CGuid()
 	{
 		memset(&m_uuid, 0, sizeof(uint128_t));
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 		genString();
 #endif
 	}
@@ -19,7 +19,7 @@ namespace da::core {
 	CGuid::CGuid(const uint128_t guid)
 	{
 		memcpy(m_uuid, guid, sizeof(uint128_t));
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 		genString();
 #endif
 	}
@@ -27,7 +27,7 @@ namespace da::core {
 	CGuid::CGuid(const CGuid& guid)
 	{
 		memcpy(m_uuid, guid.m_uuid, sizeof(uint128_t));
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 		genString();
 #endif
 	}
@@ -37,7 +37,7 @@ namespace da::core {
 		size_t size = strlen(guid);
 		if (size != 36) {
 			memset(&m_uuid, 0, sizeof(uint128_t));
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 			genString();
 #endif
 			return;
@@ -62,7 +62,7 @@ namespace da::core {
 			i += 2;
 		}
 
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 		memcpy(m_debugName, guid, sizeof(m_debugName));
 #endif
 	}
@@ -81,7 +81,7 @@ namespace da::core {
 		return m_uuid;
 	}
 
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 	const char* CGuid::c_str() const
 	{
 		return &m_debugName[0];
@@ -119,14 +119,14 @@ namespace da::core {
 			int rnd = rand();
 			memcpy(&guid.m_uuid[i * 4], &rnd, sizeof(int));
 		}
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 		guid.genString();
 #endif
 
 		return guid;
 	}
 
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 	void CGuid::genString()
 	{
 		int index = 0;

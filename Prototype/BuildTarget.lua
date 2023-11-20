@@ -29,7 +29,7 @@ project "Prototype"
 	location "Prototype"
 	kind "ConsoleApp"
 	language "C++"
-			cppdialect "C++20"
+			cppdialect "C++latest"
 	staticruntime "on"
 
 	targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")

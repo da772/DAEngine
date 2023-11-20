@@ -14,7 +14,7 @@ namespace da::core {
 		CGuid(const char* guid);
 
 		const unsigned char* const data() const;
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 		const char* c_str() const;
 #endif
 		bool isValid() const;
@@ -31,7 +31,7 @@ namespace da::core {
 		static CGuid Generate();
 
 	private:
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 		void genString();
 #endif
 
@@ -40,7 +40,7 @@ namespace da::core {
 
 	private:
 		uint128_t m_uuid;
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 		char m_debugName[37];
 #endif
 

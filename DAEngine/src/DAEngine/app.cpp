@@ -24,6 +24,8 @@ namespace da
 			m->initalize();
 		}
 		onInitalize();
+
+		
 	}
 	void CApp::update()
 	{

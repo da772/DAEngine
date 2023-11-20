@@ -1,6 +1,8 @@
 #include "dapch.h"
 #include "asset.h"
 
+#include <iostream>
+
 
 namespace da
 {
@@ -51,6 +53,9 @@ namespace da
 	{
 		m_hasData = true;
 		FILE* f = fopen(m_path.c_str(), "rb");
+
+		LOG_ASSERT(f, ELogChannel::Core, "Failed to load file: %s", m_path.c_str());
+
 		fseek(f, 0, SEEK_END);
 		m_size = ftell(f);
 		fseek(f, 0, SEEK_SET);

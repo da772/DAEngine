@@ -65,4 +65,10 @@ namespace da
 		//CLogger::s_outFile.flush();
 	}
 
+	void CLogger::logCallstack(ELogType type, ELogChannel channel)
+	{
+		LOG_CALLSTACK(type, channel);
+	}
+
+
 }

@@ -2,6 +2,7 @@
 #include <string>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stacktrace>
 #ifndef DA_DEBUG
 #define NDEBUG
 #endif

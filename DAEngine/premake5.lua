@@ -62,7 +62,7 @@ end
 project "DAEngine"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++20"
+	cppdialect "C++latest"
 	staticruntime "on"
 
 	pchheader "src/dapch.h"
