@@ -169,7 +169,6 @@ protected:
 
 	inline virtual void onUpdate() override
 	{
-		return;
 		scene->update(0.1f);
         
         if (ImGui::Begin("Scripts")) {
