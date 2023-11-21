@@ -16,9 +16,7 @@ namespace da::platform
 		void Shutdown();
 
 	private:
-		da::core::CStaticMesh* m_smesh;
-		::bgfx::VertexBufferHandle m_vbh;
-		::bgfx::IndexBufferHandle m_ibh;
+		class CBgfxStaticMesh* m_mesh;
 		void* m_material;
 		da::core::CWindow* m_window;
 		double m_start = 0;

@@ -9,7 +9,7 @@ namespace da::core
 		COMPONENT_H(CTestComponent);
 
 	public:
-		CTestComponent(const char* data1, const char* data2);
+		CTestComponent(const char* data1, const char* data2, CEntity& parent);
 
 		void onInitialize() ;
 		void onUpdate(float dt);

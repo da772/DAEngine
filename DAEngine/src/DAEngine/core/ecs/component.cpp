@@ -2,8 +2,7 @@
 #include "component.h"
 
 namespace da::core {
-
-	CComponent::CComponent(const CGuid& guid) : m_guid(guid)
+	CComponent::CComponent(const CGuid& guid, CEntity& parent) : m_guid(guid), m_parent(parent)
 	{
 
 	}

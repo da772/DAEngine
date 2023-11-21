@@ -4,7 +4,6 @@
 #ifdef DA_GRAPHICS_BGFX
 
 namespace da::platform {
-
 	class CBgfxGraphicsMaterial : public core::CMaterial
 	{
 	public:

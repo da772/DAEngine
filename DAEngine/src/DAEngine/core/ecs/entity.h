@@ -42,7 +42,7 @@ namespace da::core
 		template <typename T, typename... Args>
 		FComponentRef<T> addComponent(Args&&... args)
 		{
-			if (T* comp = m_scene->createComponent<T>(std::forward<Args>(args)...)) {
+			if (T* comp = m_scene->createComponent<T>(std::forward<Args>(args)..., *this)) {
 
 				m_components[T::getTypeHash()] = comp->getId();
 				return FComponentRef<T>(comp->getId(), m_scene);

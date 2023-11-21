@@ -7,14 +7,14 @@ namespace da::core
 	CStaticMeshCube::CStaticMeshCube()
 	{
 		m_vertices.resize(8);
-		m_vertices[0] = { {0,0}, {-1.f, -1.f, 1.f} };
-		m_vertices[1] = { {0,0}, {1.f, -1.f, 1.f} };
-		m_vertices[2] = { {0,0}, {1.f, -1.f, -1.f} };
-		m_vertices[3] = { {0,0}, {-1.f, -1.f, -1.f} };
-		m_vertices[4] = { {0,0}, {-1.f, 1.f, 1.f} };
-		m_vertices[5] = { {0,0}, {1.f, 1.f, 1.f} };
-		m_vertices[6] = { {0,0}, {1.f, 1.f, -1.f} };
-		m_vertices[7] = { {0,0}, {-1.f, 1.f, -1.f} };
+		m_vertices[0] = { {-1.f, -1.f, 1.f} ,{0,0,0}, {0,0,0}, {0,0} };
+		m_vertices[1] = { {1.f, -1.f, 1.f}   ,{0,0,0}, {0,0,0}, {0,0}};
+		m_vertices[2] = { {1.f, -1.f, -1.f}  ,{0,0,0}, {0,0,0}, {0,0} };
+		m_vertices[3] = { {-1.f, -1.f, -1.f} ,{0,0,0}, {0,0,0}, {0,0} };
+		m_vertices[4] = { {-1.f, 1.f, 1.f} ,{0,0,0}, {0,0,0}, {0,0} };
+		m_vertices[5] = { {1.f, 1.f, 1.f} ,{0,0,0}, {0,0,0}, {0,0} };
+		m_vertices[6] = { {1.f, 1.f, -1.f} ,{0,0,0}, {0,0,0}, {0,0} };
+		m_vertices[7] = { {-1.f, 1.f, -1.f} ,{0,0,0}, {0,0,0}, {0,0} };
 
 		m_indices = {
 			1,2,6,

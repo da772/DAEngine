@@ -1,8 +1,9 @@
 #pragma once
 #include "scene.h"
+#include "entity.h"
 
-#define COMPONENT_H(x) public: static void registerComponent(); inline static const CHashString getTypeHash() {return HASHSTR(#x);}; \
-inline const CGuid& getId() const {return m_guid;}; protected: CGuid m_guid; public: inline void initialize() { onInitialize(); }; inline void update(float dt) { onUpdate(dt);}; \
+#define COMPONENT_H(x) public: static void registerComponent(); inline static const CHashString getTypeHash() {return HASHSTR(#x);};\
+inline const CGuid& getId() const {return m_guid;}; protected: CGuid m_guid; CEntity& m_parent; public: inline void initialize() { onInitialize(); }; inline void update(float dt) { onUpdate(dt);}; \
 inline void shutdown() { onShutdown(); };
 
 #define COMPONENT_CPP(x) static void register_init(void* p) { ((x*)p)->initialize();} static void register_update(void* p, float dt) { ((x*)p)->update(dt);} static void register_shutdown(void* p) { ((x*)p)->shutdown();}\
@@ -12,7 +13,7 @@ namespace da::core
 {
 	class CComponent {
 	public:
-		CComponent(const CGuid& guid);
+		CComponent(const CGuid& guid, CEntity& parent);
 		const CGuid& getId() const;
 
 	protected:
@@ -20,5 +21,6 @@ namespace da::core
 
 	protected:
 		CGuid m_guid;
+		CEntity& m_parent;
 	};
 }

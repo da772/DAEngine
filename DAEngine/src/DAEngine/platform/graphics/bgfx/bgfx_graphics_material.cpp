@@ -83,7 +83,7 @@ namespace da::platform {
 
 	void CBgfxGraphicsMaterial::update(int frame)
 	{
-
+		
 	}
 
 	void CBgfxGraphicsMaterial::shutdown()

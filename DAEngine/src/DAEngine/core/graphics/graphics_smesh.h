@@ -17,6 +17,8 @@ namespace da::core
 
 		inline const std::vector<FVertexBase>& getVertices() const override { return m_vertices; }
 		inline const std::vector<uint32_t>& getIndices() const override { return m_indices; }
+		inline virtual void* getNativeVB() const { return nullptr; }
+		inline virtual void* getNativeIB() const { return nullptr; }
 
 	private:
 		std::string m_path;

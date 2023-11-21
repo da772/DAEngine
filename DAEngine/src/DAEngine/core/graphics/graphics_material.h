@@ -3,6 +3,8 @@
 
 namespace da::core
 {
+	class CStaticMesh;
+
 	class CMaterial
 	{
 	public:

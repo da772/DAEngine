@@ -3,6 +3,7 @@
 
 #include "test_component.h"
 #include "script_component.h"
+#include "smesh_component.h"
 
 namespace da::core {
 
@@ -10,6 +11,7 @@ namespace da::core {
 	{
 		CTestComponent::registerComponent();
 		CScriptComponent::registerComponent();
+		CSmeshComponent::registerComponent();
 	}
 
 }

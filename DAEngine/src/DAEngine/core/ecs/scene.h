@@ -11,8 +11,10 @@ namespace da::core {
 			m_size = sizeof(T);
 			m_components.insert(m_components.end(), sizeof(T), 0);
 			char* ptr = &m_components[m_count * sizeof(T)];
-			*(T*)ptr = T(std::forward<Args>(args)...);
-
+			new ((T*)ptr)T (std::forward<Args>(args)...);
+#if DA_DEBUG || DA_RELEASE
+			LOG_ASSERT(((T*)ptr)->getId().isValid(), ELogChannel::Core, "Creating component with invalid id");
+#endif
 			m_count++;
 			return (T*)ptr;
 		}

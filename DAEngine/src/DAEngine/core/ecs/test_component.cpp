@@ -7,8 +7,8 @@ namespace da::core {
 	
 	COMPONENT_CPP(CTestComponent);
 
-	CTestComponent::CTestComponent(const char* data1, const char* data2) 
-		: m_guid(CGuid::Generate()), data1(data1), data2(data2)
+	CTestComponent::CTestComponent(const char* data1, const char* data2, CEntity& parent) 
+		: m_guid(CGuid::Generate()), data1(data1), data2(data2), m_parent(parent)
 	{
 		
 		

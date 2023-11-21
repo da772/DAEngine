@@ -7,65 +7,22 @@
 #include <bx/math.h>
 #include "DAEngine/core/graphics/graphics_smesh.h"
 #include "DAEngine/platform/graphics/bgfx/bgfx_graphics_material.h"
+#include "DAEngine/platform/graphics/bgfx/bgfx_static_mesh.h"
 #include <imgui.h>
 #include <stb_image.h>
 #include <bimg/bimg.h>
+#include "bgfx_static_mesh.h"
 
 
 namespace da::platform {
-
-	static ::bgfx::VertexLayout ms_layout;
-	struct FMSLayout
-	{
-		inline static void init()
-		{
-			ms_layout
-				.begin()
-				.add(::bgfx::Attrib::TexCoord0, 2, ::bgfx::AttribType::Float)
-				.add(::bgfx::Attrib::Position, 3, ::bgfx::AttribType::Float)
-				.add(::bgfx::Attrib::Color0, 3, ::bgfx::AttribType::Float)
-				.add(::bgfx::Attrib::Normal, 3, ::bgfx::AttribType::Float)
-				.add(::bgfx::Attrib::Tangent, 3, ::bgfx::AttribType::Float)
-				.add(::bgfx::Attrib::Bitangent, 3, ::bgfx::AttribType::Float)
-				.end();
-		};
-	};
-
-
 
 	void CBgfxGraphicsTest02::Initialize(da::core::CWindow* window)
 	{
 		m_start = (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() / 1e3f;
 		m_window = window;
-		FMSLayout::init();
-		m_smesh = new da::core::CStaticMesh("assets/viking_room.obj");
-
-		// Create static vertex buffer.
-		m_vbh = ::bgfx::createVertexBuffer(
-			// Static data can be passed with ::bgfx::makeRef
-			::bgfx::makeRef(m_smesh->getVertices().data(), m_smesh->getVertices().size()*sizeof(da::core::FVertexBase))
-			, ms_layout
-			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
-		);
-
-		// Create static index buffer for triangle list rendering.
-		m_ibh = ::bgfx::createIndexBuffer(
-			// Static data can be passed with ::bgfx::makeRef
-			::bgfx::makeRef(m_smesh->getIndices().data(), sizeof(uint32_t)*m_smesh->getIndices().size())
-			, BGFX_BUFFER_INDEX32
-		);
-
 		
-		/*
-		int width = 1, height = 1, channels = 4;
-		stbi_uc* pixels = stbi_load("assets/viking_room.png", (int*)&width, (int*)&height, (int*)&channels, STBI_rgb_alpha);
-		channels = 4;
-		const ::bgfx::Memory* mem = ::bgfx::copy(pixels, width * height * channels * sizeof(char));
-		m_texture = ::bgfx::createTexture2D(width,height, false, 1, ::bgfx::TextureFormat::Enum::RGBA8, 0, mem);
-		stbi_image_free(pixels);
-		*/
+		m_mesh = new CBgfxStaticMesh("assets/viking_room.obj");
 		m_texture = bgfx::CBgfxTexture2D("assets/viking_room.png");
-
 		m_uniform = bgfx::CBgfxUniform<uint16_t>(::bgfx::UniformType::Sampler, "m_uniform");//::bgfx::createUniform("m_uniform", ::bgfx::UniformType::Sampler);
 
 		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/mesh/vs_mesh.sc", "shaders/mesh/fs_mesh.sc");
@@ -100,7 +57,8 @@ namespace da::platform {
 		// if no other draw calls are submitted to view 0.
 		//::bgfx::touch(0);
 
-		::bgfx::IndexBufferHandle ibh = m_ibh;
+		::bgfx::IndexBufferHandle ibh = *(::bgfx::IndexBufferHandle*)m_mesh->getNativeIB();
+		::bgfx::VertexBufferHandle vbh = *(::bgfx::VertexBufferHandle*)m_mesh->getNativeVB();;
 		uint64_t state = BGFX_STATE_WRITE_R
 			| BGFX_STATE_WRITE_G
 			| BGFX_STATE_WRITE_B
@@ -125,13 +83,11 @@ namespace da::platform {
 
 		// Set model matrix for rendering.
 		::bgfx::setTransform(mtx);
+		// Set vertex and index buffer.
+		m_mesh->setBuffers(0);
 
 		// Set texture
 		::bgfx::setTexture(0, { m_uniform.getHandle() }, { m_texture.getHandle() });
-
-		// Set vertex and index buffer.
-		::bgfx::setVertexBuffer(0, m_vbh);
-		::bgfx::setIndexBuffer(ibh);
 
 		// Set render states.
 		::bgfx::setState(state);
@@ -142,12 +98,9 @@ namespace da::platform {
 
 	void CBgfxGraphicsTest02::Shutdown()
 	{
-		::bgfx::destroy(m_ibh);
-		::bgfx::destroy(m_vbh);
-		//::bgfx::destroy(m_uniform);
+		delete m_mesh;
 		m_uniform.destroy();
 		m_texture.destroy();
-		//::bgfx::destroy(m_texture);
 		((CBgfxGraphicsMaterial*)m_material)->shutdown();
 		delete m_material;
 	}

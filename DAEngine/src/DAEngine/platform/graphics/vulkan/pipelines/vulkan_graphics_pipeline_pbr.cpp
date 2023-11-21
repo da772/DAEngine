@@ -39,7 +39,7 @@ namespace da::platform
 		attributeDescriptions[1].binding = 0;
 		attributeDescriptions[1].location = 1;
 		attributeDescriptions[1].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106
-		attributeDescriptions[1].offset = offsetof(da::core::FVertexBase, Color);
+		//attributeDescriptions[1].offset = offsetof(da::core::FVertexBase, Color);
 
 		// Tex Coord
 		attributeDescriptions[2].binding = 0;
@@ -63,7 +63,7 @@ namespace da::platform
 		attributeDescriptions[5].binding = 0;
 		attributeDescriptions[5].location = 5;
 		attributeDescriptions[5].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106,
-		attributeDescriptions[5].offset = offsetof(da::core::FVertexBase, BitTangent);
+		//attributeDescriptions[5].offset = offsetof(da::core::FVertexBase, BitTangent);
 
 		return attributeDescriptions;
 	}
