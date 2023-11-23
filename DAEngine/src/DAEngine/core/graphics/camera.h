@@ -45,11 +45,11 @@ namespace da::core
 		static constexpr float MIN_FOV = 10.0f;
 		static constexpr float MAX_FOV = 90.0f;
 
-		glm::vec3 upAxis = Y;
+		glm::vec3 m_upAxis = Y;
 
-		glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
-		glm::quat rotation = glm::identity<glm::quat>();
-		glm::quat invRotation = glm::identity<glm::quat>();
+		glm::vec3 m_pos = { 0.0f, 0.0f, 0.0f };
+		glm::quat m_rotation = glm::identity<glm::quat>();
+		glm::quat m_invRotation = glm::identity<glm::quat>();
 
 		static CCamera* s_camera;
 

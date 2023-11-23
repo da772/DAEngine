@@ -22,7 +22,9 @@ export class MyComponent implements Component {
         }
         
         ImGui.End();
+
     }
+        
     shutdown(): void {
         print("shut down");
     }

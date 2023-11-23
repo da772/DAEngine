@@ -87,7 +87,7 @@ private:
 	da::core::CMaterial* m_cubeMat2 = 0;
 	da::modules::CWindowModule* m_window = 0;
 	da::core::CEntity* e1,* e2;
-    da::core::FComponentRef<da::core::CScriptComponent> scriptComponent;
+ 
 
 protected:
 	inline virtual void onInitalize() override
@@ -106,7 +106,8 @@ protected:
 		tst22->data1 = "883818";
 		LOG_DEBUG(da::ELogChannel::Application, "%s, %s, %s", tst2->data1.c_str(), tst2->data2.c_str(), tst22->data1.c_str());
 
-        scriptComponent = e2->addComponent<da::core::CScriptComponent>("scripts/helloworld.lua");
+        e2->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
+		e1->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
 		return;
@@ -142,6 +143,7 @@ protected:
 			}
 		}
 		
+		
 #ifdef WINDOW_2
 		{
 			auto cubeMapPipeline = da::core::CGraphicsPipelineFactory::CreateCubeMap(*m_graphicsModule2->getGraphicsApi());
@@ -172,42 +174,10 @@ protected:
 	inline virtual void onUpdate() override
 	{   
 
-		da::core::CCamera& cam = *da::core::CCamera::getCamera();
-
-		if (da::core::CInput::inputPressed(87)) // W
-		{
-			cam.move(cam.forward() * 5.0f * .1f);
-		}
-
-		if (da::core::CInput::inputPressed(83)) // S
-		{
-			cam.move(-cam.forward() * 5.0f * .1f);
-		}
-
-		if (da::core::CInput::inputPressed(65)) // A
-		{
-			cam.move(-cam.right() * 5.0f * .1f);
-		}
-		
-		if (da::core::CInput::inputPressed(68)) // D
-		{
-			cam.move(cam.right() * 5.0f * .1f);
-		}
-
-		if (da::core::CInput::inputPressed(32)) // SPACE
-		{
-			cam.move(cam.up() * 5.0f * .1f);
-		}
-
-		if (da::core::CInput::inputPressed(341)) // LCTRL
-		{
-			cam.move(-cam.up() * 5.0f * .1f);
-		}
-
         if (ImGui::Begin("Scripts")) {
             if (ImGui::Button("Reload")) {
                 auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
-                da::script::CScriptEngine::clear_all();
+                da::script::CScriptEngine::clearAll();
                 for (size_t i = 0; i < components.getCount(); i++) {
                     da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);
                     c->reload();

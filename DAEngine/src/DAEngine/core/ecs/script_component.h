@@ -10,7 +10,7 @@ namespace da::core {
 		COMPONENT_H(CScriptComponent)
 
 	public:
-		CScriptComponent(const std::string& script, CEntity& parent);
+		CScriptComponent(const std::string& script, const std::string& className, CEntity& parent);
 
 		void onInitialize();
 		void onUpdate(float dt);

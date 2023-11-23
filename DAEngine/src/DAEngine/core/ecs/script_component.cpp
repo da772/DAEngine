@@ -7,9 +7,9 @@ namespace da::core {
 
 	COMPONENT_CPP(CScriptComponent)
 
-	CScriptComponent::CScriptComponent(const std::string& script, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_script(script)
+	CScriptComponent::CScriptComponent(const std::string& script, const std::string& className, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_script(script)
 	{
-        m_scriptClass = da::script::CScriptClass(m_script, "MyComponent", "component");
+        m_scriptClass = da::script::CScriptClass(m_script, className, "component");
 	}
 
 	void CScriptComponent::onInitialize()

@@ -26,7 +26,7 @@ namespace da::script
 
 	void CScriptClass::setup()
 	{
-		m_state = CScriptEngine::load_script(m_path.c_str());
+		m_state = CScriptEngine::loadScript(m_path.c_str());
 		lua_State* L = (lua_State*)m_state;
 
 		int i = lua_gettop(L);

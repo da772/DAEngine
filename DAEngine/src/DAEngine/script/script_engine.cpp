@@ -4,6 +4,7 @@
 #include "asset/asset.h"
 #include <chrono>
 #include <algorithm>
+#include "natives/script_native.h"
 
 extern "C" {
 #include <lua/lua.h>
@@ -11,42 +12,39 @@ extern "C" {
 #include <lua/lauxlib.h>
 }
 
-// TODO REMOVE
-#include <imgui.h>
-
 namespace da::script
 {
 	CScriptEngine* CScriptEngine::s_instance = nullptr;
 	std::unordered_map<uint32_t, int> CScriptEngine::s_scriptMap;
 
-	extern "C" int lua_requires(lua_State * L)
+	extern "C" static int lua_requires(lua_State * L)
 	{
-		char buffer[1024] = "scripts/";
+		char buffer[1024] = "scripts/build/";
 		const char* path = luaL_checkstring(L, 1);
 		size_t pathLen = strlen(path);
-		memcpy(&buffer[8], path, pathLen);
-        for (size_t i = 8; i < pathLen+8; i++) {
+		memcpy(&buffer[14], path, pathLen);
+        for (size_t i = 14; i < pathLen+14; i++) {
             if (buffer[i] == '.') {
                 buffer[i] = '/';
                 break;
             }
         }
 		char ext[] = ".lua";
-		memcpy(&buffer[pathLen + 8], ext, sizeof(ext));
-		buffer[pathLen + 8 + sizeof(ext)] = '\0';
+		memcpy(&buffer[pathLen + 14], ext, sizeof(ext));
+		buffer[pathLen + 14 + sizeof(ext)] = '\0';
 
 
 		//std::string filePath = "scripts/" + std::string(path) + ".lua";
 
 		//LOG_INFO(ELogChannel::Script, "Attempting to require script: %s", filePath.c_str());
 
-		int ref = CScriptEngine::get_script(buffer, true);
+		int ref = CScriptEngine::getScript(buffer, true);
 		lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
 		//lua_call(L, 0, 1);
 		return 1;
 	}
 
-	extern "C" int lua_print(lua_State * L)
+	extern "C" static int lua_print(lua_State * L)
 	{
 		int top = lua_gettop(L);
 
@@ -86,45 +84,6 @@ namespace da::script
 		return 0;
 	}
 
-	extern "C" int lua_imgui_begin(lua_State * L)
-	{
-		const char* title = luaL_checkstring(L, 2);
-	
-		bool result = ImGui::Begin(title);
-
-		lua_pushboolean(L, result);
-		return 1;
-	}
-
-	extern "C" int lua_imgui_button(lua_State * L)
-	{
-		const char* title = luaL_checkstring(L, 2);
-
-		bool result = ImGui::Button(title);
-
-		lua_pushboolean(L, result);
-		return 1;
-	}
-
-	extern "C" int lua_imgui_end(lua_State * L)
-	{
-		ImGui::End();
-
-		return 0;
-	}
-
-	extern "C" int lua_imgui_label_text(lua_State * L)
-	{
-		const char* title = luaL_checkstring(L, 2);
-		const char* fmt = luaL_checkstring(L, 3);
-
-		if (!title || !fmt) return 0;
-
-		ImGui::LabelText(title, fmt);
-
-		return 0;
-	}
-
 	void CScriptEngine::initialize()
 	{
 		if (s_instance) return;
@@ -138,27 +97,24 @@ namespace da::script
 		lua_pushstring(s_instance->m_state, LUA_JITLIBNAME);
 		lua_call(s_instance->m_state, 1, 0);
 #endif
-		register_functions();
+		registerFunctions();
+		registerNatives(s_instance->m_state);
 	}
 
-	void CScriptEngine::register_functions()
+	void CScriptEngine::registerFunctions()
 	{
 		lua_register(s_instance->m_state, "require", lua_requires);
 		lua_register(s_instance->m_state, "print", lua_print);
-		lua_register(s_instance->m_state, "native_imgui_begin", lua_imgui_begin);
-		lua_register(s_instance->m_state, "native_imgui_button", lua_imgui_button);
-		lua_register(s_instance->m_state, "native_imgui_end", lua_imgui_end);
-		lua_register(s_instance->m_state, "native_imgui_label_text", lua_imgui_label_text);
 	}
 
-	bool CScriptEngine::has_script(const CHashString& hash)
+	bool CScriptEngine::hasScript(const CHashString& hash)
 	{
 		const std::unordered_map<uint32_t, int>::iterator it = s_scriptMap.find(hash.hash());
 
 		return it != s_scriptMap.end();
 	}
 
-	int CScriptEngine::get_script(const char* path, bool cacheResult)
+	int CScriptEngine::getScript(const char* path, bool cacheResult)
 	{
 		uint32_t hash = HASH(path);
 		const std::unordered_map<uint32_t, int>::iterator it = s_scriptMap.find(hash);
@@ -178,12 +134,12 @@ namespace da::script
 		return it->second;
 	}
 
-    void CScriptEngine::clear_all() {
+    void CScriptEngine::clearAll() {
         s_scriptMap.clear();
     }
 
 
-	void CScriptEngine::read_table(int idx) {
+	void CScriptEngine::readTable(int idx) {
 		if (lua_istable(s_instance->m_state, idx))
 		{
 			lua_pushnil(s_instance->m_state);
@@ -225,9 +181,9 @@ namespace da::script
 		}
 	}
 
-	void* CScriptEngine::load_script(const char* path)
+	void* CScriptEngine::loadScript(const char* path)
 	{
-		int ref = CScriptEngine::get_script(path, false);
+		int ref = CScriptEngine::getScript(path, false);
 		lua_rawgeti(s_instance->m_state, LUA_REGISTRYINDEX, ref);
 		if (lua_pcall(s_instance->m_state, 0, 1, 0) != LUA_OK) {
 			LOG_ERROR(ELogChannel::Script, "%s failed: %s", path, lua_tostring(s_instance->m_state, -1));
@@ -238,7 +194,7 @@ namespace da::script
 
 
 
-	void CScriptEngine::unload_script(const CHashString& hash)
+	void CScriptEngine::unloadScript(const CHashString& hash)
 	{
 		const auto& it = s_scriptMap.find(hash.hash());
 		if (it == s_scriptMap.end()) return;

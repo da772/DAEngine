@@ -15,16 +15,16 @@ namespace da::script
 	public:
 		static void initialize();
 		static void shutdown();
-		static void* load_script(const char* path);
-		static int get_script(const char* path, bool cacheResult);
-		static bool has_script(const CHashString& hash);
-		static void unload_script(const CHashString& hash);
-        static void clear_all();
+		static void* loadScript(const char* path);
+		static int getScript(const char* path, bool cacheResult);
+		static bool hasScript(const CHashString& hash);
+		static void unloadScript(const CHashString& hash);
+        static void clearAll();
 
 
 	private:
-		static void register_functions();
-		static void read_table(int idx);
+		static void registerFunctions();
+		static void readTable(int idx);
 
 	private:
 		lua_State* m_state;

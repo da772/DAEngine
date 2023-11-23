@@ -14,7 +14,7 @@ namespace da::core
 
 	void CCamera::move(glm::vec3 delta)
 	{
-		pos += delta;
+		m_pos += delta;
 	}
 
 	void CCamera::rotate(glm::vec2 delta)
@@ -22,18 +22,18 @@ namespace da::core
 		delta = glm::radians(delta);
 
 		// limit pitch
-		float dot = glm::dot(upAxis, forward());
+		float dot = glm::dot(m_upAxis, forward());
 		if ((dot < -0.99f && delta.x < 0.0f) || // angle nearing 180 degrees
 			(dot > 0.99f && delta.x > 0.0f))    // angle nearing 0 degrees
 			delta.x = 0.0f;
 
-		// pitch is relative to current sideways rotation
+		// pitch is relative to current sideways m_rotation
 		// yaw happens independently
 		// this prevents roll
-		rotation = glm::rotate(glm::identity<glm::quat>(), delta.x, X) *           // pitch
-			rotation * glm::rotate(glm::identity<glm::quat>(), delta.y, Y); // yaw
+		m_rotation = glm::rotate(glm::identity<glm::quat>(), delta.x, X) *           // pitch
+			m_rotation * glm::rotate(glm::identity<glm::quat>(), delta.y, Y); // yaw
 		// normalize?
-		invRotation = glm::conjugate(rotation);
+		m_invRotation = glm::conjugate(m_rotation);
 	}
 
 	void CCamera::zoom(float offset)
@@ -41,51 +41,51 @@ namespace da::core
 		fov = glm::clamp(fov - offset, MIN_FOV, MAX_FOV);
 	}
 
-	void CCamera::lookAt(const glm::vec3& position, const glm::vec3& target, const glm::vec3& up)
+	void CCamera::lookAt(const glm::vec3& m_position, const glm::vec3& target, const glm::vec3& up)
 	{
-		pos = position;
-		upAxis = up;
+		m_pos = m_position;
+		m_upAxis = up;
 
-		// model rotation
+		// model m_rotation
 		// maps vectors to camera space (x, y, z)
-		glm::vec3 forward = glm::normalize(target - position);
-		rotation = glm::rotation(forward, Z);
+		glm::vec3 forward = glm::normalize(target - m_position);
+		m_rotation = glm::rotation(forward, Z);
 
 		// correct the up vector
 		// the cross product of non-orthogonal vectors is not normalized
 		glm::vec3 right = glm::normalize(glm::cross(glm::normalize(up), forward)); // left-handed coordinate system
 		glm::vec3 orthUp = glm::cross(forward, right);
-		glm::quat upRotation = glm::rotation(rotation * orthUp, Y);
-		rotation = upRotation * rotation;
+		glm::quat upm_rotation = glm::rotation(m_rotation * orthUp, Y);
+		m_rotation = upm_rotation * m_rotation;
 
-		// inverse of the model rotation
+		// inverse of the model m_rotation
 		// maps camera space vectors to model vectors
-		invRotation = glm::conjugate(rotation);
+		m_invRotation = glm::conjugate(m_rotation);
 	}
 
 	glm::vec3 CCamera::position() const
 	{
-		return pos;
+		return m_pos;
 	}
 
 	glm::mat4 CCamera::matrix() const
 	{
-		return glm::toMat4(rotation) * glm::translate(glm::identity<glm::mat4>(), -pos);
+		return glm::toMat4(m_rotation) * glm::translate(glm::identity<glm::mat4>(), -m_pos);
 	}
 
 	glm::vec3 CCamera::forward() const
 	{
-		return invRotation * Z;
+		return m_invRotation * Z;
 	}
 
 	glm::vec3 CCamera::up() const
 	{
-		return invRotation * Y;
+		return m_invRotation * Y;
 	}
 
 	glm::vec3 CCamera::right() const
 	{
-		return invRotation * X;
+		return m_invRotation * X;
 	}
 
 	da::core::CCamera* CCamera::getCamera()
