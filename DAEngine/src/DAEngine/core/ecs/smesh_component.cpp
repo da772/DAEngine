@@ -23,7 +23,10 @@ namespace da::core {
 
 	void CSmeshComponent::onUpdate(float dt)
 	{
+		glm::mat4 m = m_parent.getTransform().getMat();
+		::bgfx::setTransform(&m);
 		((da::platform::CBgfxStaticMesh*) m_staticMesh)->setBuffers(0);
+		m_material->update(0);
 	}
 
 	void CSmeshComponent::onShutdown()

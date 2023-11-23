@@ -3,7 +3,9 @@
 #include "logger.h"
 #include "core/arg_handler.h"
 #include "core/ecs/components.h"
+#include "core/ecs/scene.h"
 #include "script/script_engine.h"
+#include "core/ecs/scene_manager.h"
 
 namespace da
 {
@@ -25,6 +27,9 @@ namespace da
 		}
 		onInitalize();
 
+		if (core::CScene* scene = core::CSceneManager::getScene()) {
+			scene->initialize();
+		}
 		
 	}
 	void CApp::update()
@@ -35,6 +40,9 @@ namespace da
 				m->update();
 			}
 			onUpdate();
+			if (core::CScene* scene = core::CSceneManager::getScene()) {
+				scene->update(0.1f);
+			}
 			for (IModule* m : m_modules) {
 				m->lateUpdate();
 			}
@@ -42,6 +50,9 @@ namespace da
 	}
 	void CApp::shutdown()
 	{
+		if (core::CScene* scene = core::CSceneManager::getScene()) {
+			scene->shutdown();
+		}
 		for (IModule* m : m_modules) {
 			m->shutdown();
 		}

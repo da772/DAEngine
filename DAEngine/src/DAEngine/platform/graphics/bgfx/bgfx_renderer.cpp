@@ -36,7 +36,7 @@ namespace da::platform::bgfx {
 
 	void CBgfxRenderer::update()
 	{
-
+		LOG_DEBUG(ELogChannel::Graphics, "Rendering");
 	}
 
 	void CBgfxRenderer::shutdown()

@@ -28,6 +28,7 @@ namespace da::core
 
 		inline virtual void initalize() {};
 		inline virtual void update() {};
+		inline virtual void lateUpdate() {};
 		inline virtual void shutdown() {};
 
 	public:

@@ -53,7 +53,8 @@ project "Prototype"
 		"%{prj.name}/src",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
 	}
 
 	links

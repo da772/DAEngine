@@ -27,6 +27,7 @@ namespace da::platform {
 		~CbgfxGraphicsApi();
 		virtual void initalize() override;
 		virtual void update() override;
+		virtual void lateUpdate() override;
 		virtual void shutdown() override;
 		static ERenderApis getRendererApi();
 		static const char* renderApiToString(ERenderApis api);

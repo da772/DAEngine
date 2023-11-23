@@ -22,9 +22,14 @@ namespace da::modules
 		m_GraphicsApi->initalize();
 	}
 
-	void CGraphicsModule::lateUpdate()
+	void CGraphicsModule::update()
 	{
 		m_GraphicsApi->update();
+	}
+
+	void CGraphicsModule::lateUpdate()
+	{
+		m_GraphicsApi->lateUpdate();
 	}
 
 	void CGraphicsModule::shutdown()
@@ -37,4 +42,7 @@ namespace da::modules
 		m_GraphicsApi->shutdown();
 		delete m_GraphicsApi;
 	}
+
+
+
 }

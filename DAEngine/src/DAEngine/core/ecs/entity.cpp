@@ -21,4 +21,9 @@ namespace da::core {
 		return m_guid;
 	}
 
+	da::maths::CTransform& CEntity::getTransform()
+	{
+		return m_transform;
+	}
+
 }

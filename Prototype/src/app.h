@@ -17,6 +17,8 @@
 #include <imgui.h>
 
 #include <daengine/script/script_engine.h>
+#include <DAEngine/core/ecs/scene_manager.h>
+#include <DAEngine/core/graphics/camera.h>
 
 //#define WINDOW_2
 
@@ -28,12 +30,16 @@ public:
 		addModule(m_window);
 
 		m_window->getEventHandler().registerCallback(EEventCategory::Window, BIND_EVENT_FN(ProtoTypeApp, windowEvent));
+		m_window->getEventHandler().registerCallback(EEventCategory::Input, BIND_EVENT_FN(ProtoTypeApp, inputEvent));
 
 		m_graphicsModule = new da::modules::CGraphicsModule(m_window);
 		addModule(m_graphicsModule);
 
 		da::modules::CImGuiModule* imGuiModule = new da::modules::CImGuiModule(m_graphicsModule);
 		addModule(imGuiModule);
+
+		da::core::CCamera::setCamera(new da::core::CCamera());
+
 #ifdef WINDOW_2
 		da::modules::CWindowModule* windowModule2 = new da::modules::CWindowModule({ "Hello World 2", 720, 480, 0,0, 144, da::core::EWindowDeco::NONE });
 		addModule(windowModule2);
@@ -72,6 +78,44 @@ public:
 			return;
 		}
 	}
+
+	inline void inputEvent(const da::core::events::CEvent& e) {
+
+		if (e.getType() != EEventType::InputKeyboard) {
+			return;
+		}
+
+		const CInputKeyboardEvent* btn = static_cast<const CInputKeyboardEvent*>(&e);
+
+		if (btn->getType() == da::core::EInputType::RELEASED)
+		{
+			return;
+		}
+
+		da::core::CCamera& cam = *da::core::CCamera::getCamera();
+
+		switch (btn->getBtn()) {
+			case 87: // W
+				cam.move(cam.forward() * 5.0f * .1f);
+				break;
+			case 65: // A
+				cam.move(-cam.right() * 5.0f * .1f);
+				break;
+			case 83: // S
+				cam.move(-cam.forward() * 5.0f * .1f);
+				break;
+			case 68: // D
+				cam.move(cam.right() * 5.0f * .1f);
+				break;
+			case 32: // SPACE
+				cam.move(cam.up() * 5.0f * .1f);
+				break;
+			case 341: // LCTRL
+				cam.move(-cam.up() * 5.0f * .1f);
+				break;
+		}
+
+	}
 private:
 	da::modules::CGraphicsModule* m_graphicsModule;
 	da::modules::CGraphicsModule* m_graphicsModule2;
@@ -79,30 +123,27 @@ private:
 	da::core::CMaterial* m_cubeMat = 0;
 	da::core::CMaterial* m_cubeMat2 = 0;
 	da::modules::CWindowModule* m_window = 0;
-	da::core::CScene* scene;
 	da::core::CEntity* e1,* e2;
     da::core::FComponentRef<da::core::CScriptComponent> scriptComponent;
 
 protected:
 	inline virtual void onInitalize() override
 	{
-		scene = new da::core::CScene(da::core::CGuid::Generate());
-		e1 = scene->createEntity();
+		da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid::Generate()));
+		e1 = da::core::CSceneManager::getScene()->createEntity();
 		da::core::FComponentRef<da::core::CTestComponent> tst1 = e1->addComponent<da::core::CTestComponent>("helloworld1", "helloworld2");
 		tst1->data1 = "123456";
 		da::core::FComponentRef<da::core::CTestComponent> tst11 = e1->getComponent<da::core::CTestComponent>();
 		tst11->data1 = "883818";
 		tst1->initialize();
 		LOG_DEBUG(da::ELogChannel::Application, "%s, %s", tst1->data1.c_str(), tst1->data2.c_str());
-		e2 = scene->createEntity();
+		e2 = da::core::CSceneManager::getScene()->createEntity();
 		da::core::FComponentRef<da::core::CTestComponent> tst2 = e2->addComponent<da::core::CTestComponent>("helloworld3", "helloworld4");
 		da::core::FComponentRef<da::core::CTestComponent> tst22 = e1->getComponent<da::core::CTestComponent>();
 		tst22->data1 = "883818";
 		LOG_DEBUG(da::ELogChannel::Application, "%s, %s, %s", tst2->data1.c_str(), tst2->data2.c_str(), tst22->data1.c_str());
 
         scriptComponent = e2->addComponent<da::core::CScriptComponent>("scripts/helloworld.lua");
-
-		scene->initialize();
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
 		return;
@@ -162,18 +203,14 @@ protected:
 
 	inline virtual void onShutdown() override
 	{
-		scene->shutdown();
 		da::CLogger::LogDebug(da::ELogChannel::Application, "App End");
-
 	}
 
 	inline virtual void onUpdate() override
-	{
-		scene->update(0.1f);
-        
+	{   
         if (ImGui::Begin("Scripts")) {
             if (ImGui::Button("Reload")) {
-                auto& components = scene->getComponents<da::core::CScriptComponent>();
+                auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
                 da::script::CScriptEngine::clear_all();
                 for (size_t i = 0; i < components.getCount(); i++) {
                     da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);

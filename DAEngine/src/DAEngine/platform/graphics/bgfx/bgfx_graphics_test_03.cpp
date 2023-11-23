@@ -276,7 +276,7 @@ namespace da::platform {
 
 		// Set view and projection matrix for view 0.
 		
-		const float* view = m_cam->getMatrix()->Mtx;
+		const float* view = nullptr;
 		//bx::mtxLookAt(view, eye, at);
 
 		float proj[16];
@@ -305,26 +305,18 @@ namespace da::platform {
 		drawModels(m_gbufferPipeline->renderId(), { m_gbufferPipeline->getMaterial()->getHandle() }, m_cbcvh, m_cbibh, { -25.f, -50.f, -25.f }, { 100.f, 100.f, 1.f }, 0.f);
 		bgfx::setTexture(0, s_texColor, m_colorTex);
 		bgfx::setTexture(1, s_texNormal, m_normalTex);
-		drawModels(m_gbufferPipeline->renderId(), { m_gbufferPipeline->getMaterial()->getHandle() }, m_spvbh, m_spibh, m_lightCam->getPosition());
+		drawModels(m_gbufferPipeline->renderId(), { m_gbufferPipeline->getMaterial()->getHandle() }, m_spvbh, m_spibh, {0,0,0});
 
         // Set up transforms for shadow map
         float smProj[16], lightEye[3], lightAt[3];
 		
-		const float *smView = m_lightCam->getMatrix()->Mtx;
-        lightEye[0] = m_lightDir[0] * LIGHT_DIST;
-        lightEye[1] = m_lightDir[1]*LIGHT_DIST;
-        lightEye[2] = m_lightDir[2]*LIGHT_DIST;
 		
-
-        lightAt[0] = m_lightCam->getPosition().x;
-        lightAt[1] = m_lightCam->getPosition().y;
-        lightAt[2] = m_lightCam->getPosition().z;
 
         //bx::mtxLookAt(smView, bx::load<bx::Vec3>(lightEye), bx::load<bx::Vec3>(lightAt) );
         const float area = 20.0f;
         const bgfx::Caps* caps = bgfx::getCaps();
         bx::mtxOrtho(smProj, -area, area, -area, area, -100.0f, 100.0f, 0.0f, caps->homogeneousDepth);
-        bgfx::setViewTransform(m_shadowPipline->renderId(), smView, smProj);
+        bgfx::setViewTransform(m_shadowPipline->renderId(), 0, smProj);
         bgfx::setViewFrameBuffer(m_shadowPipline->renderId(), m_shadowPipline->getFrameBufferHandle());
         bgfx::setViewRect(m_shadowPipline->renderId(), 0, 0, SHADOW_MAP_DIM, SHADOW_MAP_DIM);
 
@@ -347,7 +339,7 @@ namespace da::platform {
 
 			// Light matrix used in combine pass and inverse used in light pass
 			float lightMtx[16]; // World space to light space (shadow map space)
-			bx::mtxMul(lightMtx, smView, smProj);
+			bx::mtxMul(lightMtx, 0, smProj);
 			float invMvpShadow[16];
 			bx::mtxInverse(invMvpShadow, lightMtx);
 
@@ -424,61 +416,13 @@ namespace da::platform {
 
 			if (ImGui::Begin("Cam")) {
 
-				if (ImGui::SliderFloat("X", &m_camPos.x, -100.f, 100.f))
-				{
-					m_cam->setPosition(m_camPos);
-				}
-				if (ImGui::SliderFloat("Y", &m_camPos.y, -100.f, 100.f))
-				{
-					m_cam->setPosition(m_camPos);
-				}
-				if (ImGui::SliderFloat("Z", &m_camPos.z, -100.f, 100.f))
-				{
-					m_cam->setPosition(m_camPos);
-				}
-
-				if (ImGui::SliderFloat("Pitch", &m_camRot.x, -100.f, 100.f))
-				{
-					m_cam->setRotation(m_camRot);
-				}
-				if (ImGui::SliderFloat("Yaw", &m_camRot.y, -100.f, 100.f))
-				{
-					m_cam->setRotation(m_camRot);
-				}
-				if (ImGui::SliderFloat("Roll", &m_camRot.z, -100.f, 100.f))
-				{
-					m_cam->setRotation(m_camRot);
-				}
+				
 			}
 			ImGui::End();
 
 			if (ImGui::Begin("Light1")) {
 
-				if (ImGui::SliderFloat("X##Light", &m_lightPos.x, -100.f, 100.f))
-				{
-					m_lightCam->setPosition(m_lightPos);
-				}
-				if (ImGui::SliderFloat("Y##Light", &m_lightPos.y, -100.f, 100.f))
-				{
-					m_lightCam->setPosition(m_lightPos);
-				}
-				if (ImGui::SliderFloat("Z##Light", &m_lightPos.z, -100.f, 100.f))
-				{
-					m_lightCam->setPosition(m_lightPos);
-				}
-
-				if (ImGui::SliderFloat("Pitch##Light", &m_lightRot.x, -100.f, 100.f))
-				{
-					m_lightCam->setRotation(m_lightRot);
-				}
-				if (ImGui::SliderFloat("Yaw##Light", &m_lightRot.y, -100.f, 100.f))
-				{
-					m_lightCam->setRotation(m_lightRot);
-				}
-				if (ImGui::SliderFloat("Roll##Light", &m_lightRot.z, -100.f, 100.f))
-				{
-					m_lightCam->setRotation(m_lightRot);
-				}
+				
 			}
 			
 

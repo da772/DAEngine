@@ -12,6 +12,7 @@
 #include <stb_image.h>
 #include <bimg/bimg.h>
 #include "bgfx_static_mesh.h"
+#include <core/graphics/camera.h>
 
 
 namespace da::platform {
@@ -28,6 +29,13 @@ namespace da::platform {
 		CBgfxGraphicsMaterial* mat = new CBgfxGraphicsMaterial("shaders/mesh/vs_mesh.sc", "shaders/mesh/fs_mesh.sc");
 		mat->initialize();
 		m_material = (void*)mat;
+
+		da::core::CCamera& cam = *da::core::CCamera::getCamera();
+
+		const glm::vec3 at = { 0.0f, 0.0f,   0.0f };
+		const glm::vec3 eye = { 0.0f, 0.0f, -35.0f };
+
+		cam.lookAt(eye, at, cam.up());
 	}
 
 	void CBgfxGraphicsTest02::Render()
@@ -42,12 +50,12 @@ namespace da::platform {
 
 		// Set view and projection matrix for view 0.
 		{
-			float view[16];
-			bx::mtxLookAt(view, eye, at);
+			da::core::CCamera& cam = *da::core::CCamera::getCamera();
+			glm::mat4 view = cam.matrix();
 
 			float proj[16];
-			bx::mtxProj(proj, 60.f, float(width) / float(height), 0.1f, 100.0f, ::bgfx::getCaps()->homogeneousDepth);
-			::bgfx::setViewTransform(0, view, proj);
+			bx::mtxProj(proj, cam.fov, float(width) / float(height), cam.zNear, cam.zFar, ::bgfx::getCaps()->homogeneousDepth, bx::Handedness::Left);
+			::bgfx::setViewTransform(0, &view[0], proj);
 
 			// Set view 0 default viewport.
 			::bgfx::setViewRect(0, 0, 0, uint16_t(width), uint16_t(height));

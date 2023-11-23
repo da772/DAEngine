@@ -1,6 +1,7 @@
 #pragma once
 
 #include "scene.h"
+#include "daengine/core/maths/transform.h"
 
 namespace da::core
 {
@@ -38,6 +39,7 @@ namespace da::core
 
 	public:
 		const CGuid& getId() const;
+		da::maths::CTransform& getTransform();
 		
 		template <typename T, typename... Args>
 		FComponentRef<T> addComponent(Args&&... args)
@@ -93,6 +95,7 @@ namespace da::core
 		std::unordered_map<CHashString, CGuid> m_components;
 		CGuid m_guid;
 		CScene* m_scene;
+		da::maths::CTransform m_transform;
 
 			
 	};

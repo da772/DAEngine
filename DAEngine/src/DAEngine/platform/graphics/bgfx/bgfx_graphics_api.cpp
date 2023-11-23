@@ -219,20 +219,24 @@ namespace da::platform {
 
 	void CbgfxGraphicsApi::update()
 	{
-        if (m_dirtyWindow) {
-            uint32_t w = m_nativeWindow->getWindowData().Width;
-            uint32_t h = m_nativeWindow->getWindowData().Height;
-            bgfx::reset(w, h);
-            bgfx::setViewRect(0, 0, 0, w, h);
-            m_dirtyWindow = false;
-        }
+		if (m_dirtyWindow) {
+			uint32_t w = m_nativeWindow->getWindowData().Width;
+			uint32_t h = m_nativeWindow->getWindowData().Height;
+			bgfx::reset(w, h);
+			bgfx::setViewRect(0, 0, 0, w, h);
+			m_dirtyWindow = false;
+		}
 
 		bgfx::touch(0);
+       
+	}
+
+	void CbgfxGraphicsApi::lateUpdate()
+	{
 		s_test->Render();
 
 		bgfx::dbgTextClear();
 		bgfx::dbgTextPrintf(0, 0, 0x0f, "DAv%s - %s", DA_VERSION, s_bgfxRenderers[(uint8_t)s_renderer]);
- 
 		bgfx::frame();
 	}
 
@@ -274,6 +278,8 @@ namespace da::platform {
 	{
 		return s_bgfxRenderers[(uint8_t)api];
 	}
+
+	
 
 }
 

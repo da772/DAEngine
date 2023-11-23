@@ -13,6 +13,7 @@
 #include "DAEngine/core/window/window.h"
 #include "DAEngine/asset/asset.h"
 #include "DAEngine/platform/graphics/bgfx/bgfx_graphics_material.h"
+#include <core/graphics/camera.h>
 
 
 
@@ -150,26 +151,33 @@ namespace da::platform
 
 		mat->initialize();
 		m_material = (void*)mat;
+
+		da::core::CCamera& cam = *da::core::CCamera::getCamera();
+
+		const glm::vec3 at = { 0.0f, 0.0f,   0.0f };
+		const glm::vec3 eye = { 0.0f, 0.0f, -35.0f };
+
+		cam.lookAt(eye, at, cam.up());
 	}
 
 	void CBgfxGraphicsTest01::Render()
 	{
         double time = (double)std::chrono::duration_cast<std::chrono::milliseconds >(std::chrono::system_clock::now().time_since_epoch()).count()/1e3f - start;
 
-		const bx::Vec3 at = { 0.0f, 0.0f,   0.0f };
-		const bx::Vec3 eye = { 0.0f, 0.0f, -35.0f };
+		
 
 		uint32_t width = m_window->getWindowData().Width;
 		uint32_t height = m_window->getWindowData().Height;
 
 		// Set view and projection matrix for view 0.
 		{
-			float view[16];
-			bx::mtxLookAt(view, eye, at);
+			da::core::CCamera& cam = *da::core::CCamera::getCamera();
+			glm::mat4 view = cam.matrix();
+
 
 			float proj[16];
-			bx::mtxProj(proj, 60.0f, float(width) / float(height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-			bgfx::setViewTransform(0, view, proj);
+			bx::mtxProj(proj, cam.fov, float(width) / float(height), cam.zNear, cam.zFar, bgfx::getCaps()->homogeneousDepth, bx::Handedness::Left);
+			bgfx::setViewTransform(0, &view[0], proj);
 
 			// Set view 0 default viewport.
 			bgfx::setViewRect(0, 0, 0, uint16_t(width), uint16_t(height));
