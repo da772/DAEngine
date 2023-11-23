@@ -19,6 +19,7 @@
 #include <daengine/script/script_engine.h>
 #include <DAEngine/core/ecs/scene_manager.h>
 #include <DAEngine/core/graphics/camera.h>
+#include <DAEngine/core/input/input.h>
 
 //#define WINDOW_2
 
@@ -30,7 +31,6 @@ public:
 		addModule(m_window);
 
 		m_window->getEventHandler().registerCallback(EEventCategory::Window, BIND_EVENT_FN(ProtoTypeApp, windowEvent));
-		m_window->getEventHandler().registerCallback(EEventCategory::Input, BIND_EVENT_FN(ProtoTypeApp, inputEvent));
 
 		m_graphicsModule = new da::modules::CGraphicsModule(m_window);
 		addModule(m_graphicsModule);
@@ -79,43 +79,6 @@ public:
 		}
 	}
 
-	inline void inputEvent(const da::core::events::CEvent& e) {
-
-		if (e.getType() != EEventType::InputKeyboard) {
-			return;
-		}
-
-		const CInputKeyboardEvent* btn = static_cast<const CInputKeyboardEvent*>(&e);
-
-		if (btn->getType() == da::core::EInputType::RELEASED)
-		{
-			return;
-		}
-
-		da::core::CCamera& cam = *da::core::CCamera::getCamera();
-
-		switch (btn->getBtn()) {
-			case 87: // W
-				cam.move(cam.forward() * 5.0f * .1f);
-				break;
-			case 65: // A
-				cam.move(-cam.right() * 5.0f * .1f);
-				break;
-			case 83: // S
-				cam.move(-cam.forward() * 5.0f * .1f);
-				break;
-			case 68: // D
-				cam.move(cam.right() * 5.0f * .1f);
-				break;
-			case 32: // SPACE
-				cam.move(cam.up() * 5.0f * .1f);
-				break;
-			case 341: // LCTRL
-				cam.move(-cam.up() * 5.0f * .1f);
-				break;
-		}
-
-	}
 private:
 	da::modules::CGraphicsModule* m_graphicsModule;
 	da::modules::CGraphicsModule* m_graphicsModule2;
@@ -208,6 +171,39 @@ protected:
 
 	inline virtual void onUpdate() override
 	{   
+
+		da::core::CCamera& cam = *da::core::CCamera::getCamera();
+
+		if (da::core::CInput::inputPressed(87)) // W
+		{
+			cam.move(cam.forward() * 5.0f * .1f);
+		}
+
+		if (da::core::CInput::inputPressed(83)) // S
+		{
+			cam.move(-cam.forward() * 5.0f * .1f);
+		}
+
+		if (da::core::CInput::inputPressed(65)) // A
+		{
+			cam.move(-cam.right() * 5.0f * .1f);
+		}
+		
+		if (da::core::CInput::inputPressed(68)) // D
+		{
+			cam.move(cam.right() * 5.0f * .1f);
+		}
+
+		if (da::core::CInput::inputPressed(32)) // SPACE
+		{
+			cam.move(cam.up() * 5.0f * .1f);
+		}
+
+		if (da::core::CInput::inputPressed(341)) // LCTRL
+		{
+			cam.move(-cam.up() * 5.0f * .1f);
+		}
+
         if (ImGui::Begin("Scripts")) {
             if (ImGui::Button("Reload")) {
                 auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();

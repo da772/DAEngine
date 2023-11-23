@@ -1,6 +1,7 @@
 #include "dapch.h"
 #include "window_module.h"
 #include "core/window/window_factory.h"
+#include "core/input/input.h"
 
 
 namespace da::modules
@@ -19,6 +20,7 @@ namespace da::modules
 	void CWindowModule::update()
 	{
 		m_Window->update();
+		da::core::CInput::registerWindow(m_Window);
 	}
 
 	void CWindowModule::lateUpdate()
@@ -29,11 +31,12 @@ namespace da::modules
 	void CWindowModule::initalize()
 	{
 		m_Window->initalize();
+
 	}
 
 	void CWindowModule::shutdown()
 	{
-		
+		da::core::CInput::unregisterWindow(m_Window);
 	}
 
 	da::core::CWindow* CWindowModule::getWindow() const
