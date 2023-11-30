@@ -47,7 +47,7 @@ project "DAEngineTests"
 	includedirs 
 	{
 		"../src",
-		"src"
+		"src",
 	}
 
 	links

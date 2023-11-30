@@ -20,7 +20,9 @@ namespace da::core {
 
 	private:
 		std::string m_script;
+#ifndef DA_TEST
 		da::script::CScriptClass m_scriptClass;
+#endif
 
 	};
 }

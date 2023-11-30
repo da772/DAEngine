@@ -1,6 +1,6 @@
 #include "dapch.h"
 #include "bgfx_static_mesh.h"
-
+#ifndef DA_TEST
 namespace da::platform
 {
 
@@ -65,3 +65,4 @@ namespace da::platform
 	}
 
 }
+#endif

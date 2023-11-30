@@ -1,5 +1,6 @@
 #pragma once
 
+#ifndef DA_TEST
 #include <bgfx/bgfx.h>
 #include "core/graphics/graphics_smesh.h"
 
@@ -29,3 +30,4 @@ namespace da::platform {
 	};
 
 }
+#endif

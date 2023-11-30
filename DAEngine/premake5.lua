@@ -8,8 +8,8 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "%{wks.location}/DAEngine/thirdparty/GLFW/include"
 IncludeDir["Vulkan"] = "%{wks.location}/DAEngine/thirdparty/Vulkan"
 IncludeDir["ImGui"] = "%{wks.location}/DAEngine/thirdparty/DearImGui"
-IncludeDir["glm"] = "%{wks.location}/DAEngine/thirdparty/glm"
 IncludeDir["stb"] = "%{wks.location}/DAEngine/thirdparty/stb"
+IncludeDir["glm"] = "%{wks.location}/DAEngine/thirdparty/glm"
 IncludeDir["assimp"] = "%{wks.location}/DAEngine/thirdparty/assimp/include"
 IncludeDir["zlib"] = "%{wks.location}/DAEngine/thirdparty/zlib/include"
 IncludeDir["ktx"] = "%{wks.location}/DAEngine/thirdparty/ktx/include"
@@ -122,7 +122,8 @@ project "DAEngine"
 	includedirs
 	{
 		"%{prj.location}/src",
-		"%{prj.location}/src/DAEngine"
+		"%{prj.location}/src/DAEngine",
+		"thirdparty/glm"
 	}
 	end
 
