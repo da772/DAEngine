@@ -48,5 +48,10 @@ namespace da::platform::bgfx {
 		m_handle = INVALID_HANDLE;
 	}
 
+	CBgfxTexture2D::~CBgfxTexture2D()
+	{
+		destroy();
+	}
+
 }
 #endif

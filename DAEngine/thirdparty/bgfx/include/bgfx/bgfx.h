@@ -17,7 +17,7 @@
 	struct _name { uint16_t idx; };                                                  \
 	inline bool isValid(_name _handle) { return bgfx::kInvalidHandle != _handle.idx; }
 
-#define BGFX_INVALID_HANDLE { bgfx::kInvalidHandle }
+#define BGFX_INVALID_HANDLE { ::bgfx::kInvalidHandle }
 
 namespace bx { struct AllocatorI; }
 

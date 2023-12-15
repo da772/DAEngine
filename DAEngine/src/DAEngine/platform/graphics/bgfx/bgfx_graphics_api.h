@@ -2,6 +2,9 @@
 #include "daengine/core/core.h"
 #ifdef DA_GRAPHICS_BGFX
 #include "daengine/core/graphics/graphics_api.h"
+#include "daengine/platform/graphics/bgfx/renderer/bgfx_graphics_cluster_render.h"
+
+class Renderer;
 
 namespace da::platform {
 
@@ -39,6 +42,7 @@ namespace da::platform {
 		void windowResize(const da::core::events::CEvent& event);
 
 	private:
+		Renderer* m_renderer;
 		void* m_allocator = nullptr;
 		void* m_callbacks = nullptr;
 		bool m_initialized = false;

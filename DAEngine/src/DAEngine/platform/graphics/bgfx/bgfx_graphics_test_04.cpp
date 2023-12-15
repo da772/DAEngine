@@ -8,12 +8,12 @@ namespace da::platform::bgfx {
 
 	void CBgfxGraphicsTest04::Initialize(da::core::CWindow* window)
 	{
-		m_renderer.initalize();
+		m_renderer.initialize();
 	}
 
 	void CBgfxGraphicsTest04::Render()
 	{
-		m_renderer.update();
+		//m_renderer.update();
 	}
 
 	void CBgfxGraphicsTest04::Shutdown()

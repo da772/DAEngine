@@ -13,6 +13,7 @@ local CameraComponent = ____exports.CameraComponent
 CameraComponent.name = "CameraComponent"
 function CameraComponent.prototype.____constructor(self)
     self.cursorPos = __TS__New(Vector2)
+    self.camSpeed = 0.1
 end
 function CameraComponent.prototype.initialize(self)
     print(nil, "camera component init")
@@ -26,22 +27,22 @@ function CameraComponent.prototype.update(self, dt)
 end
 function CameraComponent.prototype.cameraInput(self, dt)
     if Input:KeyPressed(87) then
-        Camera:Move(Camera:GetForward():mul(5):mul(dt))
+        Camera:Move(Camera:GetForward():mul(self.camSpeed):mul(dt))
     end
     if Input:KeyPressed(83) then
-        Camera:Move(Camera:GetForward():neg():mul(5):mul(dt))
+        Camera:Move(Camera:GetForward():neg():mul(self.camSpeed):mul(dt))
     end
     if Input:KeyPressed(65) then
-        Camera:Move(Camera:GetRight():neg():mul(5):mul(dt))
+        Camera:Move(Camera:GetRight():neg():mul(self.camSpeed):mul(dt))
     end
     if Input:KeyPressed(68) then
-        Camera:Move(Camera:GetRight():mul(5):mul(dt))
+        Camera:Move(Camera:GetRight():mul(self.camSpeed):mul(dt))
     end
     if Input:KeyPressed(32) then
-        Camera:Move(Camera:GetUp():mul(5):mul(dt))
+        Camera:Move(Camera:GetUp():mul(self.camSpeed):mul(dt))
     end
     if Input:KeyPressed(341) then
-        Camera:Move(Camera:GetUp():neg():mul(5):mul(dt))
+        Camera:Move(Camera:GetUp():neg():mul(self.camSpeed):mul(dt))
     end
     if Input:KeyPressed(70) then
         local pos = Input:CursorPos()

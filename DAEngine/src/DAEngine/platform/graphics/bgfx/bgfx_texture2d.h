@@ -11,7 +11,10 @@ namespace da::platform::bgfx {
 		CBgfxTexture2D(const std::string& s);
 		CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height);
 
+		virtual ~CBgfxTexture2D();
+
 		inline const uint16_t getHandle() const { return m_handle; }
+		inline virtual void* getTextureNative() const { return (void*)&m_handle; }
 		void destroy();
 
 	private:

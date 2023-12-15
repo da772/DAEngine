@@ -20,7 +20,7 @@ namespace da::core
 		float zFar = 10000.0f;  // far plane
 
 		// simply a multiplier for the radiance arriving at the camera
-		float exposure = 1.0f;
+		float exposure = 10.0f;
 
 		void move(glm::vec3 delta); // coordinates are in world-space (use forward/up/right to move relative to the camera)
 		void rotate(glm::vec2 delta); // rotation around x, y axis

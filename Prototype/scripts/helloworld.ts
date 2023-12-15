@@ -18,7 +18,7 @@ export class MyComponent implements Component {
             if (ImGui.Button("Press Me")) {
                 this.e.empCode++;
             }
-
+            
         }
         
         ImGui.End();

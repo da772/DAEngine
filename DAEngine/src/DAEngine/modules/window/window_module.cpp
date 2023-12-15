@@ -17,12 +17,6 @@ namespace da::modules
 
 	}
 
-	void CWindowModule::update()
-	{
-		m_Window->update();
-		da::core::CInput::registerWindow(m_Window);
-	}
-
 	void CWindowModule::lateUpdate()
 	{
 
@@ -31,7 +25,12 @@ namespace da::modules
 	void CWindowModule::initalize()
 	{
 		m_Window->initalize();
+		da::core::CInput::registerWindow(m_Window);
+	}
 
+	void CWindowModule::update()
+	{
+		m_Window->update();
 	}
 
 	void CWindowModule::shutdown()

@@ -10,10 +10,9 @@
 namespace da::core {
 	COMPONENT_CPP(CSmeshComponent);
 
-	CSmeshComponent::CSmeshComponent(const std::string& meshPath, const std::string& materialPathVS, const std::string& materialPathFS, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
+	CSmeshComponent::CSmeshComponent(const std::string& meshPath, CMaterial* material, CEntity& parent) : m_guid(CGuid::Generate()), m_material(material), m_parent(parent)
 	{
 		m_staticMesh = new da::platform::CBgfxStaticMesh(meshPath);
-		m_material = new da::platform::CBgfxGraphicsMaterial(materialPathVS, materialPathFS);
 	}
 
 	void CSmeshComponent::onInitialize()
@@ -26,12 +25,21 @@ namespace da::core {
 		glm::mat4 m = m_parent.getTransform().getMat();
 		::bgfx::setTransform(&m);
 		((da::platform::CBgfxStaticMesh*) m_staticMesh)->setBuffers(0);
-		m_material->update(0);
 	}
 
 	void CSmeshComponent::onShutdown()
 	{
 		m_material->shutdown();
+		delete m_material;
 	}
 
+	da::core::CStaticMesh* CSmeshComponent::getStaticMesh() const
+	{
+		return m_staticMesh;
+	}
+
+	da::core::CMaterial* CSmeshComponent::getMaterial() const
+	{
+		return m_material;
+	}
 }

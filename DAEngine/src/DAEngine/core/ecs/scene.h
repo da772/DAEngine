@@ -45,6 +45,11 @@ namespace da::core {
 		const void* getComponentAtIndex(size_t index) const {
 			return &m_components.at(index * m_size);
 		}
+		
+		template <typename T>
+		T* getComponentAtIndex(size_t index) const {
+			return (T*) & m_components.at(index * m_size);
+		}
 
 		size_t getCount() const {
 			return m_count;

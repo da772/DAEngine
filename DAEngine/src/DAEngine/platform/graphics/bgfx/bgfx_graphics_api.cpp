@@ -7,6 +7,8 @@
 #include <bx/allocator.h>
 #include "DAEngine/core/arg_handler.h"
 #include "bgfx_graphics_test.h"
+#include "cluster/Renderer/Renderer.h"
+#include "cluster/Renderer/ClusteredRenderer.h"
 
 namespace da::platform {
 
@@ -70,12 +72,12 @@ namespace da::platform {
 
 	};
 
-	struct FDACallbacks : public bgfx::CallbackI
+	struct FDACallbacks : public ::bgfx::CallbackI
 	{
 		virtual void fatal(
 			const char* _filePath
 			, uint16_t _line
-			, bgfx::Fatal::Enum _code
+			, ::bgfx::Fatal::Enum _code
 			, const char* _str
 		) override {
 			LOG_ASSERT(false, da::ELogChannel::Graphics, "[bgfx] [Code: %d] %s at LINE %d %s", (int)_code, _str, (int)_line, _filePath);
@@ -131,7 +133,7 @@ namespace da::platform {
 			uint32_t _width
 			, uint32_t _height
 			, uint32_t _pitch
-			, bgfx::TextureFormat::Enum _format
+			, ::bgfx::TextureFormat::Enum _format
 			, bool _yflip
 		) override {};
 
@@ -160,18 +162,18 @@ namespace da::platform {
 
 	void CbgfxGraphicsApi::initalize()
 	{
-		bgfx::Init init;
+		::bgfx::Init init;
 #ifdef DA_PLATFORM_WINDOWS
-		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Direct3D11;
+		s_renderer = (ERenderApis)::bgfx::RendererType::Enum::OpenGL;
 #elif defined(DA_PLATFORM_MACOSX) || defined (DA_PLATFORM_IOS)
-		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Metal;
+		s_renderer = (ERenderApis)::bgfx::RendererType::Enum::Metal;
 #else
-		s_renderer = (ERenderApis)bgfx::RendererType::Enum::Vulkan;
+		s_renderer = (ERenderApis)::bgfx::RendererType::Enum::Vulkan;
 #endif
 
-		init.type = (bgfx::RendererType::Enum)s_renderer;
+		init.type = (::bgfx::RendererType::Enum)s_renderer;
         
-		bgfx::PlatformData pd;
+		::bgfx::PlatformData pd;
 		pd.nwh = m_nativeWindow->getPlatformWindow();
         pd.ndt = m_nativeWindow->getPlatformDisplay();
         
@@ -188,12 +190,12 @@ namespace da::platform {
 		if (da::core::CArgHandler::contains("debugGpu"))
 		{
 			((FDACallbacks*)m_callbacks)->m_trace = true;
-			init.callback = (bgfx::CallbackI*)m_callbacks;
+			init.callback = (::bgfx::CallbackI*)m_callbacks;
 		}
 		
 		#endif
 		LOG_INFO(ELogChannel::Graphics, "Initialzing BGFX with renderer: %s", s_bgfxRenderers[(int)init.type]);
-		if (!bgfx::init(init))
+		if (!::bgfx::init(init))
 		{
 			da::CLogger::LogError(da::ELogChannel::Graphics, "Failed to create bgfx");
 			return;
@@ -204,15 +206,20 @@ namespace da::platform {
 		m_nativeWindow->getEventHandler().registerCallback(da::core::events::EEventType::WindowResize, BIND_EVENT_FN(CbgfxGraphicsApi, windowResize));
 
 		// Enable debug text.
-		bgfx::setDebug(BGFX_DEBUG_TEXT);
-		bgfx::reset(data.Width, data.Height);
-		bgfx::setViewClear(0
+		::bgfx::setDebug(BGFX_DEBUG_TEXT);
+		::bgfx::reset(data.Width, data.Height);
+		::bgfx::setViewClear(0
 			, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
 			, 0x0c0c0cff
 			, 1.0f
 			, 0
 		);
-		bgfx::setViewRect(0, 0, 0, data.Width, data.Height);
+		::bgfx::setViewRect(0, 0, 0, data.Width, data.Height);
+
+		m_renderer = new ClusteredRenderer();
+
+		m_renderer->reset(data.Width, data.Height);
+		m_renderer->initialize();
 
 		s_test->Initialize(m_nativeWindow);
 	}
@@ -222,28 +229,29 @@ namespace da::platform {
 		if (m_dirtyWindow) {
 			uint32_t w = m_nativeWindow->getWindowData().Width;
 			uint32_t h = m_nativeWindow->getWindowData().Height;
-			bgfx::reset(w, h);
-			bgfx::setViewRect(0, 0, 0, w, h);
+			::bgfx::reset(w, h);
+			::bgfx::setViewRect(0, 0, 0, w, h);
+			m_renderer->reset(w, h);
 			m_dirtyWindow = false;
 		}
-
-		bgfx::touch(0);
-       
+		
+		::bgfx::touch(0);
 	}
 
 	void CbgfxGraphicsApi::lateUpdate()
 	{
 		s_test->Render();
-
-		bgfx::dbgTextClear();
-		bgfx::dbgTextPrintf(0, 0, 0x0f, "DAv%s - %s", DA_VERSION, s_bgfxRenderers[(uint8_t)s_renderer]);
-		bgfx::frame();
+		::bgfx::dbgTextClear();
+		::bgfx::dbgTextPrintf(0, 0, 0x0f, "DAv%s - %s", DA_VERSION, s_bgfxRenderers[(uint8_t)s_renderer]);
+		m_renderer->render(0.1f);
+		::bgfx::frame();
 	}
 
 	void CbgfxGraphicsApi::shutdown()
 	{
+		m_renderer->shutdown();
 		s_test->Shutdown();
-		bgfx::shutdown();
+		::bgfx::shutdown();
 		m_initialized = false;
 	}
 
@@ -266,7 +274,7 @@ namespace da::platform {
 		c |= ((uint32_t)color.z) << 0x8;
 		c |= color.w;
 
-		bgfx::setViewClear(target, (uint16_t)clear, c	, 1.0f, 0);
+		::bgfx::setViewClear(target, (uint16_t)clear, c	, 1.0f, 0);
 	}
 
 	da::platform::ERenderApis CbgfxGraphicsApi::getRendererApi()

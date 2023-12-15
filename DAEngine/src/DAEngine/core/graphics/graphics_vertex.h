@@ -18,6 +18,7 @@ namespace da::core
 		Vector3f Normal;
 		Vector3f Tangent;
 		Vector2f TexCoord;
+
         //Vector3f Color;
 		//Vector3f BitTangent;
 

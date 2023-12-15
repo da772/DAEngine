@@ -13,6 +13,7 @@
 #include <daengine/core/ecs/entity.h>
 #include <daengine/core/ecs/test_component.h>
 #include <daengine/core/ecs/script_component.h>
+#include <daengine/core/ecs/smesh_component.h>
 
 #include <imgui.h>
 
@@ -20,6 +21,7 @@
 #include <DAEngine/core/ecs/scene_manager.h>
 #include <DAEngine/core/graphics/camera.h>
 #include <DAEngine/core/input/input.h>
+#include <DAEngine/platform/graphics/bgfx/bgfx_graphics_pbr_material.h>
 
 //#define WINDOW_2
 
@@ -108,6 +110,13 @@ protected:
 
         e2->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
 		e1->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
+		da::platform::CBgfxPbrMaterial* mat = new da::platform::CBgfxPbrMaterial("", "", "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg");
+		e1->getTransform().setPosition({ 0,0,-5 });
+		e1->addComponent<da::core::CSmeshComponent>("assets/bolt.fbx", mat);
+
+		da::platform::CBgfxPbrMaterial* mat2 = new da::platform::CBgfxPbrMaterial("", "", "assets/debugTexture.jpeg", "assets/debugTexture.jpeg", "assets/debugTexture.jpeg");
+		e2->getTransform().setPosition({ 0,0,-5 });
+		e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx", mat2);
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
 		return;

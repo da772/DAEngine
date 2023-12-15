@@ -7,6 +7,7 @@
 #include <bgfx/bgfx.h>
 #include <glm/glm.hpp>
 #include "bgfx_graphics_material.h"
+#include "renderer/bgfx_pbr_shader.h"
 
 namespace da::platform::bgfx {
 
@@ -29,9 +30,16 @@ namespace da::platform::bgfx {
 
 	public:
 		CBgfxRenderer();
-		void initalize();
-		void update();
+		void initialize();
+		void update(float dt);
+		void lateUpdate(float dt);
+		void reset(uint16_t width, uint16_t height);
 		void shutdown();
+
+	protected:
+		virtual void onInitialize() {};
+		virtual void onUpdate(float dt) {};
+		virtual void onShutdown() {};
 
 	protected:
 		struct PosVertex
@@ -62,25 +70,28 @@ namespace da::platform::bgfx {
 
 		TonemappingMode tonemappingMode = TonemappingMode::NONE;
 
-		uint16_t width = 0;
-		uint16_t height = 0;
+		uint16_t m_width = 0;
+		uint16_t m_height = 0;
 
-		uint32_t clearColor = 0;
+		uint32_t m_clearColor = 0x303030FF;
 		float time = 0.0f;
 
 		// set by setViewProjection()
-		glm::mat4 viewMat = glm::mat4(1.0);
-		glm::mat4 projMat = glm::mat4(1.0);
+		glm::mat4 m_viewMat = glm::mat4(1.0);
+		glm::mat4 m_projMat = glm::mat4(1.0);
 
-        ::bgfx::VertexBufferHandle blitTriangleBuffer = {INVALID_HANDLE};
+        ::bgfx::VertexBufferHandle m_blitTriangleBuffer = {INVALID_HANDLE};
+		::bgfx::FrameBufferHandle m_frameBuffer = BGFX_INVALID_HANDLE;
+
+		CBgfxPbrShader m_pbr;
 
 	private:
-		CBgfxGraphicsMaterial blitProgram;
-        ::bgfx::UniformHandle blitSampler = {INVALID_HANDLE};
-        ::bgfx::UniformHandle camPosUniform = {INVALID_HANDLE};
-        ::bgfx::UniformHandle normalMatrixUniform = {INVALID_HANDLE};
-        ::bgfx::UniformHandle exposureVecUniform = {INVALID_HANDLE};
-        ::bgfx::UniformHandle tonemappingModeVecUniform = {INVALID_HANDLE};
+		CBgfxGraphicsMaterial m_blitProgram;
+        ::bgfx::UniformHandle m_blitSampler = {INVALID_HANDLE};
+        ::bgfx::UniformHandle m_camPosUniform = {INVALID_HANDLE};
+        ::bgfx::UniformHandle m_normalMatrixUniform = {INVALID_HANDLE};
+        ::bgfx::UniformHandle m_exposureVecUniform = {INVALID_HANDLE};
+        ::bgfx::UniformHandle m_tonemappingModeVecUniform = {INVALID_HANDLE};
 
 
 	};

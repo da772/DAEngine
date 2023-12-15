@@ -41,7 +41,7 @@ namespace da::platform {
 	void CBgfxGraphicsTest02::Render()
 	{
 		double time = (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() / 1e3f - m_start;
-
+		/*
 		const bx::Vec3 at = { 0.0f, 0.0f,   0.0f };
 		const bx::Vec3 eye = { 0.0f, 0.0f, -35.0f };
 
@@ -60,7 +60,7 @@ namespace da::platform {
 			// Set view 0 default viewport.
 			::bgfx::setViewRect(0, 0, 0, uint16_t(width), uint16_t(height));
 		}
-
+		*/
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
 		//::bgfx::touch(0);

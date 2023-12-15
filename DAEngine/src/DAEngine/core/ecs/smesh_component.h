@@ -1,7 +1,7 @@
 #pragma once
 
 #include "component.h"
-#include "asset/asset.h"
+#include "daengine/asset/asset.h"
 
 namespace da::core
 {
@@ -12,11 +12,13 @@ namespace da::core
 		COMPONENT_H(CSmeshComponent);
 
 	public:
-		CSmeshComponent(const std::string& meshPath, const std::string& materialPathVS, const std::string& materialPathFS, CEntity& parent);
+		CSmeshComponent(const std::string& meshPath, CMaterial* material, CEntity& parent);
 
 		void onInitialize();
 		void onUpdate(float dt);
 		void onShutdown();
+		CStaticMesh* getStaticMesh() const;
+		CMaterial* getMaterial() const;
 
 	private:
 		CStaticMesh* m_staticMesh;

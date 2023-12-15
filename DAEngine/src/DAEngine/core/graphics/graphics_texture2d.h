@@ -9,6 +9,7 @@ namespace da::core
 	public:
 		CGraphicsTexture2D(const std::string& path);
 		CGraphicsTexture2D(const std::string& name, uint32_t width, uint32_t height);
+		inline virtual ~CGraphicsTexture2D() {};
 		inline const void* getTextureNative() const { return m_textureNative; }
 
 	protected:
