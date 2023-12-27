@@ -108,6 +108,10 @@ namespace da::core {
             return m_components[typeHash];
         }
 
+		const std::vector<CEntity*>& getEntities() const {
+			return m_entities;
+		}
+
 	private:
 		std::vector<CEntity*> m_entities;
 		std::unordered_map<CHashString, FComponentContainer> m_components;

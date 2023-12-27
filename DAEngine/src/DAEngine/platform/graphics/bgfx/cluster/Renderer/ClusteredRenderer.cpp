@@ -11,6 +11,7 @@
 #include "platform/graphics/bgfx/bgfx_static_mesh.h"
 #include "platform/graphics/bgfx/bgfx_graphics_pbr_material.h"
 #include <random>
+#include "logger.h"
 
 
 ClusteredRenderer::ClusteredRenderer()
@@ -131,7 +132,7 @@ void ClusteredRenderer::onRender(float dt)
     // lighting
 
     bool debugVis = variables["DEBUG_VIS"] == "true";
-    bgfx::ProgramHandle program = !debugVis ? debugVisProgram : lightingProgram;
+    bgfx::ProgramHandle program = debugVis ? debugVisProgram : lightingProgram;
 
     uint64_t state = BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK;
 
@@ -211,7 +212,7 @@ void ClusteredRenderer::generateLights(uint32_t count)
 
 	lights.resize(count);
 
-    glm::vec3 scale = glm::vec3(10.f,10.f,10.f)  *0.75f;
+    glm::vec3 scale = glm::vec3(5.f,5.f,5.f)  *0.75f;
 
 	constexpr float POWER_MIN = 20.0f;
 	constexpr float POWER_MAX = 100.0f;
@@ -230,5 +231,6 @@ void ClusteredRenderer::generateLights(uint32_t count)
 		glm::vec3 color = glm::vec3(1.f,1.f,1.f);
 		glm::vec3 power = color * (dist(mt) * (POWER_MAX - POWER_MIN) + POWER_MIN);
 		lights[i] = { position, power };
+        LOG_DEBUG(da::ELogChannel::Graphics, "Light created: %f %f %f, Power: %f, %f, %f", position.x, position.y, position.z, power.x, power.y, power.z);
 	}
 }

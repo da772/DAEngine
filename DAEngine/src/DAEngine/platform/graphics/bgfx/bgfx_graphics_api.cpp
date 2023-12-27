@@ -240,9 +240,8 @@ namespace da::platform {
 
 	void CbgfxGraphicsApi::lateUpdate()
 	{
-		s_test->Render();
 		::bgfx::dbgTextClear();
-		::bgfx::dbgTextPrintf(0, 0, 0x0f, "DAv%s - %s", DA_VERSION, s_bgfxRenderers[(uint8_t)s_renderer]);
+		::bgfx::dbgTextPrintf(73, 0, 0x0f, "DAv%s - %s", DA_VERSION, s_bgfxRenderers[(uint8_t)s_renderer]);
 		m_renderer->render(0.1f);
 		::bgfx::frame();
 	}

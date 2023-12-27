@@ -6,6 +6,10 @@
 #include <bx/allocator.h>
 #include "DAEngine/core/arg_handler.h"
 
+#ifdef DA_DEBUG
+#include "debug/debug_menu_bar.h"
+#endif
+
 namespace da::platform {
 
 	CImGuiBgfxApi::CImGuiBgfxApi(core::CGraphicsApi* graphicsApi) : CImGuiApi(graphicsApi)
@@ -27,6 +31,10 @@ namespace da::platform {
 		imguiCreate();
 
 		m_enableDemo = da::core::CArgHandler::contains(HASHSTR("imguidemo"));
+
+#ifdef DA_DEBUG
+		debug::CDebugMenuBar::register_debug(HASHSTR("ImGuiDemo"), &m_enableDemo, [&] {ImGui::ShowDemoWindow(&m_enableDemo); });
+#endif
 	}
 
 	void CImGuiBgfxApi::onUpdate()
@@ -36,7 +44,9 @@ namespace da::platform {
 		m_msy = 0;
 		m_kb = -1;
 		
+#ifndef DA_DEBUG
 		if (m_enableDemo) ImGui::ShowDemoWindow(&m_enableDemo);
+#endif
 	}
 
 	void CImGuiBgfxApi::onLateUpdate()
@@ -46,6 +56,9 @@ namespace da::platform {
 
 	void CImGuiBgfxApi::onShutdown()
 	{
+#ifdef DA_DEBUG
+		debug::CDebugMenuBar::unregister_debug(HASHSTR("ImGuiDemo"));
+#endif
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputKeyboard, BIND_EVENT_FN(CImGuiBgfxApi, onKeyboard));

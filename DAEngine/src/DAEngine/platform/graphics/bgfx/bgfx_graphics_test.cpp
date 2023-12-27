@@ -12,6 +12,11 @@
 #include "bgfx_graphics_test_04.h"
 #include "DAEngine/script/script_engine.h"
 
+#ifdef DA_DEBUG
+#include "debug/debug_menu_bar.h"
+#include <functional>
+#endif
+
 namespace da::platform {
 
 #define CREATE_TEST(x)   {[] () {return new x();} \
@@ -41,6 +46,10 @@ namespace da::platform {
 
     void CBgfxGraphicsTest::Initialize(class da::core::CWindow* window) {
         m_window = window;
+
+#ifdef DA_DEBUG
+        da::debug::CDebugMenuBar::register_debug(HASHSTR("CBgfxGraphicsTest"), &m_show, [&] { Render(); });
+#endif
     }
 
     void CBgfxGraphicsTest::Render() {
@@ -84,6 +93,10 @@ namespace da::platform {
         if (m_test) s_testCreate[m_testIndex].Shutdown(m_test);
         if (m_test) delete m_test;
         m_test = nullptr;
+
+#ifdef DA_DEBUG
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("CBgfxGraphicsTest"));
+#endif
     }
 }
 

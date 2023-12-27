@@ -6,6 +6,8 @@ local ____lib = require("lib")
 local Employee = ____lib.Employee
 local ____imgui = require("core.imgui")
 local ImGui = ____imgui.ImGui
+local ____debug = require("core.debug")
+local Debug = ____debug.Debug
 ____exports.MyComponent = __TS__Class()
 local MyComponent = ____exports.MyComponent
 MyComponent.name = "MyComponent"
@@ -14,8 +16,11 @@ function MyComponent.prototype.____constructor(self)
 end
 function MyComponent.prototype.initialize(self)
     print(nil, "script init")
+    Debug:RegisterDebugMenu("MyComponent", self, ____exports.MyComponent.prototype.debugUpdate)
 end
 function MyComponent.prototype.update(self, dt)
+end
+function MyComponent.prototype.debugUpdate(self)
     if ImGui:Begin("Hello World!") then
         ImGui:LabelText(
             "employee is sick",
@@ -31,6 +36,7 @@ function MyComponent.prototype.update(self, dt)
 end
 function MyComponent.prototype.shutdown(self)
     print(nil, "shut down")
+    Debug:UnregisterDebugMenu("MyComponent")
 end
 ____exports.component = __TS__New(____exports.MyComponent)
 return ____exports

@@ -7,6 +7,10 @@
 #include "script/script_engine.h"
 #include "core/ecs/scene_manager.h"
 
+#ifdef DA_DEBUG
+#include "debug/debug.h"
+#endif
+
 namespace da
 {
 	CApp::CApp(int argc, const char** argv) : m_running(true), m_modules() {
@@ -26,7 +30,6 @@ namespace da
 			m->initalize();
 		}
 		onInitalize();
-
 		if (core::CScene* scene = core::CSceneManager::getScene()) {
 			scene->initialize();
 		}
@@ -39,6 +42,9 @@ namespace da
 			for (IModule* m : m_modules) {
 				m->update();
 			}
+#ifdef DA_DEBUG
+			da::debug::CDebug::update(0.1f);
+#endif
 			onUpdate();
 			if (core::CScene* scene = core::CSceneManager::getScene()) {
 				scene->update(0.1f);
@@ -87,6 +93,7 @@ namespace da
 				args += "\n";
 		}
 		LOG_INFO(ELogChannel::Core, args, argc);
+		core::CSceneManager::initialize();
 		core::CComponents::registerComponents();
 	}
 
@@ -94,6 +101,7 @@ namespace da
 	{
 		core::CArgHandler::shutdown();
 		CLogger::shutdown();
+		core::CSceneManager::shutdown();
 	}
 
 }

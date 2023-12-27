@@ -2,6 +2,9 @@ import { Employee } from "./lib";
 
 import { ImGui } from "./core/imgui";
 import { Component } from "./core/component";
+import { Debug } from "./core/debug";
+
+
 
 export class MyComponent implements Component {
 
@@ -9,24 +12,31 @@ export class MyComponent implements Component {
 
     initialize(): void {
         print("script init")
+        Debug.RegisterDebugMenu("MyComponent", this, MyComponent.prototype.debugUpdate);
     }
     update(dt: number): void {
-        if (ImGui.Begin("Hello World!")) {
-            ImGui.LabelText("employee is sick", `${this.e.empName} is sick: ${this.e.empCode}`);
-            ImGui.LabelText("###end", "Hello people");
+       
 
-            if (ImGui.Button("Press Me")) {
-                this.e.empCode++;
-            }
-            
+    }
+
+    debugUpdate(this : MyComponent)
+    {
+    if (ImGui.Begin("Hello World!")) {
+        ImGui.LabelText("employee is sick", `${this.e.empName} is sick: ${this.e.empCode}`);
+        ImGui.LabelText("###end", "Hello people");
+
+        if (ImGui.Button("Press Me")) {
+            this.e.empCode++;
         }
         
-        ImGui.End();
-
+    }
+    
+    ImGui.End();
     }
         
     shutdown(): void {
         print("shut down");
+        Debug.UnregisterDebugMenu("MyComponent");
     }
     
 }

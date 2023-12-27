@@ -3,6 +3,7 @@
 
 #include "script_native_imgui.h"
 #include "script_native_core.h"
+#include "script_native_debug.h"
 
 namespace da::script
 {
@@ -10,5 +11,6 @@ namespace da::script
 	{
 		imgui::registerNatives(L);
 		core::registerNatives(L);
+		debug::registerNatives(L);
 	}
 }

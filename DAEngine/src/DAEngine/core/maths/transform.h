@@ -16,6 +16,7 @@ namespace da::maths
 		glm::vec3 getRight() const;
 		glm::vec3 getUp() const;
 		glm::mat4 getMat() const;
+		inline glm::vec3 getPosition() const { return m_pos; }
 
 	private:
 		glm::vec3 m_pos = { 0.0f, 0.0f, 0.0f };

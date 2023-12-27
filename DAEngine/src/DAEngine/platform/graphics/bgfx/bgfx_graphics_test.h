@@ -17,7 +17,7 @@ namespace da::platform {
 	private:
 		da::core::CWindow* m_window;
 		void* m_test = nullptr;
-		bool m_show = true;
+		bool m_show = false;
 		int m_testIndex = 3;
 	};
 

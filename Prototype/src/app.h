@@ -23,6 +23,10 @@
 #include <DAEngine/core/input/input.h>
 #include <DAEngine/platform/graphics/bgfx/bgfx_graphics_pbr_material.h>
 
+#ifdef DA_DEBUG
+#include <DAEngine/debug/debug_menu_bar.h>
+#endif
+
 //#define WINDOW_2
 
 class ProtoTypeApp : public da::CApp {
@@ -89,11 +93,16 @@ private:
 	da::core::CMaterial* m_cubeMat2 = 0;
 	da::modules::CWindowModule* m_window = 0;
 	da::core::CEntity* e1,* e2;
+	bool m_showScriptDebug = false;
  
 
 protected:
 	inline virtual void onInitalize() override
 	{
+#ifdef DA_DEBUG
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("Reload Scripts"), &m_showScriptDebug, [&] {renderScriptDebug(); });
+#endif
+
 		da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid::Generate()));
 		e1 = da::core::CSceneManager::getScene()->createEntity();
 		da::core::FComponentRef<da::core::CTestComponent> tst1 = e1->addComponent<da::core::CTestComponent>("helloworld1", "helloworld2");
@@ -177,24 +186,31 @@ protected:
 
 	inline virtual void onShutdown() override
 	{
+#ifdef DA_DEBUG
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Reload Scripts"));
+#endif
 		da::CLogger::LogDebug(da::ELogChannel::Application, "App End");
+	}
+
+	inline void renderScriptDebug() {
+
+		if (ImGui::Begin("Scripts", &m_showScriptDebug)) {
+			if (ImGui::Button("Reload")) {
+				auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
+				da::script::CScriptEngine::clearAll();
+				for (size_t i = 0; i < components.getCount(); i++) {
+					da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);
+					c->reload();
+				}
+			}
+		}
+
+		ImGui::End();
 	}
 
 	inline virtual void onUpdate() override
 	{   
 
-        if (ImGui::Begin("Scripts")) {
-            if (ImGui::Button("Reload")) {
-                auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
-                da::script::CScriptEngine::clearAll();
-                for (size_t i = 0; i < components.getCount(); i++) {
-                    da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);
-                    c->reload();
-                }
-            }
-        }
-        
-        ImGui::End();
         
 		return;
 		if (!m_boltMat || !m_cubeMat)
