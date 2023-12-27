@@ -6,8 +6,7 @@
 
 namespace da::debug
 {
-
-	std::unordered_map<CHashString, std::pair<bool*, std::function<void()>>> CDebugMenuBar::s_refs;
+	std::unordered_map<CHashString, std::unordered_map<CHashString, std::pair<bool*, std::function<void()>>>> CDebugMenuBar::s_refs;
 
 	void CDebugMenuBar::initialize()
 	{
@@ -16,24 +15,27 @@ namespace da::debug
 
 	void CDebugMenuBar::update()
 	{
+
 		if (ImGui::BeginMainMenuBar()) {
 
-			if (ImGui::BeginMenu("Debug")) {
-
-				
-				for (const std::pair<CHashString, std::pair<bool*, std::function<void()>>>& kv : s_refs)
-				{
-					ImGui::MenuItem(kv.first.c_str(), "", kv.second.first);
+			for (const std::pair<CHashString, std::unordered_map<CHashString, std::pair<bool*, std::function<void()>>>>& map : s_refs)
+			{
+				if (ImGui::BeginMenu(map.first.c_str())) {
+					for (const std::pair<CHashString, std::pair<bool*, std::function<void()>>>& kv : map.second)
+					{
+						ImGui::MenuItem(kv.first.c_str(), "", kv.second.first);
+					}
+					ImGui::EndMenu();
 				}
-
-				
-				ImGui::EndMenu();
 			}
 
-			for (const std::pair<CHashString, std::pair<bool*, std::function<void()>>>& kv : s_refs)
+			for (const std::pair<CHashString,  std::unordered_map<CHashString, std::pair<bool*, std::function<void()>>>>& map : s_refs)
 			{
-				if (*kv.second.first) {
-					kv.second.second();
+				for (const std::pair<CHashString, std::pair<bool*, std::function<void()>>>& kv : map.second)
+				{
+					if (*kv.second.first) {
+						kv.second.second();
+					}
 				}
 			}
 
@@ -46,23 +48,36 @@ namespace da::debug
 		s_refs = {};
 	}
 
-	void CDebugMenuBar::register_debug(CHashString id, bool* b, std::function<void()> func)
+	void CDebugMenuBar::register_debug(CHashString group, CHashString id, bool* b, std::function<void()> func)
 	{
-		s_refs[id] = { b, func };
+		s_refs[group][id] = { b, func };
 	}
 
-	void CDebugMenuBar::unregister_debug(CHashString id)
+	void CDebugMenuBar::unregister_debug(CHashString group, CHashString id)
 	{
-		const std::unordered_map< CHashString, std::pair<bool*, std::function<void()>>>::iterator& it = s_refs.find(id);
+		const auto& it1 = s_refs.find(group);
 
-		if (it == s_refs.end())
+		if (it1 == s_refs.end())
+		{
+			return;
+		}
+		
+
+		const std::unordered_map< CHashString, std::pair<bool*, std::function<void()>>>::iterator& it2 = it1->second.find(group);
+
+		if (it2 == it1->second.end())
 		{
 			return;
 		}
 
-		s_refs.erase(it);
+		it1->second.erase(it2);
+
+		if (it1->second.empty())
+		{
+			s_refs.erase(it1);
+		}
 	}
-	
+
 
 }
 

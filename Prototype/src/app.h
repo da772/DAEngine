@@ -100,7 +100,7 @@ protected:
 	inline virtual void onInitalize() override
 	{
 #ifdef DA_DEBUG
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Reload Scripts"), &m_showScriptDebug, [&] {renderScriptDebug(); });
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"), &m_showScriptDebug, [&] {renderScriptDebug(); });
 #endif
 
 		da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid::Generate()));
@@ -187,7 +187,7 @@ protected:
 	inline virtual void onShutdown() override
 	{
 #ifdef DA_DEBUG
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Reload Scripts"));
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"));
 #endif
 		da::CLogger::LogDebug(da::ELogChannel::Application, "App End");
 	}

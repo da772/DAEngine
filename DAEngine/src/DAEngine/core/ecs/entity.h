@@ -3,6 +3,10 @@
 #include "scene.h"
 #include "daengine/core/maths/transform.h"
 
+#ifdef DA_DEBUG
+#include <imgui.h>
+#endif
+
 namespace da::core
 {
 	class CScene;
@@ -90,6 +94,20 @@ namespace da::core
 
 			return removed;
 		}
+
+#ifdef DA_DEBUG
+		void debugRender()
+		{
+			if (ImGui::CollapsingHeader("Components")) {
+				ImGui::Indent();
+				for (const std::pair<CHashString, CGuid> component : m_components)
+				{
+					ImGui::Text("%s : %s", component.first.c_str(), component.second.c_str());
+				}
+				ImGui::Unindent();
+			}
+		}
+#endif
 
 	private:
 		std::unordered_map<CHashString, CGuid> m_components;

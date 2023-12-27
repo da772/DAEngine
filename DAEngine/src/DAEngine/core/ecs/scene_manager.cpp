@@ -19,7 +19,7 @@ namespace da::core {
 	void CSceneManager::initialize()
 	{
 #ifdef DA_DEBUG
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("CSceneManager"), &s_showDebug, renderDebug);
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"), &s_showDebug, renderDebug);
 #endif
 	}
 
@@ -41,7 +41,7 @@ namespace da::core {
 
 				for (CEntity* e : scene->getEntities()) {
 					if (ImGui::CollapsingHeader(e->getId().c_str())) {
-					
+						ImGui::Indent();
 						glm::vec3 p = e->getTransform().getPosition();
 						float pos[] = { p.x, p.y, p.z };
 						
@@ -49,6 +49,10 @@ namespace da::core {
 							p = { pos[0], pos[1], pos[2] };
 							e->getTransform().setPosition(p);
 						}
+
+						
+						e->debugRender();
+						ImGui::Unindent();
 					}
 					
 				}
@@ -63,7 +67,7 @@ namespace da::core {
 	void CSceneManager::shutdown()
 	{
 #ifdef DA_DEBUG
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("CSceneManager"));
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"));
 #endif
 	}
 
