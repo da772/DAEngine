@@ -120,12 +120,17 @@ protected:
         e2->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
 		e1->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
 		da::platform::CBgfxPbrMaterial* mat = new da::platform::CBgfxPbrMaterial("", "", "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg");
-		e1->getTransform().setPosition({ 0,0,-5 });
+		e1->getTransform().setPosition({ 0,0,1.5f });
 		e1->addComponent<da::core::CSmeshComponent>("assets/bolt.fbx", mat);
 
-		da::platform::CBgfxPbrMaterial* mat2 = new da::platform::CBgfxPbrMaterial("", "", "assets/debugTexture.jpeg", "assets/debugTexture.jpeg", "assets/debugTexture.jpeg");
-		e2->getTransform().setPosition({ 0,0,-5 });
+		da::platform::CBgfxPbrMaterial* mat2 = new da::platform::CBgfxPbrMaterial("", ""
+			, "assets/tile/white_marble_tile_BaseColor.jpg"
+			, "assets/tile/white_marble_tile_Normal.jpg"
+			, "assets/tile/white_marble_tile_Roughness.jpg");
+		e2->getTransform().setPosition({ 0,0,0 });
 		e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx", mat2);
+
+		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
 		return;

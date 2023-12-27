@@ -9,19 +9,24 @@ namespace da::maths
 	class CTransform {
 
 	public:
-		void setPosition(glm::vec3 pos);
-		void setRotation(glm::vec3 rot);
+		CTransform();
+		virtual void setPosition(const glm::vec3& pos);
+		void offsetPosition(const glm::vec3& delta);
+		virtual void setRotation(const glm::vec3& rot);
+		void offsetRotation(const glm::vec3& delta);
+		glm::vec3 position() const;
+		glm::vec3 rotation() const;
+		virtual glm::mat4 matrix() const;
+		glm::vec3 forward() const;
+		glm::vec3 up() const;
+		glm::vec3 right() const;
 
-		glm::vec3 getForward() const;
-		glm::vec3 getRight() const;
-		glm::vec3 getUp() const;
-		glm::mat4 getMat() const;
-		inline glm::vec3 getPosition() const { return m_pos; }
-
-	private:
-		glm::vec3 m_pos = { 0.0f, 0.0f, 0.0f };
-		glm::quat m_rotation = glm::identity<glm::quat>();
-		glm::quat m_invRotation = glm::identity<glm::quat>();
+	protected:
+		glm::vec3 m_position;
+		glm::vec3 m_rotation;
+		glm::vec3 m_up;
+		glm::vec3 m_right;
+		glm::vec3 m_forward;
 
 	};
 }

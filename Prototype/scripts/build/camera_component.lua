@@ -44,10 +44,13 @@ function CameraComponent.prototype.cameraInput(self, dt)
     if Input:KeyPressed(341) then
         Camera:Move(Camera:GetUp():neg():mul(self.camSpeed):mul(dt))
     end
+    if Input:KeyPressed(340) then
+        Camera:Move(Camera:GetUp():mul(self.camSpeed):mul(dt))
+    end
     if Input:KeyPressed(70) then
         local pos = Input:CursorPos()
         if self.cursorPos.x >= 0 and self.cursorPos.y >= 0 then
-            Camera:Rotate(__TS__New(Vector2, pos.y - self.cursorPos.y, pos.x - self.cursorPos.x):neg():mul(180 / 600))
+            Camera:Rotate(__TS__New(Vector2, self.cursorPos.y - pos.y, self.cursorPos.x - pos.x):mul(180 / 600))
         end
     end
 end

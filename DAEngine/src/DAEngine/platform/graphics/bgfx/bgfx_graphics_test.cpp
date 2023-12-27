@@ -48,7 +48,7 @@ namespace da::platform {
         m_window = window;
 
 #ifdef DA_DEBUG
-        da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("CBgfxGraphicsTest"), &m_show, [&] { Render(); });
+        da::debug::CDebugMenuBar::register_debug(HASHSTR("Tests"), HASHSTR("CBgfxGraphicsTest"), &m_show, [&] { Render(); });
 #endif
     }
 
@@ -95,7 +95,7 @@ namespace da::platform {
         m_test = nullptr;
 
 #ifdef DA_DEBUG
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("CBgfxGraphicsTest"));
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Tests"), HASHSTR("CBgfxGraphicsTest"));
 #endif
     }
 }

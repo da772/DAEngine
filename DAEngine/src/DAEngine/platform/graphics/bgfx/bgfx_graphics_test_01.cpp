@@ -156,8 +156,8 @@ namespace da::platform
 
 		const glm::vec3 at = { 0.0f, 0.0f,   0.0f };
 		const glm::vec3 eye = { 0.0f, 0.0f, -35.0f };
-
-		cam.lookAt(eye, at, cam.up());
+		cam.setPosition(eye);
+		cam.lookAt(at);
 	}
 
 	void CBgfxGraphicsTest01::Render()

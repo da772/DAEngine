@@ -6,54 +6,63 @@
 
 namespace da::maths
 {
-	
-	static const glm::vec3 X = { 1.0f, 0.0f, 0.0f };
-	static const glm::vec3 Y = { 0.0f, 1.0f, 0.0f };
-	static const glm::vec3 Z = { 0.0f, 0.0f, 1.0f };
-
-	void CTransform::setPosition(glm::vec3 pos)
+	CTransform::CTransform()
 	{
-		m_pos = pos;
+		setRotation({ 0,0,0 });
 	}
 
-	void CTransform::setRotation(glm::vec3 delta)
+	void CTransform::setPosition(const glm::vec3& pos)
 	{
-		delta = glm::radians(delta);
-
-		// limit pitch
-		float dot = glm::dot(Y, getForward());
-		if ((dot < -0.99f && delta.x < 0.0f) || // angle nearing 180 degrees
-			(dot > 0.99f && delta.x > 0.0f))    // angle nearing 0 degrees
-			delta.x = 0.0f;
-
-		// pitch is relative to current sideways m_rotation
-		// yaw happens independently
-		// this prevents roll
-		m_rotation = glm::rotate(glm::identity<glm::quat>(), delta.x, X) *           // pitch
-			m_rotation * glm::rotate(glm::identity<glm::quat>(), delta.y, Y) * // yaw
-			m_rotation* glm::rotate(glm::identity<glm::quat>(), delta.z, Z); // roll
-		// normalize?
-		m_invRotation = glm::conjugate(m_rotation);
+		m_position = pos;
 	}
 
-	glm::vec3 CTransform::getForward() const
+	void CTransform::offsetPosition(const glm::vec3& delta)
 	{
-		return m_invRotation * X;
+		setPosition(m_position + delta);
 	}
 
-	glm::vec3 CTransform::getRight() const
+	void CTransform::setRotation(const glm::vec3& rot)
 	{
-		return m_invRotation * Y;
+		m_rotation = rot;
 	}
 
-	glm::vec3 CTransform::getUp() const
+	void CTransform::offsetRotation(const glm::vec3& delta)
 	{
-		return m_invRotation * Z;
+		setRotation(m_rotation + delta);
 	}
 
-	glm::mat4 CTransform::getMat() const
+	glm::vec3 CTransform::position() const
 	{
-		return glm::toMat4(m_rotation) * glm::translate(glm::identity<glm::mat4>(), -m_pos);
+		return m_position;
+	}
+
+	glm::vec3 CTransform::rotation() const
+	{
+		return m_rotation;
+	}
+
+	glm::mat4 CTransform::matrix() const
+	{
+		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position);
+		glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.y), glm::vec3(0.0f, 1.0f, 0.0f))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+		return translationMatrix * rotationMatrix;
+	}
+
+	glm::vec3 CTransform::forward() const
+	{
+		return -m_forward;
+	}
+
+	glm::vec3 CTransform::up() const
+	{
+		return m_up;
+	}
+
+	glm::vec3 CTransform::right() const
+	{
+		return m_right;
 	}
 
 }

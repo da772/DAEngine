@@ -54,12 +54,17 @@ export class CameraComponent implements Component {
             Camera.Move(Camera.GetUp().neg().mul(this.camSpeed).mul(dt));
         }
 
+        if (Input.KeyPressed(340)) // LShfit
+        {
+            Camera.Move(Camera.GetUp().mul(this.camSpeed).mul(dt));
+        }
+
         if (Input.KeyPressed(70)) // F
         {
             let pos : Vector2 = Input.CursorPos();
             if (this.cursorPos.x >= 0.0 && this.cursorPos.y >= 0.0)
             {
-                Camera.Rotate(new Vector2(pos.y - this.cursorPos.y, pos.x - this.cursorPos.x).neg().mul(180.0 / 600.0));
+                Camera.Rotate(new Vector2(this.cursorPos.y - pos.y, this.cursorPos.x - pos.x).mul(180.0 / 600.0));
             }
         }
     }

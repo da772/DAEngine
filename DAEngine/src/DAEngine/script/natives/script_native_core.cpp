@@ -40,7 +40,7 @@ extern "C" static int lua_camera_move(lua_State * L)
 	float y = luaL_checknumber(L, 3);
 	float z = luaL_checknumber(L, 4);
 
-	da::core::CCamera::getCamera()->move({x,y,z});
+	da::core::CCamera::getCamera()->offsetPosition({x,y,z});
 	return 0;
 }
 
@@ -49,7 +49,7 @@ extern "C" static int lua_camera_rotate(lua_State * L)
 	float x = luaL_checknumber(L, 2);
 	float y = luaL_checknumber(L, 3);
 
-	da::core::CCamera::getCamera()->rotate({ x,y });
+	da::core::CCamera::getCamera()->offsetRotation({ x,0.f, -y });
 	return 0;
 }
 

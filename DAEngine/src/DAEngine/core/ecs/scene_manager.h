@@ -14,12 +14,14 @@ namespace da::core
 		static void shutdown();
 #ifdef DA_DEBUG
 		static void renderDebug();
+		static void renderCameraDebug();
 #endif
 
 	private:
 		static CScene* s_scene;
 #ifdef DA_DEBUG
 		static bool s_showDebug;
+		static bool s_showCameraDebug;
 #endif
 
 	};

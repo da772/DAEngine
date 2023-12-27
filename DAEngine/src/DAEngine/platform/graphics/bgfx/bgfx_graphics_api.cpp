@@ -164,7 +164,7 @@ namespace da::platform {
 	{
 		::bgfx::Init init;
 #ifdef DA_PLATFORM_WINDOWS
-		s_renderer = (ERenderApis)::bgfx::RendererType::Enum::OpenGL;
+		s_renderer = (ERenderApis)::bgfx::RendererType::Enum::Direct3D11;
 #elif defined(DA_PLATFORM_MACOSX) || defined (DA_PLATFORM_IOS)
 		s_renderer = (ERenderApis)::bgfx::RendererType::Enum::Metal;
 #else

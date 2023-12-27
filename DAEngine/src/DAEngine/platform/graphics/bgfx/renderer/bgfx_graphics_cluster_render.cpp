@@ -139,7 +139,7 @@ namespace da::platform::bgfx
 
 		for (size_t i = 0; i < container.getCount(); i++) {
 			da::core::CSmeshComponent* mesh = container.getComponentAtIndex<da::core::CSmeshComponent>(i);
-			glm::mat4 model = mesh->getParent().getTransform().getMat();
+			glm::mat4 model = mesh->getParent().getTransform().matrix();
 			::bgfx::setTransform(glm::value_ptr(model));
 			setNormalMatrix(model);
 			::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getStaticMesh()->getNativeVB()));

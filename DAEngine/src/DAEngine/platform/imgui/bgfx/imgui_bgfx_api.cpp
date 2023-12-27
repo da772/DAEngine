@@ -33,7 +33,7 @@ namespace da::platform {
 		m_enableDemo = da::core::CArgHandler::contains(HASHSTR("imguidemo"));
 
 #ifdef DA_DEBUG
-		debug::CDebugMenuBar::register_debug(HASHSTR("Debug"), HASHSTR("ImGuiDemo"), &m_enableDemo, [&] {ImGui::ShowDemoWindow(&m_enableDemo); });
+		debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ImGuiDemo"), &m_enableDemo, [&] {ImGui::ShowDemoWindow(&m_enableDemo); });
 #endif
 	}
 
@@ -57,7 +57,7 @@ namespace da::platform {
 	void CImGuiBgfxApi::onShutdown()
 	{
 #ifdef DA_DEBUG
-		debug::CDebugMenuBar::unregister_debug(HASHSTR("Debug"), HASHSTR("ImGuiDemo"));
+		debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ImGuiDemo"));
 #endif
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));

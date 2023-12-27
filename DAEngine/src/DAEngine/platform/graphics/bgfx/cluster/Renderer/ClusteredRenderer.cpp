@@ -55,7 +55,7 @@ void ClusteredRenderer::onInitialize()
     debugVisProgram = { m_pDebugVisProgram->getHandle() };
 
     m_pointLights.init();
-    generateLights(100);
+    generateLights(1);
     m_pointLights.update();
 }
 
@@ -147,7 +147,7 @@ void ClusteredRenderer::onRender(float dt)
 
 	for (size_t i = 0; i < container.getCount(); i++) {
 		da::core::CSmeshComponent* mesh = container.getComponentAtIndex<da::core::CSmeshComponent>(i);
-		glm::mat4 model = mesh->getParent().getTransform().getMat();
+		glm::mat4 model = mesh->getParent().getTransform().matrix();
 		::bgfx::setTransform(glm::value_ptr(model));
 		setNormalMatrix(model);
 		::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getStaticMesh()->getNativeVB()));
@@ -212,6 +212,12 @@ void ClusteredRenderer::generateLights(uint32_t count)
 
 	lights.resize(count);
 
+    if (count == 1)
+    {
+        lights[0] = { {-5.f ,-5.f,1.f}, {200000,200000,200000} };
+        return;
+    }
+
     glm::vec3 scale = glm::vec3(5.f,5.f,5.f)  *0.75f;
 
 	constexpr float POWER_MIN = 20.0f;
@@ -220,12 +226,13 @@ void ClusteredRenderer::generateLights(uint32_t count)
 	std::random_device rd;
 	std::seed_seq seed = { rd() };
 	std::mt19937 mt(seed);
-	std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+	std::uniform_real_distribution<float> dist(0.0f, 2.0f);
 
 	for (size_t i = keep; i < count; i++)
 	{
         glm::vec3 position = {0,0,0};
 		position += glm::vec3(dist(mt), dist(mt), dist(mt)) * scale - (scale * 0.5f);
+        position.y = 1.f;
 
 
 		glm::vec3 color = glm::vec3(1.f,1.f,1.f);
