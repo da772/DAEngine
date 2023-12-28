@@ -33,7 +33,7 @@ class ProtoTypeApp : public da::CApp {
 
 public:
 	inline ProtoTypeApp(int argc, const char** argv) : CApp(argc, argv) {
-		m_window = new da::modules::CWindowModule({ "Hello World!", 720, 480, 0,0, 144, da::core::EWindowDeco::NONE });
+		m_window = new da::modules::CWindowModule({ "Hello World!", 1280, 720, 0,0, 144, da::core::EWindowDeco::NONE });
 		addModule(m_window);
 
 		m_window->getEventHandler().registerCallback(EEventCategory::Window, BIND_EVENT_FN(ProtoTypeApp, windowEvent));
@@ -105,6 +105,7 @@ protected:
 
 		da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid::Generate()));
 		e1 = da::core::CSceneManager::getScene()->createEntity();
+		e1->setTag(HASHSTR("bolt cutter"));
 		da::core::FComponentRef<da::core::CTestComponent> tst1 = e1->addComponent<da::core::CTestComponent>("helloworld1", "helloworld2");
 		tst1->data1 = "123456";
 		da::core::FComponentRef<da::core::CTestComponent> tst11 = e1->getComponent<da::core::CTestComponent>();
@@ -128,8 +129,16 @@ protected:
 			, "assets/tile/white_marble_tile_Normal.jpg"
 			, "assets/tile/white_marble_tile_Roughness.jpg");
 		e2->getTransform().setPosition({ 0,0,0 });
+		e2->setTag(HASHSTR("plane"));
 		e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx", mat2);
 
+		da::core::CEntity* entity = da::core::CSceneManager::getScene()->createEntity();
+		da::platform::CBgfxPbrMaterial* mat3 = new da::platform::CBgfxPbrMaterial("", ""
+			, "assets/lightPost/textures/DefaultMaterial_Base_Color.png"
+			, "assets/lightPost/textures/DefaultMaterial_Normal_OpenGL.png"
+			, "assets/lightPost/textures/DefaultMaterial_Roughness.png");
+		entity->addComponent<da::core::CSmeshComponent>("assets/lightPost/source/Lamp_Post.fbx", mat3);
+		entity->setTag(HASHSTR("Lamp Post"));
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });

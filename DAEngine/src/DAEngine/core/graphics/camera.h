@@ -16,7 +16,7 @@ namespace da::core
 		float zNear = 0.1f;
 		float zFar = 10000.0f;
 
-		float exposure = 30.f;
+		float exposure = 1.f;
 
 		virtual glm::mat4 matrix() const override;
 		virtual void setRotation(const glm::vec3& rot) override;

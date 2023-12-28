@@ -2,6 +2,7 @@ import { Component } from "./core/component";
 import { Input } from "./core/input";
 import { Camera } from "./core/camera";
 import { Vector2 } from "./core/vector";
+import { Inputs } from "./core/input_enum";
 
 export class CameraComponent implements Component {
 
@@ -24,42 +25,42 @@ export class CameraComponent implements Component {
 
 
     cameraInput(dt : number) : void {
-        if (Input.KeyPressed(87)) // W
+        if (Input.KeyPressed(Inputs.KEY_W)) // W
         {
             Camera.Move(Camera.GetForward().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(83)) // S
+        if (Input.KeyPressed(Inputs.KEY_S)) // S
         {
             Camera.Move(Camera.GetForward().neg().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(65)) // A
+        if (Input.KeyPressed(Inputs.KEY_A)) // A
         {
             Camera.Move(Camera.GetRight().neg().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(68)) // D
+        if (Input.KeyPressed(Inputs.KEY_D)) // D
         {
             Camera.Move(Camera.GetRight().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(32)) // Space
+        if (Input.KeyPressed(Inputs.KEY_SPACE)) // Space
         {
             Camera.Move(Camera.GetUp().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(341)) // LCtrl
+        if (Input.KeyPressed(Inputs.KEY_LEFT_CONTROL)) // LCtrl
         {
             Camera.Move(Camera.GetUp().neg().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(340)) // LShfit
+        if (Input.KeyPressed(Inputs.KEY_LEFT_SHIFT)) // LShfit
         {
             Camera.Move(Camera.GetUp().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(70)) // F
+        if (Input.KeyPressed(Inputs.KEY_F)) // F
         {
             let pos : Vector2 = Input.CursorPos();
             if (this.cursorPos.x >= 0.0 && this.cursorPos.y >= 0.0)

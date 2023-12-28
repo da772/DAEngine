@@ -8,7 +8,11 @@
 #include <bgfx/bgfx.h>
 
 namespace da::core {
+#ifdef DA_DEBUG
+	COMPONENT_CPP_DEBUG(CSmeshComponent);
+#else
 	COMPONENT_CPP(CSmeshComponent);
+#endif
 
 	CSmeshComponent::CSmeshComponent(const std::string& meshPath, CMaterial* material, CEntity& parent) : m_guid(CGuid::Generate()), m_material(material), m_parent(parent)
 	{
@@ -42,4 +46,18 @@ namespace da::core {
 	{
 		return m_material;
 	}
+
+#ifdef DA_DEBUG
+	void CSmeshComponent::onDebugRender()
+	{
+		char pathNameBuffer[4096];
+		sprintf_s(pathNameBuffer, sizeof(pathNameBuffer), "Mesh: %s", m_staticMesh->getPath().c_str());
+		ImGui::Text(pathNameBuffer);
+		ImGui::Text("Vertices: %d", m_staticMesh->getVertices().size());
+		ImGui::Text("Indices:  %d", m_staticMesh->getIndices().size());
+		ImGui::Text("VertexBuffer: 0x%p", m_staticMesh->getNativeVB());
+		ImGui::Text("IndexBuffer: 0x%p", m_staticMesh->getNativeIB());
+	}
+#endif
+
 }

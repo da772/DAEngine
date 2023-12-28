@@ -13,6 +13,10 @@
 #include <random>
 #include "logger.h"
 
+#ifdef DA_DEBUG
+#include "debug/debug_menu_bar.h"
+#endif
+
 
 ClusteredRenderer::ClusteredRenderer()
 {
@@ -55,8 +59,12 @@ void ClusteredRenderer::onInitialize()
     debugVisProgram = { m_pDebugVisProgram->getHandle() };
 
     m_pointLights.init();
-    generateLights(1);
+    generateLights(3);
     m_pointLights.update();
+
+#ifdef DA_DEBUG
+    da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &debugVis, [&] { });
+#endif
 }
 
 void ClusteredRenderer::onRender(float dt)
@@ -131,7 +139,6 @@ void ClusteredRenderer::onRender(float dt)
                    ClusterShader::CLUSTERS_Z / ClusterShader::CLUSTERS_Z_THREADS);
     // lighting
 
-    bool debugVis = variables["DEBUG_VIS"] == "true";
     bgfx::ProgramHandle program = debugVis ? debugVisProgram : lightingProgram;
 
     uint64_t state = BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK;
@@ -198,6 +205,10 @@ void ClusteredRenderer::onShutdown()
 
     clusterBuildingComputeProgram = resetCounterComputeProgram = lightCullingComputeProgram = lightingProgram =
         debugVisProgram = BGFX_INVALID_HANDLE;
+
+#ifdef DA_DEBUG
+	da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"));
+#endif
 }
 
 void ClusteredRenderer::generateLights(uint32_t count)
@@ -212,9 +223,11 @@ void ClusteredRenderer::generateLights(uint32_t count)
 
 	lights.resize(count);
 
-    if (count == 1)
+    if (count == 3)
     {
-        lights[0] = { {-5.f ,-5.f,1.f}, {200000,200000,200000} };
+        lights[0] = { {0.f ,0.f,100.f}, {1000000,1000000,1000000} };
+        lights[1] = { {0.f ,-5.f,-10.f}, {255,0,0} };
+        lights[2] = { {-0.71f ,0.f,3.265f}, {255,187,115} };
         return;
     }
 

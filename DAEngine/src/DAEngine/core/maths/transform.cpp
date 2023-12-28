@@ -8,6 +8,7 @@ namespace da::maths
 {
 	CTransform::CTransform()
 	{
+		setPosition({ 0,0,0 });
 		setRotation({ 0,0,0 });
 	}
 

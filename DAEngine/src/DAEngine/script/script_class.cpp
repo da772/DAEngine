@@ -24,7 +24,7 @@ namespace da::script
 
 	}
 
-	void CScriptClass::setup()
+	void CScriptClass::setup(const da::core::CGuid& parent, const da::core::CGuid& guid)
 	{
 		m_state = CScriptEngine::loadScript(m_path.c_str());
 		lua_State* L = (lua_State*)m_state;
@@ -81,8 +81,86 @@ namespace da::script
 			type = lua_type(L, -1);
 			m_shutdownRef = luaL_ref(L, LUA_REGISTRYINDEX);
 
+			// set Id 
+			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
+			lua_pushstring(L, "__native_set_id__");
+			lua_gettable(L, -2);
+			type = lua_type(L, -1);
+			m_setIdRef = luaL_ref(L, LUA_REGISTRYINDEX);
 
+			// get Id
+			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
+			lua_pushstring(L, "__native_get_id__");
+			lua_gettable(L, -2);
+			type = lua_type(L, -1);
+			m_getIdRef = luaL_ref(L, LUA_REGISTRYINDEX);
+
+			// set entity
+			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
+			lua_pushstring(L, "__native_set_entity__");
+			lua_gettable(L, -2);
+			type = lua_type(L, -1);
+			m_setEntityRef = luaL_ref(L, LUA_REGISTRYINDEX);
+			
+			// set entity
+			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
+			lua_pushstring(L, "__native_get_entity__");
+			lua_gettable(L, -2);
+			type = lua_type(L, -1);
+			m_getEntityRef = luaL_ref(L, LUA_REGISTRYINDEX);
 		
+			{
+				// Set id
+				lua_rawgeti(L, LUA_REGISTRYINDEX, m_setEntityRef);
+				lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
+				uint64_t d1, d2;
+
+				memcpy(&d1, &parent.data()[0], sizeof(uint64_t));
+				memcpy(&d2, &parent.data()[sizeof(uint64_t)], sizeof(uint64_t));
+
+				lua_pushinteger(L, d1);
+				lua_pushinteger(L, d2);
+				lua_pcall(L, 3, 0, 0);
+			}
+
+			{
+				// get Id
+				lua_rawgeti(L, LUA_REGISTRYINDEX, m_getEntityRef);
+				lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
+				lua_pcall(L, 1, 2, 0);
+
+				type = lua_type(L, -1);
+
+				uint64_t d1 = lua_tointeger(L, -2);
+				uint64_t d2 = lua_tointeger(L, -1);
+			}
+
+			{
+				// Set id
+				lua_rawgeti(L, LUA_REGISTRYINDEX, m_setIdRef);
+				lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
+				uint64_t d1, d2;
+
+				memcpy(&d1, &guid.data()[0], sizeof(uint64_t));
+				memcpy(&d2, &guid.data()[sizeof(uint64_t)], sizeof(uint64_t));
+
+				lua_pushinteger(L, d1);
+				lua_pushinteger(L, d2);
+				lua_pcall(L, 3, 0, 0);
+			}
+
+			{
+				// get Id
+				lua_rawgeti(L, LUA_REGISTRYINDEX, m_getIdRef);
+				lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
+				lua_pcall(L, 1, 2, 0);
+
+				type = lua_type(L, -1);
+
+				uint64_t d1 = lua_tointeger(L, -2);
+				uint64_t d2 = lua_tointeger(L, -1);
+			}
+
 
 			lua_pop(L, lua_gettop(L));
 		}
@@ -101,6 +179,11 @@ namespace da::script
 		luaL_unref(L, LUA_REGISTRYINDEX, m_initRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, m_updateRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, m_shutdownRef);
+
+		luaL_unref(L, LUA_REGISTRYINDEX, m_getIdRef);
+		luaL_unref(L, LUA_REGISTRYINDEX, m_setIdRef);
+		luaL_unref(L, LUA_REGISTRYINDEX, m_setEntityRef);
+		luaL_unref(L, LUA_REGISTRYINDEX, m_getEntityRef);
         
         m_baseRef = 0, m_funcRef = 0, m_initRef = 0, m_updateRef = 0, m_shutdownRef = 0;
         if (!keepObj) m_objRef = 0;

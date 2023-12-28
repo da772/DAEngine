@@ -43,6 +43,9 @@ namespace da::core
 
 	public:
 		const CGuid& getId() const;
+		CHashString getTag() const;
+		void setTag(CHashString tag);
+		const da::maths::CTransform& getTransform() const;
 		da::maths::CTransform& getTransform();
 		
 		template <typename T, typename... Args>
@@ -96,17 +99,7 @@ namespace da::core
 		}
 
 #ifdef DA_DEBUG
-		void debugRender()
-		{
-			if (ImGui::CollapsingHeader("Components")) {
-				ImGui::Indent();
-				for (const std::pair<CHashString, CGuid> component : m_components)
-				{
-					ImGui::Text("%s : %s", component.first.c_str(), component.second.c_str());
-				}
-				ImGui::Unindent();
-			}
-		}
+		void debugRender();
 #endif
 
 	private:
@@ -114,6 +107,7 @@ namespace da::core
 		CGuid m_guid;
 		CScene* m_scene;
 		da::maths::CTransform m_transform;
+		CHashString m_tag;
 
 			
 	};

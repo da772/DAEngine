@@ -3,6 +3,9 @@
 
 #include "core/input/input.h"
 #include "core/graphics/camera.h"
+#include <core/ecs/scene_manager.h>
+#include <core/ecs/entity.h>
+#include <core/ecs/scene.h>
 
 extern "C" {
 #include <lua/lua.h>
@@ -116,6 +119,79 @@ extern "C" static int lua_camera_get_pos(lua_State * L)
 	return 1;
 }
 
+extern "C" static int lua_entity_set_pos(lua_State * L)
+{
+	uint64_t id1 = lua_tointeger(L, 2);
+	uint64_t id2 = lua_tointeger(L, 3);
+
+	uint8_t ch[16];
+	memcpy(&ch[0], &id1, sizeof(id1));
+	memcpy(&ch[sizeof(id2)], &id2, sizeof(id2));
+
+	da::core::CGuid guid(ch);
+
+	if (!guid.isValid()) return 0;
+
+	da::core::CEntity* entity = nullptr;
+
+	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
+		for (da::core::CEntity* e : scene->getEntities()) {
+			if (e->getId() == guid) {
+				entity = e;
+				break;
+			}
+		}
+	}
+
+	if (!entity) return 0;
+
+	float x = luaL_checknumber(L, 4);
+	float y = luaL_checknumber(L, 5);
+	float z = luaL_checknumber(L, 6);
+
+	entity->getTransform().setPosition({ x,y,z });
+
+	return 0;
+}
+
+extern "C" static int lua_entity_get_pos(lua_State * L)
+{
+	uint64_t id1 = lua_tointeger(L, 2);
+	uint64_t id2 = lua_tointeger(L, 3);
+
+	uint8_t ch[16];
+	memcpy(&ch[0], &id1, sizeof(id1));
+	memcpy(&ch[sizeof(id2)], &id2, sizeof(id2));
+
+	da::core::CGuid guid(ch);
+
+	if (!guid.isValid()) return 0;
+
+	const da::core::CEntity* entity = nullptr;
+
+	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
+		for (const da::core::CEntity* e : scene->getEntities()) {
+			if (e->getId() == guid) {
+				entity = e;
+				break;
+			}
+		}
+	}
+
+	if (!entity) return 0;
+
+	lua_newtable(L);
+	lua_newtable(L);
+	lua_pushnumber(L, entity->getTransform().position().x);
+	lua_rawseti(L, -2, 1);
+	lua_pushnumber(L, entity->getTransform().position().y);
+	lua_rawseti(L, -2, 2);
+	lua_pushnumber(L, entity->getTransform().position().z);
+	lua_rawseti(L, -2, 3);
+
+	return 1;
+}
+
 namespace da::script::core
 {
 
@@ -132,6 +208,10 @@ namespace da::script::core
 		lua_register(L, "native_camera_get_up", lua_camera_get_up);
 		lua_register(L, "native_camera_get_right", lua_camera_get_right);
 		lua_register(L, "native_camera_get_position", lua_camera_get_pos);
+
+		// Entity
+		lua_register(L, "native_entity_get_position", lua_entity_get_pos);
+		lua_register(L, "native_entity_set_position", lua_entity_set_pos);
 	}
 
 }

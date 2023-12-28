@@ -37,6 +37,7 @@ private:
     da::platform::CBgfxGraphicsMaterial* m_pDebugVisProgram;
 
     PointLightList m_pointLights;
-
     ClusterShader clusters;
+
+    bool debugVis = false;
 };

@@ -79,14 +79,17 @@ namespace da::core::containers
 			{
 				return m_hash;
 			}
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+
 			inline constexpr const char* c_str() const
 			{
-
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 				return m_string.c_str();
+#else
+				return std::to_string(m_hash).c_str();
+#endif
 
 			}
-#endif
+
 
 			inline bool operator ==(const CBasicHashString& rhs) const {
 				return rhs.m_hash == m_hash;

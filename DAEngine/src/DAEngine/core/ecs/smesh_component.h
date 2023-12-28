@@ -9,7 +9,11 @@ namespace da::core
 	class CMaterial;
 
 	class CSmeshComponent {
+#ifdef DA_DEBUG
+		COMPONENT_H_DEBUG(CSmeshComponent);
+#else
 		COMPONENT_H(CSmeshComponent);
+#endif
 
 	public:
 		CSmeshComponent(const std::string& meshPath, CMaterial* material, CEntity& parent);
@@ -19,6 +23,9 @@ namespace da::core
 		void onShutdown();
 		CStaticMesh* getStaticMesh() const;
 		CMaterial* getMaterial() const;
+#ifdef DA_DEBUG
+		void onDebugRender();
+#endif
 
 	private:
 		CStaticMesh* m_staticMesh;

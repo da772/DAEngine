@@ -8,6 +8,8 @@ local ____camera = require("core.camera")
 local Camera = ____camera.Camera
 local ____vector = require("core.vector")
 local Vector2 = ____vector.Vector2
+local ____input_enum = require("core.input_enum")
+local Inputs = ____input_enum.Inputs
 ____exports.CameraComponent = __TS__Class()
 local CameraComponent = ____exports.CameraComponent
 CameraComponent.name = "CameraComponent"
@@ -26,28 +28,28 @@ function CameraComponent.prototype.update(self, dt)
     end
 end
 function CameraComponent.prototype.cameraInput(self, dt)
-    if Input:KeyPressed(87) then
+    if Input:KeyPressed(Inputs.KEY_W) then
         Camera:Move(Camera:GetForward():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(83) then
+    if Input:KeyPressed(Inputs.KEY_S) then
         Camera:Move(Camera:GetForward():neg():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(65) then
+    if Input:KeyPressed(Inputs.KEY_A) then
         Camera:Move(Camera:GetRight():neg():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(68) then
+    if Input:KeyPressed(Inputs.KEY_D) then
         Camera:Move(Camera:GetRight():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(32) then
+    if Input:KeyPressed(Inputs.KEY_SPACE) then
         Camera:Move(Camera:GetUp():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(341) then
+    if Input:KeyPressed(Inputs.KEY_LEFT_CONTROL) then
         Camera:Move(Camera:GetUp():neg():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(340) then
+    if Input:KeyPressed(Inputs.KEY_LEFT_SHIFT) then
         Camera:Move(Camera:GetUp():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(70) then
+    if Input:KeyPressed(Inputs.KEY_F) then
         local pos = Input:CursorPos()
         if self.cursorPos.x >= 0 and self.cursorPos.y >= 0 then
             Camera:Rotate(__TS__New(Vector2, self.cursorPos.y - pos.y, self.cursorPos.x - pos.x):mul(180 / 600))

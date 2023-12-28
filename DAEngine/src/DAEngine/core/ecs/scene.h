@@ -22,7 +22,7 @@ namespace da::core {
 		template <typename T>
 		T* findComponent(const CGuid& guid) const {
 			for (size_t i = 0; i < m_components.size(); i += sizeof(T)) {
-				T* c = (T*) & m_components[i];
+				T* c = (T*) &m_components[i];
 				if (c->getId() == guid) {
 					return c;
 				}
@@ -30,6 +30,25 @@ namespace da::core {
 
 			return nullptr;
 		}
+
+#ifdef DA_DEBUG
+		void* findComponent(const CGuid& guid) const {
+			for (size_t i = 0; i < m_count; i ++) {
+				for (size_t j = 0; j < m_size; j++) {
+					bool found = true;
+					for (size_t z = 0; z < sizeof(uint128_t); z++) {
+						if ((i*m_size)+z+j >= m_components.size() || (unsigned char)m_components[(i*m_size) + z + j] != guid.data()[z]) {
+							found = false;
+							break;
+						}
+					}
+					if (found) return (void*)&m_components[i*m_size];
+				}
+			}
+
+			return nullptr;
+		}
+#endif
 
 		template <typename T>
 		bool removeComponent(const CGuid& guid) {
@@ -65,6 +84,9 @@ namespace da::core {
 		void (*init)(void*);
 		void (*update)(void*, float);
 		void (*shutdown)(void*);
+#ifdef DA_DEBUG
+		void (*debugRender)(void*) = nullptr;
+#endif
 	};
 
 	class CScene {
@@ -108,6 +130,14 @@ namespace da::core {
             return m_components[typeHash];
         }
 
+		inline const FComponentContainer& getComponents(const CHashString& typeHash) {
+			return m_components[typeHash];
+		}
+
+		inline const FECSLifeCycle& getComponentLifeCycle(const CHashString& typeHash) const {
+			return m_componentLifeCycle[typeHash];
+		}
+
 		const std::vector<CEntity*>& getEntities() const {
 			return m_entities;
 		}
@@ -115,8 +145,8 @@ namespace da::core {
 	private:
 		std::vector<CEntity*> m_entities;
 		std::unordered_map<CHashString, FComponentContainer> m_components;
-		static std::unordered_map<CHashString, FECSLifeCycle> m_componentLifeCycle;
 		CGuid m_guid;
+		static std::unordered_map<CHashString, FECSLifeCycle> m_componentLifeCycle;
 	};
 
 }

@@ -8,6 +8,7 @@
 #include "debug/debug_menu_bar.h"
 #include "daengine/core/graphics/camera.h"
 #endif
+#include <format> 
 
 
 namespace da::core {
@@ -43,14 +44,17 @@ namespace da::core {
 			if (ImGui::Begin("Scene Debug", &s_showDebug)) {
 
 				for (CEntity* e : scene->getEntities()) {
-					if (ImGui::CollapsingHeader(e->getId().c_str())) {
+					char nameBuffer[1024];
+					sprintf_s(nameBuffer, sizeof(nameBuffer), "%s (%s)", e->getTag().c_str(), e->getId().c_str());
+					if (ImGui::CollapsingHeader(nameBuffer)) {
 						ImGui::Indent();
 
 						{
 							glm::vec3 p = e->getTransform().position();
 							float pos[] = { p.x, p.y, p.z };
-
-							if (ImGui::InputFloat3((std::string("Position##") + std::string(e->getId().c_str())).c_str(), pos, "%.3f")) {
+							ImGui::Text("Position: ");
+							ImGui::SameLine();
+							if (ImGui::InputFloat3((std::string("##Position") + std::string(e->getId().c_str())).c_str(), pos, "%.3f")) {
 								p = { pos[0], pos[1], pos[2] };
 								e->getTransform().setPosition(p);
 							}
@@ -59,7 +63,9 @@ namespace da::core {
 						{
 							glm::vec3 r = e->getTransform().rotation();
 							float rot[] = { r.x ,r.y, r.z };
-							if (ImGui::InputFloat3((std::string("Rotation##") + std::string(e->getId().c_str())).c_str(), rot, "%.3f")) {
+							ImGui::Text("Rotation");
+							ImGui::SameLine();
+							if (ImGui::InputFloat3((std::string("##Rotation") + std::string(e->getId().c_str())).c_str(), rot, "%.3f")) {
 								r = { rot[0], rot[1], rot[2] };
 								e->getTransform().setRotation(r);
 							}

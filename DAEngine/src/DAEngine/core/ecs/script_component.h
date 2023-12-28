@@ -7,7 +7,11 @@ namespace da::core {
 
 	class CScriptComponent {
 
+#ifdef DA_DEBUG
+		COMPONENT_H_DEBUG(CScriptComponent)
+#else
 		COMPONENT_H(CScriptComponent)
+#endif
 
 	public:
 		CScriptComponent(const std::string& script, const std::string& className, CEntity& parent);
@@ -17,6 +21,10 @@ namespace da::core {
 		void onShutdown();
         
         void reload();
+
+#ifdef DA_DEBUG
+		void onDebugRender();
+#endif
 
 	private:
 		std::string m_script;
