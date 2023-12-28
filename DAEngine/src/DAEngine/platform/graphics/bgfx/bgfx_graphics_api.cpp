@@ -10,6 +10,10 @@
 #include "cluster/Renderer/Renderer.h"
 #include "cluster/Renderer/ClusteredRenderer.h"
 
+#ifdef DA_DEBUG
+#include "DAEngine/debug/debug_stats_window.h"
+#endif
+
 namespace da::platform {
 
 
@@ -236,6 +240,16 @@ namespace da::platform {
 		}
 		
 		::bgfx::touch(0);
+
+#ifdef DA_DEBUG
+		const ::bgfx::Stats* stats = ::bgfx::getStats();
+		da::debug::CDebugStatsWindow::s_gpuTime = ((stats->gpuTimeEnd - stats->gpuTimeBegin)/ 1000.0);
+		da::debug::CDebugStatsWindow::s_cpuTime = ((stats->cpuTimeEnd - stats->cpuTimeBegin) / 1000.0);
+		da::debug::CDebugStatsWindow::s_waitTime = stats->waitRender / 1000.0;
+		da::debug::CDebugStatsWindow::s_drawCalls = stats->numDraw;
+		da::debug::CDebugStatsWindow::s_gpuMem = stats->gpuMemoryUsed;
+		da::debug::CDebugStatsWindow::s_gpuMemMax = stats->gpuMemoryMax;
+#endif
 	}
 
 	void CbgfxGraphicsApi::lateUpdate()

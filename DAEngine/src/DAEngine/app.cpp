@@ -25,7 +25,13 @@ namespace da
 	{
 #ifndef DA_TEST
 		script::CScriptEngine::initialize();
+#ifdef DA_DEBUG
+		da::debug::CDebug::initialize();
 #endif
+#endif
+
+
+
 		for (IModule* m : m_modules) {
 			m->initalize();
 		}
@@ -69,6 +75,9 @@ namespace da
 		}
 #ifndef DA_TEST
 		script::CScriptEngine::shutdown();
+#ifdef DA_DEBUG
+		da::debug::CDebug::shutdown();
+#endif
 #endif
 	}
 
