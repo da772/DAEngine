@@ -95,6 +95,8 @@ namespace da::core {
 					glm::vec3 newPos = { pPos[0], pPos[1], pPos[2] };
 					camera->setPosition(newPos);
 				}
+				ImGui::InputFloat("Exposure", &camera->exposure, .1f, 1.f);
+				ImGui::InputFloat("FOV", &camera->fov, 1.f);
 			}
 
 			ImGui::End();
