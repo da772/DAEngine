@@ -7,7 +7,7 @@
 #include <bgfx/bgfx.h>
 #include <glm/glm.hpp>
 #include "bgfx_graphics_material.h"
-#include "renderer/bgfx_pbr_shader.h"
+#include "cluster/bgfx_pbr_shader.h"
 
 namespace da::platform::bgfx {
 
@@ -83,10 +83,10 @@ namespace da::platform::bgfx {
         ::bgfx::VertexBufferHandle m_blitTriangleBuffer = {INVALID_HANDLE};
 		::bgfx::FrameBufferHandle m_frameBuffer = BGFX_INVALID_HANDLE;
 
-		CBgfxPbrShader m_pbr;
+		CBgfxPBRShader m_pbr;
 
 	private:
-		CBgfxGraphicsMaterial m_blitProgram;
+		da::platform::CBgfxGraphicsMaterial m_blitProgram;
         ::bgfx::UniformHandle m_blitSampler = {INVALID_HANDLE};
         ::bgfx::UniformHandle m_camPosUniform = {INVALID_HANDLE};
         ::bgfx::UniformHandle m_normalMatrixUniform = {INVALID_HANDLE};

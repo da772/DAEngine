@@ -1,8 +1,8 @@
 #pragma once
 #ifdef DA_GRAPHICS_BGFX
 #include <bgfx/bgfx.h>
-#include "bgfx_texture2d.h"
-#include "bgfx_uniform.h"
+#include "../bgfx_texture2d.h"
+#include "../bgfx_uniform.h"
 
 namespace da::core { class CWindow; class CStaticMesh; }
 

@@ -6,9 +6,9 @@
 #include <bgfx/bgfx.h>
 #include <bx/allocator.h>
 #include "DAEngine/core/arg_handler.h"
-#include "bgfx_graphics_test.h"
-#include "cluster/Renderer/Renderer.h"
-#include "cluster/Renderer/ClusteredRenderer.h"
+#include "test/bgfx_graphics_test.h"
+#include "cluster/bgfx_type_renderer.h"
+#include "cluster/bgfx_clustered_renderer.h"
 
 #ifdef DA_DEBUG
 #include <imgui.h>
@@ -225,7 +225,7 @@ namespace da::platform {
 		);
 		::bgfx::setViewRect(0, 0, 0, data.Width, data.Height);
 
-		m_renderer = new ClusteredRenderer();
+		m_renderer = new CBgfxClusteredRenderer();
 
 		m_renderer->reset(data.Width, data.Height);
 		m_renderer->initialize();

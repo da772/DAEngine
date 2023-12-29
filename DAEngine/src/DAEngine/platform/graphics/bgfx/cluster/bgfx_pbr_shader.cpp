@@ -1,0 +1,124 @@
+#include "dapch.h"
+#include "bgfx_pbr_shader.h"
+
+#include "bgfx_material.h"
+#include "bgfx_samplers.h"
+#include <bx/string.h>
+#include <bimg/encode.h>
+#include <bx/file.h>
+#include <glm/gtc/type_ptr.hpp>
+#include "platform\graphics\bgfx\bgfx_graphics_material.h"
+
+namespace da::platform {
+
+    void CBgfxPBRShader::initialize()
+    {
+        m_baseColorFactorUniform = bgfx::createUniform("u_baseColorFactor", bgfx::UniformType::Vec4);
+        m_metallicRoughnessNormalOcclusionFactorUniform =
+            bgfx::createUniform("u_metallicRoughnessNormalOcclusionFactor", bgfx::UniformType::Vec4);
+        m_emissiveFactorUniform = bgfx::createUniform("u_emissiveFactorVec", bgfx::UniformType::Vec4);
+        m_hasTexturesUniform = bgfx::createUniform("u_hasTextures", bgfx::UniformType::Vec4);
+        m_multipleScatteringUniform = bgfx::createUniform("u_multipleScatteringVec", bgfx::UniformType::Vec4);
+        m_albedoLUTSampler = bgfx::createUniform("s_texAlbedoLUT", bgfx::UniformType::Sampler);
+        m_baseColorSampler = bgfx::createUniform("s_texBaseColor", bgfx::UniformType::Sampler);
+        m_metallicRoughnessSampler = bgfx::createUniform("s_texMetallicRoughness", bgfx::UniformType::Sampler);
+        m_normalSampler = bgfx::createUniform("s_texNormal", bgfx::UniformType::Sampler);
+        m_occlusionSampler = bgfx::createUniform("s_texOcclusion", bgfx::UniformType::Sampler);
+        m_emissiveSampler = bgfx::createUniform("s_texEmissive", bgfx::UniformType::Sampler);
+
+        m_defaultTexture = bgfx::createTexture2D(1, 1, false, 1, bgfx::TextureFormat::RGBA8);
+        m_albedoLUTTexture = bgfx::createTexture2D(ALBEDO_LUT_SIZE,
+            ALBEDO_LUT_SIZE,
+            false,
+            1,
+            bgfx::TextureFormat::RGBA32F,
+            BGFX_SAMPLER_UVW_CLAMP | BGFX_TEXTURE_COMPUTE_WRITE);
+
+        m_pAlbedoLUTProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/cs_multiple_scattering_lut.sc");
+        m_pAlbedoLUTProgram->initialize();
+    }
+
+    void CBgfxPBRShader::shutdown()
+    {
+        bgfx::destroy(m_baseColorFactorUniform);
+        bgfx::destroy(m_metallicRoughnessNormalOcclusionFactorUniform);
+        bgfx::destroy(m_emissiveFactorUniform);
+        bgfx::destroy(m_hasTexturesUniform);
+        bgfx::destroy(m_multipleScatteringUniform);
+        bgfx::destroy(m_albedoLUTSampler);
+        bgfx::destroy(m_baseColorSampler);
+        bgfx::destroy(m_metallicRoughnessSampler);
+        bgfx::destroy(m_normalSampler);
+        bgfx::destroy(m_occlusionSampler);
+        bgfx::destroy(m_emissiveSampler);
+        bgfx::destroy(m_albedoLUTTexture);
+        bgfx::destroy(m_defaultTexture);
+
+        m_pAlbedoLUTProgram->shutdown();
+        delete m_pAlbedoLUTProgram;
+        m_pAlbedoLUTProgram = nullptr;
+
+        m_baseColorFactorUniform = m_metallicRoughnessNormalOcclusionFactorUniform = m_emissiveFactorUniform =
+            m_hasTexturesUniform = m_multipleScatteringUniform = m_albedoLUTSampler = m_baseColorSampler =
+            m_metallicRoughnessSampler = m_normalSampler = m_occlusionSampler = m_emissiveSampler = BGFX_INVALID_HANDLE;
+        m_albedoLUTTexture = m_defaultTexture = BGFX_INVALID_HANDLE;
+    }
+
+    void CBgfxPBRShader::generateAlbedoLUT()
+    {
+        bindAlbedoLUT(true /* compute */);
+        bgfx::dispatch(0, {m_pAlbedoLUTProgram->getHandle()}, ALBEDO_LUT_SIZE / ALBEDO_LUT_THREADS, ALBEDO_LUT_SIZE / ALBEDO_LUT_THREADS, 1);
+    }
+
+    uint64_t CBgfxPBRShader::bindMaterial(const CBgfxMaterial& material)
+    {
+        float factorValues[4] = {
+            material.metallicFactor, material.roughnessFactor, material.normalScale, material.occlusionStrength
+        };
+        bgfx::setUniform(m_baseColorFactorUniform, glm::value_ptr(material.baseColorFactor));
+        bgfx::setUniform(m_metallicRoughnessNormalOcclusionFactorUniform, factorValues);
+        glm::vec4 emissiveFactor = glm::vec4(material.emissiveFactor, 0.0f);
+        bgfx::setUniform(m_emissiveFactorUniform, glm::value_ptr(emissiveFactor));
+
+        float hasTexturesValues[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+        auto setTextureOrDefault = [&](uint8_t stage, bgfx::UniformHandle uniform, bgfx::TextureHandle texture) -> bool {
+            bool valid = bgfx::isValid(texture);
+            if (!valid)
+                texture = m_defaultTexture;
+            bgfx::setTexture(stage, uniform, texture);
+            return valid;
+            };
+
+        const uint32_t hasTexturesMask = 0
+            | ((setTextureOrDefault(CBgfxSamplers::PBR_BASECOLOR, m_baseColorSampler, material.baseColorTexture) ? 1 : 0) << 0)
+            | ((setTextureOrDefault(CBgfxSamplers::PBR_METALROUGHNESS, m_metallicRoughnessSampler, material.metallicRoughnessTexture) ? 1 : 0) << 1)
+            | ((setTextureOrDefault(CBgfxSamplers::PBR_NORMAL, m_normalSampler, material.normalTexture) ? 1 : 0) << 2)
+            | ((setTextureOrDefault(CBgfxSamplers::PBR_OCCLUSION, m_occlusionSampler, material.occlusionTexture) ? 1 : 0) << 3)
+            | ((setTextureOrDefault(CBgfxSamplers::PBR_EMISSIVE, m_emissiveSampler, material.emissiveTexture) ? 1 : 0) << 4);
+        hasTexturesValues[0] = static_cast<float>(hasTexturesMask);
+
+        bgfx::setUniform(m_hasTexturesUniform, hasTexturesValues);
+
+        float multipleScatteringValues[4] = {
+            m_multipleScatteringEnabled ? 1.0f : 0.0f, m_whiteFurnaceEnabled ? WHITE_FURNACE_RADIANCE : 0.0f, 0.0f, 0.0f
+        };
+        bgfx::setUniform(m_multipleScatteringUniform, multipleScatteringValues);
+
+        uint64_t state = 0;
+        if (material.blend)
+            state |= BGFX_STATE_BLEND_ALPHA;
+        if (!material.doubleSided)
+            state |= BGFX_STATE_CULL_CW;
+        return state;
+    }
+
+    void CBgfxPBRShader::bindAlbedoLUT(bool compute)
+    {
+        if (compute)
+            bgfx::setImage(CBgfxSamplers::PBR_ALBEDO_LUT, m_albedoLUTTexture, 0, bgfx::Access::Write);
+        else
+            bgfx::setTexture(CBgfxSamplers::PBR_ALBEDO_LUT, m_albedoLUTSampler, m_albedoLUTTexture);
+    }
+
+}

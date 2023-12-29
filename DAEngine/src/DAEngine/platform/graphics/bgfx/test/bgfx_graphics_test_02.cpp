@@ -11,7 +11,7 @@
 #include <imgui.h>
 #include <stb_image.h>
 #include <bimg/bimg.h>
-#include "bgfx_static_mesh.h"
+#include "../bgfx_static_mesh.h"
 #include <core/graphics/camera.h>
 
 

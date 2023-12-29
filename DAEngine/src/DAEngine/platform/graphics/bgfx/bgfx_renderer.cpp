@@ -56,8 +56,8 @@ namespace da::platform::bgfx {
 		glm::vec4 camPos = glm::vec4(da::core::CCamera::getCamera()->position(), 1.0f);
 		::bgfx::setUniform(m_camPosUniform, glm::value_ptr(camPos));
 
-		glm::vec3 linear = m_pbr.whiteFurnaceEnabled
-			? glm::vec3(CBgfxPbrShader::WHITE_FURNACE_RADIANCE)
+		glm::vec3 linear = m_pbr.m_whiteFurnaceEnabled
+			? glm::vec3(CBgfxPBRShader::WHITE_FURNACE_RADIANCE)
 			: glm::convertSRGBToLinear(glm::vec3(1.f,0.f,0.f)); // tonemapping expects linear colors
 		glm::u8vec3 result = glm::u8vec3(glm::round(glm::clamp(linear, 0.0f, 1.0f) * 255.0f));
 		m_clearColor = (result[0] << 24) | (result[1] << 16) | (result[2] << 8) | 255;

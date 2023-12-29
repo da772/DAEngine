@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef DA_GRAPHICS_BGFX
-#include "bgfx_renderer.h"
+#include "../bgfx_renderer.h"
 #include <bgfx/bgfx.h>
 namespace da::core { class CWindow; class CStaticMesh; class CCamera; }
 

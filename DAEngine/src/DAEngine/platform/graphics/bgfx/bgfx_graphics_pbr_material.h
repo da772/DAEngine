@@ -3,13 +3,14 @@
 #include "daengine/core/graphics/graphics_material.h"
 #include "daengine/platform/graphics/bgfx/bgfx_graphics_material.h"
 
-class Material;
-
 namespace da::platform::bgfx {
 	class CBgfxTexture2D;
 }
 
 namespace da::platform {
+
+	class CBgfxMaterial;
+
 	class CBgfxPbrMaterial : public CBgfxGraphicsMaterial
 	{
 	public:
@@ -20,11 +21,11 @@ namespace da::platform {
 		virtual void update(int frame) override;
 		virtual void shutdown() override;
 
-		inline Material* getMaterial() const { return m_material; }
+		inline CBgfxMaterial* getMaterial() const { return m_material; }
 
 
 	private:
 		da::platform::bgfx::CBgfxTexture2D * m_albedo, * m_normal, * m_roughness;
-		Material* m_material;
+		CBgfxMaterial* m_material;
 	};
 }
