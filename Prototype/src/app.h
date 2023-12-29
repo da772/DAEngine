@@ -137,7 +137,7 @@ protected:
 			, "assets/lightPost/textures/DefaultMaterial_Base_Color.png"
 			, "assets/lightPost/textures/DefaultMaterial_Normal_OpenGL.png"
 			, "assets/lightPost/textures/DefaultMaterial_Roughness.png");
-		entity->addComponent<da::core::CSmeshComponent>("assets/lightPost/source/Lamp_Post.fbx", mat3);
+		entity->addComponent<da::core::CSmeshComponent>("assets/building.fbx", mat3);
 		entity->setTag(HASHSTR("Lamp Post"));
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 

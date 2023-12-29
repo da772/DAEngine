@@ -8,6 +8,8 @@ uniform vec4 u_lightCountVec;
 #define u_pointLightCount uint(u_lightCountVec.x)
 
 uniform vec4 u_ambientLightIrradiance;
+uniform vec4 u_sunLightDirection;
+uniform vec4 u_sunLightRadiance;
 
 // for each light:
 //   vec4 position (w is padding)
@@ -28,6 +30,12 @@ struct PointLight
 struct AmbientLight
 {
     vec3 irradiance;
+};
+
+struct SunLight
+{
+    vec3 direction;
+    vec3 radiance;
 };
 
 // primary source:
@@ -64,6 +72,14 @@ PointLight getPointLight(uint i)
     vec4 intensityRadiusVec = b_pointLights[2 * i + 1];
     light.intensity = intensityRadiusVec.xyz;
     light.radius = intensityRadiusVec.w;
+    return light;
+}
+
+SunLight getSunLight()
+{
+    SunLight light;
+    light.direction = u_sunLightDirection.xyz;
+    light.radiance = u_sunLightRadiance.xyz;
     return light;
 }
 

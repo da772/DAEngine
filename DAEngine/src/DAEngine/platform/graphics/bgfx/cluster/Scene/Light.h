@@ -19,3 +19,9 @@ struct AmbientLight
 {
     glm::vec3 irradiance;
 };
+
+struct SunLight
+{
+    glm::vec3 direction;
+    glm::vec3 radiance;
+};

@@ -59,6 +59,15 @@ void main()
         }
     }
 
+    // directional light
+    {
+        SunLight light = getSunLight();
+        vec3 L = -light.direction.xyz;
+        float NoL = saturate(dot(N, L));
+        radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * light.radiance * NoL;
+    }
+
+
     radianceOut += getAmbientLight().irradiance * mat.diffuseColor * mat.occlusion;
     radianceOut += mat.emissive;
 

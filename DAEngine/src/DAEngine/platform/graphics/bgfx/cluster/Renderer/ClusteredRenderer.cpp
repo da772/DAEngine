@@ -62,8 +62,13 @@ void ClusteredRenderer::onInitialize()
     generateLights(3);
     m_pointLights.update();
 
+    m_ambientLight.irradiance = { 0.03f, 0.03f, 0.03f };
+    m_sunLight.direction = { 0.0f, -1.f, -1.f };
+    m_sunLight.radiance = { 1.f,1.f,1.f };
+
 #ifdef DA_DEBUG
-    da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &debugVis, [&] { });
+    da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] { });
+    da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"), &m_lightDebugVis, [&] { renderLightDebug(); });
 #endif
 }
 
@@ -129,7 +134,7 @@ void ClusteredRenderer::onRender(float dt)
     // this used to happen during cluster building when it was still run every frame
     bgfx::dispatch(vLightCulling, resetCounterComputeProgram, 1, 1, 1);
 
-    lights.bindLights(m_pointLights);
+    lights.bindLights(m_sunLight, m_ambientLight, m_pointLights);
     clusters.bindBuffers(false);
 
     bgfx::dispatch(vLightCulling,
@@ -138,13 +143,12 @@ void ClusteredRenderer::onRender(float dt)
                    ClusterShader::CLUSTERS_Y / ClusterShader::CLUSTERS_Y_THREADS,
                    ClusterShader::CLUSTERS_Z / ClusterShader::CLUSTERS_Z_THREADS);
     // lighting
-
-    bgfx::ProgramHandle program = debugVis ? debugVisProgram : lightingProgram;
+    bgfx::ProgramHandle program = m_clusterDebugVis ? debugVisProgram : lightingProgram;
 
     uint64_t state = BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK;
 
     pbr.bindAlbedoLUT();
-    lights.bindLights(m_pointLights);
+    lights.bindLights(m_sunLight, m_ambientLight, m_pointLights);
     clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
 
@@ -161,6 +165,7 @@ void ClusteredRenderer::onRender(float dt)
 		::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getStaticMesh()->getNativeIB()));
         da::platform::CBgfxPbrMaterial* material = (da::platform::CBgfxPbrMaterial*)mesh->getMaterial();
 		uint64_t materialState = pbr.bindMaterial(*material->getMaterial());
+        //BGFX_STATE_PT_LINES
 		::bgfx::setState(state | materialState);
 		// preserve buffer bindings between submit calls
 		::bgfx::submit(vLighting, program, 0, ~BGFX_DISCARD_BINDINGS);
@@ -208,6 +213,7 @@ void ClusteredRenderer::onShutdown()
 
 #ifdef DA_DEBUG
 	da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"));
+	da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"));
 #endif
 }
 
@@ -225,7 +231,7 @@ void ClusteredRenderer::generateLights(uint32_t count)
 
     if (count == 3)
     {
-        lights[0] = { {0.f ,0.f,100.f}, {1000000,1000000,1000000} };
+        lights[0] = { {0.f ,0.f,100.f}, {20,20,20} };
         lights[1] = { {0.f ,-5.f,-10.f}, {255,0,0} };
         lights[2] = { {-0.71f ,0.f,3.265f}, {255,187,115} };
         return;
@@ -254,3 +260,24 @@ void ClusteredRenderer::generateLights(uint32_t count)
         LOG_DEBUG(da::ELogChannel::Graphics, "Light created: %f %f %f, Power: %f, %f, %f", position.x, position.y, position.z, power.x, power.y, power.z);
 	}
 }
+#ifdef DA_DEBUG
+void ClusteredRenderer::renderLightDebug()
+{
+    if (ImGui::Begin("Light Debug", &m_lightDebugVis)) {
+
+        ImGui::Text("Ambient Light: ");
+        ImGui::SameLine();
+        ImGui::InputFloat3("##ambientLightControl", glm::value_ptr(m_ambientLight.irradiance));
+
+		ImGui::Text("Sun light Direction: ");
+		ImGui::SameLine();
+		ImGui::SliderFloat3("##sunLightDirControl", glm::value_ptr(m_sunLight.direction), -1.f, 1.f);
+
+		ImGui::Text("Sunlight Radiance: ");
+		ImGui::SameLine();
+		ImGui::InputFloat3("##sunLightRadControl", glm::value_ptr(m_sunLight.radiance));
+    }
+
+    ImGui::End();
+}
+#endif

@@ -22,6 +22,9 @@ public:
 
 private:
     void generateLights(uint32_t count);
+#ifdef DA_DEBUG
+    void renderLightDebug();
+#endif
 private:
     glm::mat4 oldProjMat = glm::mat4(0.0f);
 
@@ -36,8 +39,13 @@ private:
     da::platform::CBgfxGraphicsMaterial* m_pLightingProgram;
     da::platform::CBgfxGraphicsMaterial* m_pDebugVisProgram;
 
+    AmbientLight m_ambientLight;
+    SunLight m_sunLight;
     PointLightList m_pointLights;
     ClusterShader clusters;
 
-    bool debugVis = false;
+#ifdef DA_DEBUG
+    bool m_clusterDebugVis = false;
+    bool m_lightDebugVis = false;
+#endif
 };

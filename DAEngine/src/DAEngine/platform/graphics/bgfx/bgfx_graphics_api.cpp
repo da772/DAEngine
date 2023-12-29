@@ -11,13 +11,18 @@
 #include "cluster/Renderer/ClusteredRenderer.h"
 
 #ifdef DA_DEBUG
+#include <imgui.h>
 #include "DAEngine/debug/debug_stats_window.h"
+#include "DAEngine/debug/debug_menu_bar.h"
 #endif
 
 namespace da::platform {
 
 
 	ERenderApis CbgfxGraphicsApi::s_renderer = ERenderApis::NOOP;
+#ifdef DA_DEBUG
+	bool CbgfxGraphicsApi::s_showDebugTitle = true;
+#endif
 
 
 	const char* s_bgfxRenderers[] = {
@@ -226,6 +231,11 @@ namespace da::platform {
 		m_renderer->initialize();
 
 		s_test->Initialize(m_nativeWindow);
+
+#ifdef DA_DEBUG
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Info"), &s_showDebugTitle, renderDebugTitle);
+#endif
+
 	}
 
 	void CbgfxGraphicsApi::update()
@@ -254,14 +264,15 @@ namespace da::platform {
 
 	void CbgfxGraphicsApi::lateUpdate()
 	{
-		::bgfx::dbgTextClear();
-		::bgfx::dbgTextPrintf(73, 0, 0x0f, "DAv%s - %s", DA_VERSION, s_bgfxRenderers[(uint8_t)s_renderer]);
 		m_renderer->render(0.1f);
 		::bgfx::frame();
 	}
 
 	void CbgfxGraphicsApi::shutdown()
 	{
+#ifdef DA_DEBUG
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Info"));
+#endif
 		m_renderer->shutdown();
 		s_test->Shutdown();
 		::bgfx::shutdown();
@@ -300,6 +311,22 @@ namespace da::platform {
 		return s_bgfxRenderers[(uint8_t)api];
 	}
 
+#ifdef DA_DEBUG
+	void CbgfxGraphicsApi::renderDebugTitle()
+	{
+		const float wSize = 115.f;
+		ImGui::SetNextWindowBgAlpha(.5f);
+		ImGui::SetNextWindowPos({ ImGui::GetWindowWidth() - wSize , 24.5f });
+		ImGui::SetNextWindowSize({ wSize , -1 });
+		if (ImGui::Begin("Renderer Info", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+
+			ImGui::Text("DAv%s - %s", DA_VERSION, s_bgfxRenderers[(uint8_t)s_renderer]);
+		}
+
+		ImGui::End();
+	}
+
+#endif
 	
 
 }
