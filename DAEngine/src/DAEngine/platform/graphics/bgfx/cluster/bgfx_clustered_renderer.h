@@ -36,7 +36,7 @@ namespace da::platform
         CBgfxAmbientLight m_ambientLight;
         CBgfxSunLight m_sunLight;
         CBgfxPointLightList m_pointLights;
-        CBgfxClusterShader clusters;
+        CBgfxClusterShader m_clusters;
 
 #ifdef DA_DEBUG
         bool m_clusterDebugVis = false;

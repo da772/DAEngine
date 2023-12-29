@@ -37,7 +37,7 @@ namespace da::platform {
     void CBgfxClusteredRenderer::onInitialize()
     {
         // OpenGL backend: uniforms must be created before loading shaders
-        clusters.initialize();
+        m_clusters.initialize();
 
         m_pClusterBuildingComputeProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/cs_clustered_clusterbuilding.sc");
         m_pClusterBuildingComputeProgram->initialize();
@@ -90,7 +90,7 @@ namespace da::platform {
         ::bgfx::setViewFrameBuffer(vLighting, m_frameBuffer);
         ::bgfx::touch(vLighting);
 
-        clusters.setUniforms(m_width, m_height);
+        m_clusters.setUniforms(m_width, m_height);
 
         // cluster building needs u_invProj to transform screen coordinates to eye space
         setViewProjection(vClusterBuilding);
@@ -112,7 +112,7 @@ namespace da::platform {
         {
             m_oldProjMat = m_projMat;
 
-            clusters.bindBuffers(false /*lightingPass*/); // write access, all buffers
+            m_clusters.bindBuffers(false /*lightingPass*/); // write access, all buffers
 
             ::bgfx::dispatch(vClusterBuilding,
                 { m_pClusterBuildingComputeProgram->getHandle() },
@@ -123,7 +123,7 @@ namespace da::platform {
 
         // light culling
 
-        clusters.bindBuffers(false);
+        m_clusters.bindBuffers(false);
 
         // reset atomic counter for light grid generation
         // buffers created with BGFX_BUFFER_COMPUTE_WRITE can't be updated from the CPU
@@ -131,7 +131,7 @@ namespace da::platform {
         ::bgfx::dispatch(vLightCulling, { m_pResetCounterComputeProgram->getHandle() }, 1, 1, 1);
 
         m_lights.bindLights(m_sunLight, m_ambientLight, m_pointLights);
-        clusters.bindBuffers(false);
+        m_clusters.bindBuffers(false);
 
         ::bgfx::dispatch(vLightCulling,
             { m_pLightCullingComputeProgram->getHandle() },
@@ -149,7 +149,7 @@ namespace da::platform {
 
         m_pbr.bindAlbedoLUT();
         m_lights.bindLights(m_sunLight, m_ambientLight, m_pointLights);
-        clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
+        m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
 
         da::core::CScene* scene = da::core::CSceneManager::getScene();
@@ -192,7 +192,7 @@ namespace da::platform {
 
     void CBgfxClusteredRenderer::onShutdown()
     {
-        clusters.shutdown();
+        m_clusters.shutdown();
 		m_pClusterBuildingComputeProgram->shutdown();
 		m_pResetCounterComputeProgram->shutdown();
 		m_pLightCullingComputeProgram->shutdown();

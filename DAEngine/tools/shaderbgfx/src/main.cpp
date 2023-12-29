@@ -91,16 +91,45 @@ const char* s_platformDisplayName[] = {
 };
 
 
+
+namespace da {
+
+	static const char endl[] = "\n";
+
+	class CStream {
+	public:
+		std::ofstream stream;
+		inline CStream& operator<<(const char* str) {
+			std::cout << str;
+			stream << str;
+			return *this;
+		}
+		inline CStream& operator<<(const std::string& str) {
+			std::cout << str;
+			stream << str;
+			return *this;
+		}
+		inline CStream& operator<<(const std::filesystem::path& str) {
+			std::cout << str;
+			stream << str;
+			return *this;
+		}
+	};
+
+	static CStream cout;
+}
+
+
 int main(int argc, const char* argv[])
 {
 	if (argc <= 1) {
-		std::cout << "Please supply shader directory in args" << std::endl;
+		da::cout << "Please supply shader directory in args" << da::endl;
 		return -1;
 	}
 
 	const std::filesystem::path p(argv[1]);
 	
-	std::freopen((p.string()  + "/output.txt").c_str(), "w", stdout);
+	da::cout.stream.open((p.string() + "/output.txt").c_str(), std::ofstream::out);
 
 	std::string timeStampPath = p.string() + "/timestamp.txt";
 	uint64_t lastRun = 0;
@@ -128,20 +157,20 @@ int main(int argc, const char* argv[])
 			continue;
 		}
 
-		//std::cout << dirEntry.path() << std::endl;
+		//da::cout << dirEntry.path() << da::endl;
 		if (dirEntry.path().extension() != ".sc") continue;
 		if (dirEntry.path().string().find("varying.def.sc") != std::string::npos) continue;
-		std::cout << "Found: " << dirEntry.path().string() << std::endl;
+		da::cout << "Found: " << dirEntry.path().string() << da::endl;
 		uint64_t writeTime = to_time_t(dirEntry.last_write_time());
 		if (writeTime <= lastRun) {
-			std::cout << "Skipping: " << dirEntry.path().string() << std::endl;
+			da::cout << "Skipping: " << dirEntry.path().string() << da::endl;
 			continue;
 		}
 
 		for (int i = 0; i < (int)EPlatformTypes::COUNT; i++) {
 			std::string folderPath = dirEntry.path().string().substr(0, dirEntry.path().string().size() - dirEntry.path().filename().string().size()) + s_platformDisplayName[i];
 			std::filesystem::create_directory(folderPath);
-			std::cout << "Creating Directory for: " << dirEntry.path().string() << " AT: " << folderPath << std::endl; 
+			da::cout << "Creating Directory for: " << dirEntry.path().string() << " AT: " << folderPath << da::endl; 
 			for (EShaderTypes shaderType : s_platformShaderTypes[i])
 			{
 				GenerateShader({"-i", argv[1]}, dirEntry, (EPlatformTypes)i, shaderType);
@@ -158,7 +187,7 @@ int GenerateShader(std::vector<std::string> args, const std::filesystem::directo
 
 #ifndef _WIN32
 	if (shaderType == EShaderTypes::DirectX) {
-		std::cout << "WINDOWS ONLY: Failed to generate DX shader for " << entry.path() << std::endl;
+		da::cout << "WINDOWS ONLY: Failed to generate DX shader for " << entry.path() << da::endl;
 		return -1;
 	}
 #endif
@@ -187,7 +216,7 @@ int GenerateShader(std::vector<std::string> args, const std::filesystem::directo
 	}
 	else
 	{
-		std::cout << "Failed to generate shader for " << entry.path() << std::endl;
+		da::cout << "Failed to generate shader for " << entry.path() << da::endl;
 		return -1;
 	}
 
@@ -222,7 +251,7 @@ int GenerateShader(std::vector<std::string> args, const std::filesystem::directo
 	delete[] argv;
 
 	if (result != 0) {
-		std::cout << "FAILED TO CREATE SHADER " << newPath << std::endl;
+		da::cout << "FAILED TO CREATE SHADER " << newPath << da::endl;
 	}
 
 	return result;
