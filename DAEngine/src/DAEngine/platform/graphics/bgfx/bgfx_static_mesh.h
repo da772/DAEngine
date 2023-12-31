@@ -17,8 +17,8 @@ namespace da::platform {
 		void setBuffers(uint8_t stream);
 
 	private:
-		::bgfx::VertexBufferHandle m_vbh;
-		::bgfx::IndexBufferHandle m_ibh;
+		::bgfx::VertexBufferHandle m_vbh = BGFX_INVALID_HANDLE;
+		::bgfx::IndexBufferHandle m_ibh = BGFX_INVALID_HANDLE;
 
 	public:
 		static ::bgfx::VertexLayout getLayout();

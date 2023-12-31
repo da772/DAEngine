@@ -25,6 +25,9 @@ namespace da::platform {
         m_normalSampler = bgfx::createUniform("s_texNormal", bgfx::UniformType::Sampler);
         m_occlusionSampler = bgfx::createUniform("s_texOcclusion", bgfx::UniformType::Sampler);
         m_emissiveSampler = bgfx::createUniform("s_texEmissive", bgfx::UniformType::Sampler);
+        m_lightPos = bgfx::createUniform("u_lightPos", bgfx::UniformType::Vec4);
+        m_lightMtx = bgfx::createUniform("u_sunLightMtx", bgfx::UniformType::Mat4);
+        m_shadowMap = bgfx::createUniform("s_shadowMap", bgfx::UniformType::Sampler);
 
         m_defaultTexture = bgfx::createTexture2D(1, 1, false, 1, bgfx::TextureFormat::RGBA8);
         m_albedoLUTTexture = bgfx::createTexture2D(ALBEDO_LUT_SIZE,
@@ -40,19 +43,38 @@ namespace da::platform {
 
     void CBgfxPBRShader::shutdown()
     {
+        ASSERT(::bgfx::isValid(m_baseColorFactorUniform));
         bgfx::destroy(m_baseColorFactorUniform);
+        ASSERT(::bgfx::isValid(m_metallicRoughnessNormalOcclusionFactorUniform));
         bgfx::destroy(m_metallicRoughnessNormalOcclusionFactorUniform);
+        ASSERT(::bgfx::isValid(m_emissiveFactorUniform));
         bgfx::destroy(m_emissiveFactorUniform);
+        ASSERT(::bgfx::isValid(m_hasTexturesUniform));
         bgfx::destroy(m_hasTexturesUniform);
+        ASSERT(::bgfx::isValid(m_multipleScatteringUniform));
         bgfx::destroy(m_multipleScatteringUniform);
+        ASSERT(::bgfx::isValid(m_albedoLUTSampler));
         bgfx::destroy(m_albedoLUTSampler);
+        ASSERT(::bgfx::isValid(m_baseColorSampler));
         bgfx::destroy(m_baseColorSampler);
+        ASSERT(::bgfx::isValid(m_metallicRoughnessSampler));
         bgfx::destroy(m_metallicRoughnessSampler);
+        ASSERT(::bgfx::isValid(m_normalSampler));
         bgfx::destroy(m_normalSampler);
+        ASSERT(::bgfx::isValid(m_occlusionSampler));
         bgfx::destroy(m_occlusionSampler);
+        ASSERT(::bgfx::isValid(m_emissiveSampler));
         bgfx::destroy(m_emissiveSampler);
+        ASSERT(::bgfx::isValid(m_albedoLUTTexture));
         bgfx::destroy(m_albedoLUTTexture);
+        ASSERT(::bgfx::isValid(m_defaultTexture));
         bgfx::destroy(m_defaultTexture);
+        ASSERT(::bgfx::isValid(m_lightPos));
+        bgfx::destroy(m_lightPos);
+        ASSERT(::bgfx::isValid(m_shadowMap));
+        bgfx::destroy(m_shadowMap);
+        ASSERT(::bgfx::isValid(m_lightMtx));
+        bgfx::destroy(m_lightMtx);
 
         m_pAlbedoLUTProgram->shutdown();
         delete m_pAlbedoLUTProgram;
@@ -60,7 +82,7 @@ namespace da::platform {
 
         m_baseColorFactorUniform = m_metallicRoughnessNormalOcclusionFactorUniform = m_emissiveFactorUniform =
             m_hasTexturesUniform = m_multipleScatteringUniform = m_albedoLUTSampler = m_baseColorSampler =
-            m_metallicRoughnessSampler = m_normalSampler = m_occlusionSampler = m_emissiveSampler = BGFX_INVALID_HANDLE;
+            m_metallicRoughnessSampler = m_normalSampler = m_occlusionSampler = m_emissiveSampler = m_lightPos = m_shadowMap = m_lightMtx = BGFX_INVALID_HANDLE;
         m_albedoLUTTexture = m_defaultTexture = BGFX_INVALID_HANDLE;
     }
 
@@ -120,5 +142,12 @@ namespace da::platform {
         else
             bgfx::setTexture(CBgfxSamplers::PBR_ALBEDO_LUT, m_albedoLUTSampler, m_albedoLUTTexture);
     }
+
+	void CBgfxPBRShader::bindLightPos(const glm::vec3& pos, const glm::mat4& mtx)
+	{
+        glm::vec4 p(pos, 1.0);
+        bgfx::setUniform(m_lightPos, glm::value_ptr(p));
+        bgfx::setUniform(m_lightMtx, glm::value_ptr(mtx));
+	}
 
 }

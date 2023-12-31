@@ -33,6 +33,16 @@ class ProtoTypeApp : public da::CApp {
 
 public:
 	inline ProtoTypeApp(int argc, const char** argv) : CApp(argc, argv) {
+		
+	}
+
+	inline ~ProtoTypeApp()
+	{
+
+	}
+
+	inline void createModules()
+	{
 		m_window = new da::modules::CWindowModule({ "Hello World!", 1280, 720, 0,0, 144, da::core::EWindowDeco::NONE });
 		addModule(m_window);
 
@@ -51,17 +61,12 @@ public:
 		addModule(windowModule2);
 		m_graphicsModule2 = new da::modules::CGraphicsModule(*windowModule2);
 		addModule(m_graphicsModule2);
-		
-		
+
+
 		windowModule2->getEventHandler().registerCallback(EEventType::WindowClose, [windowModule2](const da::core::events::CEvent& e) {
 			windowModule2->lateShutdown();
 			});
 #endif
-	}
-
-	inline ~ProtoTypeApp()
-	{
-
 	}
 
 	inline void windowEvent(const da::core::events::CEvent& e) {
@@ -97,8 +102,9 @@ private:
  
 
 protected:
-	inline virtual void onInitalize() override
+	inline virtual void onInitialize() override
 	{
+		createModules();
 #ifdef DA_DEBUG
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"), &m_showScriptDebug, [&] {renderScriptDebug(); });
 #endif
@@ -139,6 +145,7 @@ protected:
 			, "assets/lightPost/textures/DefaultMaterial_Roughness.png");
 		entity->addComponent<da::core::CSmeshComponent>("assets/building.fbx", mat3);
 		entity->setTag(HASHSTR("Lamp Post"));
+		entity->getTransform().setPosition({ 0,-100.f,0 });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });

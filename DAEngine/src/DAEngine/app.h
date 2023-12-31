@@ -10,12 +10,13 @@ namespace da
 	public:
 		CApp(int argc, const char** argv);
 		virtual ~CApp();
-		void initalize();
+		void initialize();
 		void update();
 		void shutdown();
+		void reset();
 
 	protected:
-		virtual void onInitalize() = 0;
+		virtual void onInitialize() = 0;
 		virtual void onUpdate() = 0;
 		virtual void onShutdown() = 0;
 
@@ -27,7 +28,9 @@ namespace da
 
 	private:
 		bool m_running;
+		bool m_initialized = false;
 		std::vector<IModule*> m_modules;
+		bool m_reset = false;
 	};
 	
 	extern CApp* createApp(int argc, const char** argv);

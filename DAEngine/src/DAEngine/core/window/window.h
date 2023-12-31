@@ -39,7 +39,7 @@ namespace da::core {
 	public:
 		inline CWindow(const FWindowData& windowData) :m_windowData(windowData) {};
 		inline virtual ~CWindow() {};
-		virtual void initalize() = 0;
+		virtual void initialize() = 0;
 		virtual void update() = 0;
 		virtual void shutdown() = 0;
 

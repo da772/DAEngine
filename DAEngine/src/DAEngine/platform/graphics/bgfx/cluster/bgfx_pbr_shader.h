@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bgfx/bgfx.h>
+#include <glm/glm.hpp>
 
 namespace da::platform
 {
@@ -17,6 +18,8 @@ namespace da::platform
 
         uint64_t bindMaterial(const CBgfxMaterial& material);
         void bindAlbedoLUT(bool compute = false);
+        void bindLightPos(const glm::vec3& pos, const glm::mat4& mtx);
+        ::bgfx::UniformHandle getShadowMapUniform() const { return m_shadowMap; }
 
         static constexpr float WHITE_FURNACE_RADIANCE = 1.0f;
 
@@ -38,6 +41,9 @@ namespace da::platform
         ::bgfx::UniformHandle m_normalSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_occlusionSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_emissiveSampler = BGFX_INVALID_HANDLE;
+        ::bgfx::UniformHandle m_lightPos = BGFX_INVALID_HANDLE;
+        ::bgfx::UniformHandle m_lightMtx = BGFX_INVALID_HANDLE;
+        ::bgfx::UniformHandle m_shadowMap = BGFX_INVALID_HANDLE;
 
         ::bgfx::TextureHandle m_albedoLUTTexture = BGFX_INVALID_HANDLE;
         ::bgfx::TextureHandle m_defaultTexture = BGFX_INVALID_HANDLE;

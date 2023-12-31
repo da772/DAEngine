@@ -207,6 +207,7 @@ namespace da::script
 		if (!s_instance) return;
 
 		lua_close(s_instance->m_state);
+		s_instance = nullptr;
 	}
 
 

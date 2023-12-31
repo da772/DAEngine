@@ -1,5 +1,6 @@
 #include "dapch.h"
 #include "bgfx_static_mesh.h"
+#include "bgfx_util.h"
 
 namespace da::platform
 {
@@ -16,7 +17,7 @@ namespace da::platform
 			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
 		);
 
-		LOG_ASSERT(m_vbh.idx != 0, ELogChannel::Platform, "Failed to create VBH for %s", path.c_str());
+		LOG_ASSERT(::bgfx::isValid(m_vbh), ELogChannel::Platform, "Failed to create VBH for %s", path.c_str());
 
 		// Create static index buffer for triangle list rendering.
 		m_ibh = ::bgfx::createIndexBuffer(
@@ -25,7 +26,7 @@ namespace da::platform
 			, BGFX_BUFFER_INDEX32
 		);
 
-		LOG_ASSERT(m_ibh.idx != 0, ELogChannel::Platform, "Failed to create IBH for %s", path.c_str());
+		LOG_ASSERT(::bgfx::isValid(m_ibh), ELogChannel::Platform, "Failed to create IBH for %s", path.c_str());
 	}
 
 	bgfx::VertexLayout CBgfxStaticMesh::getLayout()
@@ -54,8 +55,8 @@ namespace da::platform
 
 	CBgfxStaticMesh::~CBgfxStaticMesh()
 	{
-		::bgfx::destroy(m_ibh);
-		::bgfx::destroy(m_vbh);
+		BGFXDESTROY(m_ibh);
+		BGFXDESTROY(m_vbh);
 	}
 
 	void CBgfxStaticMesh::setBuffers(uint8_t stream)

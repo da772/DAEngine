@@ -19,7 +19,7 @@ int main(int argc, const char** argv)
 	
 	{
 		da::CApp* app = da::createApp(__argc, (const char**)__argv);
-		app->initalize();
+		app->initialize();
 		app->update();
 		app->shutdown();
 

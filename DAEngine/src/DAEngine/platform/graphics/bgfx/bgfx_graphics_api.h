@@ -29,7 +29,7 @@ namespace da::platform {
 	public:
 		CbgfxGraphicsApi(core::CWindow* windowModule);
 		~CbgfxGraphicsApi();
-		virtual void initalize() override;
+		virtual void initialize() override;
 		virtual void update() override;
 		virtual void lateUpdate() override;
 		virtual void shutdown() override;

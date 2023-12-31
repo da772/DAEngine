@@ -15,7 +15,7 @@ IncludeDir["zlib"] = "%{wks.location}/DAEngine/thirdparty/zlib/include"
 IncludeDir["ktx"] = "%{wks.location}/DAEngine/thirdparty/ktx/include"
 IncludeDir["bx"] = "%{wks.location}/DAEngine/thirdparty/bx/include"
 IncludeDir["bimg"] = "%{wks.location}/DAEngine/thirdparty/bimg/include"
-IncludeDir["bgfx"] = "%{wks.location}/DAEngine/thirdparty/bgfx/include"
+IncludeDir["bgfx"] = "%{wks.location}/DAEngine/thirdparty/bgfx/"
 IncludeDir["luajit"] = "%{wks.location}/DAEngine/thirdparty/luajit/include"
 IncludeDir["lua51"] = "%{wks.location}/DAEngine/thirdparty/lua51/include"
 
@@ -106,6 +106,7 @@ project "DAEngine"
 		"%{IncludeDir.ktx}",
 		"%{IncludeDir.bx}",
 		"%{IncludeDir.bimg}",
+		"%{IncludeDir.bgfx}/include",
 		"%{IncludeDir.bgfx}",
 		"%{IncludeDir.lua51}"
 	}

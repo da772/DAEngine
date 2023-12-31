@@ -1,4 +1,4 @@
-$input v_worldpos, v_normal, v_tangent, v_texcoord0
+$input v_worldpos, v_normal, v_tangent, v_texcoord0, v_shadowcoord, v_view
 
 #include <bgfx_shader.sh>
 #include "clusters.sh"

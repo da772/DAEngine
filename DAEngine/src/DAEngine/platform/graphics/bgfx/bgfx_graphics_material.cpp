@@ -3,6 +3,7 @@
 
 #ifdef DA_GRAPHICS_BGFX
 #include <bgfx/bgfx.h>
+#include "bgfx_util.h"
 
 #include "DAEngine/asset/asset.h"
 #include "DAEngine/platform/graphics/bgfx/bgfx_graphics_api.h"
@@ -62,7 +63,8 @@ namespace da::platform {
 	void CBgfxGraphicsMaterial::shutdown()
 	{
         ::bgfx::ProgramHandle handle = {m_program};
-		::bgfx::destroy(handle);
+		BGFXDESTROY(handle);
+		m_program = handle.idx;
 	}
 
 	void CBgfxGraphicsMaterial::getPlatformPath(std::string& s)

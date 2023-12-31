@@ -23,7 +23,7 @@ namespace da::modules
 		m_imGuiApi->update();
 	}
 
-	void CImGuiModule::initalize()
+	void CImGuiModule::initialize()
 	{
 		m_imGuiApi->initialize();
 	}

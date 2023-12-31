@@ -33,6 +33,7 @@ namespace da::core {
 
 	void CSmeshComponent::onShutdown()
 	{
+		delete m_staticMesh;
 		m_material->shutdown();
 		delete m_material;
 	}

@@ -26,7 +26,7 @@ namespace da::core
 		CGraphicsApi(CWindow* nativeWindow);
 		virtual ~CGraphicsApi();
 
-		inline virtual void initalize() {};
+		inline virtual void initialize() {};
 		inline virtual void update() {};
 		inline virtual void lateUpdate() {};
 		inline virtual void shutdown() {};

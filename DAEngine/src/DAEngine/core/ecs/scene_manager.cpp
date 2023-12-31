@@ -95,6 +95,13 @@ namespace da::core {
 					glm::vec3 newPos = { pPos[0], pPos[1], pPos[2] };
 					camera->setPosition(newPos);
 				}
+
+				glm::vec3 rot = camera->rotation();
+				float pRot[] = { rot.x, rot.y, rot.z };
+				if (ImGui::InputFloat3("Rotation", pRot)) {
+					glm::vec3 newRot = { pRot[0], pRot[1], pRot[2] };
+					camera->setRotation(newRot);
+				}
 				ImGui::SliderFloat("Exposure", &camera->exposure, 0.f, 100.f);
 				ImGui::SliderFloat("FOV", &camera->fov, 1.f, 90.f);
 			}

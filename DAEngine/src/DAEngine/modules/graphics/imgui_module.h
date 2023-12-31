@@ -17,7 +17,7 @@ namespace da::modules
 
 		void update() override;
 		void lateUpdate() override;
-		void initalize() override;
+		void initialize() override;
 		void shutdown() override;
 
 	private:

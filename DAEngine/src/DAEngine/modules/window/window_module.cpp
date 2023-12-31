@@ -22,9 +22,9 @@ namespace da::modules
 
 	}
 
-	void CWindowModule::initalize()
+	void CWindowModule::initialize()
 	{
-		m_Window->initalize();
+		m_Window->initialize();
 		da::core::CInput::registerWindow(m_Window);
 	}
 

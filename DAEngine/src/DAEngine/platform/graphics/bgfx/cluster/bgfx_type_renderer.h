@@ -7,7 +7,9 @@
 #include <unordered_map>
 #include <string>
 
-class Scene;
+namespace da::core {
+    class CCamera;
+}
 
 namespace da::platform
 {
@@ -56,7 +58,7 @@ namespace da::platform
 
         struct TextureBuffer
         {
-            bgfx::TextureHandle Handle;
+            ::bgfx::TextureHandle Handle;
             const char* Name;
         };
 
@@ -64,7 +66,7 @@ namespace da::platform
 
         // final output
         // used for tonemapping
-        bgfx::FrameBufferHandle m_frameBuffer = BGFX_INVALID_HANDLE;
+        ::bgfx::FrameBufferHandle m_frameBuffer = BGFX_INVALID_HANDLE;
 
     protected:
         struct PosVertex
@@ -75,7 +77,7 @@ namespace da::platform
 
             static void init()
             {
-                layout.begin().add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float).end();
+                layout.begin().add(::bgfx::Attrib::Position, 3, ::bgfx::AttribType::Float).end();
             }
 
             static ::bgfx::VertexLayout layout;
@@ -84,6 +86,7 @@ namespace da::platform
         static constexpr ::bgfx::ViewId MAX_VIEW = 199; // imgui in bigg uses view 200
 
         void setViewProjection(::bgfx::ViewId view);
+        void setViewProjection(bgfx::ViewId view, const glm::mat4& mat,float fov, float zNear, float zFar, float aspectRatio = 1.0);
         void setNormalMatrix(const glm::mat4& modelMat);
 
         void blitToScreen(::bgfx::ViewId view = MAX_VIEW);

@@ -65,6 +65,7 @@ namespace da::platform::bgfx {
 
 			::bgfx::UniformHandle handle = { m_handle };
 			::bgfx::destroy(handle);
+			m_handle = BGFX_INVALID_HANDLE;
 		}
 
 

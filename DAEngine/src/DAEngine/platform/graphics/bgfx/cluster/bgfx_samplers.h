@@ -29,5 +29,7 @@ namespace da::platform {
         static const uint8_t DEFERRED_F0_METALLIC = 9;
         static const uint8_t DEFERRED_EMISSIVE_OCCLUSION = 10;
         static const uint8_t DEFERRED_DEPTH = 11;
+
+        static const uint8_t SHADOW_MAP = 12;
     };
 }

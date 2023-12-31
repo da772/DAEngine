@@ -21,11 +21,11 @@ namespace da::platform {
             static void init()
             {
                 layout.begin()
-                    .add(bgfx::Attrib::TexCoord0, 4, bgfx::AttribType::Float)
-                    .add(bgfx::Attrib::TexCoord1, 4, bgfx::AttribType::Float)
+                    .add(::bgfx::Attrib::TexCoord0, 4, ::bgfx::AttribType::Float)
+                    .add(::bgfx::Attrib::TexCoord1, 4, ::bgfx::AttribType::Float)
                     .end();
             }
-            static bgfx::VertexLayout layout;
+            static ::bgfx::VertexLayout layout;
         };
     };
 
@@ -37,10 +37,14 @@ namespace da::platform {
 
         // upload changes to GPU
         void update();
+        inline std::vector<CBgfxPointLight>& getLights() { return m_lights; };
+        inline const ::bgfx::DynamicVertexBufferHandle getBuffer() const { return m_buffer; };
 
-        std::vector<CBgfxPointLight> lights;
 
-        bgfx::DynamicVertexBufferHandle buffer = BGFX_INVALID_HANDLE;
+    private:
+        std::vector<CBgfxPointLight> m_lights;
+
+        ::bgfx::DynamicVertexBufferHandle m_buffer = BGFX_INVALID_HANDLE;
     };
 
 }

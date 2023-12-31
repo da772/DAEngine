@@ -17,9 +17,9 @@ namespace da::modules
 
 	}
 
-	void CGraphicsModule::initalize()
+	void CGraphicsModule::initialize()
 	{
-		m_GraphicsApi->initalize();
+		m_GraphicsApi->initialize();
 	}
 
 	void CGraphicsModule::update()

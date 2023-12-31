@@ -14,7 +14,9 @@
 #include <imgui.h>
 #include "DAEngine/debug/debug_stats_window.h"
 #include "DAEngine/debug/debug_menu_bar.h"
+#include <src/bgfx_p.h>
 #endif
+#include <bgfx/platform.h>
 
 namespace da::platform {
 
@@ -169,7 +171,7 @@ namespace da::platform {
 		delete s_test;
 	}
 
-	void CbgfxGraphicsApi::initalize()
+	void CbgfxGraphicsApi::initialize()
 	{
 		::bgfx::Init init;
 #ifdef DA_PLATFORM_WINDOWS
@@ -275,6 +277,9 @@ namespace da::platform {
 #endif
 		m_renderer->shutdown();
 		s_test->Shutdown();
+#ifdef DA_DEBUG || DA_RELEASE
+		bgfx::setGraphicsDebuggerPresent(true);
+#endif
 		::bgfx::shutdown();
 		m_initialized = false;
 	}

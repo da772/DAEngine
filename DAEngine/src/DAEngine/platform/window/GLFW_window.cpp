@@ -35,7 +35,7 @@ namespace da::platform {
 		s_initialized = true;
 	}
 
-	void CGLFW_Window::initalize()
+	void CGLFW_Window::initialize()
 	{
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 

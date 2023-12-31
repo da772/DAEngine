@@ -9,6 +9,7 @@
 
 #ifdef DA_DEBUG
 #include "debug/debug.h"
+#include "debug/debug_menu_bar.h"
 #endif
 
 namespace da
@@ -21,21 +22,21 @@ namespace da
 		shutdownInternal();
 	}
 
-	void CApp::initalize()
+	void CApp::initialize()
 	{
+		m_initialized = true;
 #ifndef DA_TEST
 		script::CScriptEngine::initialize();
 #ifdef DA_DEBUG
 		da::debug::CDebug::initialize();
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("App"), HASHSTR("Reset"), &m_reset, [&] { reset();});
 #endif
 #endif
-
-
 
 		for (IModule* m : m_modules) {
-			m->initalize();
+			m->initialize();
 		}
-		onInitalize();
+		onInitialize();
 		if (core::CScene* scene = core::CSceneManager::getScene()) {
 			scene->initialize();
 		}
@@ -58,12 +59,18 @@ namespace da
 			for (IModule* m : m_modules) {
 				m->lateUpdate();
 			}
+
+			if (m_reset) {
+				shutdown();
+				initialize();
+			}
 		}
-	}
+ 	}
 	void CApp::shutdown()
 	{
 		if (core::CScene* scene = core::CSceneManager::getScene()) {
 			scene->shutdown();
+			core::CSceneManager::setScene(nullptr);
 		}
 		for (IModule* m : m_modules) {
 			m->shutdown();
@@ -73,17 +80,25 @@ namespace da
 			m->lateShutdown();
 			delete m;
 		}
+		m_modules = {};
 #ifndef DA_TEST
 		script::CScriptEngine::shutdown();
 #ifdef DA_DEBUG
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("App"), HASHSTR("Reset"));
 		da::debug::CDebug::shutdown();
 #endif
 #endif
 	}
 
+	void CApp::reset()
+	{
+		m_reset = true;
+	}
+
 	void CApp::addModule(IModule* module)
 	{
 		m_modules.push_back(module);
+		if (m_initialized) module->initialize();
 	}
 
 	void CApp::forceEnd()

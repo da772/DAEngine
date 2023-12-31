@@ -1,4 +1,4 @@
-$input v_worldpos, v_normal, v_tangent, v_texcoord0
+$input v_worldpos, v_normal, v_tangent, v_texcoord0, v_shadowcoord, v_view
 
 #define READ_MATERIAL
 
@@ -9,8 +9,15 @@ $input v_worldpos, v_normal, v_tangent, v_texcoord0
 #include "lights.sh"
 #include "clusters.sh"
 #include "colormap.sh"
+#include "samplers.sh"
+
+#if 1
+#include "shadow.sh"
+#endif
 
 uniform vec4 u_camPos;
+
+#if 1
 
 void main()
 {
@@ -71,6 +78,27 @@ void main()
     radianceOut += getAmbientLight().irradiance * mat.diffuseColor * mat.occlusion;
     radianceOut += mat.emissive;
 
-    gl_FragColor.rgb = radianceOut;
-    gl_FragColor.a = mat.albedo.a;
+    //float shadow = ShadowCalculation(v_shadowcoord, v_normal, u_lightPos, v_worldpos);  
+
+    float shadowMapBias = 0.005;
+	vec3 color = radianceOut;
+    vec3 v  = -v_view;
+	vec3 vd = -normalize(v);
+	vec3 n  = v_normal;
+	vec3 l  = u_lightPos.xyz;
+	vec3 ld = -normalize(l);
+
+	vec2 lc = lit(ld, n, vd, 1.0);
+
+	vec2 texelSize = vec2_splat(1.0/512.0);
+	float visibility = PCF(s_shadowMap, v_shadowcoord, shadowMapBias, texelSize);
+
+	vec3 ambient = 0.1 * color;
+	vec3 brdf = (lc.x + lc.y) * color * visibility;
+
+	vec3 final = toGamma(abs(radianceOut + brdf) );
+    gl_FragColor = vec4(final, 1.0);
+    //gl_FragColor.rgb = radianceOut;
+    //gl_FragColor.a = mat.albedo.a;
 }
+#endif

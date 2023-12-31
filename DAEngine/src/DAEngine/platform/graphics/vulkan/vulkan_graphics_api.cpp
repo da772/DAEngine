@@ -115,7 +115,7 @@ namespace da::platform {
 
 	}
 
-	void CVulkanGraphicsApi::initalize()
+	void CVulkanGraphicsApi::initialize()
 	{
 		createSurface();
 		selectPhysicalDevice();

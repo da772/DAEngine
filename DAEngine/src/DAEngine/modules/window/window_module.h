@@ -14,7 +14,7 @@ namespace da::modules {
 		virtual ~CWindowModule();
 		virtual void update() override;
 		virtual void lateUpdate() override;
-		virtual void initalize() override;
+		virtual void initialize() override;
 		virtual void shutdown() override;
 		virtual void lateShutdown() override;
 

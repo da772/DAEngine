@@ -13,6 +13,7 @@
 #include <glm/gtx/matrix_operation.hpp>
 #include "platform\graphics\bgfx\bgfx_graphics_material.h"
 #include <core/graphics/camera.h>
+#include "../bgfx_util.h"
 
 namespace da::platform {
 
@@ -92,12 +93,14 @@ namespace da::platform {
         m_pbr.shutdown();
         m_lights.shutdown();
 
-        bgfx::destroy(m_blitSampler);
-        bgfx::destroy(m_camPosUniform);
-        bgfx::destroy(m_normalMatrixUniform);
-        bgfx::destroy(m_exposureVecUniform);
-        bgfx::destroy(m_tonemappingModeVecUniform);
-        bgfx::destroy(m_blitTriangleBuffer);
+
+
+        BGFXDESTROY(m_blitSampler);
+        BGFXDESTROY(m_camPosUniform);
+        BGFXDESTROY(m_normalMatrixUniform);
+        BGFXDESTROY(m_exposureVecUniform);
+        BGFXDESTROY(m_tonemappingModeVecUniform);
+        BGFXDESTROY(m_blitTriangleBuffer);
 
         m_pBlipProgram->shutdown();
         delete m_pBlipProgram;
@@ -146,7 +149,13 @@ namespace da::platform {
     void CBgfxTypeRenderer::setViewProjection(bgfx::ViewId view)
     {
         // view matrix
-        m_viewMat = da::core::CCamera::getCamera()->matrix();
+        da::core::CCamera* cam = da::core::CCamera::getCamera();
+
+        bx::Vec3 pos(cam->position().x, cam->position().y, cam->position().z);
+        glm::vec3 _at = cam->position() + cam->forward();
+        bx::Vec3 at(_at.x, _at.y, _at.z);
+        bx::Vec3 up(cam->up().x, cam->up().y, cam->up().z);
+        bx::mtxLookAt(glm::value_ptr(m_viewMat), pos, at, up);
         // projection matrix
         bx::mtxProj(glm::value_ptr(m_projMat),
             da::core::CCamera::getCamera()->fov,
@@ -157,6 +166,22 @@ namespace da::platform {
             bx::Handedness::Left);
         bgfx::setViewTransform(view, glm::value_ptr(m_viewMat), glm::value_ptr(m_projMat));
     }
+
+	void CBgfxTypeRenderer::setViewProjection(bgfx::ViewId view, const glm::mat4& mat, float fov, float zNear, float zFar, float aspectRatio)
+	{
+		// view matrix
+		glm::mat4 viewMat = mat;
+        glm::mat4 projMat;
+		bx::mtxProj(glm::value_ptr(projMat),
+            fov,
+			aspectRatio,
+            zNear,
+            zFar,
+			bgfx::getCaps()->homogeneousDepth,
+			bx::Handedness::Left);
+        //glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, .1f, 1000.f);
+		bgfx::setViewTransform(view, glm::value_ptr(viewMat), glm::value_ptr(projMat));
+	}
 
     void CBgfxTypeRenderer::setNormalMatrix(const glm::mat4& modelMat)
     {

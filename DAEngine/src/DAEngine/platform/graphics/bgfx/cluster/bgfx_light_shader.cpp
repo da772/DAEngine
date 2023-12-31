@@ -17,19 +17,23 @@ namespace da::platform {
 
     void CBgfxLightShader::shutdown()
     {
+        ASSERT(bgfx::isValid(m_lightCountVecUniform));
         bgfx::destroy(m_lightCountVecUniform);
+        ASSERT(bgfx::isValid(m_ambientLightIrradianceUniform));
         bgfx::destroy(m_ambientLightIrradianceUniform);
+        ASSERT(bgfx::isValid(m_sunLightDirectionUniform));
         bgfx::destroy(m_sunLightDirectionUniform);
+        ASSERT(bgfx::isValid(m_sunLightRadianceUniform));
         bgfx::destroy(m_sunLightRadianceUniform);
 
-        m_lightCountVecUniform = m_ambientLightIrradianceUniform = BGFX_INVALID_HANDLE;
+        m_lightCountVecUniform = m_ambientLightIrradianceUniform = m_sunLightDirectionUniform = m_sunLightRadianceUniform = BGFX_INVALID_HANDLE;
     }
 
     void CBgfxLightShader::bindLights(const CBgfxSunLight& sunLight, const CBgfxAmbientLight& ambientLight, CBgfxPointLightList& pointLights) const
     {
         // a 32-bit IEEE 754 float can represent all integers up to 2^24 (~16.7 million) correctly
         // should be enough for this use case (comparison in for loop)
-        float lightCountVec[4] = { (float)pointLights.lights.size() };
+        float lightCountVec[4] = { (float)pointLights.getLights().size() };
         bgfx::setUniform(m_lightCountVecUniform, lightCountVec);
 
         glm::vec4 sunLightDirection(glm::normalize(sunLight.direction), 0.0f);
@@ -40,7 +44,7 @@ namespace da::platform {
         glm::vec4 ambientLightIrradiance(ambientLight.irradiance, 1.0f);
         bgfx::setUniform(m_ambientLightIrradianceUniform, glm::value_ptr(ambientLightIrradiance));
 
-        bgfx::setBuffer(CBgfxSamplers::LIGHTS_POINTLIGHTS, pointLights.buffer, bgfx::Access::Read);
+        bgfx::setBuffer(CBgfxSamplers::LIGHTS_POINTLIGHTS, pointLights.getBuffer(), bgfx::Access::Read);
     }
 
 }

@@ -42,7 +42,7 @@ namespace da::platform {
                     .add(::bgfx::Attrib::TexCoord1, 4, ::bgfx::AttribType::Float)
                     .end();
             }
-            static bgfx::VertexLayout layout;
+            static ::bgfx::VertexLayout layout;
         };
 
         ::bgfx::UniformHandle m_clusterSizesVecUniform = BGFX_INVALID_HANDLE;

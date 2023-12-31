@@ -14,6 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_operation.hpp>
+#include "bgfx_util.h"
 
 namespace da::platform::bgfx {
 
@@ -82,14 +83,13 @@ namespace da::platform::bgfx {
 		m_blitProgram.shutdown();
 		m_pbr.shutdown();
 
-		::bgfx::destroy(m_blitSampler);
-		::bgfx::destroy(m_camPosUniform);
-		::bgfx::destroy(m_normalMatrixUniform);
-		::bgfx::destroy(m_exposureVecUniform);
-		::bgfx::destroy(m_tonemappingModeVecUniform);
-		::bgfx::destroy(m_blitTriangleBuffer);
-		if (::bgfx::isValid(m_frameBuffer))
-			::bgfx::destroy(m_frameBuffer);
+		BGFXDESTROY(m_blitSampler);
+		BGFXDESTROY(m_camPosUniform);
+		BGFXDESTROY(m_normalMatrixUniform);
+		BGFXDESTROY(m_exposureVecUniform);
+		BGFXDESTROY(m_tonemappingModeVecUniform);
+		BGFXDESTROY(m_blitTriangleBuffer);
+		BGFXDESTROY(m_frameBuffer);
 
 
 

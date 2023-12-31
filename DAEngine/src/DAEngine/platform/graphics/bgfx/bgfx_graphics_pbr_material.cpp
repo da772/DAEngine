@@ -19,7 +19,7 @@ namespace da::platform {
 	void CBgfxPbrMaterial::initialize()
 	{
 		m_material->baseColorTexture = { m_albedo->getHandle() };
-		m_material->doubleSided = true;
+		m_material->doubleSided = false;
 		m_material->normalTexture = { m_normal->getHandle() };
 		m_material->metallicRoughnessTexture = { m_roughness->getHandle() };
 	}

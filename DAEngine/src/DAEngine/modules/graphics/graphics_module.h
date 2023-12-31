@@ -16,7 +16,7 @@ namespace da::modules
 		CGraphicsModule(CWindowModule* windowsModule);
 		virtual ~CGraphicsModule();
 		void lateUpdate() override;
-		void initalize() override;
+		void initialize() override;
 		void shutdown() override;
 		void lateShutdown() override;
 		void update() override;

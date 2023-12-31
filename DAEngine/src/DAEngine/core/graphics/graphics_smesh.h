@@ -13,7 +13,7 @@ namespace da::core
 	public:
 		CStaticMesh(const std::string& path);
 		inline CStaticMesh() {};
-		~CStaticMesh();
+		virtual ~CStaticMesh();
 
 		inline const std::vector<FVertexBase>& getVertices() const override { return m_vertices; }
 		inline const std::vector<uint32_t>& getIndices() const override { return m_indices; }

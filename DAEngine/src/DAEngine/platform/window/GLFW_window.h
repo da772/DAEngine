@@ -12,7 +12,7 @@ namespace da::platform {
 	public:
 		CGLFW_Window(const core::FWindowData& windowData);
 
-		void initalize() override;
+		void initialize() override;
 		void update() override;
 		void shutdown() override;
 		void* getNativeWindow() const override;

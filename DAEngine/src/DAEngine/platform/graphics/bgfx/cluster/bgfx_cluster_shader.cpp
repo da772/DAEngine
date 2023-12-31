@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <cmath>
 #include <core/graphics/camera.h>
+#include "../bgfx_util.h"
 
 namespace da::platform {
 
@@ -39,17 +40,16 @@ namespace da::platform {
 
     void CBgfxClusterShader::shutdown()
     {
-        bgfx::destroy(m_clusterSizesVecUniform);
-        bgfx::destroy(m_zNearFarVecUniform);
 
-        bgfx::destroy(m_clustersBuffer);
-        bgfx::destroy(m_lightIndicesBuffer);
-        bgfx::destroy(m_lightGridBuffer);
-        bgfx::destroy(m_atomicIndexBuffer);
+        BGFXDESTROY(m_clusterSizesVecUniform);
+        BGFXDESTROY(m_zNearFarVecUniform);
 
-        m_clusterSizesVecUniform = m_zNearFarVecUniform = BGFX_INVALID_HANDLE;
-        m_clustersBuffer = BGFX_INVALID_HANDLE;
-        m_lightIndicesBuffer = m_lightGridBuffer = m_atomicIndexBuffer = BGFX_INVALID_HANDLE;
+        
+        BGFXDESTROY(m_clustersBuffer);
+        
+        BGFXDESTROY(m_lightIndicesBuffer);
+        BGFXDESTROY(m_lightGridBuffer);
+        BGFXDESTROY(m_atomicIndexBuffer);
     }
 
     void CBgfxClusterShader::setUniforms(uint16_t screenWidth, uint16_t screenHeight) const

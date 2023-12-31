@@ -3,6 +3,7 @@
 #include "bgfx_type_renderer.h"
 #include "bgfx_cluster_shader.h"
 #include "bgfx_light_list.h"
+#include "bgfx_shadow_shader.h"
 
 namespace da::platform
 {
@@ -37,6 +38,7 @@ namespace da::platform
         CBgfxSunLight m_sunLight;
         CBgfxPointLightList m_pointLights;
         CBgfxClusterShader m_clusters;
+        CBgfxShadowShader m_shadow;
 
 #ifdef DA_DEBUG
         bool m_clusterDebugVis = false;

@@ -53,7 +53,7 @@ namespace da::platform
 	public:
 		CVulkanGraphicsApi(da::core::CWindow* windowModule);
 		~CVulkanGraphicsApi();
-		virtual void initalize() override;
+		virtual void initialize() override;
 		virtual void update() override;
 		virtual void shutdown() override;
 		virtual void submitPipeline(da::core::CGraphicsPipeline* pipeline);
