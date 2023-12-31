@@ -58,6 +58,12 @@ namespace da::core {
 		ImGui::Text("Indices:  %d", m_staticMesh->getIndices().size());
 		ImGui::Text("VertexBuffer: 0x%p", m_staticMesh->getNativeVB());
 		ImGui::Text("IndexBuffer: 0x%p", m_staticMesh->getNativeIB());
+
+		if (ImGui::Button("Reload Mesh")) {
+			std::string path = m_staticMesh->getPath();
+			delete m_staticMesh;
+			m_staticMesh = new da::platform::CBgfxStaticMesh(path);
+		}
 	}
 #endif
 

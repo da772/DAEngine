@@ -277,7 +277,7 @@ namespace da::platform {
 		// Set view and projection matrix for view 0.
 		
 		const float* view = nullptr;
-		//bx::mtxLookAt(view, eye, at);
+		//-bx::mtxLookAt(view, eye, at);
 
 		float proj[16];
 		bx::mtxProj(proj, 60.f, float(width) / float(height), 0.1f, 100000.0f, bgfx::getCaps()->homogeneousDepth);

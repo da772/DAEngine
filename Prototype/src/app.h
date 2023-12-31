@@ -140,12 +140,12 @@ protected:
 
 		da::core::CEntity* entity = da::core::CSceneManager::getScene()->createEntity();
 		da::platform::CBgfxPbrMaterial* mat3 = new da::platform::CBgfxPbrMaterial("", ""
-			, "assets/lightPost/textures/DefaultMaterial_Base_Color.png"
-			, "assets/lightPost/textures/DefaultMaterial_Normal_OpenGL.png"
-			, "assets/lightPost/textures/DefaultMaterial_Roughness.png");
-		entity->addComponent<da::core::CSmeshComponent>("assets/building.fbx", mat3);
-		entity->setTag(HASHSTR("Lamp Post"));
-		entity->getTransform().setPosition({ 0,-100.f,0 });
+			, "assets/rifle/Textures/Albedo.png"
+			, "assets/rifle/Textures/Normal.png"
+			, "assets/rifle/Textures/Metallic.png");
+		entity->addComponent<da::core::CSmeshComponent>("assets/rifle/Rifle.fbx", mat3);
+		entity->setTag(HASHSTR("Rifle"));
+		entity->getTransform().setPosition({ 0,0.f,0 });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
