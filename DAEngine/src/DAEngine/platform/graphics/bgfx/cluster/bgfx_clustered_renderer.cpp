@@ -120,8 +120,7 @@ namespace da::platform {
 
         glm::mat4 lightProj, lightView;
         bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, 1.f, 10.f, ::bgfx::getCaps()->homogeneousDepth);
-        bx::mtxLookAt(glm::value_ptr(lightView), { m_shadow.getCamera().position() .x, m_shadow.getCamera().position().y, m_shadow.getCamera().position() .z}, { 0.f, 0.f, 0.f }, { 0.f,0.f, 1.f });
-        ::bgfx::setViewTransform(vShadow, glm::value_ptr(lightView), glm::value_ptr(lightProj));
+        bx::mtxLookAt(glm::value_ptr(lightView), { m_shadow.getCamera().position().x, m_shadow.getCamera().position().y, m_shadow.getCamera().position().z }, { 0.f, 0.f, 0.f }, { 0.f,0.f, 1.f });
 
         glm::mat4 lightMtx = lightProj * lightView;
 
@@ -140,8 +139,8 @@ namespace da::platform {
 
 		float mtxTmp[16];
 		bx::mtxMul(mtxTmp, glm::value_ptr(lightProj), mtxCrop);
-		bx::mtxMul(mtxShadow, glm::value_ptr(lightView), mtxTmp);
-
+		bx::mtxMul(glm::value_ptr(lightMtx), glm::value_ptr(lightView), mtxTmp);
+        
 		float mtxFloor[16];
 		bx::mtxSRT(mtxFloor
 			, -1.0f, -1.0f, -1.0f
@@ -150,7 +149,9 @@ namespace da::platform {
 		);
 
 		// Floor.
-		bx::mtxMul(glm::value_ptr(lightMtx), mtxFloor, mtxShadow);
+		//bx::mtxMul(glm::value_ptr(lightMtx), mtxFloor, mtxShadow);
+
+        ::bgfx::setViewTransform(vShadow, glm::value_ptr(lightView), glm::value_ptr(lightProj));
 
 		// Light matrix used in combine pass and inverse used in light pass
         //bx::mtxMul(glm::value_ptr(lightMtx), glm::value_ptr(lightView), glm::value_ptr(lightProj));
@@ -336,6 +337,11 @@ namespace da::platform {
     void CBgfxClusteredRenderer::renderLightDebug()
     {
         if (ImGui::Begin("Light Debug", &m_lightDebugVis)) {
+
+            ImGui::Text("ToneMapping: ");
+            ImGui::SameLine();
+            const char* const* toneMaps = getETonemappingModeNames();
+            ImGui::Combo("##toneMapping", (int*)&m_tonemappingMode, toneMaps, (int)ETonemappingMode::MAX);
 
             ImGui::Text("Ambient Light: ");
             ImGui::SameLine();

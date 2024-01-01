@@ -6,6 +6,7 @@
 #include <glm/matrix.hpp>
 #include <unordered_map>
 #include <string>
+#include "core/enum.h"
 
 namespace da::core {
     class CCamera;
@@ -26,19 +27,20 @@ namespace da::platform
         void render(float dt);
         void shutdown();
 
-        enum class TonemappingMode : int
-        {
-            NONE = 0,
-            EXPONENTIAL,
-            REINHARD,
-            REINHARD_LUM,
-            HABLE,
-            DUIKER,
-            ACES,
-            ACES_LUM
-        };
+        #define ETONEMAPPINGMODE_ENUM(e) \
+        e(NONE) \
+        e(EXPONENTIAL) \
+        e(REINHARD) \
+        e(REINHARD_LUM) \
+        e(HABLE) \
+        e(DUIKER) \
+        e(ACES) \
+        e(ACES_LUM) \
+        e(MAX)
+        
+        ENUM_CREATE(ETonemappingMode, ETONEMAPPINGMODE_ENUM);
 
-        void setTonemappingMode(TonemappingMode mode);
+        void setTonemappingMode(ETonemappingMode mode);
         void setMultipleScattering(bool enabled);
         void setWhiteFurnace(bool enabled);
 
@@ -94,7 +96,7 @@ namespace da::platform
         static ::bgfx::TextureFormat::Enum findDepthFormat(uint64_t textureFlags, bool stencil = false);
         static ::bgfx::FrameBufferHandle createFrameBuffer(bool hdr = true, bool depth = true);
 
-        TonemappingMode m_tonemappingMode = TonemappingMode::ACES;
+        ETonemappingMode m_tonemappingMode = ETonemappingMode::ACES_LUM;
 
         uint16_t m_width = 0;
         uint16_t m_height = 0;

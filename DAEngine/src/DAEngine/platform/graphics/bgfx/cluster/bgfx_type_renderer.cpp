@@ -121,7 +121,7 @@ namespace da::platform {
         bgfx::discard();
     }
 
-    void CBgfxTypeRenderer::setTonemappingMode(TonemappingMode mode)
+    void CBgfxTypeRenderer::setTonemappingMode(ETonemappingMode mode)
     {
         m_tonemappingMode = mode;
     }

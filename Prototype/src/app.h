@@ -145,7 +145,8 @@ protected:
 			, "assets/rifle/Textures/Metallic.png");
 		entity->addComponent<da::core::CSmeshComponent>("assets/rifle/Rifle.fbx", mat3);
 		entity->setTag(HASHSTR("Rifle"));
-		entity->getTransform().setPosition({ 0,0.f,0 });
+		entity->getTransform().setPosition({ 0,-5.f,5.f });
+		entity->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
