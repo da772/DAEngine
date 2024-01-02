@@ -48,7 +48,8 @@ namespace da::maths
 		glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.y), glm::vec3(0.0f, 1.0f, 0.0f))
 			* glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
 			* glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-		return translationMatrix * rotationMatrix;
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0), m_scale);
+		return translationMatrix * rotationMatrix * scaleMatrix;
 	}
 
 	glm::vec3 CTransform::forward() const
@@ -64,6 +65,16 @@ namespace da::maths
 	glm::vec3 CTransform::right() const
 	{
 		return m_right;
+	}
+
+	void CTransform::setScale(const glm::vec3& scale)
+	{
+		m_scale = scale;
+	}
+
+	glm::vec3 CTransform::scale() const
+	{
+		return m_scale;
 	}
 
 }

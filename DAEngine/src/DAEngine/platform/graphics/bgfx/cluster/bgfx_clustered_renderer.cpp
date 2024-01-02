@@ -67,8 +67,8 @@ namespace da::platform {
         m_sunLight.radiance = { 1.f,1.f,1.f };
 
         m_shadow.initialize();
-        m_shadow.getCamera().setPosition({ 5.f, 0, 10.f });
-        m_shadow.getCamera().lookAt({ 0.f, 0.f, 0.f });
+        m_shadow.getCamera().setPosition({ 0.f, 15, 15.f });
+        m_shadow.getCamera().setRotation({ -50.f, 0.f, 180.f });
 
 #ifdef DA_DEBUG
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
@@ -119,9 +119,10 @@ namespace da::platform {
         setViewProjection(vLighting);
 
         glm::mat4 lightProj, lightView;
-        bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, 1.f, 10.f, ::bgfx::getCaps()->homogeneousDepth);
-        bx::mtxLookAt(glm::value_ptr(lightView), { m_shadow.getCamera().position().x, m_shadow.getCamera().position().y, m_shadow.getCamera().position().z }, { 0.f, 0.f, 0.f }, { 0.f,0.f, 1.f });
-
+        //dbx::mtxOrtho(glm::value_ptr(lightProj), 0, (float)m_width, 0.f, (float)m_height, .1f, 1000.f, 0.f, ::bgfx::getCaps()->homogeneousDepth);
+        bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, 1.0f,1000.0f, ::bgfx::getCaps()->homogeneousDepth);
+        //bx::mtxLookAt(glm::value_ptr(lightView), { m_shadow.getCamera().position().x, m_shadow.getCamera().position().y, m_shadow.getCamera().position().z }, { 0.f, 0.f, 0.f }, { 0.f,0.f, 1.f });
+        lightView = m_shadow.getCamera().matrix();
         glm::mat4 lightMtx = lightProj * lightView;
 
 		float mtxShadow[16];
@@ -171,7 +172,7 @@ namespace da::platform {
             ::bgfx::setState((m_shadow.useShadowSampler() ? 0 : BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A)
                 | BGFX_STATE_WRITE_Z
                 | BGFX_STATE_DEPTH_TEST_LESS
-                | BGFX_STATE_CULL_CCW
+                | BGFX_STATE_CULL_CW
                 | BGFX_STATE_MSAA);
             ::bgfx::submit(vShadow, { m_shadow.getMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
         }
@@ -227,7 +228,8 @@ namespace da::platform {
 		uint64_t state = BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK;
 
 		m_pbr.bindAlbedoLUT();
-		m_lights.bindLights(m_sunLight, m_ambientLight, m_pointLights);
+        glm::vec3 rotRadians = glm::vec3(glm::radians(m_shadow.getCamera().rotation().x), glm::radians(m_shadow.getCamera().rotation().y), glm::radians(m_shadow.getCamera().rotation().z));
+        m_lights.bindLights({ rotRadians,m_sunLight.radiance}, m_ambientLight, m_pointLights);
 		m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
         // Render pass
