@@ -63,6 +63,7 @@ namespace da
 			if (m_reset) {
 				shutdown();
 				initialize();
+				m_reset = false;
 			}
 		}
  	}
