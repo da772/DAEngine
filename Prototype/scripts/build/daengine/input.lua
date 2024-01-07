@@ -1,7 +1,7 @@
 local ____lualib = require("lualib_bundle")
 local __TS__New = ____lualib.__TS__New
 local ____exports = {}
-local ____vector = require("core.vector")
+local ____vector = require("daengine.vector")
 local Vector2 = ____vector.Vector2
 ____exports.Input = {}
 local Input = ____exports.Input

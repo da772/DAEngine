@@ -1,6 +1,6 @@
 import { Employee } from "./lib";
 
-import { Component } from "./core/component";
+import { Component } from "./daengine/component";
 
 export class TestComponent implements Component {
 

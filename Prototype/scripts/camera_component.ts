@@ -1,8 +1,8 @@
-import { Component } from "./core/component";
-import { Input } from "./core/input";
-import { Camera } from "./core/camera";
-import { Vector2 } from "./core/vector";
-import { Inputs } from "./core/input_enum";
+import { Component } from "./daengine/component";
+import { Input } from "./daengine/input";
+import { Camera } from "./daengine/camera";
+import { Vector2 } from "./daengine/vector";
+import { Inputs } from "./daengine/input_enum";
 
 export class CameraComponent implements Component {
 

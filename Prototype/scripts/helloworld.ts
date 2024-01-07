@@ -1,11 +1,11 @@
 import { Employee } from "./lib";
 
-import { ImGui } from "./core/imgui";
-import { NativeComponent, Component } from "./core/component";
-import { Debug } from "./core/debug";
-import { Input } from "./core/input";
-import { Vector3 } from "./core/vector";
-import { Inputs } from "./core/input_enum";
+import { ImGui } from "./daengine/imgui";
+import { NativeComponent, Component } from "./daengine/component";
+import { Debug } from "./daengine/debug";
+import { Input } from "./daengine/input";
+import { Vector3 } from "./daengine/vector";
+import { Inputs } from "./daengine/input_enum";
 
 
 
