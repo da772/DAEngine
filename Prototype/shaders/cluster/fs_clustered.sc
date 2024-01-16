@@ -1,4 +1,4 @@
-$input v_worldpos, v_normal, v_tangent, v_texcoord0, v_shadowcoord, v_view
+$input v_worldpos, v_normal, v_tangent, v_texcoord0, v_shadowcoord0, v_shadowcoord1,v_shadowcoord2,v_shadowcoord3,v_view
 
 #define READ_MATERIAL
 
@@ -90,9 +90,27 @@ void main()
 
 	vec2 lc = lit(ld, n, vd, 1.0);
 
-	vec2 texelSize = vec2_splat(1.0/512.0);
-	float visibility = PCF(s_shadowMap, v_shadowcoord, shadowMapBias, texelSize);
+	vec2 texelSize = vec2_splat(1.0/2048.0);
 
+    /*  Debug cascaded shadow maps */
+    /*
+    vec3 visibility0 =  (1.0-PCF(s_shadowMap0, v_shadowcoord0, shadowMapBias, texelSize)) * vec3(1.0, 0.0, 0.0);
+    vec3 visibility1 =  (1.0-PCF(s_shadowMap1, v_shadowcoord1, shadowMapBias, texelSize)) * vec3(0.0, 1.0, 0.0);
+    vec3 visibility2 = (1.0-PCF(s_shadowMap2, v_shadowcoord2, shadowMapBias, texelSize)) * vec3(0.0, 0.0, 1.0);
+    vec3 visibility3 = (1.0-PCF(s_shadowMap3, v_shadowcoord3, shadowMapBias, texelSize)) * vec3(1.0, 1.0, 0.0);
+    
+    gl_FragColor = vec4(visibility0 + visibility1 + visibility2 + visibility3, 1.0);
+    return;
+    */
+    
+    
+    
+
+    float visibility =  PCF(s_shadowMap0, v_shadowcoord0, shadowMapBias, texelSize);
+    visibility = min(visibility, PCF(s_shadowMap1, v_shadowcoord1, shadowMapBias, texelSize));
+    visibility = min(visibility, PCF(s_shadowMap2, v_shadowcoord2, shadowMapBias, texelSize));
+    visibility = min(visibility, PCF(s_shadowMap3, v_shadowcoord3, shadowMapBias, texelSize));
+    
 	vec3 ambient = 0.1 * color;
 	vec3 brdf = (lc.x + lc.y) * color * visibility;
 

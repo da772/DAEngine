@@ -97,7 +97,7 @@ private:
 	da::core::CMaterial* m_cubeMat = 0;
 	da::core::CMaterial* m_cubeMat2 = 0;
 	da::modules::CWindowModule* m_window = 0;
-	da::core::CEntity* e1,* e2;
+	da::core::CEntity* e1,* e2, *e3;
 	bool m_showScriptDebug = false;
  
 
@@ -131,22 +131,22 @@ protected:
 		e1->addComponent<da::core::CSmeshComponent>("assets/bolt.fbx", mat);
 
 		da::platform::CBgfxPbrMaterial* mat2 = new da::platform::CBgfxPbrMaterial("", ""
-			, "assets/tile/white_marble_tile_BaseColor.jpg"
-			, "assets/tile/white_marble_tile_Normal.jpg"
-			, "assets/tile/white_marble_tile_Roughness.jpg");
+			, "assets/tile/tiles_color.jpg"
+			, "assets/tile/tiles_normal.png"
+			, "assets/tile/tiles_roughness.jpg");
 		e2->getTransform().setPosition({ 0,0,0 });
 		e2->setTag(HASHSTR("plane"));
 		e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx", mat2);
 
-		da::core::CEntity* entity = da::core::CSceneManager::getScene()->createEntity();
+		e3 = da::core::CSceneManager::getScene()->createEntity();
 		da::platform::CBgfxPbrMaterial* mat3 = new da::platform::CBgfxPbrMaterial("", ""
 			, "assets/rifle/Textures/Albedo.png"
 			, "assets/rifle/Textures/Normal.png"
 			, "assets/rifle/Textures/Metallic.png");
-		entity->addComponent<da::core::CSmeshComponent>("assets/rifle/Rifle.fbx", mat3);
-		entity->setTag(HASHSTR("Rifle"));
-		entity->getTransform().setPosition({ 0,-5.f,5.f });
-		entity->getTransform().setRotation({ 0,0.f,90.f });
+		e3->addComponent<da::core::CSmeshComponent>("assets/rifle/Rifle.fbx", mat3);
+		e3->setTag(HASHSTR("Rifle"));
+		e3->getTransform().setPosition({ 0,-5.f,5.f });
+		e3->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
@@ -232,8 +232,8 @@ protected:
 
 	inline virtual void onUpdate() override
 	{   
-
-        
+		glm::vec3 rot = e3->getTransform().rotation();
+		//e3->getTransform().setRotation({ rot.x, rot.y+.05, rot.z + .05f });
 		return;
 		if (!m_boltMat || !m_cubeMat)
 		{

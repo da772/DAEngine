@@ -8,10 +8,15 @@
 
 uniform vec4 u_lightPos;
 #if SHADOW_PACKED_DEPTH
-SAMPLER2D(s_shadowMap, SAMPLER_SHADOW_MAP);
+SAMPLER2DARRAY(s_shadowMap0, SAMPLER_SHADOW_MAP_NEAR);
+SAMPLER2DARRAY(s_shadowMap1, SAMPLER_SHADOW_MAP_MED);
+SAMPLER2DARRAY(s_shadowMap2, SAMPLER_SHADOW_MAP_FAR);
 #	define Sampler sampler2D
 #else
-SAMPLER2DSHADOW(s_shadowMap, SAMPLER_SHADOW_MAP);
+SAMPLER2DSHADOW(s_shadowMap0, SAMPLER_SHADOW_MAP_NEAR);
+SAMPLER2DSHADOW(s_shadowMap1, SAMPLER_SHADOW_MAP_MED);
+SAMPLER2DSHADOW(s_shadowMap2, SAMPLER_SHADOW_MAP_FAR);
+SAMPLER2DSHADOW(s_shadowMap3, SAMPLER_SHADOW_MAP_VFAR);
 #	define Sampler sampler2DShadow
 #endif // SHADOW_PACKED_DEPTH
 
@@ -45,6 +50,9 @@ float PCF(Sampler _sampler, vec4 _shadowCoord, float _bias, vec2 _texelSize)
 	bool outside = any(greaterThan(texCoord, vec2_splat(1.0)))
 				|| any(lessThan   (texCoord, vec2_splat(0.0)))
 				 ;
+
+	// temp disable pcf for now with cascaded shadow map issues
+	//return hardShadow(_sampler, _shadowCoord, _bias);
 
 	if (outside)
 	{

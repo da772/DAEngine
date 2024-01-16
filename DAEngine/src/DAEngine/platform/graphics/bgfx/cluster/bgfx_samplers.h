@@ -30,6 +30,9 @@ namespace da::platform {
         static const uint8_t DEFERRED_EMISSIVE_OCCLUSION = 10;
         static const uint8_t DEFERRED_DEPTH = 11;
 
-        static const uint8_t SHADOW_MAP = 12;
+        static const uint8_t SAMPLER_SHADOW_MAP_NEAR = 12;
+        static const uint8_t SAMPLER_SHADOW_MAP_MED = 13;
+        static const uint8_t SAMPLER_SHADOW_MAP_FAR = 14;
+        static const uint8_t SAMPLER_SHADOW_MAP_VFAR = 15;
     };
 }

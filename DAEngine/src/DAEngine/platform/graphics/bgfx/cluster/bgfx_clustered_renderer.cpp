@@ -59,16 +59,18 @@ namespace da::platform {
         m_pDebugVisProgram->initialize();
 
         m_pointLights.init();
-        //generateLights(40);
+        //generateLights(20);
         m_pointLights.update();
-
-        m_ambientLight.irradiance = { 0.03f, 0.03f, 0.03f };
-        m_sunLight.direction = { 1.f, -0.667, .204 };
-        m_sunLight.radiance = { 1.f,1.f,1.f };
 
         m_shadow.initialize();
         m_shadow.getCamera().setPosition({ 0.f, 15, 15.f });
         m_shadow.getCamera().setRotation({ -50.f, 0.f, 180.f });
+
+		m_ambientLight.irradiance = { 0.03f, 0.03f, 0.03f };
+		m_sunLight.direction = m_shadow.getLightDir();
+		m_sunLight.direction.x *= -1;
+		m_sunLight.direction.y *= -1;
+		m_sunLight.radiance = { 1.f,1.f,1.f };
 
 #ifdef DA_DEBUG
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
@@ -81,10 +83,14 @@ namespace da::platform {
         enum : ::bgfx::ViewId
         {
             vShadow = 0,
-            vClusterBuilding,
+            vClusterBuilding = SHADOW_MAP_SIZE,
             vLightCulling,
             vLighting
         };
+
+		da::core::CScene* scene = da::core::CSceneManager::getScene();
+
+		const da::core::FComponentContainer& container = scene->getComponents<da::core::CSmeshComponent>();
 
         ::bgfx::setViewName(vClusterBuilding, "Cluster building pass (compute)");
         // set u_viewRect for screen2Eye to work correctly
@@ -99,16 +105,88 @@ namespace da::platform {
         ::bgfx::setViewFrameBuffer(vLighting, m_frameBuffer);
         ::bgfx::touch(vLighting);
 
-		if (!::bgfx::isValid(m_shadow.getFrameBuffer()))
-			m_shadow.createFrameBuffers();
+        glm::mat4 lightMtx[SHADOW_MAP_SIZE];
 
-		::bgfx::setViewName(vShadow, "Shadow pass");
-		::bgfx::setViewRect(vShadow, 0, 0, m_shadow.getShadowMapSize(), m_shadow.getShadowMapSize());
-		::bgfx::setViewFrameBuffer(vShadow, m_shadow.getFrameBuffer());
-		::bgfx::setViewClear(vShadow
-			, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
-			, 0x303030ff, 1.0f, 0
-		);
+        for (size_t i = 0; i < m_shadow.getShadowMapsCount(); i++) {
+
+            if (!::bgfx::isValid(m_shadow.getShadowMaps().ShadowMaps[i].FrameBuffer))
+                m_shadow.createFrameBuffers();
+
+            std::string name = std::string("Shadow Pass: ") + std::to_string(i);
+            ::bgfx::setViewName(vShadow + i, name.c_str());
+            ::bgfx::setViewRect(vShadow + i, 0, 0, m_shadow.getShadowMapSize(), m_shadow.getShadowMapSize());
+            ::bgfx::setViewFrameBuffer(vShadow + i, m_shadow.getShadowMaps().ShadowMaps[i].FrameBuffer);
+            ::bgfx::setViewClear(vShadow + i
+                , BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
+                , 0x303030ff, 1.0f, 0
+            );
+
+            glm::mat4 lightProj, lightView;
+            float nearPlane = 1000.f* (50.f * i);
+            float farPlane = (1000.f * (50.f * i) + 1000.f);
+            if (i == 0) {
+                nearPlane = 1.f;
+                farPlane  = 25.f;
+            }
+
+            if (i == 1) {
+                nearPlane = 25.f;
+                farPlane = 50.f;
+            }
+
+			if (i == 2) {
+				nearPlane = 50.f;
+				farPlane = 250.f;
+			}
+
+			if (i == 3) {
+				nearPlane = 250.f;
+				farPlane = 1000.f;
+			}
+
+            //bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, nearPlane, farPlane, ::bgfx::getCaps()->homogeneousDepth);
+            bx::mtxOrtho(glm::value_ptr(lightProj), -farPlane, farPlane, -farPlane, farPlane, nearPlane, farPlane, 0, ::bgfx::getCaps()->homogeneousDepth);
+            lightView = m_shadow.getCamera().matrix();
+            std::pair<glm::mat4, glm::mat4> p = m_shadow.getLightSpaceProjMatrix(nearPlane, farPlane, i, lightView);;
+            lightProj = p.first;
+            lightView = p.second;
+            lightMtx[i] = lightProj * lightView;
+
+
+            const ::bgfx::Caps* caps = ::bgfx::getCaps();
+            const float sy = caps->originBottomLeft ? 0.5f : -0.5f;
+            const float sz = caps->homogeneousDepth ? 0.5f : 1.0f;
+            const float tz = caps->homogeneousDepth ? 0.5f : 0.0f;
+            const float mtxCrop[16] =
+            {
+                0.5f, 0.0f, 0.0f, 0.0f,
+                0.0f,   sy, 0.0f, 0.0f,
+                0.0f, 0.0f, sz,   0.0f,
+                0.5f, 0.5f, tz,   1.0f,
+            };
+
+            float mtxTmp[16];
+            bx::mtxMul(mtxTmp, glm::value_ptr(lightProj), mtxCrop);
+            bx::mtxMul(glm::value_ptr(lightMtx[i]), glm::value_ptr(lightView), mtxTmp);
+
+            ::bgfx::setViewTransform(vShadow + i, glm::value_ptr(lightView), glm::value_ptr(lightProj));
+
+			// Shadow map pass
+			for (size_t x = 0; x < container.getCount(); x++) {
+				da::core::CSmeshComponent* mesh = container.getComponentAtIndex<da::core::CSmeshComponent>(x);
+
+				glm::mat4 model = mesh->getParent().getTransform().matrix();
+				::bgfx::setTransform(glm::value_ptr(model));
+				::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getStaticMesh()->getNativeVB()));
+				::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getStaticMesh()->getNativeIB()));
+				::bgfx::setState((m_shadow.useShadowSampler() ? 0 : BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A)
+					| BGFX_STATE_WRITE_Z
+					| BGFX_STATE_DEPTH_TEST_LESS
+					| BGFX_STATE_CULL_CW
+					| BGFX_STATE_MSAA);
+				::bgfx::submit(vShadow + i, { m_shadow.getMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+			}
+        }
 
         m_clusters.setUniforms(m_width, m_height);
 
@@ -117,65 +195,6 @@ namespace da::platform {
         // light culling needs u_view to transform lights to eye space
         setViewProjection(vLightCulling);
         setViewProjection(vLighting);
-
-        glm::mat4 lightProj, lightView;
-        //dbx::mtxOrtho(glm::value_ptr(lightProj), 0, (float)m_width, 0.f, (float)m_height, .1f, 1000.f, 0.f, ::bgfx::getCaps()->homogeneousDepth);
-        bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, 1.0f,1000.0f, ::bgfx::getCaps()->homogeneousDepth);
-        //bx::mtxLookAt(glm::value_ptr(lightView), { m_shadow.getCamera().position().x, m_shadow.getCamera().position().y, m_shadow.getCamera().position().z }, { 0.f, 0.f, 0.f }, { 0.f,0.f, 1.f });
-        lightView = m_shadow.getCamera().matrix();
-        glm::mat4 lightMtx = lightProj * lightView;
-
-		float mtxShadow[16];
-        const ::bgfx::Caps* caps = ::bgfx::getCaps();
-		const float sy = caps->originBottomLeft ? 0.5f : -0.5f;
-		const float sz = caps->homogeneousDepth ? 0.5f : 1.0f;
-		const float tz = caps->homogeneousDepth ? 0.5f : 0.0f;
-		const float mtxCrop[16] =
-		{
-			0.5f, 0.0f, 0.0f, 0.0f,
-			0.0f,   sy, 0.0f, 0.0f,
-			0.0f, 0.0f, sz,   0.0f,
-			0.5f, 0.5f, tz,   1.0f,
-		};
-
-		float mtxTmp[16];
-		bx::mtxMul(mtxTmp, glm::value_ptr(lightProj), mtxCrop);
-		bx::mtxMul(glm::value_ptr(lightMtx), glm::value_ptr(lightView), mtxTmp);
-        
-		float mtxFloor[16];
-		bx::mtxSRT(mtxFloor
-			, -1.0f, -1.0f, -1.0f
-			, 0.0f, 0.0f, 0.0f
-			, 0.0f, 0.0f, 0.0f
-		);
-
-		// Floor.
-		//bx::mtxMul(glm::value_ptr(lightMtx), mtxFloor, mtxShadow);
-
-        ::bgfx::setViewTransform(vShadow, glm::value_ptr(lightView), glm::value_ptr(lightProj));
-
-		// Light matrix used in combine pass and inverse used in light pass
-        //bx::mtxMul(glm::value_ptr(lightMtx), glm::value_ptr(lightView), glm::value_ptr(lightProj));
-
-        da::core::CScene* scene = da::core::CSceneManager::getScene();
-
-        const da::core::FComponentContainer& container = scene->getComponents<da::core::CSmeshComponent>();
-
-        // Shadow map pass
-        for (size_t i = 0; i < container.getCount(); i++) {
-            da::core::CSmeshComponent* mesh = container.getComponentAtIndex<da::core::CSmeshComponent>(i);
-
-            glm::mat4 model = mesh->getParent().getTransform().matrix();
-            ::bgfx::setTransform(glm::value_ptr(model));
-            ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getStaticMesh()->getNativeVB()));
-            ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getStaticMesh()->getNativeIB()));
-            ::bgfx::setState((m_shadow.useShadowSampler() ? 0 : BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A)
-                | BGFX_STATE_WRITE_Z
-                | BGFX_STATE_DEPTH_TEST_LESS
-                | BGFX_STATE_CULL_CW
-                | BGFX_STATE_MSAA);
-            ::bgfx::submit(vShadow, { m_shadow.getMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-        }
 
 
         // cluster building
@@ -229,21 +248,25 @@ namespace da::platform {
 
 		m_pbr.bindAlbedoLUT();
         glm::vec3 rotRadians = glm::vec3(glm::radians(m_shadow.getCamera().rotation().x), glm::radians(m_shadow.getCamera().rotation().y), glm::radians(m_shadow.getCamera().rotation().z));
-        m_lights.bindLights({ rotRadians,m_sunLight.radiance}, m_ambientLight, m_pointLights);
+        m_lights.bindLights({ m_sunLight.direction,m_sunLight.radiance}, m_ambientLight, m_pointLights);
 		m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
         // Render pass
         for (size_t i = 0; i < container.getCount(); i++) {
             da::core::CSmeshComponent* mesh = container.getComponentAtIndex<da::core::CSmeshComponent>(i);
-            m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
+            
             glm::mat4 model = mesh->getParent().getTransform().matrix();
             ::bgfx::setTransform(glm::value_ptr(model));
             setNormalMatrix(model);
             ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getStaticMesh()->getNativeVB()));
             ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getStaticMesh()->getNativeIB()));
             da::platform::CBgfxPbrMaterial* material = (da::platform::CBgfxPbrMaterial*)mesh->getMaterial();
+            m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
             uint64_t materialState = m_pbr.bindMaterial(*material->getMaterial());
-            ::bgfx::setTexture(CBgfxSamplers::SHADOW_MAP, m_pbr.getShadowMapUniform(), m_shadow.getShadowMap());
+            for (size_t s = 0; s < m_shadow.getShadowMapsCount(); s++) {
+                ::bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + s, m_shadow.getShadowMaps().ShadowMaps[s].Uniform, m_shadow.getShadowMaps().ShadowMaps[s].Texture);
+            }
+            
             //BGFX_STATE_PT_LINES
 			::bgfx::setState(state | materialState);
             // preserve buffer bindings between submit calls
@@ -371,13 +394,14 @@ namespace da::platform {
 				m_shadow.getCamera().setRotation(r);
 			}
 
-            ::bgfx::TextureHandle handle = ::bgfx::getTexture(m_shadow.getFrameBuffer());
+            /*::bgfx::TextureHandle handle = ::bgfx::getTexture(m_shadow.getFrameBuffer());
 
             if (handle.idx == UINT16_MAX) {
                 return;
             }
 
             //ImGui::Image(handle, ImVec2(m_shadow.getShadowMapSize(), m_shadow.getShadowMapSize()));
+            */
         }
 
         ImGui::End();
