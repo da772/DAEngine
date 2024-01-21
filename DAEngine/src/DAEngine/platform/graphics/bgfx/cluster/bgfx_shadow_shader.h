@@ -30,7 +30,7 @@ namespace da::platform {
 		core::CCamera& getCamera();
 		const uint32_t getShadowMapSize() const;
 		std::vector<glm::vec4> getFrustumCornersWorldSpace(const glm::mat4& projView);
-		std::pair<glm::mat4,glm::mat4> getLightSpaceProjMatrix(const float nearPlane, const float farPlane, int index, glm::mat4 lightView);
+		std::pair<glm::mat4, glm::mat4> getLightSpaceProjMatrix(const float nearPlane, const float farPlane, int index, glm::mat4 lightView);
 
 		inline FBgfxShadowMaps getShadowMaps() const { return m_shadowMaps; };
 		inline size_t getShadowMapsCount() const { return SHADOW_MAP_SIZE; }
@@ -38,11 +38,12 @@ namespace da::platform {
 		void createFrameBuffers();
 		inline bool useShadowSampler() const { return m_useShadowSampler; }
 
-		inline glm::vec3 getLightDir() const { return  glm::normalize(glm::vec3(20.0f, 50.f, 20.0f));}
+		inline glm::vec3& getLightDir() { return m_shadowDir; }
 
 	private:
 		::bgfx::UniformHandle m_depthScaleOffset = BGFX_INVALID_HANDLE;
 		FBgfxShadowMaps m_shadowMaps;
+		glm::vec3 m_shadowDir = { 0.348f, 0.870f, 0.348f };
 
 		CBgfxGraphicsMaterial* m_material;
 		core::CCamera m_camera;

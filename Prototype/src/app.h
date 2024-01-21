@@ -97,7 +97,7 @@ private:
 	da::core::CMaterial* m_cubeMat = 0;
 	da::core::CMaterial* m_cubeMat2 = 0;
 	da::modules::CWindowModule* m_window = 0;
-	da::core::CEntity* e1,* e2, *e3;
+	da::core::CEntity* e1,* e2, *e3, *e4;
 	bool m_showScriptDebug = false;
  
 
@@ -130,13 +130,6 @@ protected:
 		e1->getTransform().setPosition({ 0,0,1.5f });
 		e1->addComponent<da::core::CSmeshComponent>("assets/bolt.fbx", mat);
 
-		da::platform::CBgfxPbrMaterial* mat2 = new da::platform::CBgfxPbrMaterial("", ""
-			, "assets/tile/tiles_color.jpg"
-			, "assets/tile/tiles_normal.png"
-			, "assets/tile/tiles_roughness.jpg");
-		e2->getTransform().setPosition({ 0,0,0 });
-		e2->setTag(HASHSTR("plane"));
-		e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx", mat2);
 
 		e3 = da::core::CSceneManager::getScene()->createEntity();
 		da::platform::CBgfxPbrMaterial* mat3 = new da::platform::CBgfxPbrMaterial("", ""
@@ -148,6 +141,26 @@ protected:
 		e3->getTransform().setPosition({ 0,-5.f,5.f });
 		e3->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
+
+
+		da::platform::CBgfxPbrMaterial* mat4 = new da::platform::CBgfxPbrMaterial("", ""
+			, "assets/coffeeA.png"
+			, "assets/coffeeN.png"
+			, "assets/coffeeR.png");
+		e4 = da::core::CSceneManager::getScene()->createEntity();
+		e4->addComponent<da::core::CSmeshComponent>("assets/coffee.fbx", mat4);
+		e4->setTag(HASHSTR("Room"));
+		e4->getTransform().setPosition({ 0,-5.f,5.f });
+		e4->getTransform().setRotation({ 0,0.f,90.f });
+		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
+
+		da::platform::CBgfxPbrMaterial* mat2 = new da::platform::CBgfxPbrMaterial("", ""
+			, "assets/tile/tiles_color.jpg"
+			, "assets/tile/tiles_normal.png"
+			, "assets/tile/tiles_roughness.jpg");
+		e2->getTransform().setPosition({ 0,0,0 });
+		e2->setTag(HASHSTR("plane"));
+		e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx", mat2);
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
 		return;

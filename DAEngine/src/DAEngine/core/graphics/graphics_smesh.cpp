@@ -6,8 +6,9 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <glm/fwd.hpp>
+#include <glm/ext/matrix_transform.hpp>
 #endif
-
 
 namespace da::core
 {
@@ -20,16 +21,18 @@ namespace da::core
 		std::vector<FVertexBase> vertices;
 		std::vector<uint32_t> indices;
 
-		const aiScene* pScene = importer.ReadFileFromMemory(file.data(), file.size()*sizeof(char), aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace);
+		const aiScene* pScene = importer.ReadFileFromMemory(file.data(), file.size()*sizeof(char), aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals);
+		static glm::mat4 transformMat = glm::translate(glm::mat4(1.0f), { 0.f,0.f,0.f }) * glm::rotate(glm::mat4(1.0f), glm::radians(-180.f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		for (size_t i = 0; i < pScene->mNumMeshes; i++)
 		{
 			for (size_t v = 0; v < pScene->mMeshes[i]->mNumVertices; v++) {
 				FVertexBase vertex{};
+				glm::vec3 pos = transformMat * glm::vec4(pScene->mMeshes[i]->mVertices[v].x, pScene->mMeshes[i]->mVertices[v].y, pScene->mMeshes[i]->mVertices[v].z, 1.f);
 				vertex.Pos = {
-					pScene->mMeshes[i]->mVertices[v].x,
-					pScene->mMeshes[i]->mVertices[v].y,
-					-pScene->mMeshes[i]->mVertices[v].z
+					pos.x,
+					pos.y,
+					pos.z
 				};
 			
 				if (pScene->mMeshes[i]->HasTextureCoords(0))

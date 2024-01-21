@@ -59,18 +59,16 @@ namespace da::platform {
         m_pDebugVisProgram->initialize();
 
         m_pointLights.init();
-        //generateLights(20);
+        generateLights(10);
         m_pointLights.update();
 
         m_shadow.initialize();
         m_shadow.getCamera().setPosition({ 0.f, 15, 15.f });
         m_shadow.getCamera().setRotation({ -50.f, 0.f, 180.f });
 
-		m_ambientLight.irradiance = { 0.03f, 0.03f, 0.03f };
+		m_ambientLight.irradiance = { 0.001f, 0.001f, 0.001f };
 		m_sunLight.direction = m_shadow.getLightDir();
-		m_sunLight.direction.x *= -1;
-		m_sunLight.direction.y *= -1;
-		m_sunLight.radiance = { 1.f,1.f,1.f };
+		m_sunLight.radiance = { 0.f,0.f,0.f };
 
 #ifdef DA_DEBUG
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
@@ -125,23 +123,23 @@ namespace da::platform {
             float nearPlane = 1000.f* (50.f * i);
             float farPlane = (1000.f * (50.f * i) + 1000.f);
             if (i == 0) {
-                nearPlane = 1.f;
+                nearPlane = .1f;
                 farPlane  = 25.f;
             }
 
             if (i == 1) {
                 nearPlane = 25.f;
-                farPlane = 50.f;
+                farPlane = 75.f;
             }
 
 			if (i == 2) {
-				nearPlane = 50.f;
-				farPlane = 250.f;
+				nearPlane = 75.f;
+				farPlane = 125.f;
 			}
 
 			if (i == 3) {
-				nearPlane = 250.f;
-				farPlane = 1000.f;
+				nearPlane = 150.f;
+				farPlane = 300.f;
 			}
 
             //bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, nearPlane, farPlane, ::bgfx::getCaps()->homogeneousDepth);
@@ -182,7 +180,7 @@ namespace da::platform {
 				::bgfx::setState((m_shadow.useShadowSampler() ? 0 : BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A)
 					| BGFX_STATE_WRITE_Z
 					| BGFX_STATE_DEPTH_TEST_LESS
-					| BGFX_STATE_CULL_CW
+					| BGFX_STATE_CULL_CCW
 					| BGFX_STATE_MSAA);
 				::bgfx::submit(vShadow + i, { m_shadow.getMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
 			}
@@ -248,7 +246,7 @@ namespace da::platform {
 
 		m_pbr.bindAlbedoLUT();
         glm::vec3 rotRadians = glm::vec3(glm::radians(m_shadow.getCamera().rotation().x), glm::radians(m_shadow.getCamera().rotation().y), glm::radians(m_shadow.getCamera().rotation().z));
-        m_lights.bindLights({ m_sunLight.direction,m_sunLight.radiance}, m_ambientLight, m_pointLights);
+        m_lights.bindLights({ m_shadow.getLightDir(),m_sunLight.radiance }, m_ambientLight, m_pointLights);
 		m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
         // Render pass
@@ -332,7 +330,7 @@ namespace da::platform {
                 std::string str1 = std::string(std::to_string(x) + ":" + std::to_string(y).c_str());
                 CHashString hsh1(str1.c_str());
                 glm::vec3 col = { ((hsh1.hash() & 0x00ff0000u) >> 16), ((hsh1.hash() & 0x0000ff00u) >> 8) * .75f, (hsh1.hash() & 0x000000ffu) * .5f};
-                lights[index++] = { {x,y,-.99f}, glm::vec3(100.f) * col };
+                lights[index++] = { {x,y,1.f}, glm::vec3(10.f) * col };
             }
         }
 
@@ -374,7 +372,7 @@ namespace da::platform {
 
             ImGui::Text("Sun light Direction: ");
             ImGui::SameLine();
-            ImGui::SliderFloat3("##sunLightDirControl", glm::value_ptr(m_sunLight.direction), -1.f, 1.f);
+            ImGui::SliderFloat3("##sunLightDirControl", glm::value_ptr(m_shadow.getLightDir()), -1.f, 1.f);
 
             ImGui::Text("Sunlight Radiance: ");
             ImGui::SameLine();

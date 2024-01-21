@@ -51,9 +51,6 @@ float PCF(Sampler _sampler, vec4 _shadowCoord, float _bias, vec2 _texelSize)
 				|| any(lessThan   (texCoord, vec2_splat(0.0)))
 				 ;
 
-	// temp disable pcf for now with cascaded shadow map issues
-	//return hardShadow(_sampler, _shadowCoord, _bias);
-
 	if (outside)
 	{
 		return 1.0;

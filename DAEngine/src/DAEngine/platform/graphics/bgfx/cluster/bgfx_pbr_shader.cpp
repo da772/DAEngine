@@ -129,7 +129,7 @@ namespace da::platform {
         if (material.blend)
             state |= BGFX_STATE_BLEND_ALPHA;
         if (!material.doubleSided)
-            state |= BGFX_STATE_CULL_CW;
+            state |= BGFX_STATE_CULL_CCW;
         return state;
     }
 
