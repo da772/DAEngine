@@ -245,7 +245,7 @@ namespace da::platform {
 		if (m_dirtyWindow) {
 			uint32_t w = m_nativeWindow->getWindowData().Width;
 			uint32_t h = m_nativeWindow->getWindowData().Height;
-			::bgfx::reset(w, h, BGFX_RESET_MSAA_X16);
+			::bgfx::reset(w, h, BGFX_RESET_MSAA_X8);
 			::bgfx::setViewRect(0, 0, 0, w, h);
 			m_renderer->reset(w, h);
 			m_dirtyWindow = false;
