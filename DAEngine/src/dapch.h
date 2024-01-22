@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stacktrace>
+#include <functional>
+#include <mutex>
+
 #ifndef DA_DEBUG
 #define NDEBUG
 #endif

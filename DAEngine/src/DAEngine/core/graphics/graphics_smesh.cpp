@@ -1,7 +1,8 @@
 #include "dapch.h"
-#include "graphics_smesh.h"
-
 #include "asset/asset.h"
+#include "graphics_smesh.h"
+#include "factory/factory_graphics_texture2d.h"
+
 #if !defined(DA_TEST)
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -11,7 +12,7 @@
 #include <glm/fwd.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #endif
-#include "factory/factory_graphics_texture2d.h"
+
 
 namespace da::graphics
 {

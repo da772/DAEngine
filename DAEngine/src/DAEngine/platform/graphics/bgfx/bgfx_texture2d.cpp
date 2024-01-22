@@ -4,6 +4,7 @@
 #include "bgfx_texture2d.h"
 #include <stb_image.h>
 #include <bgfx/bgfx.h>
+#include "core/threading/worker_pool.h"
 
 namespace da::platform::bgfx {
 
@@ -13,13 +14,16 @@ namespace da::platform::bgfx {
 	CBgfxTexture2D::CBgfxTexture2D(const std::string& s) 
 		: da::graphics::CGraphicsTexture2D(s), m_fileAsset(s)
 	{
-		stbi_uc* pixels = stbi_load_from_memory((const stbi_uc*)m_fileAsset.data(), m_fileAsset.size(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);
-		m_channels = 4;
-		const ::bgfx::Memory * mem = ::bgfx::copy(pixels, m_width * m_height * m_channels * sizeof(char));
-		m_handle = ::bgfx::createTexture2D(m_width, m_height, false, 1, ::bgfx::TextureFormat::Enum::RGBA8, 0, mem).idx;
-		m_textureNative = &m_handle;
-		LOG_ASSERT(m_handle != INVALID_HANDLE, ELogChannel::Graphics, "Failed to create texture %s", m_path.c_str());
-		stbi_image_free(pixels);
+		da::core::CWorkerPool::addJob([this] {
+			stbi_uc* pixels = stbi_load_from_memory((const stbi_uc*)m_fileAsset.data(), m_fileAsset.size(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);
+			m_channels = 4;
+			const ::bgfx::Memory* mem = ::bgfx::copy(pixels, m_width * m_height * m_channels * sizeof(char));
+			m_handle = ::bgfx::createTexture2D(m_width, m_height, false, 1, ::bgfx::TextureFormat::Enum::RGBA8, 0, mem).idx;
+			m_textureNative = &m_handle;
+			LOG_ASSERT(m_handle != INVALID_HANDLE, ELogChannel::Graphics, "Failed to create texture %s", m_path.c_str());
+			stbi_image_free(pixels);
+		});
+		
 	}
 
 	CBgfxTexture2D::CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height) 

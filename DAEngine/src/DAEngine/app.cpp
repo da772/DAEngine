@@ -6,6 +6,7 @@
 #include "core/ecs/scene.h"
 #include "script/script_engine.h"
 #include "core/ecs/scene_manager.h"
+#include "core/threading/worker_pool.h"
 
 #ifdef DA_DEBUG
 #include "debug/debug.h"
@@ -110,6 +111,7 @@ namespace da
 	void CApp::initalizeInternal(int argc, const char** argv)
 	{
 		CLogger::initialize();
+		core::CWorkerPool::initialize();
 		core::CArgHandler::initialize(argc, argv);
 		std::string args = "Initialized with argc: %d\n";
 		for (size_t i = 0; i < argc; i++) {
@@ -127,6 +129,7 @@ namespace da
 		core::CArgHandler::shutdown();
 		CLogger::shutdown();
 		core::CSceneManager::shutdown();
+		core::CWorkerPool::shutdown();
 	}
 
 }
