@@ -11,7 +11,7 @@ namespace da::platform::bgfx {
 
 
 	CBgfxTexture2D::CBgfxTexture2D(const std::string& s) 
-		: da::core::CGraphicsTexture2D(s), m_fileAsset(s)
+		: da::graphics::CGraphicsTexture2D(s), m_fileAsset(s)
 	{
 		stbi_uc* pixels = stbi_load_from_memory((const stbi_uc*)m_fileAsset.data(), m_fileAsset.size(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);
 		m_channels = 4;
@@ -23,7 +23,7 @@ namespace da::platform::bgfx {
 	}
 
 	CBgfxTexture2D::CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height) 
-		: da::core::CGraphicsTexture2D(name, width, height),m_fileAsset(name, width*height*4)
+		: da::graphics::CGraphicsTexture2D(name, width, height),m_fileAsset(name, width*height*4)
 	{
 		memset((void*)m_fileAsset.data(), 0xff, width * height * 4);
 		m_channels = 4;

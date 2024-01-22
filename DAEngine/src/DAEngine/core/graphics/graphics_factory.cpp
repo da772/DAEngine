@@ -10,10 +10,10 @@
 #include "platform/graphics/bgfx/bgfx_graphics_api.h"
 #endif
 
-namespace da::core
+namespace da::graphics
 {
 
-	CGraphicsApi* CGraphicsFactory::Create(CWindow* window)
+	CGraphicsApi* CGraphicsFactory::Create(da::core::CWindow* window)
 	{
 #ifdef DA_GRAPHICS_BGFX
 		return new platform::CbgfxGraphicsApi(window);

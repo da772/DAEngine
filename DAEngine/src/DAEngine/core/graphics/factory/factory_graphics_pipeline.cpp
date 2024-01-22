@@ -8,11 +8,11 @@
 #include "platform/graphics/vulkan/pipelines/vulkan_graphics_pipeline_cubemap.h"
 #endif
 
-namespace da::core {
+namespace da::graphics {
 
-	std::vector<CGraphicsPipeline*> da::core::CGraphicsPipelineFactory::s_pipelines;
+	std::vector<CGraphicsPipeline*> da::graphics::CGraphicsPipelineFactory::s_pipelines;
 
-	da::core::CGraphicsPipeline* CGraphicsPipelineFactory::Create(CGraphicsApi& graphicsApi, const std::string& vertexShaderPath, const std::string& fragShaderPath, FVertexBindingDescription vertexBinding, const std::vector<FVertexInputAttributeDescription>& inputAttribDesc)
+	da::graphics::CGraphicsPipeline* CGraphicsPipelineFactory::Create(CGraphicsApi& graphicsApi, const std::string& vertexShaderPath, const std::string& fragShaderPath, FVertexBindingDescription vertexBinding, const std::vector<FVertexInputAttributeDescription>& inputAttribDesc)
 	{
 #ifdef DA_GRAPHICS_VULKAN
 		s_pipelines.push_back(new da::platform::CVulkanGraphicsPipeline(graphicsApi, vertexShaderPath, fragShaderPath, vertexBinding, inputAttribDesc));
@@ -26,7 +26,7 @@ namespace da::core {
 		return s_pipelines;
 	}
 
-	da::core::CGraphicsPipeline* CGraphicsPipelineFactory::CreatePBR(CGraphicsApi& graphicsApi)
+	da::graphics::CGraphicsPipeline* CGraphicsPipelineFactory::CreatePBR(CGraphicsApi& graphicsApi)
 	{
 
 #ifdef DA_GRAPHICS_VULKAN
@@ -36,7 +36,7 @@ namespace da::core {
 		return nullptr;
 	}
 
-	da::core::CGraphicsPipeline* CGraphicsPipelineFactory::CreateCubeMap(CGraphicsApi& graphicsApi)
+	da::graphics::CGraphicsPipeline* CGraphicsPipelineFactory::CreateCubeMap(CGraphicsApi& graphicsApi)
 	{
 #ifdef DA_GRAPHICS_VULKAN
 		s_pipelines.push_back(new da::platform::CVulkanGraphicsPipelineCubemap(graphicsApi));

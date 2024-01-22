@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <stdint.h>
+#include <array>
 
 using namespace da::core::containers;
 

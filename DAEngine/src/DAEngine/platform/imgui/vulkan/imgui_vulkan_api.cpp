@@ -14,7 +14,7 @@
 
 namespace da::platform {
 
-	CImGuiVulkanApi::CImGuiVulkanApi(core::CGraphicsApi* graphicsApi) : 
+	CImGuiVulkanApi::CImGuiVulkanApi(graphics::CGraphicsApi* graphicsApi) :
         CImGuiApi(graphicsApi)
         ,m_vulkanGraphics(static_cast<platform::CVulkanGraphicsApi*>(graphicsApi))
         ,m_funcPtr(new std::function<void(VkCommandBuffer cmd)>(std::bind(&CImGuiVulkanApi::renderImGui, this, std::placeholders::_1)))

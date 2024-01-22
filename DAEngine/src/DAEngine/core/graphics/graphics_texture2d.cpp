@@ -1,7 +1,7 @@
 #include "dapch.h"
 #include "graphics_texture2d.h"
 
-namespace da::core
+namespace da::graphics
 {
 	CGraphicsTexture2D::CGraphicsTexture2D(const std::string& path) : m_path(path), m_textureNative(nullptr)
 	{

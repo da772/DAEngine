@@ -66,8 +66,8 @@ namespace da::platform {
 		// if no other draw calls are submitted to view 0.
 		//::bgfx::touch(0);
 
-		::bgfx::IndexBufferHandle ibh = *(::bgfx::IndexBufferHandle*)m_mesh->getNativeIB();
-		::bgfx::VertexBufferHandle vbh = *(::bgfx::VertexBufferHandle*)m_mesh->getNativeVB();;
+		::bgfx::IndexBufferHandle ibh = *(::bgfx::IndexBufferHandle*)m_mesh->getNativeIBIndex(0);
+		::bgfx::VertexBufferHandle vbh = *(::bgfx::VertexBufferHandle*)m_mesh->getNativeVBIndex(0);
 		uint64_t state = BGFX_STATE_WRITE_R
 			| BGFX_STATE_WRITE_G
 			| BGFX_STATE_WRITE_B
@@ -93,7 +93,7 @@ namespace da::platform {
 		// Set model matrix for rendering.
 		::bgfx::setTransform(mtx);
 		// Set vertex and index buffer.
-		m_mesh->setBuffers(0);
+		m_mesh->setBuffers(0, 0);
 
 		// Set texture
 		::bgfx::setTexture(0, { m_uniform.getHandle() }, { m_texture.getHandle() });

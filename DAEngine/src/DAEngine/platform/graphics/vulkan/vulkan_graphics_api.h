@@ -48,7 +48,7 @@ namespace da::platform
 		VkDescriptorImageInfo descriptor;
 	};
 
-	class CVulkanGraphicsApi : public core::CGraphicsApi
+	class CVulkanGraphicsApi : public graphics::CGraphicsApi
 	{
 	public:
 		CVulkanGraphicsApi(da::core::CWindow* windowModule);
@@ -56,7 +56,7 @@ namespace da::platform
 		virtual void initialize() override;
 		virtual void update() override;
 		virtual void shutdown() override;
-		virtual void submitPipeline(da::core::CGraphicsPipeline* pipeline);
+		virtual void submitPipeline(da::graphics::CGraphicsPipeline* pipeline);
 
 	public:
 		inline const VkInstance& getInstance() const { return m_instance; }

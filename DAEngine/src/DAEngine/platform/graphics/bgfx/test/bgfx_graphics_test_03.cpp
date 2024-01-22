@@ -117,9 +117,9 @@ namespace da::platform {
 		m_combineProgram->initialize();
 
 		m_window = window;
-		m_smesh = new da::core::CStaticMesh("assets/bolt.fbx");
-		m_sphereMesh = new da::core::CStaticMesh("assets/sphere.obj");
-		m_cubeMesh = new da::core::CStaticMesh("assets/cube.obj");
+		m_smesh = new da::graphics::CStaticMesh("assets/bolt.fbx");
+		m_sphereMesh = new da::graphics::CStaticMesh("assets/sphere.obj");
+		m_cubeMesh = new da::graphics::CStaticMesh("assets/cube.obj");
 
        
 
@@ -161,25 +161,25 @@ namespace da::platform {
 				.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
 				.add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float)
 				.end();
-
+		/*
 					// Create static vertex buffer.
 		m_vbh = bgfx::createVertexBuffer(
 			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(m_smesh->getVertices().data(), m_smesh->getVertices().size()*sizeof(da::core::FVertexBase))
+			bgfx::makeRef(m_smesh->getVertices().data(), m_smesh->getVertices().size()*sizeof(da::graphics::FVertexBase))
 			, m_ms_layout
 			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
 		);
 
 		m_spvbh = bgfx::createVertexBuffer(
 			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(m_sphereMesh->getVertices().data(), m_sphereMesh->getVertices().size() * sizeof(da::core::FVertexBase))
+			bgfx::makeRef(m_sphereMesh->getVertices().data(), m_sphereMesh->getVertices().size() * sizeof(da::graphics::FVertexBase))
 			, m_ms_layout
 			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
 		);
 
 		m_cbcvh = bgfx::createVertexBuffer(
 			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(m_cubeMesh->getVertices().data(), m_cubeMesh->getVertices().size() * sizeof(da::core::FVertexBase))
+			bgfx::makeRef(m_cubeMesh->getVertices().data(), m_cubeMesh->getVertices().size() * sizeof(da::graphics::FVertexBase))
 			, m_ms_layout
 			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
 		);
@@ -204,6 +204,7 @@ namespace da::platform {
 			bgfx::makeRef(m_cubeMesh->getIndices().data(), sizeof(uint32_t) * m_cubeMesh->getIndices().size())
 			, BGFX_BUFFER_INDEX32
 		);
+		*/
 	}
 
 	void CBgfxGraphicsTest03::drawModels(int pass, bgfx::ProgramHandle program, Vector3f pos, Vector3f scale, float time, uint64_t state, bool submit)

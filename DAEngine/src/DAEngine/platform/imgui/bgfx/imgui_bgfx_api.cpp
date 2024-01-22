@@ -12,7 +12,7 @@
 
 namespace da::platform {
 
-	CImGuiBgfxApi::CImGuiBgfxApi(core::CGraphicsApi* graphicsApi) : CImGuiApi(graphicsApi)
+	CImGuiBgfxApi::CImGuiBgfxApi(graphics::CGraphicsApi* graphicsApi) : CImGuiApi(graphicsApi)
 	{
 		
 	}

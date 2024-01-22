@@ -5,7 +5,7 @@
 
 namespace da::platform
 {
-    class CBgfxMaterial;
+    struct CBgfxMaterial;
     class CBgfxGraphicsMaterial;
 
     class CBgfxPBRShader

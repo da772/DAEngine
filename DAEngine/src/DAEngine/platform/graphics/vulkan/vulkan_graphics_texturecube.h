@@ -5,10 +5,10 @@
 #include <ktx.h>
 
 namespace da::platform {
-	class CVulkanGraphicsTextureCube : public da::core::CGraphicsTextureCube
+	class CVulkanGraphicsTextureCube : public da::graphics::CGraphicsTextureCube
 	{
 	public:
-		CVulkanGraphicsTextureCube(const std::string& path, da::core::CGraphicsApi& graphicsApi);
+		CVulkanGraphicsTextureCube(const std::string& path, da::graphics::CGraphicsApi& graphicsApi);
 		void initialize();
 		void shutdown();
 

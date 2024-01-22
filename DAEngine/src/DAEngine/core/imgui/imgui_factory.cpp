@@ -14,7 +14,7 @@
 namespace da::core
 {
 
-	da::core::CImGuiApi* CImGuiFactory::Create(CGraphicsApi* graphicsApi)
+	da::core::CImGuiApi* CImGuiFactory::Create(graphics::CGraphicsApi* graphicsApi)
 	{
 #if defined(DA_GRAPHICS_BGFX) && defined(DA_WINDOW_GLFW)
 		return new platform::CImGuiBgfxApi(graphicsApi);

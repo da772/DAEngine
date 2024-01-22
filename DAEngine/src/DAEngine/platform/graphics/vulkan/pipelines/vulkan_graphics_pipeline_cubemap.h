@@ -9,7 +9,7 @@ namespace da::platform
 	class CVulkanGraphicsPipelineCubemap : public CVulkanGraphicsPipeline
 	{
 	public:
-		CVulkanGraphicsPipelineCubemap(da::core::CGraphicsApi& pipeline);
+		CVulkanGraphicsPipelineCubemap(da::graphics::CGraphicsApi& pipeline);
 
 	protected:
 		std::vector<VkDescriptorSetLayoutBinding> addDescriptorSets() override;

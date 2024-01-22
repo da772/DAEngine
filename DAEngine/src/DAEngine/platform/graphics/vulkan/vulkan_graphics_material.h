@@ -26,10 +26,10 @@ namespace da::platform
 		uint32_t count;
 	};
 
-	class CVulkanGraphicsMaterial : public da::core::CMaterial
+	class CVulkanGraphicsMaterial : public da::graphics::CMaterial
 	{
 	public:
-		CVulkanGraphicsMaterial(da::core::CGraphicsPipeline& pipeline);
+		CVulkanGraphicsMaterial(da::graphics::CGraphicsPipeline& pipeline);
 		virtual void initialize() override;
 		virtual void update(int frame) override;
 		virtual void shutdown() override;

@@ -14,7 +14,7 @@ namespace da::core {
 	COMPONENT_CPP(CSmeshComponent);
 #endif
 
-	CSmeshComponent::CSmeshComponent(const std::string& meshPath, CMaterial* material, CEntity& parent) : m_guid(CGuid::Generate()), m_material(material), m_parent(parent)
+	CSmeshComponent::CSmeshComponent(const std::string& meshPath, da::graphics::CMaterial* material, CEntity& parent) : m_guid(CGuid::Generate()), m_material(material), m_parent(parent)
 	{
 		m_staticMesh = new da::platform::CBgfxStaticMesh(meshPath);
 	}
@@ -28,7 +28,7 @@ namespace da::core {
 	{
 		glm::mat4 m = m_parent.getTransform().matrix();
 		::bgfx::setTransform(&m);
-		((da::platform::CBgfxStaticMesh*) m_staticMesh)->setBuffers(0);
+		((da::platform::CBgfxStaticMesh*) m_staticMesh)->setBuffers(0, 0);
 	}
 
 	void CSmeshComponent::onShutdown()
@@ -38,12 +38,12 @@ namespace da::core {
 		delete m_material;
 	}
 
-	da::core::CStaticMesh* CSmeshComponent::getStaticMesh() const
+	da::graphics::CStaticMesh* CSmeshComponent::getStaticMesh() const
 	{
 		return m_staticMesh;
 	}
 
-	da::core::CMaterial* CSmeshComponent::getMaterial() const
+	da::graphics::CMaterial* CSmeshComponent::getMaterial() const
 	{
 		return m_material;
 	}
@@ -54,10 +54,10 @@ namespace da::core {
 		char pathNameBuffer[4096];
 		sprintf_s(pathNameBuffer, sizeof(pathNameBuffer), "Mesh: %s", m_staticMesh->getPath().c_str());
 		ImGui::Text(pathNameBuffer);
-		ImGui::Text("Vertices: %d", m_staticMesh->getVertices().size());
-		ImGui::Text("Indices:  %d", m_staticMesh->getIndices().size());
-		ImGui::Text("VertexBuffer: 0x%p", m_staticMesh->getNativeVB());
-		ImGui::Text("IndexBuffer: 0x%p", m_staticMesh->getNativeIB());
+		//ImGui::Text("Vertices: %d", m_staticMesh->getVertices().size());
+		//ImGui::Text("Indices:  %d", m_staticMesh->getIndices().size());
+		//ImGui::Text("VertexBuffer: 0x%p", m_staticMesh->getNativeVB());
+		//ImGui::Text("IndexBuffer: 0x%p", m_staticMesh->getNativeIB());
 
 		if (ImGui::Button("Reload Mesh")) {
 			std::string path = m_staticMesh->getPath();

@@ -22,8 +22,8 @@ namespace da::core {
 		inline virtual void onLateUpdate() { };
 
 	protected:
-		inline CImGuiApi(CGraphicsApi* graphicsApi) : m_graphicsApi(graphicsApi), m_window(m_graphicsApi->getWindow()) {};
- 		CGraphicsApi* m_graphicsApi;
+		inline CImGuiApi(graphics::CGraphicsApi* graphicsApi) : m_graphicsApi(graphicsApi), m_window(m_graphicsApi->getWindow()) {};
+		graphics::CGraphicsApi* m_graphicsApi;
 		CWindow* m_window;
 	};
 

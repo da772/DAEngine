@@ -5,7 +5,7 @@
 #include "asset/asset.h"
 
 namespace da::platform::bgfx {
-	class CBgfxTexture2D : public da::core::CGraphicsTexture2D {
+	class CBgfxTexture2D : public da::graphics::CGraphicsTexture2D {
 	public:
 		CBgfxTexture2D();
 		CBgfxTexture2D(const std::string& s);

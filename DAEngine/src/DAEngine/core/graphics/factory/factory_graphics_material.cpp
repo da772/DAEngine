@@ -8,10 +8,10 @@
 #include "DAEngine/platform/graphics/vulkan/material/vulkan_graphics_material_cubemap.h"
 #endif
 
-namespace da::core
+namespace da::graphics
 {
 
-	da::core::CMaterial* CMaterialFactory::CreatePBR(CGraphicsPipeline& pipeline
+	da::graphics::CMaterial* CMaterialFactory::CreatePBR(CGraphicsPipeline& pipeline
 		, const std::string& albedo
 		, const std::string& normal
 		, const std::string& roughness
@@ -25,7 +25,7 @@ namespace da::core
 		return nullptr;
 	}
 
-	da::core::CMaterial* CMaterialFactory::CreateCubeMap(CGraphicsPipeline& pipeline, const std::string& albedo)
+	da::graphics::CMaterial* CMaterialFactory::CreateCubeMap(CGraphicsPipeline& pipeline, const std::string& albedo)
 	{
 #ifdef DA_GRAPHICS_VULKAN
 		return new da::platform::CVulkanGraphicsMaterialCubeMap(pipeline, albedo);

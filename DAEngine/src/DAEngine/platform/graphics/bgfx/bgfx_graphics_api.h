@@ -24,7 +24,7 @@ namespace da::platform {
 		Web,
 	};
 
-	class CbgfxGraphicsApi : public da::core::CGraphicsApi
+	class CbgfxGraphicsApi : public da::graphics::CGraphicsApi
 	{
 	public:
 		CbgfxGraphicsApi(core::CWindow* windowModule);
@@ -37,8 +37,8 @@ namespace da::platform {
 		static const char* renderApiToString(ERenderApis api);
 
 	public:
-		virtual void setClearColor(uint32_t target, da::core::EGraphicsClear clear, Vector4u8 color) override;
-		virtual void submitPipeline(da::core::CGraphicsPipeline* pipeline);
+		virtual void setClearColor(uint32_t target, da::graphics::EGraphicsClear clear, Vector4u8 color) override;
+		virtual void submitPipeline(da::graphics::CGraphicsPipeline* pipeline);
 	private:
 		void windowResize(const da::core::events::CEvent& event);
 #ifdef DA_DEBUG

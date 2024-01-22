@@ -9,7 +9,7 @@ namespace da::platform
 
 	class CImGuiBgfxApi : public core::CImGuiApi {
 	public:
-		CImGuiBgfxApi(core::CGraphicsApi* graphicsApi);
+		CImGuiBgfxApi(graphics::CGraphicsApi* graphicsApi);
 		~CImGuiBgfxApi();
 
 		virtual void onInitialize() override;

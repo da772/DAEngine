@@ -1,7 +1,7 @@
 #pragma once
 #include "daengine/core/graphics/graphics_texture2d.h"
 
-namespace da::core
+namespace da::graphics
 {
 	class CTexture2DFactory
 	{

@@ -15,7 +15,7 @@
 
 namespace da::platform
 {
-	CVulkanGraphicsMaterial::CVulkanGraphicsMaterial(da::core::CGraphicsPipeline& pipeline) :
+	CVulkanGraphicsMaterial::CVulkanGraphicsMaterial(da::graphics::CGraphicsPipeline& pipeline) :
 		m_vulkanPipeline(*dynamic_cast<CVulkanGraphicsPipeline*>(&pipeline)),
 		m_vulkanApi(*dynamic_cast<CVulkanGraphicsApi*>(&m_vulkanPipeline.getGraphicsApi()))
 	{

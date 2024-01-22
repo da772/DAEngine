@@ -171,18 +171,23 @@ namespace da::platform {
 
 			// Shadow map pass
 			for (size_t x = 0; x < container.getCount(); x++) {
-				da::core::CSmeshComponent* mesh = container.getComponentAtIndex<da::core::CSmeshComponent>(x);
+				da::core::CSmeshComponent* meshComponent = container.getComponentAtIndex<da::core::CSmeshComponent>(x);
+                glm::mat4 model = meshComponent->getParent().getTransform().matrix();
 
-				glm::mat4 model = mesh->getParent().getTransform().matrix();
-				::bgfx::setTransform(glm::value_ptr(model));
-				::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getStaticMesh()->getNativeVB()));
-				::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getStaticMesh()->getNativeIB()));
-				::bgfx::setState((m_shadow.useShadowSampler() ? 0 : BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A)
-					| BGFX_STATE_WRITE_Z
-					| BGFX_STATE_DEPTH_TEST_LESS
-					| BGFX_STATE_CULL_CCW
-					| BGFX_STATE_MSAA);
-				::bgfx::submit(vShadow + i, { m_shadow.getMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
+                    const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+                    ASSERT(mesh);
+
+                    ::bgfx::setTransform(glm::value_ptr(model));
+                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                    ::bgfx::setState((m_shadow.useShadowSampler() ? 0 : BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A)
+                        | BGFX_STATE_WRITE_Z
+                        | BGFX_STATE_DEPTH_TEST_LESS
+                        | BGFX_STATE_CULL_CCW
+                        | BGFX_STATE_MSAA);
+                    ::bgfx::submit(vShadow + i, { m_shadow.getMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                }
 			}
         }
 
@@ -251,24 +256,27 @@ namespace da::platform {
 
         // Render pass
         for (size_t i = 0; i < container.getCount(); i++) {
-            da::core::CSmeshComponent* mesh = container.getComponentAtIndex<da::core::CSmeshComponent>(i);
-            
-            glm::mat4 model = mesh->getParent().getTransform().matrix();
-            ::bgfx::setTransform(glm::value_ptr(model));
-            setNormalMatrix(model);
-            ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getStaticMesh()->getNativeVB()));
-            ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getStaticMesh()->getNativeIB()));
-            da::platform::CBgfxPbrMaterial* material = (da::platform::CBgfxPbrMaterial*)mesh->getMaterial();
-            m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
-            uint64_t materialState = m_pbr.bindMaterial(*material->getMaterial());
-            for (size_t s = 0; s < m_shadow.getShadowMapsCount(); s++) {
-                ::bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + s, m_shadow.getShadowMaps().ShadowMaps[s].Uniform, m_shadow.getShadowMaps().ShadowMaps[s].Texture);
+            da::core::CSmeshComponent* meshComponent = container.getComponentAtIndex<da::core::CSmeshComponent>(i);
+            glm::mat4 model = meshComponent->getParent().getTransform().matrix();
+           
+            for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
+                da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+                ::bgfx::setTransform(glm::value_ptr(model));
+                setNormalMatrix(model);
+                ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                da::platform::CBgfxPbrMaterial* material = (da::platform::CBgfxPbrMaterial*)meshComponent->getMaterial();
+                m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
+                uint64_t materialState = m_pbr.bindMaterial(*material->getMaterial());
+                for (size_t s = 0; s < m_shadow.getShadowMapsCount(); s++) {
+                    ::bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + s, m_shadow.getShadowMaps().ShadowMaps[s].Uniform, m_shadow.getShadowMaps().ShadowMaps[s].Texture);
+                }
+
+                //BGFX_STATE_PT_LINES
+                ::bgfx::setState(state | materialState);
+                // preserve buffer bindings between submit calls
+                ::bgfx::submit(vLighting, program, 0, ~BGFX_DISCARD_BINDINGS);
             }
-            
-            //BGFX_STATE_PT_LINES
-			::bgfx::setState(state | materialState);
-            // preserve buffer bindings between submit calls
-            ::bgfx::submit(vLighting, program, 0, ~BGFX_DISCARD_BINDINGS);
         }
 
         ::bgfx::discard(BGFX_DISCARD_ALL);

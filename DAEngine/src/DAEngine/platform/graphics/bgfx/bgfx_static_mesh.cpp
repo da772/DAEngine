@@ -10,23 +10,33 @@ namespace da::platform
 
 	CBgfxStaticMesh::CBgfxStaticMesh(const std::string& path) : CStaticMesh(path)
 	{
-		m_vbh = ::bgfx::createVertexBuffer(
-			// Static data can be passed with ::bgfx::makeRef
-			::bgfx::makeRef(getVertices().data(), getVertices().size() * sizeof(da::core::FVertexBase))
-			, CBgfxStaticMesh::getLayout()
-			, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
-		);
+		m_vbh.reserve(m_meshes.size());
+		m_ibh.reserve(m_meshes.size());
+		for (size_t i = 0; i < m_meshes.size(); i++) {
+			const da::graphics::FMesh& mesh = m_meshes[i];
 
-		LOG_ASSERT(::bgfx::isValid(m_vbh), ELogChannel::Platform, "Failed to create VBH for %s", path.c_str());
+			::bgfx::VertexBufferHandle vbh = ::bgfx::createVertexBuffer(
+				// Static data can be passed with ::bgfx::makeRef
+				::bgfx::makeRef(mesh.Vertices.data(), mesh.Vertices.size() * sizeof(da::graphics::FVertexBase))
+				, CBgfxStaticMesh::getLayout()
+				, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
+			);
 
-		// Create static index buffer for triangle list rendering.
-		m_ibh = ::bgfx::createIndexBuffer(
-			// Static data can be passed with ::bgfx::makeRef
-			::bgfx::makeRef(getIndices().data(), sizeof(uint32_t) * getIndices().size())
-			, BGFX_BUFFER_INDEX32
-		);
+			m_vbh.push_back(vbh);
 
-		LOG_ASSERT(::bgfx::isValid(m_ibh), ELogChannel::Platform, "Failed to create IBH for %s", path.c_str());
+			LOG_ASSERT(::bgfx::isValid(vbh), ELogChannel::Platform, "Failed to create VBH for %s", path.c_str());
+
+			// Create static index buffer for triangle list rendering.
+			::bgfx::IndexBufferHandle ibh = ::bgfx::createIndexBuffer(
+				// Static data can be passed with ::bgfx::makeRef
+				::bgfx::makeRef(mesh.Indices.data(), sizeof(uint32_t) * mesh.Indices.size())
+				, BGFX_BUFFER_INDEX32
+			);
+
+			m_ibh.push_back(ibh);
+
+			LOG_ASSERT(::bgfx::isValid(ibh), ELogChannel::Platform, "Failed to create IBH for %s", path.c_str());
+		}
 	}
 
 	bgfx::VertexLayout CBgfxStaticMesh::getLayout()
@@ -43,26 +53,34 @@ namespace da::platform
 		return s_layout;
 	}
 
-	void* CBgfxStaticMesh::getNativeIB() const
-	{
-		return (void*) &m_ibh;
-	}
-
-	void* CBgfxStaticMesh::getNativeVB() const
-	{
-		return (void*)&m_vbh;
-	}
-
 	CBgfxStaticMesh::~CBgfxStaticMesh()
 	{
-		BGFXDESTROY(m_ibh);
-		BGFXDESTROY(m_vbh);
+		for (size_t i = 0; i < m_vbh.size(); i++) {
+			BGFXDESTROY(m_vbh[i]);
+		}
+
+		for (size_t i = 0; i < m_ibh.size(); i++) {
+			BGFXDESTROY(m_ibh[i]);
+		}
+		
 	}
 
-	void CBgfxStaticMesh::setBuffers(uint8_t stream)
+	void CBgfxStaticMesh::setBuffers(size_t index, uint8_t stream)
 	{
-		::bgfx::setVertexBuffer(stream, m_vbh);
-		::bgfx::setIndexBuffer(m_ibh);
+		::bgfx::setVertexBuffer(stream, m_vbh[index]);
+		::bgfx::setIndexBuffer(m_ibh[index]);
+	}
+
+	const void* CBgfxStaticMesh::getNativeVBIndex(size_t index) const
+	{
+		ASSERT(m_vbh.size() >= index);
+		return &m_vbh[index];
+	}
+
+	const void* CBgfxStaticMesh::getNativeIBIndex(size_t index) const
+	{
+		ASSERT(m_ibh.size() >= index);
+		return &m_ibh[index];
 	}
 
 }

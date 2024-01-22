@@ -10,7 +10,7 @@ namespace da::platform
 {
 	class CImGuiVulkanApi : public core::CImGuiApi {
 	public:
-		CImGuiVulkanApi(core::CGraphicsApi* graphicsApi);
+		CImGuiVulkanApi(graphics::CGraphicsApi* graphicsApi);
 
 		virtual void onInitialize() override;
 		virtual void onUpdate() override;

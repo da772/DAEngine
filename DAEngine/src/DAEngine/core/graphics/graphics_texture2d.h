@@ -2,7 +2,7 @@
 #include "DAEngine/Core/containers.h"
 #include "DAEngine/core/graphics/graphics_api.h"
 
-namespace da::core
+namespace da::graphics
 {
 	class CGraphicsTexture2D
 	{

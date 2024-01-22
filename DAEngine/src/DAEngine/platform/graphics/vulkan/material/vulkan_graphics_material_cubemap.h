@@ -8,7 +8,7 @@ namespace da::platform
 	class CVulkanGraphicsMaterialCubeMap: public CVulkanGraphicsMaterial
 	{
 	public:
-		CVulkanGraphicsMaterialCubeMap(da::core::CGraphicsPipeline& pipeline
+		CVulkanGraphicsMaterialCubeMap(da::graphics::CGraphicsPipeline& pipeline
 			, const std::string& texture);
 
 		virtual void initialize() override;

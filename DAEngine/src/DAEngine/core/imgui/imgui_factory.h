@@ -6,7 +6,7 @@ namespace da::core {
 
 	class CImGuiFactory {
 	public:
-		static CImGuiApi* Create(CGraphicsApi* graphicsApi);
+		static CImGuiApi* Create(graphics::CGraphicsApi* graphicsApi);
 	};
 
 }

@@ -2,7 +2,7 @@
 #include "daengine/core/window/window.h"
 
 
-namespace da::core
+namespace da::graphics
 {
 	class CGraphicsPipeline;
 
@@ -23,7 +23,7 @@ namespace da::core
 	class CGraphicsApi
 	{
 	public:
-		CGraphicsApi(CWindow* nativeWindow);
+		CGraphicsApi(da::core::CWindow* nativeWindow);
 		virtual ~CGraphicsApi();
 
 		inline virtual void initialize() {};
@@ -32,14 +32,14 @@ namespace da::core
 		inline virtual void shutdown() {};
 
 	public:
-		inline virtual void setClearColor(uint32_t target, da::core::EGraphicsClear clear, Vector4u8 color) {};
+		inline virtual void setClearColor(uint32_t target, EGraphicsClear clear, Vector4u8 color) {};
 		virtual void submitPipeline(CGraphicsPipeline* pipeline) = 0;
 
 	public:
-		inline CWindow* getWindow() const { return m_nativeWindow; }
+		inline da::core::CWindow* getWindow() const { return m_nativeWindow; }
 
 	protected:
-		CWindow* m_nativeWindow;
+		da::core::CWindow* m_nativeWindow;
 
 	};
 }

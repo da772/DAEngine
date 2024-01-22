@@ -2,7 +2,7 @@
 
 #include "DAEngine/core/graphics/graphics_pipeline.h"
 
-namespace da::core {
+namespace da::graphics {
 
 	class CGraphicsPipelineFactory
 	{

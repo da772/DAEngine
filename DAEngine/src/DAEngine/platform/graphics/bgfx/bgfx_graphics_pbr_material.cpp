@@ -7,11 +7,16 @@
 
 namespace da::platform {
 
-	CBgfxPbrMaterial::CBgfxPbrMaterial(const std::string& vsShader, const std::string& fsShader, const std::string& albedo, const std::string& normal, const std::string& roughness)
+	CBgfxPbrMaterial::CBgfxPbrMaterial(const std::string& vsShader, const std::string& fsShader, const std::string& albedo, const std::string& normal, const std::string& roughness, const std::string& emissive)
 	{
 		m_albedo = new da::platform::bgfx::CBgfxTexture2D(albedo);
 		m_normal = new da::platform::bgfx::CBgfxTexture2D(normal);
 		m_roughness = new da::platform::bgfx::CBgfxTexture2D(roughness);
+		if (emissive != "")
+		{
+			m_emissive = new da::platform::bgfx::CBgfxTexture2D(emissive);
+		}
+		
 		m_material = new CBgfxMaterial();
 	}
 
@@ -19,9 +24,14 @@ namespace da::platform {
 	void CBgfxPbrMaterial::initialize()
 	{
 		m_material->baseColorTexture = { m_albedo->getHandle() };
-		m_material->doubleSided = false;
+		m_material->doubleSided = true;
 		m_material->normalTexture = { m_normal->getHandle() };
 		m_material->metallicRoughnessTexture = { m_roughness->getHandle() };
+		if (m_emissive)
+		{
+			m_material->emissiveTexture = { m_emissive->getHandle() };
+			m_material->emissiveFactor = { 1.f,1.f,1.f };
+		}
 	}
 
 	void CBgfxPbrMaterial::update(int frame)

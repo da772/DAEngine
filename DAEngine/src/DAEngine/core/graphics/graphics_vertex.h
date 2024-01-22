@@ -1,7 +1,7 @@
 #pragma once
 #include "daengine/core/containers.h"
 
-namespace da::core
+namespace da::graphics
 {
 	struct FVertexBindingDescription {
 		unsigned int binding, stride, inputRate;
@@ -82,9 +82,9 @@ namespace da::core
 }
 
 namespace std {
-	template<> struct hash<da::core::FVertexBase> {
-		size_t operator()(da::core::FVertexBase const& vertex) const {
-			return CHashString((const char*)&vertex, sizeof(da::core::FVertexBase)).hash();
+	template<> struct hash<da::graphics::FVertexBase> {
+		size_t operator()(da::graphics::FVertexBase const& vertex) const {
+			return CHashString((const char*)&vertex, sizeof(da::graphics::FVertexBase)).hash();
 		}
 	};
 };

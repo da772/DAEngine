@@ -93,9 +93,9 @@ public:
 private:
 	da::modules::CGraphicsModule* m_graphicsModule;
 	da::modules::CGraphicsModule* m_graphicsModule2;
-	da::core::CMaterial* m_boltMat = 0;
-	da::core::CMaterial* m_cubeMat = 0;
-	da::core::CMaterial* m_cubeMat2 = 0;
+	da::graphics::CMaterial* m_boltMat = 0;
+	da::graphics::CMaterial* m_cubeMat = 0;
+	da::graphics::CMaterial* m_cubeMat2 = 0;
 	da::modules::CWindowModule* m_window = 0;
 	da::core::CEntity* e1,* e2, *e3, *e4;
 	bool m_showScriptDebug = false;
@@ -110,6 +110,7 @@ protected:
 #endif
 
 		da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid::Generate()));
+		
 		e1 = da::core::CSceneManager::getScene()->createEntity();
 		e1->setTag(HASHSTR("bolt cutter"));
 		da::core::FComponentRef<da::core::CTestComponent> tst1 = e1->addComponent<da::core::CTestComponent>("helloworld1", "helloworld2");
@@ -118,6 +119,7 @@ protected:
 		tst11->data1 = "883818";
 		tst1->initialize();
 		LOG_DEBUG(da::ELogChannel::Application, "%s, %s", tst1->data1.c_str(), tst1->data2.c_str());
+
 		e2 = da::core::CSceneManager::getScene()->createEntity();
 		da::core::FComponentRef<da::core::CTestComponent> tst2 = e2->addComponent<da::core::CTestComponent>("helloworld3", "helloworld4");
 		da::core::FComponentRef<da::core::CTestComponent> tst22 = e1->getComponent<da::core::CTestComponent>();
@@ -135,22 +137,24 @@ protected:
 		da::platform::CBgfxPbrMaterial* mat3 = new da::platform::CBgfxPbrMaterial("", ""
 			, "assets/rifle/Textures/Albedo.png"
 			, "assets/rifle/Textures/Normal.png"
-			, "assets/rifle/Textures/Metallic.png");
+			, "assets/rifle/Textures/Metallic.png"
+			, "assets/rifle/Textures/Emission.png");
 		e3->addComponent<da::core::CSmeshComponent>("assets/rifle/Rifle.fbx", mat3);
 		e3->setTag(HASHSTR("Rifle"));
 		e3->getTransform().setPosition({ 0,-5.f,5.f });
 		e3->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-
+		
 		da::platform::CBgfxPbrMaterial* mat4 = new da::platform::CBgfxPbrMaterial("", ""
-			, "assets/coffeeA.png"
-			, "assets/coffeeN.png"
-			, "assets/coffeeR.png");
+			, "assets/pistol/Textures/Variation01/Pistol_01_Albedo.png"
+			, "assets/pistol/Textures/Shared/Pistol_Normal.png"
+			, "assets/pistol/Textures/Variation01/Pistol_01_Metallic.png"
+			, "assets/pistol/Textures/Shared/Pistol_Emission.png");
 		e4 = da::core::CSceneManager::getScene()->createEntity();
-		e4->addComponent<da::core::CSmeshComponent>("assets/coffee.fbx", mat4);
-		e4->setTag(HASHSTR("Room"));
-		e4->getTransform().setPosition({ 0,-5.f,5.f });
+		e4->addComponent<da::core::CSmeshComponent>("assets/pistol/pistol.fbx", mat4);
+		e4->setTag(HASHSTR("Pistol"));
+		e4->getTransform().setPosition({ 0,5.f,5.f });
 		e4->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
@@ -160,42 +164,11 @@ protected:
 			, "assets/tile/tiles_roughness.jpg");
 		e2->getTransform().setPosition({ 0,0,0 });
 		e2->setTag(HASHSTR("plane"));
-		e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx", mat2);
+		e2->addComponent<da::core::CSmeshComponent>("assets/city/city.fbx", mat2);
 
 		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
 		return;
-		{
-			
-			{
-				auto cubeMapPipeline = da::core::CGraphicsPipelineFactory::CreateCubeMap(*m_graphicsModule->getGraphicsApi());
-				m_graphicsModule->getGraphicsApi()->submitPipeline(cubeMapPipeline);
-				da::core::CStaticMesh* skybox = new da::core::CStaticMeshCube();
-				m_cubeMat = da::core::CMaterialFactory::CreateCubeMap(*cubeMapPipeline, "assets/cubemap.ktx");
-				cubeMapPipeline->addRenderable(skybox, m_cubeMat);
-			}
-
-			{
-				auto pipeline = da::core::CGraphicsPipelineFactory::CreatePBR(*m_graphicsModule->getGraphicsApi());
-				m_graphicsModule->getGraphicsApi()->submitPipeline(pipeline);
-				da::core::CStaticMesh* model4 = new da::core::CStaticMesh("assets/bolt.fbx");
-				da::core::CStaticMesh* modelCube = new da::core::CStaticMeshCube();
-				m_boltMat = da::core::CMaterialFactory::CreatePBR(*pipeline, "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg", "assets/boltM.jpg", "assets/boltAO.jpg");
-				m_cubeMat2 = da::core::CMaterialFactory::CreatePBR(*pipeline);
-
-				m_boltMat->Position = da::Vector3f(0.5f, 0.0f, -.5f);
-				m_boltMat->Scale = da::Vector3f(0.25f, 0.25f, .25f);
-				m_boltMat->RotationSpeed = 0.f;//20.f;
-				m_boltMat->Rotation.z = 90.f;
-				m_cubeMat2->Position = da::Vector3f(0.0f, 0.f, 0.f);
-				m_cubeMat2->Scale = da::Vector3f(1.f , 1.f, 1.f);
-				//pipeline->addRenderable(model, mat1);
-				//pipeline->addRenderable(model2, mat2);
-				//pipeline->addRenderable(model3, at3);
-				pipeline->addRenderable(model4, m_boltMat);
-				//pipeline->addRenderable(modelCube, m_cubeMat2);
-			}
-		}
-		
+	
 		
 #ifdef WINDOW_2
 		{

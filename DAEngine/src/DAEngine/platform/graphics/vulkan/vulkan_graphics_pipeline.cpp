@@ -25,9 +25,9 @@ namespace da::platform {
 	}
 
 
-	CVulkanGraphicsPipeline::CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const std::string& vertexShader, const std::string& fragShader, core::FVertexBindingDescription vertexBinding,
-		const std::vector<core::FVertexInputAttributeDescription>& inputAttribDesc) :
-		core::CGraphicsPipeline(graphicsApi, vertexShader, fragShader, vertexBinding, inputAttribDesc), m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
+	CVulkanGraphicsPipeline::CVulkanGraphicsPipeline(graphics::CGraphicsApi& graphicsApi, const std::string& vertexShader, const std::string& fragShader, graphics::FVertexBindingDescription vertexBinding,
+		const std::vector<graphics::FVertexInputAttributeDescription>& inputAttribDesc) :
+		graphics::CGraphicsPipeline(graphicsApi, vertexShader, fragShader, vertexBinding, inputAttribDesc), m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
 	{
 		
 	}
@@ -286,7 +286,7 @@ namespace da::platform {
 		}
 	}
 
-	da::platform::FVulkanMeshData CVulkanGraphicsPipeline::createMeshData(da::core::IRenderable* renderable, da::core::CMaterial* material) const
+	da::platform::FVulkanMeshData CVulkanGraphicsPipeline::createMeshData(da::graphics::IRenderable* renderable, da::graphics::CMaterial* material) const
 	{
 		FVulkanMeshData meshData;
 		ASSERT(renderable);
@@ -295,7 +295,7 @@ namespace da::platform {
 		meshData.Renderable = renderable;
 
 		{
-			VkDeviceSize bufferSize = sizeof(core::FVertexBase) * renderable->getVertices().size();
+			VkDeviceSize bufferSize = sizeof(graphics::FVertexBase) * renderable->getVertices().size();
 
 			VkBuffer stagingBuffer;
 			VkDeviceMemory stagingBufferMemory;

@@ -7,7 +7,7 @@ namespace da::platform
 	class CVulkanGraphicsPipelinePBR : public CVulkanGraphicsPipeline
 	{
 	public:
-		CVulkanGraphicsPipelinePBR(da::core::CGraphicsApi& pipeline);
+		CVulkanGraphicsPipelinePBR(da::graphics::CGraphicsApi& pipeline);
 
 	protected:
 		virtual std::vector<VkDescriptorSetLayoutBinding> addDescriptorSets() override;

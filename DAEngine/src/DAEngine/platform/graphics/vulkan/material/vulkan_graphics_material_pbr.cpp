@@ -9,7 +9,7 @@
 
 namespace da::platform
 {
-	CVulkanGraphicsMaterialPBR::CVulkanGraphicsMaterialPBR(da::core::CGraphicsPipeline& pipeline
+	CVulkanGraphicsMaterialPBR::CVulkanGraphicsMaterialPBR(da::graphics::CGraphicsPipeline& pipeline
 		, const std::string& albedo
 		, const std::string& normal
 		, const std::string& roughness

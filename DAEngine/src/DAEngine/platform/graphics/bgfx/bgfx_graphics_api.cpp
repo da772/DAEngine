@@ -284,7 +284,7 @@ namespace da::platform {
 		m_initialized = false;
 	}
 
-	void CbgfxGraphicsApi::submitPipeline(da::core::CGraphicsPipeline* pipeline)
+	void CbgfxGraphicsApi::submitPipeline(da::graphics::CGraphicsPipeline* pipeline)
 	{
 
 	}
@@ -294,7 +294,7 @@ namespace da::platform {
         m_dirtyWindow = true;
 	}
 
-	void CbgfxGraphicsApi::setClearColor(uint32_t target, da::core::EGraphicsClear clear, Vector4u8 color)
+	void CbgfxGraphicsApi::setClearColor(uint32_t target, da::graphics::EGraphicsClear clear, Vector4u8 color)
 	{
 		ASSERT(m_initialized);
 		uint32_t c = 0;

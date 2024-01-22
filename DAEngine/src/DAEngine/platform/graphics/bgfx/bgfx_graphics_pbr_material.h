@@ -15,7 +15,7 @@ namespace da::platform {
 	{
 	public:
 
-		CBgfxPbrMaterial(const std::string& vsShader, const std::string& fsShader, const std::string& albedo, const std::string& normal, const std::string& roughness);
+		CBgfxPbrMaterial(const std::string& vsShader, const std::string& fsShader, const std::string& albedo, const std::string& normal, const std::string& roughness, const std::string& emissive = "");
 
 		virtual void initialize() override;
 		virtual void update(int frame) override;
@@ -25,7 +25,7 @@ namespace da::platform {
 
 
 	private:
-		da::platform::bgfx::CBgfxTexture2D * m_albedo, * m_normal, * m_roughness;
+		da::platform::bgfx::CBgfxTexture2D * m_albedo = nullptr, * m_normal = nullptr, * m_roughness = nullptr, *m_emissive = nullptr;
 		CBgfxMaterial* m_material;
 	};
 }

@@ -3,10 +3,15 @@
 #include "component.h"
 #include "daengine/asset/asset.h"
 
-namespace da::core
+namespace da::graphics
 {
 	class CStaticMesh;
 	class CMaterial;
+}
+
+namespace da::core
+{
+	
 
 	class CSmeshComponent {
 #ifdef DA_DEBUG
@@ -16,20 +21,20 @@ namespace da::core
 #endif
 
 	public:
-		CSmeshComponent(const std::string& meshPath, CMaterial* material, CEntity& parent);
+		CSmeshComponent(const std::string& meshPath, da::graphics::CMaterial* material, CEntity& parent);
 
 		void onInitialize();
 		void onUpdate(float dt);
 		void onShutdown();
-		CStaticMesh* getStaticMesh() const;
-		CMaterial* getMaterial() const;
+		da::graphics::CStaticMesh* getStaticMesh() const;
+		da::graphics::CMaterial* getMaterial() const;
 #ifdef DA_DEBUG
 		void onDebugRender();
 #endif
 
 	private:
-		CStaticMesh* m_staticMesh;
-		CMaterial* m_material;
+		da::graphics::CStaticMesh* m_staticMesh;
+		da::graphics::CMaterial* m_material;
 
 	};
 }

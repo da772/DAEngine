@@ -3,7 +3,7 @@
 #include "daengine/core/graphics/graphics_api.h"
 #include "daengine/core/graphics/graphics_vertex.h"
 
-namespace da::core {
+namespace da::graphics {
 
 	class IRenderable;
 	class CMaterial;
@@ -17,7 +17,7 @@ namespace da::core {
 		inline virtual void create() {};
 		inline virtual void destroy() {};
 		inline virtual void update(int frame) {};
-		inline virtual void addRenderable(da::core::IRenderable* renderable, da::core::CMaterial* material) {};
+		inline virtual void addRenderable(IRenderable* renderable, CMaterial* material) {};
 
 		inline CGraphicsApi& getGraphicsApi() { return m_graphicsApi; };
 

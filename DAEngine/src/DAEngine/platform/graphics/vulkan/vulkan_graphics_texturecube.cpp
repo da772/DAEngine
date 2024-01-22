@@ -6,7 +6,7 @@
 
 namespace da::platform {
 
-	CVulkanGraphicsTextureCube::CVulkanGraphicsTextureCube(const std::string& path, da::core::CGraphicsApi& graphicsApi)
+	CVulkanGraphicsTextureCube::CVulkanGraphicsTextureCube(const std::string& path, da::graphics::CGraphicsApi& graphicsApi)
 		: 
 		CGraphicsTextureCube(path, graphicsApi),
 		m_vulkanGraphicsApi(*dynamic_cast<CVulkanGraphicsApi*>(&m_graphicsApi))

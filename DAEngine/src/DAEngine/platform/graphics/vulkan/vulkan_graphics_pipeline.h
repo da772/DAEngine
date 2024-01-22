@@ -18,16 +18,16 @@ namespace da::platform
 		VkBuffer IndexBuffer;
 		VkDeviceMemory VertexMemory;
 		VkDeviceMemory IndexMemory;
-		da::core::IRenderable* Renderable;
-		da::core::CMaterial* Material;
+		da::graphics::IRenderable* Renderable;
+		da::graphics::CMaterial* Material;
 	};
 
-	class CVulkanGraphicsPipeline : public core::CGraphicsPipeline
+	class CVulkanGraphicsPipeline : public graphics::CGraphicsPipeline
 	{
 	public:
-		CVulkanGraphicsPipeline(core::CGraphicsApi& graphicsApi, const std::string& vertexShader, const std::string& fragShader, 
-			core::FVertexBindingDescription vertexBinding,
-			const std::vector<core::FVertexInputAttributeDescription>& inputAttribDesc);
+		CVulkanGraphicsPipeline(graphics::CGraphicsApi& graphicsApi, const std::string& vertexShader, const std::string& fragShader, 
+			graphics::FVertexBindingDescription vertexBinding,
+			const std::vector<graphics::FVertexInputAttributeDescription>& inputAttribDesc);
 
 		virtual void create() override;
 		virtual void destroy() override;
@@ -46,11 +46,11 @@ namespace da::platform
 			return m_descriptorSetLayout;
 		}
 
-		inline virtual void addRenderable(da::core::IRenderable* renderable, da::core::CMaterial* material) override{
+		inline virtual void addRenderable(da::graphics::IRenderable* renderable, da::graphics::CMaterial* material) override{
 			m_renderables.push_back(createMeshData(renderable, material));
 		}
 
-		inline void removeRenderable(da::core::IRenderable* renderable)
+		inline void removeRenderable(da::graphics::IRenderable* renderable)
 		{
 			const auto& it = std::find_if(m_renderables.begin(), m_renderables.end(), ([renderable](const FVulkanMeshData& data) {return data.Renderable == renderable; }));
 			if (it == m_renderables.end())
@@ -71,7 +71,7 @@ namespace da::platform
 	private:
 		void createGraphicsPipeline();
 		void createDescriptorSets();
-		FVulkanMeshData createMeshData(da::core::IRenderable* renderable, da::core::CMaterial* material) const;
+		FVulkanMeshData createMeshData(da::graphics::IRenderable* renderable, da::graphics::CMaterial* material) const;
 		VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice device);
 		std::vector<FVulkanMeshData> m_renderables;
 		CVulkanGraphicsApi& m_vulkanGraphicsApi;

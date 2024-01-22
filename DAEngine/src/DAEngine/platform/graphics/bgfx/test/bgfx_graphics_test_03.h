@@ -1,7 +1,8 @@
 #pragma once
 #ifdef DA_GRAPHICS_BGFX
 #include <bgfx/bgfx.h>
-namespace da::core { class CWindow; class CStaticMesh; class CCamera; }
+namespace da::core { class CWindow; class CCamera; }
+namespace da::graphics { class CStaticMesh; }
 
 namespace da::platform
 {
@@ -22,9 +23,9 @@ namespace da::platform
 		void screenSpaceQuad(float _textureWidth, float _textureHeight, float _texelHalf, bool _originBottomLeft, float _width = 1.0f, float _height = 1.0f);
 
 	private:
-		da::core::CStaticMesh* m_smesh;
-		da::core::CStaticMesh* m_sphereMesh;
-		da::core::CStaticMesh* m_cubeMesh;
+		da::graphics::CStaticMesh* m_smesh;
+		da::graphics::CStaticMesh* m_sphereMesh;
+		da::graphics::CStaticMesh* m_cubeMesh;
 		::bgfx::VertexBufferHandle m_vbh, m_spvbh, m_cbcvh;
 		::bgfx::IndexBufferHandle m_ibh, m_spibh, m_cbibh;
 

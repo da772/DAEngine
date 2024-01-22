@@ -97,7 +97,7 @@ namespace da::platform {
 		}
 	}
 
-	CVulkanGraphicsApi::CVulkanGraphicsApi(core::CWindow* windowModule) : core::CGraphicsApi(windowModule)
+	CVulkanGraphicsApi::CVulkanGraphicsApi(core::CWindow* windowModule) : graphics::CGraphicsApi(windowModule)
 	{
 		m_allocCallbacks = {
 	   nullptr,
@@ -1455,7 +1455,7 @@ namespace da::platform {
 			m_renderFunctions.erase(it);
 	}
 
-	void CVulkanGraphicsApi::submitPipeline(da::core::CGraphicsPipeline* pipeline)
+	void CVulkanGraphicsApi::submitPipeline(da::graphics::CGraphicsPipeline* pipeline)
 	{
 		CVulkanGraphicsPipeline* vkPipeline = dynamic_cast<CVulkanGraphicsPipeline*>(pipeline);
 		LOG_ASSERT(vkPipeline, ELogChannel::Graphics, "Failed to cast CGraphicsPipeline to CVulkangraphicsPipeline");

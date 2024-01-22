@@ -9,7 +9,7 @@
 
 namespace da::platform
 {
-	CVulkanGraphicsMaterialCubeMap::CVulkanGraphicsMaterialCubeMap(da::core::CGraphicsPipeline& pipeline
+	CVulkanGraphicsMaterialCubeMap::CVulkanGraphicsMaterialCubeMap(da::graphics::CGraphicsPipeline& pipeline
 		, const std::string& texture)
 		: CVulkanGraphicsMaterial(pipeline)
 		, m_texture(CVulkanGraphicsTextureCube(texture, pipeline.getGraphicsApi()))

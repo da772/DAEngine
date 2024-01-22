@@ -5,10 +5,10 @@
 
 namespace da::platform
 {
-	static std::vector<da::core::FVertexInputAttributeDescription> getAttributeDescriptions();
-	static da::core::FVertexBindingDescription getBindingDescriptions();
+	static std::vector<da::graphics::FVertexInputAttributeDescription> getAttributeDescriptions();
+	static da::graphics::FVertexBindingDescription getBindingDescriptions();
 
-	CVulkanGraphicsPipelineCubemap::CVulkanGraphicsPipelineCubemap(da::core::CGraphicsApi& pipeline) :
+	CVulkanGraphicsPipelineCubemap::CVulkanGraphicsPipelineCubemap(da::graphics::CGraphicsApi& pipeline) :
 		CVulkanGraphicsPipeline(pipeline
 			, "shaders/skybox.vert.spv"
 			, "shaders/skybox.frag.spv"
@@ -19,23 +19,23 @@ namespace da::platform
 
 	}
 
-	da::core::FVertexBindingDescription getBindingDescriptions()
+	da::graphics::FVertexBindingDescription getBindingDescriptions()
 	{
-		da::core::FVertexBindingDescription result;
+		da::graphics::FVertexBindingDescription result;
 		result.binding = 0;
-		result.stride = sizeof(da::core::FVertexBase);
+		result.stride = sizeof(da::graphics::FVertexBase);
 		result.inputRate = 0;
 		return result;
 	}
 
-	std::vector<da::core::FVertexInputAttributeDescription> getAttributeDescriptions()
+	std::vector<da::graphics::FVertexInputAttributeDescription> getAttributeDescriptions()
 	{
-		std::vector<da::core::FVertexInputAttributeDescription> attributeDescriptions(1);
+		std::vector<da::graphics::FVertexInputAttributeDescription> attributeDescriptions(1);
 		// Position
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;
 		attributeDescriptions[0].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106,
-		attributeDescriptions[0].offset = offsetof(da::core::FVertexBase, Pos);
+		attributeDescriptions[0].offset = offsetof(da::graphics::FVertexBase, Pos);
 
 		return attributeDescriptions;
 	}

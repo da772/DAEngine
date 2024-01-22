@@ -7,7 +7,7 @@ namespace da::platform
 	class CVulkanGraphicsMaterialPBR : public CVulkanGraphicsMaterial
 	{
 	public:
-		CVulkanGraphicsMaterialPBR(da::core::CGraphicsPipeline& pipeline
+		CVulkanGraphicsMaterialPBR(da::graphics::CGraphicsPipeline& pipeline
 			, const std::string& albedo
 			, const std::string& normal
 			, const std::string& roughness
