@@ -21,6 +21,8 @@ namespace da
 		const char* data();
 		const std::string path() const;
 
+		static bool exists(const char* file);
+
 	private:
 		void retrieveData();
 		void retrieveInfo();

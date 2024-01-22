@@ -2,6 +2,7 @@
 #include "asset.h"
 
 #include <iostream>
+#include <filesystem>
 
 
 namespace da
@@ -47,6 +48,11 @@ namespace da
 	const std::string CAsset::path() const
 	{
 		return m_path;
+	}
+
+	bool CAsset::exists(const char* file)
+	{
+		return std::filesystem::exists(file);
 	}
 
 	void CAsset::retrieveData()

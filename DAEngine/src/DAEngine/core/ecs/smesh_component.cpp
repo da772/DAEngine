@@ -14,14 +14,14 @@ namespace da::core {
 	COMPONENT_CPP(CSmeshComponent);
 #endif
 
-	CSmeshComponent::CSmeshComponent(const std::string& meshPath, da::graphics::CMaterial* material, CEntity& parent) : m_guid(CGuid::Generate()), m_material(material), m_parent(parent)
+	CSmeshComponent::CSmeshComponent(const std::string& meshPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
 	{
 		m_staticMesh = new da::platform::CBgfxStaticMesh(meshPath);
 	}
 
 	void CSmeshComponent::onInitialize()
 	{
-		m_material->initialize();
+		
 	}
 
 	void CSmeshComponent::onUpdate(float dt)
@@ -34,18 +34,11 @@ namespace da::core {
 	void CSmeshComponent::onShutdown()
 	{
 		delete m_staticMesh;
-		m_material->shutdown();
-		delete m_material;
 	}
 
 	da::graphics::CStaticMesh* CSmeshComponent::getStaticMesh() const
 	{
 		return m_staticMesh;
-	}
-
-	da::graphics::CMaterial* CSmeshComponent::getMaterial() const
-	{
-		return m_material;
 	}
 
 #ifdef DA_DEBUG

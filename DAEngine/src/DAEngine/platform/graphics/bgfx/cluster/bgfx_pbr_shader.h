@@ -2,6 +2,7 @@
 
 #include <bgfx/bgfx.h>
 #include <glm/glm.hpp>
+#include <core/graphics/graphics_material_data.h>
 
 namespace da::platform
 {
@@ -16,7 +17,7 @@ namespace da::platform
 
         void generateAlbedoLUT();
 
-        uint64_t bindMaterial(const CBgfxMaterial& material);
+        uint64_t bindMaterial(const da::graphics::FMaterialData& materialData);
         void bindAlbedoLUT(bool compute = false);
         void bindLightPos(const glm::vec3& pos, const glm::mat4* mtx);
 

@@ -128,45 +128,42 @@ protected:
 
         e2->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
 		e1->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
-		da::platform::CBgfxPbrMaterial* mat = new da::platform::CBgfxPbrMaterial("", "", "assets/boltA.jpg", "assets/boltN.png", "assets/boltR.jpg");
 		e1->getTransform().setPosition({ 0,0,1.5f });
-		e1->addComponent<da::core::CSmeshComponent>("assets/bolt.fbx", mat);
+		da::core::FComponentRef<da::core::CSmeshComponent> c = e1->addComponent<da::core::CSmeshComponent>("assets/bolt.fbx");
+		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/boltA.jpg");
+		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/boltN.png");
+		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/boltR.jpg");
 
 
 		e3 = da::core::CSceneManager::getScene()->createEntity();
-		da::platform::CBgfxPbrMaterial* mat3 = new da::platform::CBgfxPbrMaterial("", ""
-			, "assets/rifle/Textures/Albedo.png"
-			, "assets/rifle/Textures/Normal.png"
-			, "assets/rifle/Textures/Metallic.png"
-			, "assets/rifle/Textures/Emission.png");
-		e3->addComponent<da::core::CSmeshComponent>("assets/rifle/Rifle.fbx", mat3);
+		c = e3->addComponent<da::core::CSmeshComponent>("assets/rifle/Rifle.fbx");
+		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Albedo.png");
+		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Normal.png");
+		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Metallic.png");
+		c->getStaticMesh()->getMaterial(0).emissiveTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Emission.png");
+
 		e3->setTag(HASHSTR("Rifle"));
 		e3->getTransform().setPosition({ 0,-5.f,5.f });
 		e3->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-		
-		da::platform::CBgfxPbrMaterial* mat4 = new da::platform::CBgfxPbrMaterial("", ""
-			, "assets/pistol/Textures/Variation01/Pistol_01_Albedo.png"
-			, "assets/pistol/Textures/Shared/Pistol_Normal.png"
-			, "assets/pistol/Textures/Variation01/Pistol_01_Metallic.png"
-			, "assets/pistol/Textures/Shared/Pistol_Emission.png");
 		e4 = da::core::CSceneManager::getScene()->createEntity();
-		e4->addComponent<da::core::CSmeshComponent>("assets/pistol/pistol.fbx", mat4);
+		c = e4->addComponent<da::core::CSmeshComponent>("assets/pistol/pistol.fbx");
+		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/pistol/Textures/Variation01/Pistol_01_Albedo.png");
+		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/pistol/Textures/Shared/Pistol_Normal.png");
+		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/pistol/Textures/Variation01/Pistol_01_Metallic.png");
+		c->getStaticMesh()->getMaterial(0).emissiveTexture = da::graphics::CTexture2DFactory::Create("assets/pistol/Textures/Shared/Pistol_Emission.png");
 		e4->setTag(HASHSTR("Pistol"));
 		e4->getTransform().setPosition({ 0,5.f,5.f });
 		e4->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-		da::platform::CBgfxPbrMaterial* mat2 = new da::platform::CBgfxPbrMaterial("", ""
-			, "assets/tile/tiles_color.jpg"
-			, "assets/tile/tiles_normal.png"
-			, "assets/tile/tiles_roughness.jpg");
 		e2->getTransform().setPosition({ 0,0,0 });
 		e2->setTag(HASHSTR("plane"));
-		e2->addComponent<da::core::CSmeshComponent>("assets/city/city.fbx", mat2);
-
-		//m_graphicsModule->getGraphicsApi()->setClearColor(0, da::core::EGraphicsClear::Color | da::core::EGraphicsClear::Depth, { 255,0,0,255 });
+		c = e2->addComponent<da::core::CSmeshComponent>("assets/city/city.fbx");
+		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/tile/tiles_color.jpg");
+		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/tile/tiles_normal.png");
+		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/tile/tiles_roughness.jpg");
 		return;
 	
 		

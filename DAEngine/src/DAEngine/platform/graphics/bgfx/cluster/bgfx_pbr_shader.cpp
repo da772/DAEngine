@@ -7,6 +7,7 @@
 #include <bimg/encode.h>
 #include <bx/file.h>
 #include <glm/gtc/type_ptr.hpp>
+#include "core/graphics/graphics_texture2d.h"
 #include "platform\graphics\bgfx\bgfx_graphics_material.h"
 #include "bgfx_shadow_shader.h"
 
@@ -90,7 +91,7 @@ namespace da::platform {
         bgfx::dispatch(0, {m_pAlbedoLUTProgram->getHandle()}, ALBEDO_LUT_SIZE / ALBEDO_LUT_THREADS, ALBEDO_LUT_SIZE / ALBEDO_LUT_THREADS, 1);
     }
 
-    uint64_t CBgfxPBRShader::bindMaterial(const CBgfxMaterial& material)
+    uint64_t CBgfxPBRShader::bindMaterial(const da::graphics::FMaterialData& material)
     {
         float factorValues[4] = {
             material.metallicFactor, material.roughnessFactor, material.normalScale, material.occlusionStrength
@@ -102,7 +103,11 @@ namespace da::platform {
 
         float hasTexturesValues[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-        auto setTextureOrDefault = [&](uint8_t stage, bgfx::UniformHandle uniform, bgfx::TextureHandle texture) -> bool {
+        auto setTextureOrDefault = [&](uint8_t stage, bgfx::UniformHandle uniform, da::graphics::CGraphicsTexture2D* texture2d) -> bool {
+            bgfx::TextureHandle texture = m_defaultTexture;
+            if (texture2d && texture2d->getTextureNative()) {
+                texture = *(bgfx::TextureHandle*)(texture2d->getTextureNative());;
+            }
             bool valid = bgfx::isValid(texture);
             if (!valid)
                 texture = m_defaultTexture;
@@ -111,11 +116,11 @@ namespace da::platform {
             };
 
         const uint32_t hasTexturesMask = 0
-            | ((setTextureOrDefault(CBgfxSamplers::PBR_BASECOLOR, m_baseColorSampler, material.baseColorTexture) ? 1 : 0) << 0)
-            | ((setTextureOrDefault(CBgfxSamplers::PBR_METALROUGHNESS, m_metallicRoughnessSampler, material.metallicRoughnessTexture) ? 1 : 0) << 1)
-            | ((setTextureOrDefault(CBgfxSamplers::PBR_NORMAL, m_normalSampler, material.normalTexture) ? 1 : 0) << 2)
-            | ((setTextureOrDefault(CBgfxSamplers::PBR_OCCLUSION, m_occlusionSampler, material.occlusionTexture) ? 1 : 0) << 3)
-            | ((setTextureOrDefault(CBgfxSamplers::PBR_EMISSIVE, m_emissiveSampler, material.emissiveTexture) ? 1 : 0) << 4);
+			| ((setTextureOrDefault(CBgfxSamplers::PBR_BASECOLOR, m_baseColorSampler, material.baseColorTexture) ? 1 : 0) << 0)
+			| ((setTextureOrDefault(CBgfxSamplers::PBR_METALROUGHNESS, m_metallicRoughnessSampler, material.metallicRoughnessTexture) ? 1 : 0) << 1)
+			| ((setTextureOrDefault(CBgfxSamplers::PBR_NORMAL, m_normalSampler, material.normalTexture) ? 1 : 0) << 2)
+			| ((setTextureOrDefault(CBgfxSamplers::PBR_OCCLUSION, m_occlusionSampler, material.occlusionTexture) ? 1 : 0) << 3)
+			| ((setTextureOrDefault(CBgfxSamplers::PBR_EMISSIVE, m_emissiveSampler, material.emissiveTexture) ? 1 : 0) << 4);
         hasTexturesValues[0] = static_cast<float>(hasTexturesMask);
 
         bgfx::setUniform(m_hasTexturesUniform, hasTexturesValues);

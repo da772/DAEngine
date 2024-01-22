@@ -265,9 +265,8 @@ namespace da::platform {
                 setNormalMatrix(model);
                 ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
                 ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                da::platform::CBgfxPbrMaterial* material = (da::platform::CBgfxPbrMaterial*)meshComponent->getMaterial();
                 m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
-                uint64_t materialState = m_pbr.bindMaterial(*material->getMaterial());
+                uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
                 for (size_t s = 0; s < m_shadow.getShadowMapsCount(); s++) {
                     ::bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + s, m_shadow.getShadowMaps().ShadowMaps[s].Uniform, m_shadow.getShadowMaps().ShadowMaps[s].Texture);
                 }

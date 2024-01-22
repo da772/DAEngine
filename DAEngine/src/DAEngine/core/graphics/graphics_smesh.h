@@ -24,6 +24,8 @@ namespace da::graphics
 		virtual ~CStaticMesh();
 
 		inline const std::vector<FMesh>& getMeshes() const { return m_meshes; };
+		FMaterialData& getMaterial(size_t index);
+		inline size_t getMaterialCount() const { return m_materials.size(); }
 		inline const std::vector<FMaterialData>& getMaterials() const { return m_materials; };
 		
 		inline virtual const void* getNativeVBIndex(size_t index) const { return nullptr; };

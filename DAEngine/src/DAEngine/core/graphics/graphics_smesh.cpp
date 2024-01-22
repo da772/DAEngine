@@ -11,6 +11,7 @@
 #include <glm/fwd.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #endif
+#include "factory/factory_graphics_texture2d.h"
 
 namespace da::graphics
 {
@@ -124,9 +125,12 @@ namespace da::graphics
 
 			// diffuse
 
-			if (fileBaseColor.length > 0)
+			if (CAsset::exists(fileBaseColor.C_Str()))
 			{
-				out.baseColorTexture = fileBaseColor.C_Str();
+				out.baseColorTexture = da::graphics::CTexture2DFactory::Create(fileBaseColor.C_Str());
+			} else if (fileBaseColor.length > 0)
+			{
+				LOG_INFO(ELogChannel::Graphics, "Failed to find albedo texture at: %s for mesh %s", fileBaseColor.C_Str(), m_path);
 			}
 
 			aiColor4D baseColorFactor;
@@ -136,9 +140,13 @@ namespace da::graphics
 
 			// metallic/roughness
 
-			if (fileMetallicRoughness.length > 0)
+			if (CAsset::exists(fileMetallicRoughness.C_Str()))
 			{
-				out.metallicRoughnessTexture = fileMetallicRoughness.C_Str();
+				out.metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create(fileMetallicRoughness.C_Str());
+			}
+			else if (fileMetallicRoughness.length > 0)
+			{
+				LOG_INFO(ELogChannel::Graphics, "Failed to find metallic roughness texture at: %s for mesh %s", fileMetallicRoughness.C_Str(), m_path);
 			}
 
 			ai_real metallicFactor;
@@ -150,9 +158,12 @@ namespace da::graphics
 
 			// normal map
 
-			if (fileNormals.length > 0)
+			if (CAsset::exists(fileNormals.C_Str()))
 			{
-				out.normalTexture = fileNormals.C_Str();
+				out.normalTexture = da::graphics::CTexture2DFactory::Create(fileNormals.C_Str());
+			}
+			else if (fileNormals.length > 0) {
+				LOG_INFO(ELogChannel::Graphics, "Failed to find normal texture at: %s for mesh %s", fileNormals.C_Str(), m_path);
 			}
 
 			ai_real normalScale;
@@ -167,9 +178,12 @@ namespace da::graphics
 				// don't load it twice
 				out.occlusionTexture = out.metallicRoughnessTexture;
 			}
-			else if (fileOcclusion.length > 0)
+			else if (CAsset::exists(fileOcclusion.C_Str()))
 			{
-				out.occlusionTexture = fileOcclusion.C_Str();
+				out.occlusionTexture = da::graphics::CTexture2DFactory::Create(fileOcclusion.C_Str());;
+			}
+			else if (fileOcclusion.length > 0) {
+				LOG_INFO(ELogChannel::Graphics, "Failed to find occlusion texture at: %s for mesh %s", fileOcclusion.C_Str(), m_path);
 			}
 
 			ai_real occlusionStrength;
@@ -178,9 +192,12 @@ namespace da::graphics
 
 			// emissive texture
 
-			if (fileEmissive.length > 0)
+			if (CAsset::exists(fileEmissive.C_Str()))
 			{
-				out.emissiveTexture = fileEmissive.C_Str();
+				out.emissiveTexture = da::graphics::CTexture2DFactory::Create(fileEmissive.C_Str());;
+			}
+			else if (fileEmissive.length > 0) {
+				LOG_INFO(ELogChannel::Graphics, "Failed to find emissive texture at: %s for mesh %s", fileEmissive.C_Str(), m_path);
 			}
 
 			aiColor3D emissiveFactor;
@@ -198,6 +215,12 @@ namespace da::graphics
 
 	CStaticMesh::~CStaticMesh()
 	{
+	}
+
+	da::graphics::FMaterialData& CStaticMesh::getMaterial(size_t index)
+	{
+		ASSERT(index < m_materials.size());
+		return m_materials[index];
 	}
 
 }

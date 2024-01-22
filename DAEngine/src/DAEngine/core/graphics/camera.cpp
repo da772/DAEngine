@@ -33,6 +33,7 @@ namespace da::core
 		m_up = glm::cross(m_right, m_forward);
 		m_rotation = glm::degrees(glm::eulerAngles(glm::quat_cast(glm::lookAt(m_position, target, m_up))));
 		updateVectors();
+		m_dirty = true;
 	}
 
 	da::core::CCamera* CCamera::getCamera()
@@ -45,9 +46,14 @@ namespace da::core
 		s_camera = camera;
 	}
 
-	glm::mat4 CCamera::matrix() const
+	glm::mat4 CCamera::matrix()
 	{
-		return glm::lookAt(m_position, m_position + m_forward, m_up);
+		if (m_dirty) {
+			m_mat = glm::lookAt(m_position, m_position + m_forward, m_up);
+			m_dirty = false;
+		}
+		
+		return m_mat;
 	}
 
 	void CCamera::updateVectors()

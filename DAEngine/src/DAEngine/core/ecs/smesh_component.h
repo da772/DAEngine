@@ -21,20 +21,18 @@ namespace da::core
 #endif
 
 	public:
-		CSmeshComponent(const std::string& meshPath, da::graphics::CMaterial* material, CEntity& parent);
+		CSmeshComponent(const std::string& meshPath, CEntity& parent);
 
 		void onInitialize();
 		void onUpdate(float dt);
 		void onShutdown();
 		da::graphics::CStaticMesh* getStaticMesh() const;
-		da::graphics::CMaterial* getMaterial() const;
 #ifdef DA_DEBUG
 		void onDebugRender();
 #endif
 
 	private:
 		da::graphics::CStaticMesh* m_staticMesh;
-		da::graphics::CMaterial* m_material;
 
 	};
 }

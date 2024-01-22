@@ -33,7 +33,7 @@ void main()
     vec3 camPos = u_camPos.xyz;
     vec3 fragPos = v_worldpos;
 
-    vec3 V = normalize(camPos - fragPos);
+    vec3 V = normalize(fragPos - camPos);
     float NoV = abs(dot(N, V)) + 1e-5;
 
     if(whiteFurnaceEnabled())
@@ -78,8 +78,6 @@ void main()
     radianceOut += getAmbientLight().irradiance * mat.diffuseColor * mat.occlusion;
     radianceOut += mat.emissive;
 
-    //float shadow = ShadowCalculation(v_shadowcoord, v_normal, u_lightPos, v_worldpos);  
-
     float shadowMapBias = 0.005;
 	vec3 color = radianceOut;
     vec3 v  = -v_view;
@@ -102,10 +100,6 @@ void main()
     gl_FragColor = vec4(visibility0 + visibility1 + visibility2 + visibility3, 1.0);
     return;
     */
-    
-    
-    
-    
 
     float visibility =  PCF(s_shadowMap0, v_shadowcoord0, shadowMapBias, texelSize);
     visibility = min(visibility, PCF(s_shadowMap1, v_shadowcoord1, shadowMapBias, texelSize));

@@ -18,7 +18,7 @@ namespace da::maths
 		glm::vec3 position() const;
 		glm::vec3 rotation() const;
 		glm::vec3 scale() const;
-		virtual glm::mat4 matrix() const;
+		virtual glm::mat4 matrix();
 		glm::vec3 forward() const;
 		glm::vec3 up() const;
 		glm::vec3 right() const;
@@ -30,6 +30,10 @@ namespace da::maths
 		glm::vec3 m_up;
 		glm::vec3 m_right;
 		glm::vec3 m_forward;
+
+		glm::mat4 m_mat = glm::mat4(1);
+
+		bool m_dirty = true;
 
 	};
 }
