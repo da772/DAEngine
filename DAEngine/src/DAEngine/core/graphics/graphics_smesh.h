@@ -30,6 +30,11 @@ namespace da::graphics
 		
 		inline virtual const void* getNativeVBIndex(size_t index) const { return nullptr; };
 		inline virtual const void* getNativeIBIndex(size_t index) const { return nullptr; };
+		inline bool getCastShadows() const { return m_castShadows; };
+		inline void castShadows(bool b) { m_castShadows = b; }
+
+		inline bool getHidden() const { return m_hidden; };
+		inline void hide(bool b) { m_hidden = b; }
 
 		inline const std::string& getPath() const { return m_path; }
 
@@ -39,6 +44,8 @@ namespace da::graphics
 	protected:
 		std::vector<FMesh> m_meshes;
 		std::vector<FMaterialData> m_materials;
+		bool m_castShadows = true;
+		bool m_hidden = false;
 
 	};
 }

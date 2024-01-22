@@ -46,7 +46,7 @@ namespace da::maths
 		return m_rotation;
 	}
 
-	glm::mat4 CTransform::matrix()
+	const glm::mat4& CTransform::matrix()
 	{
 		if (m_dirty) {
 			m_dirty = false;

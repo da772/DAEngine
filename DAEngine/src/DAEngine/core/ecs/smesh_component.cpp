@@ -44,18 +44,47 @@ namespace da::core {
 #ifdef DA_DEBUG
 	void CSmeshComponent::onDebugRender()
 	{
-		char pathNameBuffer[4096];
-		sprintf_s(pathNameBuffer, sizeof(pathNameBuffer), "Mesh: %s", m_staticMesh->getPath().c_str());
-		ImGui::Text(pathNameBuffer);
-		//ImGui::Text("Vertices: %d", m_staticMesh->getVertices().size());
-		//ImGui::Text("Indices:  %d", m_staticMesh->getIndices().size());
-		//ImGui::Text("VertexBuffer: 0x%p", m_staticMesh->getNativeVB());
-		//ImGui::Text("IndexBuffer: 0x%p", m_staticMesh->getNativeIB());
+		char buffer[4096];
+		sprintf_s(buffer, sizeof(buffer), "Mesh: %s", m_staticMesh->getPath().c_str());
+		ImGui::Text(buffer);
+
+		sprintf_s(buffer, sizeof(buffer), "Mesh Count: %d", m_staticMesh->getMeshes().size());
+		ImGui::Text(buffer);
+		sprintf_s(buffer, sizeof(buffer), "Material Count: %d", m_staticMesh->getMaterialCount());
+		ImGui::Text(buffer);
+
+		size_t vertCount = 0;
+		for (size_t i = 0; i < m_staticMesh->getMeshes().size(); i++) {
+			vertCount += m_staticMesh->getMeshes()[i].Vertices.size();
+		}
+
+		ImGui::Text("Vertices: %d", vertCount);
+
+		size_t indCount = 0;
+		for (size_t i = 0; i < m_staticMesh->getMeshes().size(); i++) {
+			indCount += m_staticMesh->getMeshes()[i].Indices.size();
+		}
+		ImGui::Text("Indices:  %d", indCount);
+
+
+		if (ImGui::Button(m_staticMesh->getHidden() ? "Show" : "Hide")) {
+			m_staticMesh->hide(!m_staticMesh->getHidden());
+		}
+
+		if (ImGui::Button(!m_staticMesh->getCastShadows() ? "Cast Shadows" : "Hide Shadows")) {
+			m_staticMesh->castShadows(!m_staticMesh->getCastShadows());
+		}
 
 		if (ImGui::Button("Reload Mesh")) {
 			std::string path = m_staticMesh->getPath();
+			std::vector<da::graphics::FMaterialData> materials = m_staticMesh->getMaterials();
 			delete m_staticMesh;
 			m_staticMesh = new da::platform::CBgfxStaticMesh(path);
+
+			for (size_t i = 0; i < m_staticMesh->getMaterialCount() && i < materials.size(); i++) {
+				m_staticMesh->getMaterial(i) = materials[i];
+			}
+
 		}
 	}
 #endif

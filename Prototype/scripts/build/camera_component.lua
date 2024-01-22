@@ -43,10 +43,10 @@ function CameraComponent.prototype.cameraInput(self, dt)
     if Input:KeyPressed(Inputs.KEY_SPACE) then
         Camera:Move(Camera:GetUp():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(Inputs.KEY_LEFT_CONTROL) then
+    if Input:KeyPressed(Inputs.KEY_E) then
         Camera:Move(Camera:GetUp():neg():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(Inputs.KEY_LEFT_SHIFT) then
+    if Input:KeyPressed(Inputs.KEY_Q) then
         Camera:Move(Camera:GetUp():mul(self.camSpeed):mul(dt))
     end
     if Input:KeyPressed(Inputs.KEY_F) then

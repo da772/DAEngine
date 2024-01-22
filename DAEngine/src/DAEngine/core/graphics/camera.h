@@ -18,7 +18,7 @@ namespace da::core
 
 		float exposure = 1.f;
 
-		virtual glm::mat4 matrix() override;
+		virtual const glm::mat4& matrix() override;
 		virtual void setRotation(const glm::vec3& rot) override;
 
 		void zoom(float offset);

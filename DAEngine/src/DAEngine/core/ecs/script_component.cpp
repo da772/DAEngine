@@ -40,9 +40,9 @@ namespace da::core {
 		m_scriptClass.cleanup(false);
 	}
 
-    void CScriptComponent::reload() {
+    void CScriptComponent::reload(bool soft) {
         
-        m_scriptClass.cleanup(true);
+        m_scriptClass.cleanup(soft);
         m_scriptClass.setup(m_parent.getId(), m_guid);
     }
 

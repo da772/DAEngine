@@ -18,7 +18,7 @@ namespace da::maths
 		glm::vec3 position() const;
 		glm::vec3 rotation() const;
 		glm::vec3 scale() const;
-		virtual glm::mat4 matrix();
+		virtual const glm::mat4& matrix();
 		glm::vec3 forward() const;
 		glm::vec3 up() const;
 		glm::vec3 right() const;

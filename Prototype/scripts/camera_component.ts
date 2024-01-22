@@ -50,12 +50,12 @@ export class CameraComponent implements Component {
             Camera.Move(Camera.GetUp().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_LEFT_CONTROL)) // LCtrl
+        if (Input.KeyPressed(Inputs.KEY_E)) // E
         {
             Camera.Move(Camera.GetUp().neg().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_LEFT_SHIFT)) // LShfit
+        if (Input.KeyPressed(Inputs.KEY_Q)) // Q
         {
             Camera.Move(Camera.GetUp().mul(this.camSpeed).mul(dt));
         }

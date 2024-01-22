@@ -99,6 +99,7 @@ private:
 	da::modules::CWindowModule* m_window = 0;
 	da::core::CEntity* e1,* e2, *e3, *e4;
 	bool m_showScriptDebug = false;
+	bool m_showScriptDebugHard = false;
  
 
 protected:
@@ -106,7 +107,8 @@ protected:
 	{
 		createModules();
 #ifdef DA_DEBUG
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"), &m_showScriptDebug, [&] {renderScriptDebug(); });
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"), &m_showScriptDebug, [&] {renderScriptDebug(true, &m_showScriptDebug); });
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts (Hard)"), &m_showScriptDebugHard, [&] {renderScriptDebug(false, &m_showScriptDebugHard); });
 #endif
 
 		da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid::Generate()));
@@ -161,9 +163,9 @@ protected:
 		e2->getTransform().setPosition({ 0,0,0 });
 		e2->setTag(HASHSTR("plane"));
 		c = e2->addComponent<da::core::CSmeshComponent>("assets/city/city.fbx");
-		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/tile/tiles_color.jpg");
-		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/tile/tiles_normal.png");
-		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/tile/tiles_roughness.jpg");
+		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg");
+		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg");
+		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg");
 		return;
 	
 		
@@ -197,20 +199,16 @@ protected:
 		da::CLogger::LogDebug(da::ELogChannel::Application, "App End");
 	}
 
-	inline void renderScriptDebug() {
+	inline void renderScriptDebug(bool soft, bool* b) {
 
-		if (ImGui::Begin("Scripts", &m_showScriptDebug)) {
-			if (ImGui::Button("Reload")) {
-				auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
-				da::script::CScriptEngine::clearAll();
-				for (size_t i = 0; i < components.getCount(); i++) {
-					da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);
-					c->reload();
-				}
-			}
+		auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
+		da::script::CScriptEngine::clearAll();
+		for (size_t i = 0; i < components.getCount(); i++) {
+			da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);
+			c->reload(soft);
 		}
-
-		ImGui::End();
+		*b = false;
+		
 	}
 
 	inline virtual void onUpdate() override

@@ -178,6 +178,9 @@ namespace da::platform {
                     const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
                     ASSERT(mesh);
 
+                    if (!mesh->getCastShadows()) continue;
+                    if (mesh->getHidden()) continue;
+
                     ::bgfx::setTransform(glm::value_ptr(model));
                     ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
                     ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
@@ -257,10 +260,13 @@ namespace da::platform {
         // Render pass
         for (size_t i = 0; i < container.getCount(); i++) {
             da::core::CSmeshComponent* meshComponent = container.getComponentAtIndex<da::core::CSmeshComponent>(i);
-            glm::mat4 model = meshComponent->getParent().getTransform().matrix();
+            const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
            
             for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
                 da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+
+                if (mesh->getHidden()) continue;
+
                 ::bgfx::setTransform(glm::value_ptr(model));
                 setNormalMatrix(model);
                 ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));

@@ -46,7 +46,7 @@ namespace da::core
 		s_camera = camera;
 	}
 
-	glm::mat4 CCamera::matrix()
+	const glm::mat4& CCamera::matrix()
 	{
 		if (m_dirty) {
 			m_mat = glm::lookAt(m_position, m_position + m_forward, m_up);

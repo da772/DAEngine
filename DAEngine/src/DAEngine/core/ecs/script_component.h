@@ -20,7 +20,7 @@ namespace da::core {
 		void onUpdate(float dt);
 		void onShutdown();
         
-        void reload();
+        void reload(bool soft);
 
 #ifdef DA_DEBUG
 		void onDebugRender();
