@@ -13,7 +13,7 @@ namespace da::core
 		CCamera();
 		float fov = 73.7397953f;
 
-		float zNear = 0.1f;
+		float zNear = 1.f;
 		float zFar = 10000.0f;
 
 		float exposure = 1.f;

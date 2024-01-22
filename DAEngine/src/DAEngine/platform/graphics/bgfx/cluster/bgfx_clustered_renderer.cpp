@@ -123,7 +123,7 @@ namespace da::platform {
             float nearPlane = 1000.f* (50.f * i);
             float farPlane = (1000.f * (50.f * i) + 1000.f);
             if (i == 0) {
-                nearPlane = .1f;
+                nearPlane = 1.f;
                 farPlane  = 25.f;
             }
 

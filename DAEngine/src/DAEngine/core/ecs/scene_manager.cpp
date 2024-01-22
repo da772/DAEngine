@@ -104,6 +104,8 @@ namespace da::core {
 				}
 				ImGui::SliderFloat("Exposure", &camera->exposure, 0.f, 100.f);
 				ImGui::SliderFloat("FOV", &camera->fov, 1.f, 90.f);
+				ImGui::SliderFloat("NearPlane", &camera->zNear, 0.f, 100.f);
+				ImGui::SliderFloat("FarPlane", &camera->zFar, 1.f, 1000000.f);
 			}
 
 			ImGui::End();

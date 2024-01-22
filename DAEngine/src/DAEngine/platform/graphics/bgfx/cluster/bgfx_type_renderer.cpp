@@ -206,7 +206,7 @@ namespace da::platform {
         bgfx::setViewClear(view, BGFX_CLEAR_NONE);
         bgfx::setViewRect(view, 0, 0, m_width, m_height);
         bgfx::setViewFrameBuffer(view, BGFX_INVALID_HANDLE);
-        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_CULL_CW);
+        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_CULL_CW | BGFX_STATE_MSAA);
         bgfx::TextureHandle frameBufferTexture = bgfx::getTexture(m_frameBuffer, 0);
         bgfx::setTexture(0, m_blitSampler, frameBufferTexture);
         float exposureVec[4] = { da::core::CCamera::getCamera()->exposure };
@@ -227,7 +227,7 @@ namespace da::platform {
         size_t count = stencil ? BX_COUNTOF(depthStencilFormats) : BX_COUNTOF(depthFormats);
 
         bgfx::TextureFormat::Enum depthFormat = bgfx::TextureFormat::Count;
-        for (size_t i = 0; i < count; i++)
+        for (size_t i = count-1; i >= 0; --i)
         {
             if (bgfx::isTextureValid(0, false, 1, formats[i], textureFlags))
             {
@@ -247,13 +247,13 @@ namespace da::platform {
         uint8_t attachments = 0;
 
         const uint64_t samplerFlags = BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT |
-            BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
+            BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_TEXTURE_RT_MSAA_X8;
 
         bgfx::TextureFormat::Enum format =
             hdr ? bgfx::TextureFormat::RGBA16F : bgfx::TextureFormat::BGRA8; // BGRA is often faster (internal GPU format)
-        assert(bgfx::isTextureValid(0, false, 1, format, BGFX_TEXTURE_RT | samplerFlags));
+        assert(bgfx::isTextureValid(0, false, 1, format, samplerFlags));
         textures[attachments++] =
-            bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, format, BGFX_TEXTURE_RT | samplerFlags);
+            bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, format, samplerFlags);
 
         if (depth)
         {
