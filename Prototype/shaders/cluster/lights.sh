@@ -3,6 +3,9 @@
 
 #include <bgfx_compute.sh>
 #include "samplers.sh"
+#include "clusters.sh"
+#include "pbr.sh"
+#include "colormap.sh"
 
 uniform vec4 u_lightCountVec;
 #define u_pointLightCount uint(u_lightCountVec.x)
@@ -88,6 +91,66 @@ AmbientLight getAmbientLight()
     AmbientLight light;
     light.irradiance = u_ambientLightIrradiance.xyz;
     return light;
+}
+
+vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0, vec4 u_camPos, vec4 gl_FragCoord)
+{
+    // the clustered shading fragment shader is almost identical to forward shading
+    // first we determine the cluster id from the fragment's window coordinates
+    // light count is read from the grid instead of a uniform
+    // light indices are read and looped over starting from the grid offset
+
+    PBRMaterial mat = pbrMaterial(v_texcoord0);
+    vec3 N = convertTangentNormal(v_normal, v_tangent, mat.normal);
+    mat.a = specularAntiAliasing(N, mat.a);
+
+    vec3 camPos = u_camPos.xyz;
+    vec3 fragPos = v_worldpos;
+
+    vec3 V = normalize(fragPos - camPos);
+    float NoV = abs(dot(N, V)) + 1e-5;
+
+    if(whiteFurnaceEnabled())
+    {
+        mat.F0 = vec3_splat(1.0);
+        vec3 msFactor = multipleScatteringFactor(mat, NoV);
+        return whiteFurnace(NoV, mat) * msFactor;
+    }
+
+    vec3 msFactor = multipleScatteringFactor(mat, NoV);
+
+    vec3 radianceOut = vec3_splat(0.0);
+
+    uint cluster = getClusterIndex(gl_FragCoord);
+    LightGrid grid = getLightGrid(cluster);
+    for(uint i = 0; i < grid.pointLights; i++)
+    {
+        uint lightIndex = getGridLightIndex(grid.offset, i);
+        PointLight light = getPointLight(lightIndex);
+        float dist = distance(light.position, fragPos);
+        float attenuation = smoothAttenuation(dist, light.radius);
+        if(attenuation > 0.0)
+        {
+            vec3 L = normalize(fragPos - light.position);
+            vec3 radianceIn = light.intensity * attenuation;
+            float NoL = saturate(dot(N, L));
+            radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * radianceIn * NoL;
+        }
+    }
+
+    // directional light
+    {
+        SunLight light = getSunLight();
+        vec3 L = -light.direction.xyz;
+        float NoL = saturate(dot(N, L));
+        radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * light.radiance * NoL;
+    }
+
+
+    radianceOut += getAmbientLight().irradiance * mat.diffuseColor;
+    radianceOut += mat.emissive;
+
+    return radianceOut;
 }
 
 #endif // LIGHTS_SH_HEADER_GUARD
