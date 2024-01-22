@@ -213,42 +213,5 @@ protected:
 
 	inline virtual void onUpdate() override
 	{   
-		glm::vec3 rot = e3->getTransform().rotation();
-		//e3->getTransform().setRotation({ rot.x, rot.y+.05, rot.z + .05f });
-		return;
-		if (!m_boltMat || !m_cubeMat)
-		{
-			return;
-		}
-		if (ImGui::Begin("Object Viewer"))
-		{
-			ImGui::Text("Bolt Cutter");
-			ImGui::Text("Position123");
-			ImGui::SameLine();
-			if (ImGui::DragFloat3("##Position", (float*)m_boltMat->Position.data(), .1f))
-			{
-			}
-
-			ImGui::Text("Camera");
-			ImGui::Text("Position");
-			ImGui::SameLine();
-			if (ImGui::DragFloat3("##CamPosition", (float*)m_boltMat->CamPosition.data(), .1f))
-			{
-				m_cubeMat->CamPosition = m_boltMat->CamPosition;
-				m_cubeMat2->CamPosition = m_boltMat->CamPosition;
-			}
-
-			ImGui::Text("Rotation");
-			ImGui::SameLine();
-			if (ImGui::DragFloat3("##CamRotation", (float*)m_boltMat->CamRot.data(), .1f))
-			{
-				m_cubeMat->CamRot = m_boltMat->CamRot;
-				m_cubeMat2->CamRot = m_boltMat->CamRot;
-			}
-
-		}
-
-		ImGui::End();
-		
 	}
 };
