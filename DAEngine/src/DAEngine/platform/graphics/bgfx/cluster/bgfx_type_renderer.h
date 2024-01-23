@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <string>
 #include "core/enum.h"
+#include "bgfx_sky.h"
+#include <map>
 
 namespace da::core {
     class CCamera;
@@ -103,9 +105,11 @@ namespace da::platform
 
         CBgfxPBRShader m_pbr;
         CBgfxLightShader m_lights;
+        CBgfxProcSky m_sky;
+        CBgfxSunController m_sun;
 
         uint32_t m_clearColor = 0;
-        float m_time = 0.0f;
+        float m_time = 0.f;
 
         // set by setViewProjection()
         glm::mat4 m_viewMat = glm::mat4(1.0);

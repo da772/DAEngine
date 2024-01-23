@@ -43,7 +43,7 @@ namespace da::platform {
 	private:
 		::bgfx::UniformHandle m_depthScaleOffset = BGFX_INVALID_HANDLE;
 		FBgfxShadowMaps m_shadowMaps;
-		glm::vec3 m_shadowDir = { 0.348f, 0.870f, 0.348f };
+		glm::vec3 m_shadowDir = { 0.348f, 0.870f, 0.7f };
 
 		CBgfxGraphicsMaterial* m_material;
 		core::CCamera m_camera;

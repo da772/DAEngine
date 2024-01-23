@@ -323,7 +323,7 @@ namespace da::platform {
 		ImGui::SetNextWindowBgAlpha(.5f);
 		ImGui::SetNextWindowPos({ ImGui::GetWindowWidth() - wSize , 24.5f });
 		ImGui::SetNextWindowSize({ wSize , -1 });
-		if (ImGui::Begin("Renderer Info", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+		if (ImGui::Begin("Renderer Info", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus)) {
 
 			ImGui::Text("DAv%s - %s", DA_VERSION, s_bgfxRenderers[(uint8_t)s_renderer]);
 		}

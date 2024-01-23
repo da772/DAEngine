@@ -55,7 +55,7 @@ namespace da::maths
 				* glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
 				* glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 			glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0), m_scale);
-			m_mat = translationMatrix * rotationMatrix * scaleMatrix;
+			m_mat = translationMatrix * rotationMatrix * scaleMatrix;;
 		}
 		
 		return m_mat;

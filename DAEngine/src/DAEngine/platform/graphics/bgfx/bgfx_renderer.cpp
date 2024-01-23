@@ -30,6 +30,7 @@ namespace da::platform::bgfx {
 		PosVertex::init();
 
 		m_blitSampler = ::bgfx::createUniform("s_texColor", ::bgfx::UniformType::Sampler);
+		m_skySampler = ::bgfx::createUniform("s_skyColor", ::bgfx::UniformType::Sampler);
 		m_camPosUniform = ::bgfx::createUniform("u_camPos", ::bgfx::UniformType::Vec4);
 		m_normalMatrixUniform = ::bgfx::createUniform("u_normalMatrix", ::bgfx::UniformType::Mat3);
 		m_exposureVecUniform = ::bgfx::createUniform("u_exposureVec", ::bgfx::UniformType::Vec4);
@@ -84,6 +85,7 @@ namespace da::platform::bgfx {
 		m_pbr.shutdown();
 
 		BGFXDESTROY(m_blitSampler);
+		BGFXDESTROY(m_skySampler);
 		BGFXDESTROY(m_camPosUniform);
 		BGFXDESTROY(m_normalMatrixUniform);
 		BGFXDESTROY(m_exposureVecUniform);
@@ -141,6 +143,8 @@ namespace da::platform::bgfx {
 		::bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_CULL_CW);
 		::bgfx::TextureHandle frameBufferTexture = ::bgfx::getTexture(m_frameBuffer, 0);
 		::bgfx::setTexture(0, m_blitSampler, frameBufferTexture);
+		::bgfx::TextureHandle skyFrameBufferTexture = ::bgfx::getTexture(m_skyFrameBuffer, 0);
+		::bgfx::setTexture(0, m_skySampler, skyFrameBufferTexture);
 		float exposureVec[4] = { camera.exposure };
 		::bgfx::setUniform(m_exposureVecUniform, exposureVec);
 		float tonemappingModeVec[4] = { (float)tonemappingMode };
@@ -206,6 +210,12 @@ namespace da::platform::bgfx {
 		{
 			m_frameBuffer = createFrameBuffer(true, true);
 			::bgfx::setName(m_frameBuffer, "Render framebuffer (pre-postprocessing)");
+		}
+
+		if (!::bgfx::isValid(m_skyFrameBuffer))
+		{
+			m_skyFrameBuffer = createFrameBuffer(true, true);
+			::bgfx::setName(m_skyFrameBuffer, "Sky framebuffer");
 		}
 		this->m_width = width;
 		this->m_height = height;

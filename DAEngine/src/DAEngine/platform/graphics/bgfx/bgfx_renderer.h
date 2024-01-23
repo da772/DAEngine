@@ -82,12 +82,14 @@ namespace da::platform::bgfx {
 
         ::bgfx::VertexBufferHandle m_blitTriangleBuffer = {INVALID_HANDLE};
 		::bgfx::FrameBufferHandle m_frameBuffer = BGFX_INVALID_HANDLE;
+		::bgfx::FrameBufferHandle m_skyFrameBuffer = BGFX_INVALID_HANDLE;
 
 		CBgfxPBRShader m_pbr;
 
 	private:
 		da::platform::CBgfxGraphicsMaterial m_blitProgram;
         ::bgfx::UniformHandle m_blitSampler = {INVALID_HANDLE};
+        ::bgfx::UniformHandle m_skySampler = {INVALID_HANDLE};
         ::bgfx::UniformHandle m_camPosUniform = {INVALID_HANDLE};
         ::bgfx::UniformHandle m_normalMatrixUniform = {INVALID_HANDLE};
         ::bgfx::UniformHandle m_exposureVecUniform = {INVALID_HANDLE};

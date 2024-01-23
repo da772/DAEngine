@@ -46,6 +46,9 @@ namespace da::platform {
         m_pbr.generateAlbedoLUT();
         m_lights.initialize();
 
+        m_sky.initialize(32, 32);
+        m_sun.Update(0);
+
         onInitialize();
 
         // finish any queued precomputations before rendering the scene
@@ -58,7 +61,8 @@ namespace da::platform {
         {
             m_frameBuffer = createFrameBuffer(true, true);
             bgfx::setName(m_frameBuffer, "Render framebuffer (pre-postprocessing)");
-        }
+		} 
+
         this->m_width = width;
         this->m_height = height;
 
@@ -92,7 +96,7 @@ namespace da::platform {
 
         m_pbr.shutdown();
         m_lights.shutdown();
-
+        m_sky.shutdown();
 
 
         BGFXDESTROY(m_blitSampler);
@@ -303,5 +307,4 @@ namespace da::platform {
 
         return path;
     }
-
 }

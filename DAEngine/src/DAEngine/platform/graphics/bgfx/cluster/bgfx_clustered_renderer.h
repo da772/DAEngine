@@ -40,6 +40,8 @@ namespace da::platform
         CBgfxClusterShader m_clusters;
         CBgfxShadowShader m_shadow;
 
+        float m_skyTime = 18.f;
+
 #ifdef DA_DEBUG
         bool m_clusterDebugVis = false;
         bool m_lightDebugVis = false;

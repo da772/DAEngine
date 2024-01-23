@@ -59,7 +59,7 @@ namespace da::platform {
         m_pDebugVisProgram->initialize();
 
         m_pointLights.init();
-        generateLights(10);
+        //generateLights(100);
         m_pointLights.update();
 
         m_shadow.initialize();
@@ -68,7 +68,7 @@ namespace da::platform {
 
 		m_ambientLight.irradiance = { 0.001f, 0.001f, 0.001f };
 		m_sunLight.direction = m_shadow.getLightDir();
-		m_sunLight.radiance = { 0.f,0.f,0.f };
+		m_sunLight.radiance = { 1.f,1.f,1.f };
 
 #ifdef DA_DEBUG
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
@@ -83,12 +83,14 @@ namespace da::platform {
             vShadow = 0,
             vClusterBuilding = SHADOW_MAP_SIZE,
             vLightCulling,
-            vLighting
+            vLighting,
         };
 
 		da::core::CScene* scene = da::core::CSceneManager::getScene();
-
 		const da::core::FComponentContainer& container = scene->getComponents<da::core::CSmeshComponent>();
+
+        m_shadow.getLightDir() = m_sun.m_sunDir;
+        m_sunLight.direction = m_shadow.getLightDir();
 
         ::bgfx::setViewName(vClusterBuilding, "Cluster building pass (compute)");
         // set u_viewRect for screen2Eye to work correctly
@@ -102,6 +104,9 @@ namespace da::platform {
         ::bgfx::setViewRect(vLighting, 0, 0, m_width, m_height);
         ::bgfx::setViewFrameBuffer(vLighting, m_frameBuffer);
         ::bgfx::touch(vLighting);
+
+        //m_shadow.getLightDir() = m_sun.m_sunDir;
+        //m_sunLight.direction = m_shadow.getLightDir();
 
         glm::mat4 lightMtx[SHADOW_MAP_SIZE];
 
@@ -202,7 +207,6 @@ namespace da::platform {
         setViewProjection(vLightCulling);
         setViewProjection(vLighting);
 
-
         // cluster building
 
         // only run this step if the camera parameters changed (aspect ratio, fov, near/far plane)
@@ -256,6 +260,10 @@ namespace da::platform {
         glm::vec3 rotRadians = glm::vec3(glm::radians(m_shadow.getCamera().rotation().x), glm::radians(m_shadow.getCamera().rotation().y), glm::radians(m_shadow.getCamera().rotation().z));
         m_lights.bindLights({ m_shadow.getLightDir(),m_sunLight.radiance }, m_ambientLight, m_pointLights);
 		m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
+
+        m_sun.Update(m_skyTime);
+		m_sky.setUniforms(m_sun, m_skyTime);
+		m_sky.render(vLighting);
 
         // Render pass
         for (size_t i = 0; i < container.getCount(); i++) {
@@ -336,6 +344,7 @@ namespace da::platform {
         constexpr float POWER_MAX = 100.0f;
 
         int countHalf = count / 2;
+        float distScale = 3.25f;
 
         int index = 0;
         for (int y = -countHalf; y <= countHalf; y+=2) {
@@ -343,7 +352,7 @@ namespace da::platform {
                 std::string str1 = std::string(std::to_string(x) + ":" + std::to_string(y).c_str());
                 CHashString hsh1(str1.c_str());
                 glm::vec3 col = { ((hsh1.hash() & 0x00ff0000u) >> 16), ((hsh1.hash() & 0x0000ff00u) >> 8) * .75f, (hsh1.hash() & 0x000000ffu) * .5f};
-                lights[index++] = { {x,y,1.f}, glm::vec3(10.f) * col };
+                lights[index++] = { {x* distScale ,y* distScale ,1.f}, glm::vec3(5.f) * col };
             }
         }
 
@@ -404,6 +413,10 @@ namespace da::platform {
 			if (ImGui::InputFloat3("##sunLightRotControl", glm::value_ptr(r))) {
 				m_shadow.getCamera().setRotation(r);
 			}
+
+            ImGui::Text("Sky Time: ");
+            ImGui::SameLine();
+            ImGui::DragFloat("###skyTime", &m_skyTime, .1f, 0.f, 24.f);
 
             /*::bgfx::TextureHandle handle = ::bgfx::getTexture(m_shadow.getFrameBuffer());
 

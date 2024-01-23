@@ -92,7 +92,7 @@ AmbientLight getAmbientLight()
     light.irradiance = u_ambientLightIrradiance.xyz;
     return light;
 }
-
+#ifdef INCLUDE_PASS
 vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0, vec4 u_camPos, vec4 gl_FragCoord)
 {
     // the clustered shading fragment shader is almost identical to forward shading
@@ -152,5 +152,6 @@ vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
 
     return radianceOut;
 }
+#endif
 
 #endif // LIGHTS_SH_HEADER_GUARD

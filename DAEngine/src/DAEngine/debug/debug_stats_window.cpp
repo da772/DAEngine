@@ -25,7 +25,7 @@ void da::debug::CDebugStatsWindow::update()
 	ImGui::SetNextWindowBgAlpha(.5f);
 	ImGui::SetNextWindowPos({ 0.f, 24.5f });
 	ImGui::SetNextWindowSize({ -1, -1 });
-	if (ImGui::Begin("Debug Stats", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+	if (ImGui::Begin("Debug Stats", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus)) {
 
 		ImGui::Text("Debug Stats");
 		ImGui::Separator();
