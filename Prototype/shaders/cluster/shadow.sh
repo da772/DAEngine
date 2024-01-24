@@ -85,11 +85,11 @@ float PCF(Sampler _sampler, vec4 _shadowCoord, float _bias, vec2 _texelSize)
 vec3 shadowPass(vec3 color, vec3 v_view, vec3 v_normal, vec4 u_lightPos, vec4 v_shadowcoord0, vec4 v_shadowcoord1, vec4 v_shadowcoord2, vec4 v_shadowcoord3)
 {
 	float shadowMapBias = 0.005;
-    vec3 v  = -v_view;
-	vec3 vd = -normalize(v);
+    vec3 v  = v_view;
+	vec3 vd = normalize(v);
 	vec3 n  = v_normal;
 	vec3 l  = u_lightPos.xyz;
-	vec3 ld = -normalize(l);
+	vec3 ld = normalize(l);
 
 	vec2 lc = lit(ld, n, vd, 1.0);
 
@@ -102,7 +102,7 @@ vec3 shadowPass(vec3 color, vec3 v_view, vec3 v_normal, vec4 u_lightPos, vec4 v_
     vec3 visibility2 = (1.0-PCF(s_shadowMap2, v_shadowcoord2, shadowMapBias, texelSize)) * vec3(0.0, 0.0, 1.0);
     vec3 visibility3 = (1.0-PCF(s_shadowMap3, v_shadowcoord3, shadowMapBias, texelSize)) * vec3(1.0, 1.0, 0.0);
     
-    return vec4(visibility0 + visibility1 + visibility2 + visibility3);
+    return  vec4(visibility0 + visibility1 + visibility2 + visibility3, 1.0);
     
     */
 
@@ -113,7 +113,7 @@ vec3 shadowPass(vec3 color, vec3 v_view, vec3 v_normal, vec4 u_lightPos, vec4 v_
     
 	vec3 brdf = (lc.x + lc.y) * color * visibility;
 
-	return toGamma(abs(color + brdf) );
+	return toGamma(abs(color + brdf));
 }
 
 

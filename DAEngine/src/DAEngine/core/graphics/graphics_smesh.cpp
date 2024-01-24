@@ -36,7 +36,7 @@ namespace da::graphics
 			| aiProcess_PreTransformVertices
 			| aiProcess_TransformUVCoords
 		);
-		static glm::mat4 transformMat = glm::translate(glm::mat4(1.0f), { 0.f,0.f,0.f }) * glm::rotate(glm::mat4(1.0f), glm::radians(-180.f), glm::vec3(0.0f, 1.0f, 0.0f));
+		static glm::mat4 transformMat = glm::mat4(1.0f) * glm::rotate(glm::mat4(1.0f), glm::radians(-180.f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		m_meshes = {};
 		m_meshes.reserve(pScene->mNumMeshes);
@@ -65,19 +65,21 @@ namespace da::graphics
 
 				if (pScene->mMeshes[i]->HasNormals())
 				{
+					glm::vec3 normals = transformMat * glm::vec4(pScene->mMeshes[i]->mNormals[v].x, pScene->mMeshes[i]->mNormals[v].y, pScene->mMeshes[i]->mNormals[v].z, 1.f);
 					vertex.Normal = {
-						pScene->mMeshes[i]->mNormals[v].x,
-						pScene->mMeshes[i]->mNormals[v].y,
-						pScene->mMeshes[i]->mNormals[v].z
+						normals.x,
+						normals.y,
+						normals.z
 					};
 				}
 
 				if (pScene->mMeshes[i]->HasTangentsAndBitangents())
 				{
+					glm::vec3 tangents = transformMat * glm::vec4(pScene->mMeshes[i]->mTangents[v].x, pScene->mMeshes[i]->mTangents[v].y, pScene->mMeshes[i]->mTangents[v].z, 1.f);
 					vertex.Tangent = {
-						pScene->mMeshes[i]->mTangents[v].x,
-						pScene->mMeshes[i]->mTangents[v].y,
-						pScene->mMeshes[i]->mTangents[v].z,
+						tangents.x,
+						tangents.y,
+						tangents.z,
 					};
 				}
 

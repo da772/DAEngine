@@ -191,6 +191,7 @@ namespace da::platform
 
 		bgfx::setUniform(u_sunDirection, &sun.m_sunDir.x);
 
+		// x - sun size, y - sun bloom, z - exposition, w - time
 		float exposition[4] = { 0.02f, 3.0f, 0.1f, time};
 		bgfx::setUniform(u_parameters, exposition);
 

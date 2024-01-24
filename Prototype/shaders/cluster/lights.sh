@@ -107,7 +107,7 @@ vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
     vec3 camPos = u_camPos.xyz;
     vec3 fragPos = v_worldpos;
 
-    vec3 V = normalize(fragPos - camPos);
+    vec3 V = normalize(camPos - fragPos);
     float NoV = abs(dot(N, V)) + 1e-5;
 
     if(whiteFurnaceEnabled())
@@ -131,7 +131,7 @@ vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
         float attenuation = smoothAttenuation(dist, light.radius);
         if(attenuation > 0.0)
         {
-            vec3 L = normalize(fragPos - light.position);
+            vec3 L = normalize(light.position - fragPos);
             vec3 radianceIn = light.intensity * attenuation;
             float NoL = saturate(dot(N, L));
             radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * radianceIn * NoL;
@@ -141,7 +141,7 @@ vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
     // directional light
     {
         SunLight light = getSunLight();
-        vec3 L = -light.direction.xyz;
+        vec3 L = normalize(light.direction.xyz);
         float NoL = saturate(dot(N, L));
         radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * light.radiance * NoL;
     }
