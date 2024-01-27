@@ -24,6 +24,8 @@ namespace da::platform {
         static const uint8_t CLUSTERS_LIGHTGRID = 9;
         static const uint8_t CLUSTERS_ATOMICINDEX = 10;
 
+        static const uint8_t SAMPLER_SSAO = 11;
+
         static const uint8_t DEFERRED_DIFFUSE_A = 7;
         static const uint8_t DEFERRED_NORMAL = 8;
         static const uint8_t DEFERRED_F0_METALLIC = 9;

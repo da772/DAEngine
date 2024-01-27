@@ -4,6 +4,7 @@
 #include "bgfx_cluster_shader.h"
 #include "bgfx_light_list.h"
 #include "bgfx_shadow_shader.h"
+#include "bgfx_ssao_shader.h"
 
 namespace da::platform
 {
@@ -20,6 +21,8 @@ namespace da::platform
         virtual void onRender(float dt) override;
         virtual void onShutdown() override;
 
+    protected:
+        virtual void onReset(size_t width, size_t height) override;
     private:
         void generateLights(uint32_t count);
 #ifdef DA_DEBUG
@@ -39,6 +42,7 @@ namespace da::platform
         CBgfxPointLightList m_pointLights;
         CBgfxClusterShader m_clusters;
         CBgfxShadowShader m_shadow;
+        CBgfxSSAOShader m_ssao;
 
         float m_skyTime = 18.f;
 

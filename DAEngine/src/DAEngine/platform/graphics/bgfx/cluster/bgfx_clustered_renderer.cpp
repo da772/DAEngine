@@ -66,9 +66,12 @@ namespace da::platform {
         m_shadow.getCamera().setPosition({ 0.f, 15, 15.f });
         m_shadow.getCamera().setRotation({ -50.f, 0.f, 180.f });
 
-		m_ambientLight.irradiance = { 0.001f, 0.001f, 0.001f };
+
+        m_ssao.initialize();
+
+		m_ambientLight.irradiance = { .25f, .25f, .25f };
 		m_sunLight.direction = m_shadow.getLightDir();
-		m_sunLight.radiance = { 1.f,1.f,1.f };
+		m_sunLight.radiance = { 1.f, 1.f,1.f };
 
 #ifdef DA_DEBUG
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
@@ -80,8 +83,11 @@ namespace da::platform {
     {
         enum : ::bgfx::ViewId
         {
-            vShadow = 0,
-            vClusterBuilding = SHADOW_MAP_SIZE,
+            vDepth = 0,
+            vSSAO,
+            vSSAOBlur,
+            vShadow,
+            vClusterBuilding = vShadow + SHADOW_MAP_SIZE,
             vLightCulling,
             vLighting,
         };
@@ -91,6 +97,12 @@ namespace da::platform {
 
         m_shadow.getLightDir() = m_sun.m_sunDir;
         m_sunLight.direction = m_shadow.getLightDir();
+
+		::bgfx::setViewName(vDepth, "Depth pass");
+		::bgfx::setViewClear(vDepth, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xFFFFFF00, 1.0f, 0);
+		::bgfx::setViewRect(vDepth, 0, 0, m_width, m_height);
+		::bgfx::setViewFrameBuffer(vDepth, m_depthBuffer);
+		::bgfx::touch(vDepth);
 
         ::bgfx::setViewName(vClusterBuilding, "Cluster building pass (compute)");
         // set u_viewRect for screen2Eye to work correctly
@@ -105,8 +117,28 @@ namespace da::platform {
         ::bgfx::setViewFrameBuffer(vLighting, m_frameBuffer);
         ::bgfx::touch(vLighting);
 
-        //m_shadow.getLightDir() = m_sun.m_sunDir;
-        //m_sunLight.direction = m_shadow.getLightDir();
+        setViewProjection(vDepth);
+        // Depth pass
+		for (size_t x = 0; x < container.getCount(); x++) {
+			da::core::CSmeshComponent* meshComponent = container.getComponentAtIndex<da::core::CSmeshComponent>(x);
+			glm::mat4 model = meshComponent->getParent().getTransform().matrix();
+
+            for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
+                const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+                ASSERT(mesh);
+
+                ::bgfx::setTransform(glm::value_ptr(model));
+                ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                ::bgfx::setState( BGFX_STATE_WRITE_Z
+					| BGFX_STATE_DEPTH_TEST_LESS
+					| BGFX_STATE_CULL_CCW);
+				::bgfx::submit(vDepth, { m_pDepthprogram->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+			}
+		}
+
+        m_ssao.renderSSAO(m_width, m_height, vSSAO, m_depthBuffer);
+        m_ssao.renderBlur(m_width, m_height, vSSAOBlur);
 
         glm::mat4 lightMtx[SHADOW_MAP_SIZE];
 
@@ -284,6 +316,7 @@ namespace da::platform {
                 for (size_t s = 0; s < m_shadow.getShadowMapsCount(); s++) {
                     ::bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + s, m_shadow.getShadowMaps().ShadowMaps[s].Uniform, m_shadow.getShadowMaps().ShadowMaps[s].Texture);
                 }
+                m_ssao.bindSSAO();
 
                 //BGFX_STATE_PT_LINES
                 ::bgfx::setState(state | materialState);
@@ -301,6 +334,7 @@ namespace da::platform {
         m_clusters.shutdown();
         m_shadow.shutdown();
         m_pointLights.shutdown();
+        m_ssao.shutdown();
 
 		m_pClusterBuildingComputeProgram->shutdown();
 		m_pResetCounterComputeProgram->shutdown();
@@ -378,6 +412,13 @@ namespace da::platform {
             LOG_DEBUG(da::ELogChannel::Graphics, "Light created: %f %f %f, Power: %f, %f, %f", position.x, position.y, position.z, power.x, power.y, power.z);
         }
     }
+
+	void CBgfxClusteredRenderer::onReset(size_t width, size_t height)
+	{
+		m_ssao.reset(width, height);
+	}
+
+
 #ifdef DA_DEBUG
     void CBgfxClusteredRenderer::renderLightDebug()
     {
@@ -418,16 +459,15 @@ namespace da::platform {
             ImGui::SameLine();
             ImGui::DragFloat("###skyTime", &m_skyTime, .1f, 0.f, 24.f);
 
-            /*::bgfx::TextureHandle handle = ::bgfx::getTexture(m_shadow.getFrameBuffer());
+            ::bgfx::TextureHandle handle = ::bgfx::getTexture(m_ssao.getBuffer());
 
             if (handle.idx == UINT16_MAX) {
                 return;
             }
-
-            //ImGui::Image(handle, ImVec2(m_shadow.getShadowMapSize(), m_shadow.getShadowMapSize()));
-            */
+            ImGui::Image((ImTextureID)handle.idx, { 480, 240 });
+            //ImGui::Image(handle, ImVec2(480, 240));
+            
         }
-
         ImGui::End();
     }
 #endif

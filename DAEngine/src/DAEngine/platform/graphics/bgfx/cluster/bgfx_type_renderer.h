@@ -18,6 +18,20 @@ namespace da::platform
 {
     class CBgfxGraphicsMaterial;
 
+	struct PosVertex
+	{
+		float x;
+		float y;
+		float z;
+
+		static void init()
+		{
+			layout.begin().add(::bgfx::Attrib::Position, 3, ::bgfx::AttribType::Float).end();
+		}
+
+		static ::bgfx::VertexLayout layout;
+	};
+
     class CBgfxTypeRenderer
     {
     public:
@@ -54,7 +68,6 @@ namespace da::platform
         // the first reset happens before initialize
         virtual void onInitialize() { }
         // window resize/flags changed (MSAA, V-Sync, ...)
-        virtual void onReset() { }
         virtual void onRender(float dt) = 0;
         virtual void onShutdown() { }
 
@@ -71,32 +84,22 @@ namespace da::platform
         // final output
         // used for tonemapping
         ::bgfx::FrameBufferHandle m_frameBuffer = BGFX_INVALID_HANDLE;
+        ::bgfx::FrameBufferHandle m_depthBuffer = BGFX_INVALID_HANDLE;
 
     protected:
-        struct PosVertex
-        {
-            float x;
-            float y;
-            float z;
-
-            static void init()
-            {
-                layout.begin().add(::bgfx::Attrib::Position, 3, ::bgfx::AttribType::Float).end();
-            }
-
-            static ::bgfx::VertexLayout layout;
-        };
-
         static constexpr ::bgfx::ViewId MAX_VIEW = 199; // imgui in bigg uses view 200
 
         void setViewProjection(::bgfx::ViewId view);
         void setViewProjection(::bgfx::ViewId view, const glm::mat4& mat,float fov, float zNear, float zFar, float aspectRatio = 1.0);
         void setNormalMatrix(const glm::mat4& modelMat);
 
+        inline virtual void onReset(size_t width, size_t height) { };
+
         void blitToScreen(::bgfx::ViewId view = MAX_VIEW);
 
         static ::bgfx::TextureFormat::Enum findDepthFormat(uint64_t textureFlags, bool stencil = false);
         static ::bgfx::FrameBufferHandle createFrameBuffer(bool hdr = true, bool depth = true);
+        ::bgfx::FrameBufferHandle createDepthBuffer();
 
         ETonemappingMode m_tonemappingMode = ETonemappingMode::ACES_LUM;
 
@@ -116,7 +119,7 @@ namespace da::platform
         glm::mat4 m_projMat = glm::mat4(1.0);
 
         ::bgfx::VertexBufferHandle m_blitTriangleBuffer = BGFX_INVALID_HANDLE;
-
+        da::platform::CBgfxGraphicsMaterial* m_pDepthprogram;
     private:
         ::bgfx::UniformHandle m_blitSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_camPosUniform = BGFX_INVALID_HANDLE;
@@ -124,5 +127,6 @@ namespace da::platform
         ::bgfx::UniformHandle m_exposureVecUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_tonemappingModeVecUniform = BGFX_INVALID_HANDLE;
         da::platform::CBgfxGraphicsMaterial* m_pBlipProgram;
+        
     };
 }

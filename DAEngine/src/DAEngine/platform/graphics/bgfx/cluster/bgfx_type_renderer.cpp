@@ -17,7 +17,7 @@
 
 namespace da::platform {
 
-    bgfx::VertexLayout CBgfxTypeRenderer::PosVertex::layout;
+    bgfx::VertexLayout PosVertex::layout;
 
     CBgfxTypeRenderer::CBgfxTypeRenderer()
     {
@@ -42,6 +42,9 @@ namespace da::platform {
         m_pBlipProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_tonemap.sc", "shaders/cluster/fs_tonemap.sc");
         m_pBlipProgram->initialize();
 
+        m_pDepthprogram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_depth.sc", "shaders/cluster/fs_depth.sc");
+        m_pDepthprogram->initialize();
+
         m_pbr.initialize();
         m_pbr.generateAlbedoLUT();
         m_lights.initialize();
@@ -60,13 +63,19 @@ namespace da::platform {
         if (!bgfx::isValid(m_frameBuffer))
         {
             m_frameBuffer = createFrameBuffer(true, true);
-            bgfx::setName(m_frameBuffer, "Render framebuffer (pre-postprocessing)");
+            bgfx::setName(m_frameBuffer, "Render framebuffer (pre-postprocessing)"); 
 		} 
+
+        if (!bgfx::isValid(m_depthBuffer))
+		{
+			m_depthBuffer = createDepthBuffer();
+			bgfx::setName(m_depthBuffer, "Depth buffer");
+        }
 
         this->m_width = width;
         this->m_height = height;
 
-        onReset();
+        onReset(width, height);
     }
 
     void CBgfxTypeRenderer::render(float dt)
@@ -109,13 +118,22 @@ namespace da::platform {
         m_pBlipProgram->shutdown();
         delete m_pBlipProgram;
         m_pBlipProgram = nullptr;
+
+		m_pDepthprogram->shutdown();
+		delete m_pDepthprogram;
+        m_pDepthprogram = nullptr;
+
         if (bgfx::isValid(m_frameBuffer))
             bgfx::destroy(m_frameBuffer);
+
+        if (bgfx::isValid(m_depthBuffer))
+            bgfx::destroy(m_depthBuffer);
 
         m_blitSampler = m_camPosUniform = m_normalMatrixUniform = m_exposureVecUniform = m_tonemappingModeVecUniform =
             BGFX_INVALID_HANDLE;
         m_blitTriangleBuffer = BGFX_INVALID_HANDLE;
         m_frameBuffer = BGFX_INVALID_HANDLE;
+        m_depthBuffer = BGFX_INVALID_HANDLE;
 
         for (bgfx::ViewId i = 0; i < MAX_VIEW; i++)
         {
@@ -271,6 +289,24 @@ namespace da::platform {
 
         return fb;
     }
+
+
+	::bgfx::FrameBufferHandle CBgfxTypeRenderer::createDepthBuffer()
+	{
+        bgfx::TextureHandle texture;
+		const uint64_t samplerFlags = BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT |
+			BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
+
+		bgfx::TextureFormat::Enum depthFormat = findDepthFormat(BGFX_TEXTURE_RT | samplerFlags);
+		assert(depthFormat != bgfx::TextureFormat::Enum::Count);
+		texture = bgfx::createTexture2D(
+			bgfx::BackbufferRatio::Equal, false, 1, depthFormat, BGFX_TEXTURE_RT | samplerFlags);
+
+        bgfx::FrameBufferHandle fb = bgfx::createFrameBuffer(1, &texture, true);
+        return fb;
+	}
+
+
 
     const char* CBgfxTypeRenderer::shaderDir()
     {

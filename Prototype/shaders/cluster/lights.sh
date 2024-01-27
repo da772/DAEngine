@@ -14,6 +14,8 @@ uniform vec4 u_ambientLightIrradiance;
 uniform vec4 u_sunLightDirection;
 uniform vec4 u_sunLightRadiance;
 
+SAMPLER2D(s_ssao, SAMPLER_SSAO);
+
 // for each light:
 //   vec4 position (w is padding)
 //   vec4 intensity + radius (xyz is intensity, w is radius)
@@ -146,8 +148,8 @@ vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
         radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * light.radiance * NoL;
     }
 
-
-    radianceOut += getAmbientLight().irradiance * mat.diffuseColor;
+    float ambientLight = getAmbientLight().irradiance * texture2D(s_ssao, gl_FragCoord.xy/u_viewRect.zw).r;
+    radianceOut += ambientLight * mat.diffuseColor;
     radianceOut += radianceOut * visibility;
     radianceOut += mat.emissive;
 

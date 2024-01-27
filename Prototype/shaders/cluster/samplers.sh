@@ -13,6 +13,9 @@
 
 #define SAMPLER_LIGHTS_POINTLIGHTS 6
 
+#define SAMPLER_SSAO 11
+
+
 // per renderer
 
 #define SAMPLER_CLUSTERS_CLUSTERS 7
