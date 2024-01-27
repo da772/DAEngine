@@ -19,7 +19,7 @@ namespace da::graphics
 	class CStaticMesh
 	{
 	public:
-		CStaticMesh(const std::string& path);
+		CStaticMesh(const std::string& path, bool inverseNormals = false);
 		inline CStaticMesh() {};
 		virtual ~CStaticMesh();
 

@@ -9,7 +9,7 @@ namespace da::platform {
 	{
 	public:
 
-		CBgfxStaticMesh(const std::string& path);
+		CBgfxStaticMesh(const std::string& path, bool inverseNormals);
 		virtual ~CBgfxStaticMesh();
 
 		void setBuffers(size_t index, uint8_t stream);

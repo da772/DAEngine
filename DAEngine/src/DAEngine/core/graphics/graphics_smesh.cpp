@@ -16,7 +16,7 @@
 
 namespace da::graphics
 {
-	CStaticMesh::CStaticMesh(const std::string& path) : m_path(path)
+	CStaticMesh::CStaticMesh(const std::string& path, bool inverseNormals) : m_path(path)
 	{
 		CAsset file(path.c_str());
 #if !defined(DA_TEST)
@@ -29,14 +29,14 @@ namespace da::graphics
 
 		const aiScene* pScene = importer.ReadFileFromMemory(file.data(), file.size() * sizeof(char),
 			aiProcess_Triangulate
-			| aiProcess_GenNormals 
+			| aiProcess_GenSmoothNormals
 			| aiProcess_ConvertToLeftHanded
 			| aiProcess_CalcTangentSpace
 			| aiProcess_FixInfacingNormals
 			| aiProcess_PreTransformVertices
 			| aiProcess_TransformUVCoords
 		);
-		static glm::mat4 transformMat = glm::mat4(1.0f) * glm::rotate(glm::mat4(1.0f), glm::radians(-180.f), glm::vec3(0.0f, 1.0f, 0.0f));
+		static glm::mat4 transformMat = glm::mat4(1.0f) * glm::rotate(glm::mat4(1.0f), glm::radians(180.f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		m_meshes = {};
 		m_meshes.reserve(pScene->mNumMeshes);
@@ -65,7 +65,10 @@ namespace da::graphics
 
 				if (pScene->mMeshes[i]->HasNormals())
 				{
-					glm::vec3 normals = transformMat * glm::vec4(pScene->mMeshes[i]->mNormals[v].x, pScene->mMeshes[i]->mNormals[v].y, pScene->mMeshes[i]->mNormals[v].z, 1.f);
+					glm::vec3 normals = glm::normalize(transformMat * glm::vec4(pScene->mMeshes[i]->mNormals[v].x, pScene->mMeshes[i]->mNormals[v].y, pScene->mMeshes[i]->mNormals[v].z, 1.f));
+					if (inverseNormals) {
+						normals *= -1.f;
+					}
 					vertex.Normal = {
 						normals.x,
 						normals.y,
@@ -75,7 +78,10 @@ namespace da::graphics
 
 				if (pScene->mMeshes[i]->HasTangentsAndBitangents())
 				{
-					glm::vec3 tangents = transformMat * glm::vec4(pScene->mMeshes[i]->mTangents[v].x, pScene->mMeshes[i]->mTangents[v].y, pScene->mMeshes[i]->mTangents[v].z, 1.f);
+					glm::vec3 tangents = glm::normalize(transformMat * glm::vec4(pScene->mMeshes[i]->mTangents[v].x, pScene->mMeshes[i]->mTangents[v].y, pScene->mMeshes[i]->mTangents[v].z, 1.f));
+					if (inverseNormals) {
+						tangents *= -1.f;
+					}
 					vertex.Tangent = {
 						tangents.x,
 						tangents.y,

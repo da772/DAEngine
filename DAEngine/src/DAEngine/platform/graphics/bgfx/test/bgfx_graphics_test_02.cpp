@@ -22,7 +22,7 @@ namespace da::platform {
 		m_start = (double)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() / 1e3f;
 		m_window = window;
 		
-		m_mesh = new CBgfxStaticMesh("assets/viking_room.obj");
+		m_mesh = new CBgfxStaticMesh("assets/viking_room.obj", false);
 		m_texture = bgfx::CBgfxTexture2D("assets/viking_room.png");
 		m_uniform = bgfx::CBgfxUniform<uint16_t>(::bgfx::UniformType::Sampler, "m_uniform");//::bgfx::createUniform("m_uniform", ::bgfx::UniformType::Sampler);
 

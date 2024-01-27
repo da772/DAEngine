@@ -27,7 +27,6 @@ namespace da::platform {
         m_normalSampler = bgfx::createUniform("s_texNormal", bgfx::UniformType::Sampler);
         m_occlusionSampler = bgfx::createUniform("s_texOcclusion", bgfx::UniformType::Sampler);
         m_emissiveSampler = bgfx::createUniform("s_texEmissive", bgfx::UniformType::Sampler);
-        m_lightPos = bgfx::createUniform("u_lightPos", bgfx::UniformType::Vec4);
         m_lightMtx = bgfx::createUniform("u_sunLightMtx", bgfx::UniformType::Mat4, SHADOW_MAP_SIZE);
 
         m_defaultTexture = bgfx::createTexture2D(1, 1, false, 1, bgfx::TextureFormat::RGBA8);
@@ -70,8 +69,6 @@ namespace da::platform {
         bgfx::destroy(m_albedoLUTTexture);
         ASSERT(::bgfx::isValid(m_defaultTexture));
         bgfx::destroy(m_defaultTexture);
-        ASSERT(::bgfx::isValid(m_lightPos));
-        bgfx::destroy(m_lightPos);
         ASSERT(::bgfx::isValid(m_lightMtx));
         bgfx::destroy(m_lightMtx);
 
@@ -81,7 +78,7 @@ namespace da::platform {
 
         m_baseColorFactorUniform = m_metallicRoughnessNormalOcclusionFactorUniform = m_emissiveFactorUniform =
             m_hasTexturesUniform = m_multipleScatteringUniform = m_albedoLUTSampler = m_baseColorSampler =
-            m_metallicRoughnessSampler = m_normalSampler = m_occlusionSampler = m_emissiveSampler = m_lightPos = m_lightMtx = BGFX_INVALID_HANDLE;
+            m_metallicRoughnessSampler = m_normalSampler = m_occlusionSampler = m_emissiveSampler = m_lightMtx = BGFX_INVALID_HANDLE;
         m_albedoLUTTexture = m_defaultTexture = BGFX_INVALID_HANDLE;
     }
 
@@ -149,7 +146,6 @@ namespace da::platform {
 	void CBgfxPBRShader::bindLightPos(const glm::vec3& pos, const glm::mat4* mtx)
 	{
         glm::vec4 p(pos, 1.0);
-        bgfx::setUniform(m_lightPos, glm::value_ptr(p));
         bgfx::setUniform(m_lightMtx, &(mtx[0]), SHADOW_MAP_SIZE);
 	}
 

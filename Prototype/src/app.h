@@ -136,6 +136,7 @@ protected:
 		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Normal.png");
 		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Variation04/Sniper_05_Metallic.png");
 		c->getStaticMesh()->getMaterial(0).emissiveTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Emission.png");
+		c->getStaticMesh()->getMaterial(0).emissiveFactor = { 1.f,1.f,1.f };
 		c->getStaticMesh()->getMaterial(0).occlusionTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Occlusion.png");
 		
 		e3 = da::core::CSceneManager::getScene()->createEntity();
@@ -144,6 +145,8 @@ protected:
 		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Normal.png");
 		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Metallic.png");
 		c->getStaticMesh()->getMaterial(0).emissiveTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Emission.png");
+		c->getStaticMesh()->getMaterial(0).emissiveFactor = { 1.f,1.f,1.f };
+		c->getStaticMesh()->getMaterial(0).occlusionTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Occlusion.png");
 
 		e3->setTag(HASHSTR("Rifle"));
 		e3->getTransform().setPosition({ 0,-5.f,5.f });
@@ -151,14 +154,11 @@ protected:
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		e4 = da::core::CSceneManager::getScene()->createEntity();
-		c = e4->addComponent<da::core::CSmeshComponent>("assets/pistol/pistol.fbx");
-		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/pistol/Textures/Variation01/Pistol_01_Albedo.png");
-		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/pistol/Textures/Shared/Pistol_Normal.png");
-		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/pistol/Textures/Variation01/Pistol_01_Metallic.png");
-		c->getStaticMesh()->getMaterial(0).emissiveTexture = da::graphics::CTexture2DFactory::Create("assets/pistol/Textures/Shared/Pistol_Emission.png");
-		e4->setTag(HASHSTR("Pistol"));
+		c = e4->addComponent<da::core::CSmeshComponent>("assets/santa/FBX/Character_Santa.fbx", true);
+		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/santa/Textures/Polygon_Texture_01_A.png");
+		e4->setTag(HASHSTR("santa!"));
 		e4->getTransform().setPosition({ 0,5.f,5.f });
-		e4->getTransform().setRotation({ 0,0.f,90.f });
+		e4->getTransform().setRotation({ 0,0.f,0.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		e2->getTransform().setPosition({ 0,0,0 });

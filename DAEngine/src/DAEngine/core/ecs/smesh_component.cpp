@@ -14,9 +14,14 @@ namespace da::core {
 	COMPONENT_CPP(CSmeshComponent);
 #endif
 
-	CSmeshComponent::CSmeshComponent(const std::string& meshPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
+	CSmeshComponent::CSmeshComponent(const std::string& meshPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(false)
 	{
-		m_staticMesh = new da::platform::CBgfxStaticMesh(meshPath);
+		m_staticMesh = new da::platform::CBgfxStaticMesh(meshPath, false);
+	}
+
+	CSmeshComponent::CSmeshComponent(const std::string& meshPath, bool inverseNormals, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(inverseNormals)
+	{
+		m_staticMesh = new da::platform::CBgfxStaticMesh(meshPath, inverseNormals);
 	}
 
 	void CSmeshComponent::onInitialize()
@@ -79,7 +84,7 @@ namespace da::core {
 			std::string path = m_staticMesh->getPath();
 			std::vector<da::graphics::FMaterialData> materials = m_staticMesh->getMaterials();
 			delete m_staticMesh;
-			m_staticMesh = new da::platform::CBgfxStaticMesh(path);
+			m_staticMesh = new da::platform::CBgfxStaticMesh(path, m_inverseNormals);
 
 			for (size_t i = 0; i < m_staticMesh->getMaterialCount() && i < materials.size(); i++) {
 				m_staticMesh->getMaterial(i) = materials[i];

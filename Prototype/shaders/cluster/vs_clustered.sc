@@ -1,5 +1,5 @@
 $input a_position, a_normal, a_tangent, a_texcoord0
-$output v_worldpos, v_normal, v_tangent, v_texcoord0, v_shadowcoord0, v_shadowcoord1,v_shadowcoord2, v_shadowcoord3, v_view
+$output v_worldpos, v_normal, v_tangent, v_texcoord0, v_shadowcoord0, v_shadowcoord1,v_shadowcoord2, v_shadowcoord3
 
 #include <bgfx_shader.sh>
 
@@ -13,7 +13,6 @@ void main()
     v_tangent = mul(u_model[0], vec4(a_tangent, 0.0)).xyz;
     v_texcoord0 = a_texcoord0;
     gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
-    v_view = mul(u_modelView, vec4(a_position, 1.0)).xyz;
     vec3 normal = v_normal * 2.0 - 1.0;
     const float shadowMapOffset = 0.001;
 	vec3 posOffset = v_worldpos + normal * shadowMapOffset;

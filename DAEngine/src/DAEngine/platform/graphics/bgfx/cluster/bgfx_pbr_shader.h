@@ -41,7 +41,6 @@ namespace da::platform
         ::bgfx::UniformHandle m_normalSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_occlusionSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_emissiveSampler = BGFX_INVALID_HANDLE;
-        ::bgfx::UniformHandle m_lightPos = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_lightMtx = BGFX_INVALID_HANDLE;
 
         ::bgfx::TextureHandle m_albedoLUTTexture = BGFX_INVALID_HANDLE;

@@ -22,6 +22,7 @@ namespace da::core
 
 	public:
 		CSmeshComponent(const std::string& meshPath, CEntity& parent);
+		CSmeshComponent(const std::string& meshPath, bool inverseNormals, CEntity& parent);
 
 		void onInitialize();
 		void onUpdate(float dt);
@@ -33,6 +34,7 @@ namespace da::core
 
 	private:
 		da::graphics::CStaticMesh* m_staticMesh;
+		bool m_inverseNormals;
 
 	};
 }

@@ -344,7 +344,7 @@ namespace da::platform {
         constexpr float POWER_MAX = 100.0f;
 
         int countHalf = count / 2;
-        float distScale = 3.25f;
+        float distScale = 3.f;
 
         int index = 0;
         for (int y = -countHalf; y <= countHalf; y+=2) {
