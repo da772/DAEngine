@@ -29,6 +29,7 @@ namespace da::platform {
         PosVertex::init();
 
         m_blitSampler = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
+        m_bloomSampler = bgfx::createUniform("s_texBloom", bgfx::UniformType::Sampler);
         m_camPosUniform = bgfx::createUniform("u_camPos", bgfx::UniformType::Vec4);
         m_normalMatrixUniform = bgfx::createUniform("u_normalMatrix", bgfx::UniformType::Mat3);
         m_exposureVecUniform = bgfx::createUniform("u_exposureVec", bgfx::UniformType::Vec4);
@@ -114,6 +115,7 @@ namespace da::platform {
         BGFXDESTROY(m_exposureVecUniform);
         BGFXDESTROY(m_tonemappingModeVecUniform);
         BGFXDESTROY(m_blitTriangleBuffer);
+        BGFXDESTROY(m_bloomSampler);
 
         m_pBlipProgram->shutdown();
         delete m_pBlipProgram;
@@ -231,6 +233,8 @@ namespace da::platform {
         bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_CULL_CW | BGFX_STATE_MSAA);
         bgfx::TextureHandle frameBufferTexture = bgfx::getTexture(m_frameBuffer, 0);
         bgfx::setTexture(0, m_blitSampler, frameBufferTexture);
+        bgfx::TextureHandle bloomTexture = bgfx::getTexture(m_bloom.getBuffer(), 0);
+        bgfx::setTexture(1, m_bloomSampler, bloomTexture);
         float exposureVec[4] = { da::core::CCamera::getCamera()->exposure };
         bgfx::setUniform(m_exposureVecUniform, exposureVec);
         float tonemappingModeVec[4] = { (float)m_tonemappingMode };
@@ -274,8 +278,8 @@ namespace da::platform {
         bgfx::TextureFormat::Enum format =
             hdr ? bgfx::TextureFormat::RGBA16F : bgfx::TextureFormat::BGRA8; // BGRA is often faster (internal GPU format)
         assert(bgfx::isTextureValid(0, false, 1, format, samplerFlags));
-        textures[attachments++] =
-            bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, format, samplerFlags);
+		textures[attachments++] =
+			bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, format, samplerFlags);
 
         if (depth)
         {

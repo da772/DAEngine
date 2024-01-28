@@ -17,6 +17,7 @@ uniform vec4 u_tonemappingModeVec;
 #define TONEMAP_ACES_LUM 7
 
 SAMPLER2D(s_texColor, 0);
+SAMPLER2D(s_texBloom, 1);
 
 void main()
 {
@@ -53,5 +54,7 @@ void main()
             break;
     }
 
-    gl_FragColor = result;
+    vec4 bloomColor = vec4(texture2D(s_texBloom, texcoord).rgb, 0.0);
+
+    gl_FragColor = result + bloomColor;
 }

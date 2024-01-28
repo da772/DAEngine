@@ -151,9 +151,9 @@ namespace da::platform
 		u_perezCoeff      = bgfx::createUniform("u_perezCoeff", bgfx::UniformType::Vec4, 5);
 	}
 
-	void CBgfxProcSky::render(bgfx::ViewId id)
+	void CBgfxProcSky::render(bgfx::ViewId id, uint64_t state)
 	{
-		bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_DEPTH_TEST_EQUAL);
+		bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_DEPTH_TEST_EQUAL | state);
 		bgfx::setIndexBuffer(m_ibh);
 		bgfx::setVertexBuffer(0, m_vbh);
 		bgfx::submit(id, { m_skyProgramFix->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);

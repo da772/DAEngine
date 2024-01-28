@@ -92,7 +92,7 @@ namespace da::platform
 	{
 	public:
 		void initialize(int vertCount, int horzCount);
-		void render(::bgfx::ViewId id);
+		void render(::bgfx::ViewId id, uint64_t state);
 		void setUniforms(const CBgfxSunController& sun, float time);
 		void shutdown();
 

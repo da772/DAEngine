@@ -7,6 +7,7 @@
 #include <mutex>
 #include <map>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #ifndef DA_DEBUG
 #define NDEBUG

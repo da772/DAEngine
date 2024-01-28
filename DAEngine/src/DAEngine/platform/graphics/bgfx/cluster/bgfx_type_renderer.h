@@ -9,6 +9,7 @@
 #include "core/enum.h"
 #include "bgfx_sky.h"
 #include <map>
+#include "bgfx_bloom_shader.h"
 
 namespace da::core {
     class CCamera;
@@ -110,6 +111,7 @@ namespace da::platform
         CBgfxLightShader m_lights;
         CBgfxProcSky m_sky;
         CBgfxSunController m_sun;
+        CBgfxBloomShader m_bloom;
 
         uint32_t m_clearColor = 0;
         float m_time = 0.f;
@@ -122,6 +124,7 @@ namespace da::platform
         da::platform::CBgfxGraphicsMaterial* m_pDepthprogram;
     private:
         ::bgfx::UniformHandle m_blitSampler = BGFX_INVALID_HANDLE;
+        ::bgfx::UniformHandle m_bloomSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_camPosUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_normalMatrixUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_exposureVecUniform = BGFX_INVALID_HANDLE;

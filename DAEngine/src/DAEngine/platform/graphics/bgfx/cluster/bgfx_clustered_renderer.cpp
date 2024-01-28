@@ -73,6 +73,8 @@ namespace da::platform {
 		m_sunLight.direction = m_shadow.getLightDir();
 		m_sunLight.radiance = { 1.f, 1.f,1.f };
 
+        m_bloom.initialize(m_width, m_height);
+
 #ifdef DA_DEBUG
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"), &m_lightDebugVis, [&] { renderLightDebug(); });
@@ -90,6 +92,8 @@ namespace da::platform {
             vClusterBuilding = vShadow + SHADOW_MAP_SIZE,
             vLightCulling,
             vLighting,
+            vBloom,
+            vBloomBlur,
         };
 
 		da::core::CScene* scene = da::core::CSceneManager::getScene();
@@ -116,6 +120,10 @@ namespace da::platform {
         ::bgfx::setViewRect(vLighting, 0, 0, m_width, m_height);
         ::bgfx::setViewFrameBuffer(vLighting, m_frameBuffer);
         ::bgfx::touch(vLighting);
+
+		::bgfx::setViewName(vBloom, "Bloom first pass");
+		::bgfx::setViewClear(vBloom, BGFX_CLEAR_COLOR, 0x00000000, 1.0f, 0);
+		::bgfx::touch(vBloom);
 
         setViewProjection(vDepth);
         // Depth pass
@@ -295,7 +303,7 @@ namespace da::platform {
 
         m_sun.Update(m_skyTime);
 		m_sky.setUniforms(m_sun, m_skyTime);
-		m_sky.render(vLighting);
+		m_sky.render(vLighting, state);
 
         // Render pass
         for (size_t i = 0; i < container.getCount(); i++) {
@@ -325,6 +333,10 @@ namespace da::platform {
             }
         }
 
+        ::bgfx::TextureHandle tex = ::bgfx::getTexture(m_frameBuffer, 0);
+        m_bloom.render(vBloom, tex, m_width, m_height);
+        m_bloom.renderBlur(vBloomBlur, m_width, m_height);
+
         ::bgfx::discard(BGFX_DISCARD_ALL);
     }
 
@@ -335,13 +347,13 @@ namespace da::platform {
         m_shadow.shutdown();
         m_pointLights.shutdown();
         m_ssao.shutdown();
+        m_bloom.shutdown();
 
 		m_pClusterBuildingComputeProgram->shutdown();
 		m_pResetCounterComputeProgram->shutdown();
 		m_pLightCullingComputeProgram->shutdown();
 		m_pLightingProgram->shutdown();
 		m_pDebugVisProgram->shutdown();
-        
 
         delete m_pClusterBuildingComputeProgram;
         delete m_pResetCounterComputeProgram;
@@ -416,6 +428,7 @@ namespace da::platform {
 	void CBgfxClusteredRenderer::onReset(size_t width, size_t height)
 	{
 		m_ssao.reset(width, height);
+        m_bloom.onReset(width, height);
 	}
 
 
