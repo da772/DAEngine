@@ -59,7 +59,7 @@ namespace da::platform {
         m_pDebugVisProgram->initialize();
 
         m_pointLights.init();
-        //generateLights(100);
+        generateLights(100);
         m_pointLights.update();
 
         m_shadow.initialize();
@@ -270,7 +270,6 @@ namespace da::platform {
         }
 
         // light culling
-
         m_clusters.bindBuffers(false);
 
         // reset atomic counter for light grid generation
@@ -278,6 +277,7 @@ namespace da::platform {
         // this used to happen during cluster building when it was still run every frame
         ::bgfx::dispatch(vLightCulling, { m_pResetCounterComputeProgram->getHandle() }, 1, 1, 1);
 
+        m_lights.bindLights(m_shadow.getLightDir(), { 0.f,0.f,0.f }, m_ambientLight, m_pointLights);
         m_clusters.bindBuffers(false);
 
         ::bgfx::dispatch(vLightCulling,
