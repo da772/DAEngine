@@ -23,6 +23,7 @@ uniform vec4 u_baseColorFactor;
 uniform vec4 u_metallicRoughnessNormalOcclusionFactor;
 uniform vec4 u_emissiveFactorVec;
 uniform vec4 u_hasTextures;
+uniform vec4 s_uvScale;
 
 #define u_hasBaseColorTexture         ((uint(u_hasTextures.x) & (1 << 0)) != 0)
 #define u_hasMetallicRoughnessTexture ((uint(u_hasTextures.x) & (1 << 1)) != 0)
@@ -67,7 +68,7 @@ vec4 pbrBaseColor(vec2 texcoord)
 {
     if(u_hasBaseColorTexture)
     {
-        return texture2D(s_texBaseColor, texcoord) * u_baseColorFactor;
+        return texture2D(s_texBaseColor, texcoord * s_uvScale) * u_baseColorFactor;
     }
     else
     {

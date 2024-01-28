@@ -33,6 +33,7 @@ namespace da::platform
         ::bgfx::UniformHandle m_baseColorFactorUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_metallicRoughnessNormalOcclusionFactorUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_emissiveFactorUniform = BGFX_INVALID_HANDLE;
+        ::bgfx::UniformHandle m_uvScaleUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_hasTexturesUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_multipleScatteringUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_albedoLUTSampler = BGFX_INVALID_HANDLE;

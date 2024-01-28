@@ -27,6 +27,7 @@ namespace da::platform {
         m_normalSampler = bgfx::createUniform("s_texNormal", bgfx::UniformType::Sampler);
         m_occlusionSampler = bgfx::createUniform("s_texOcclusion", bgfx::UniformType::Sampler);
         m_emissiveSampler = bgfx::createUniform("s_texEmissive", bgfx::UniformType::Sampler);
+        m_uvScaleUniform = bgfx::createUniform("s_uvScale", bgfx::UniformType::Vec4);
         m_lightMtx = bgfx::createUniform("u_sunLightMtx", bgfx::UniformType::Mat4, SHADOW_MAP_SIZE);
 
         m_defaultTexture = bgfx::createTexture2D(1, 1, false, 1, bgfx::TextureFormat::RGBA8);
@@ -70,7 +71,9 @@ namespace da::platform {
         ASSERT(::bgfx::isValid(m_defaultTexture));
         bgfx::destroy(m_defaultTexture);
         ASSERT(::bgfx::isValid(m_lightMtx));
-        bgfx::destroy(m_lightMtx);
+		bgfx::destroy(m_lightMtx); 
+        ASSERT(::bgfx::isValid(m_uvScaleUniform));
+		bgfx::destroy(m_uvScaleUniform);
 
         m_pAlbedoLUTProgram->shutdown();
         delete m_pAlbedoLUTProgram;
@@ -78,7 +81,7 @@ namespace da::platform {
 
         m_baseColorFactorUniform = m_metallicRoughnessNormalOcclusionFactorUniform = m_emissiveFactorUniform =
             m_hasTexturesUniform = m_multipleScatteringUniform = m_albedoLUTSampler = m_baseColorSampler =
-            m_metallicRoughnessSampler = m_normalSampler = m_occlusionSampler = m_emissiveSampler = m_lightMtx = BGFX_INVALID_HANDLE;
+            m_metallicRoughnessSampler = m_normalSampler = m_occlusionSampler = m_emissiveSampler = m_lightMtx = m_uvScaleUniform = BGFX_INVALID_HANDLE;
         m_albedoLUTTexture = m_defaultTexture = BGFX_INVALID_HANDLE;
     }
 
@@ -97,6 +100,8 @@ namespace da::platform {
         bgfx::setUniform(m_metallicRoughnessNormalOcclusionFactorUniform, factorValues);
         glm::vec4 emissiveFactor = glm::vec4(material.emissiveFactor, 0.0f);
         bgfx::setUniform(m_emissiveFactorUniform, glm::value_ptr(emissiveFactor));
+        glm::vec4 uvScale = { material.uvScale.x, material.uvScale.y, 1.f,1.f };
+        bgfx::setUniform(m_uvScaleUniform, glm::value_ptr(uvScale));
 
         float hasTexturesValues[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 

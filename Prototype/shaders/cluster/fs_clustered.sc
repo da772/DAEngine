@@ -22,5 +22,4 @@ void main()
 
     // Output
     gl_FragColor = vec4(radianceOut, 1.0);
-    
 }

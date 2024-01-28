@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <string>
@@ -16,6 +17,7 @@ namespace da::graphics {
 
         CGraphicsTexture2D* baseColorTexture = nullptr;
         glm::vec4 baseColorFactor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glm::vec2 uvScale = { 1.f,1.f };
 
         CGraphicsTexture2D* metallicRoughnessTexture = nullptr; // blue = metallic, green = roughness
         float metallicFactor = 1.0f;
