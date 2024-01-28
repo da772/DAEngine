@@ -193,11 +193,17 @@ namespace da::platform
 #endif
 	}
 
+	glm::vec3 CBgfxProcSky::getSunLuminance() const
+	{
+		glm::vec3 sunLuminanceXYZ = m_sunLuminanceXYZ.GetValue(m_sun->getTime());
+		glm::vec3 sunLuminanceRGB = xyzToRgb(sunLuminanceXYZ) * m_sunColor;
+		return sunLuminanceRGB;
+	}
+
 	void CBgfxProcSky::setUniforms()
 	{
 		m_parameters.w = m_sun->getTime();
-		glm::vec3 sunLuminanceXYZ = m_sunLuminanceXYZ.GetValue(m_parameters.w);
-		glm::vec3 sunLuminanceRGB = xyzToRgb(sunLuminanceXYZ);
+		glm::vec3 sunLuminanceRGB = getSunLuminance();
 
 		glm::vec3 skyLuminanceXYZ = m_skyLuminanceXYZ.GetValue(m_parameters.w);
 		glm::vec3 skyLuminanceRGB = xyzToRgb(skyLuminanceXYZ);
@@ -229,7 +235,7 @@ namespace da::platform
 		}
 	}
 
-	glm::vec3 CBgfxProcSky::xyzToRgb(const glm::vec3& xyz)
+	glm::vec3 CBgfxProcSky::xyzToRgb(const glm::vec3& xyz) const
 	{
 		glm::vec3 rgb;
 		rgb.x = M_XYZ2RGB[0] * xyz.x + M_XYZ2RGB[3] * xyz.y + M_XYZ2RGB[6] * xyz.z;
@@ -255,6 +261,10 @@ namespace da::platform
 			ImGui::SameLine();
 			ImGui::InputFloat("##se", &m_parameters.z);
 
+			ImGui::Text("Sun Color: ");
+			ImGui::SameLine();
+			ImGui::InputFloat3("##scolor", &m_sunColor[0]);
+
 			ImGui::Text("Sky Time: ");
 			ImGui::SameLine();
 			float skyTime = m_sun->getTime();
@@ -265,6 +275,9 @@ namespace da::platform
 
 		ImGui::End();
 	}
+
+
+
 #endif
 
 	CBgfxSunController::CBgfxSunController() : m_northDir(1.0f, 0.0f, 0.0f)

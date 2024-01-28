@@ -98,11 +98,12 @@ namespace da::platform
 		void initialize(int vertCount, int horzCount, CBgfxSunController& sun);
 		void render(::bgfx::ViewId id, uint64_t state);
 		void shutdown();
+		glm::vec3 getSunLuminance() const;
 
 	private:
 		void setUniforms();
 		void computePerezCoeff(float _turbidity, float* _outPerezCoeff);
-		glm::vec3 xyzToRgb(const glm::vec3& xyz);
+		glm::vec3 xyzToRgb(const glm::vec3& xyz) const;
 
 #ifdef DA_DEBUG
 		void renderDebug();
@@ -110,6 +111,7 @@ namespace da::platform
 
 	private:
 		glm::vec4 m_parameters = { 0.1f, 1.0f, 0.1f, 18.f };
+		glm::vec3 m_sunColor = { 1.f,1.f,1.f };
 		CDynamicValueController m_sunLuminanceXYZ;
 		CDynamicValueController m_skyLuminanceXYZ;
 		CBgfxGraphicsMaterial* m_skyProgram = nullptr;

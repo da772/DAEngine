@@ -12,7 +12,7 @@ namespace da::platform {
         void initialize();
         void shutdown();
 
-        void bindLights(const CBgfxSunLight& sunLight, const CBgfxAmbientLight& ambientLight, CBgfxPointLightList& pointLights) const;
+        void bindLights(const glm::vec3& sunLightDir, const glm::vec3& sunLightRadiance, const CBgfxAmbientLight& ambientLight, CBgfxPointLightList& pointLights) const;
 
     private:
         ::bgfx::UniformHandle m_lightCountVecUniform = BGFX_INVALID_HANDLE;

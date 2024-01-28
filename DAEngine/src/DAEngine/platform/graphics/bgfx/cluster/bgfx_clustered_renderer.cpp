@@ -70,8 +70,6 @@ namespace da::platform {
         m_ssao.initialize();
 
 		m_ambientLight.irradiance = { .25f, .25f, .25f };
-		m_sunLight.direction = m_shadow.getLightDir();
-		m_sunLight.radiance = { 1.f, 1.f,1.f };
 
         m_bloom.initialize(m_width, m_height);
         m_volumetricLight.initialize();
@@ -102,7 +100,6 @@ namespace da::platform {
 		const da::core::FComponentContainer& container = scene->getComponents<da::core::CSmeshComponent>();
 
         m_shadow.getLightDir() = m_sun.m_sunDir;
-        m_sunLight.direction = m_shadow.getLightDir();
 
 		::bgfx::setViewName(vDepth, "Depth pass");
 		::bgfx::setViewClear(vDepth, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xFFFFFF00, 1.0f, 0);
@@ -281,7 +278,6 @@ namespace da::platform {
         // this used to happen during cluster building when it was still run every frame
         ::bgfx::dispatch(vLightCulling, { m_pResetCounterComputeProgram->getHandle() }, 1, 1, 1);
 
-        m_lights.bindLights(m_sunLight, m_ambientLight, m_pointLights);
         m_clusters.bindBuffers(false);
 
         ::bgfx::dispatch(vLightCulling,
@@ -300,7 +296,7 @@ namespace da::platform {
 
 		m_pbr.bindAlbedoLUT();
         glm::vec3 rotRadians = glm::vec3(glm::radians(m_shadow.getCamera().rotation().x), glm::radians(m_shadow.getCamera().rotation().y), glm::radians(m_shadow.getCamera().rotation().z));
-        m_lights.bindLights({ m_shadow.getLightDir(),m_sunLight.radiance }, m_ambientLight, m_pointLights);
+        m_lights.bindLights(m_shadow.getLightDir(),m_sky.getSunLuminance(), m_ambientLight, m_pointLights);
 		m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
 		m_sky.render(vLighting, state);
@@ -449,28 +445,6 @@ namespace da::platform {
             ImGui::Text("Ambient Light: ");
             ImGui::SameLine();
             ImGui::InputFloat3("##ambientLightControl", glm::value_ptr(m_ambientLight.irradiance));
-
-            ImGui::Text("Sun light Direction: ");
-            ImGui::SameLine();
-            ImGui::SliderFloat3("##sunLightDirControl", glm::value_ptr(m_shadow.getLightDir()), -1.f, 1.f);
-
-            ImGui::Text("Sunlight Radiance: ");
-            ImGui::SameLine();
-            ImGui::InputFloat3("##sunLightRadControl", glm::value_ptr(m_sunLight.radiance));
-
-			ImGui::Text("Sunlight Position: ");
-			ImGui::SameLine();
-            glm::vec3 p = m_shadow.getCamera().position();
-            if (ImGui::InputFloat3("##sunLightPosControl", glm::value_ptr(p))) {
-                m_shadow.getCamera().setPosition(p);
-            }
-
-			ImGui::Text("Sunlight Rotation: ");
-			ImGui::SameLine();
-			glm::vec3 r = m_shadow.getCamera().rotation();
-			if (ImGui::InputFloat3("##sunLightRotControl", glm::value_ptr(r))) {
-				m_shadow.getCamera().setRotation(r);
-			}
 
         }
         ImGui::End();

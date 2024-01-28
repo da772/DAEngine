@@ -22,10 +22,4 @@ namespace da::platform {
         glm::vec3 irradiance;
     };
 
-    struct CBgfxSunLight
-    {
-        glm::vec3 direction;
-        glm::vec3 radiance;
-    };
-
 }

@@ -38,7 +38,6 @@ namespace da::platform
         da::platform::CBgfxGraphicsMaterial* m_pDebugVisProgram;
 
         CBgfxAmbientLight m_ambientLight;
-        CBgfxSunLight m_sunLight;
         CBgfxPointLightList m_pointLights;
         CBgfxClusterShader m_clusters;
         CBgfxShadowShader m_shadow;
