@@ -18,6 +18,7 @@ uniform vec4 u_tonemappingModeVec;
 
 SAMPLER2D(s_texColor, 0);
 SAMPLER2D(s_texBloom, 1);
+SAMPLER2D(s_texVolLight, 2);
 
 void main()
 {
@@ -55,6 +56,7 @@ void main()
     }
 
     vec4 bloomColor = vec4(texture2D(s_texBloom, texcoord).rgb, 0.0);
+    vec4 volLightColor = vec4(texture2D(s_texVolLight, texcoord).rgb, 0.0);
 
-    gl_FragColor = result + bloomColor;
+    gl_FragColor = result + bloomColor + volLightColor;
 }

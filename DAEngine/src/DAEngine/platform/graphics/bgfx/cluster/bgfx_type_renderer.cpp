@@ -30,6 +30,7 @@ namespace da::platform {
 
         m_blitSampler = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
         m_bloomSampler = bgfx::createUniform("s_texBloom", bgfx::UniformType::Sampler);
+        m_volLightSampler = bgfx::createUniform("m_volLightSampler", bgfx::UniformType::Sampler);
         m_camPosUniform = bgfx::createUniform("u_camPos", bgfx::UniformType::Vec4);
         m_normalMatrixUniform = bgfx::createUniform("u_normalMatrix", bgfx::UniformType::Mat3);
         m_exposureVecUniform = bgfx::createUniform("u_exposureVec", bgfx::UniformType::Vec4);
@@ -50,8 +51,7 @@ namespace da::platform {
         m_pbr.generateAlbedoLUT();
         m_lights.initialize();
 
-        m_sky.initialize(32, 32);
-        m_sun.Update(0);
+        m_sky.initialize(32, 32, m_sun);
 
         onInitialize();
 
@@ -116,6 +116,7 @@ namespace da::platform {
         BGFXDESTROY(m_tonemappingModeVecUniform);
         BGFXDESTROY(m_blitTriangleBuffer);
         BGFXDESTROY(m_bloomSampler);
+        BGFXDESTROY(m_volLightSampler);
 
         m_pBlipProgram->shutdown();
         delete m_pBlipProgram;
@@ -234,7 +235,9 @@ namespace da::platform {
         bgfx::TextureHandle frameBufferTexture = bgfx::getTexture(m_frameBuffer, 0);
         bgfx::setTexture(0, m_blitSampler, frameBufferTexture);
         bgfx::TextureHandle bloomTexture = bgfx::getTexture(m_bloom.getBuffer(), 0);
-        bgfx::setTexture(1, m_bloomSampler, bloomTexture);
+		bgfx::setTexture(1, m_bloomSampler, bloomTexture);
+        bgfx::TextureHandle volLightTexture = bgfx::getTexture(m_volumetricLight.getBuffer(), 0);
+		bgfx::setTexture(2, m_volLightSampler, volLightTexture);
         float exposureVec[4] = { da::core::CCamera::getCamera()->exposure };
         bgfx::setUniform(m_exposureVecUniform, exposureVec);
         float tonemappingModeVec[4] = { (float)m_tonemappingMode };
@@ -269,7 +272,7 @@ namespace da::platform {
 
     bgfx::FrameBufferHandle CBgfxTypeRenderer::createFrameBuffer(bool hdr, bool depth)
     {
-        bgfx::TextureHandle textures[2];
+        bgfx::TextureHandle textures[3];
         uint8_t attachments = 0;
 
         const uint64_t samplerFlags = BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT |
@@ -278,6 +281,10 @@ namespace da::platform {
         bgfx::TextureFormat::Enum format =
             hdr ? bgfx::TextureFormat::RGBA16F : bgfx::TextureFormat::BGRA8; // BGRA is often faster (internal GPU format)
         assert(bgfx::isTextureValid(0, false, 1, format, samplerFlags));
+		textures[attachments++] =
+			bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, format, samplerFlags);
+
+        // occlusion map
 		textures[attachments++] =
 			bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, format, samplerFlags);
 

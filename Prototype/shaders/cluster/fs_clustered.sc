@@ -21,5 +21,6 @@ void main()
     vec3 radianceOut = lightPass(v_worldpos, v_normal, v_tangent, v_texcoord0, u_camPos, gl_FragCoord, visibility);
 
     // Output
-    gl_FragColor = vec4(radianceOut, 1.0);
+    gl_FragData[0] = vec4(radianceOut, 1.0);
+    gl_FragData[1] = vec4(0.0,0.0,0.0,1.0);
 }

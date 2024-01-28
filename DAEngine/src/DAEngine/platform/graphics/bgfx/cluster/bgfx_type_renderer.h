@@ -10,6 +10,7 @@
 #include "bgfx_sky.h"
 #include <map>
 #include "bgfx_bloom_shader.h"
+#include "bgfx_volumetric_light_shader.h"
 
 namespace da::core {
     class CCamera;
@@ -112,6 +113,7 @@ namespace da::platform
         CBgfxProcSky m_sky;
         CBgfxSunController m_sun;
         CBgfxBloomShader m_bloom;
+        CBgfxVolumetricLightShader m_volumetricLight;
 
         uint32_t m_clearColor = 0;
         float m_time = 0.f;
@@ -125,6 +127,7 @@ namespace da::platform
     private:
         ::bgfx::UniformHandle m_blitSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_bloomSampler = BGFX_INVALID_HANDLE;
+        ::bgfx::UniformHandle m_volLightSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_camPosUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_normalMatrixUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_exposureVecUniform = BGFX_INVALID_HANDLE;

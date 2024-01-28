@@ -71,7 +71,9 @@ namespace da::platform
 		};
 
 		CBgfxSunController();
-		void Update(float _time);
+		void Update();
+		void setTime(float time);
+		float getTime() const;
 
 		glm::vec3 m_northDir;
 		glm::vec3 m_sunDir;
@@ -79,29 +81,35 @@ namespace da::platform
 		float m_latitude;
 		Month m_month;
 
+		glm::vec2 getScreenSpacePos(glm::mat4 viewMat, glm::mat4 projMatrix) const;
+
 	private:
 		void CalculateSunOrbit();
 		void UpdateSunPosition(float _hour);
 
 		float m_eclipticObliquity;
 		float m_delta;
-		float m_time;
+		float m_time = 18.f;
 	};
 
 	class CBgfxProcSky
 	{
 	public:
-		void initialize(int vertCount, int horzCount);
+		void initialize(int vertCount, int horzCount, CBgfxSunController& sun);
 		void render(::bgfx::ViewId id, uint64_t state);
-		void setUniforms(const CBgfxSunController& sun, float time);
 		void shutdown();
 
 	private:
+		void setUniforms();
 		void computePerezCoeff(float _turbidity, float* _outPerezCoeff);
 		glm::vec3 xyzToRgb(const glm::vec3& xyz);
 
-	private:
+#ifdef DA_DEBUG
+		void renderDebug();
+#endif
 
+	private:
+		glm::vec4 m_parameters = { 0.1f, 1.0f, 0.1f, 18.f };
 		CDynamicValueController m_sunLuminanceXYZ;
 		CDynamicValueController m_skyLuminanceXYZ;
 		CBgfxGraphicsMaterial* m_skyProgram = nullptr;
@@ -110,6 +118,11 @@ namespace da::platform
 		::bgfx::IndexBufferHandle m_ibh = BGFX_INVALID_HANDLE;
 		::bgfx::UniformHandle u_skyLuminanceXYZ = BGFX_INVALID_HANDLE, u_skyLuminance = BGFX_INVALID_HANDLE, 
 			u_sunDirection = BGFX_INVALID_HANDLE, u_parameters = BGFX_INVALID_HANDLE, u_perezCoeff = BGFX_INVALID_HANDLE , u_sunLuminance = BGFX_INVALID_HANDLE;
+		CBgfxSunController* m_sun;
+
+#ifdef DA_DEBUG
+		bool m_debug = false;
+#endif
 	};
 
 	

@@ -44,8 +44,6 @@ namespace da::platform
         CBgfxShadowShader m_shadow;
         CBgfxSSAOShader m_ssao;
 
-        float m_skyTime = 18.f;
-
 #ifdef DA_DEBUG
         bool m_clusterDebugVis = false;
         bool m_lightDebugVis = false;

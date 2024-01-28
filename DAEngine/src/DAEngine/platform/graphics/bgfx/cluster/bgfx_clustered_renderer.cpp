@@ -74,6 +74,7 @@ namespace da::platform {
 		m_sunLight.radiance = { 1.f, 1.f,1.f };
 
         m_bloom.initialize(m_width, m_height);
+        m_volumetricLight.initialize();
 
 #ifdef DA_DEBUG
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
@@ -92,8 +93,9 @@ namespace da::platform {
             vClusterBuilding = vShadow + SHADOW_MAP_SIZE,
             vLightCulling,
             vLighting,
+            vVolumetricLight,
             vBloom,
-            vBloomBlur,
+            vBloomBlur
         };
 
 		da::core::CScene* scene = da::core::CSceneManager::getScene();
@@ -301,8 +303,6 @@ namespace da::platform {
         m_lights.bindLights({ m_shadow.getLightDir(),m_sunLight.radiance }, m_ambientLight, m_pointLights);
 		m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
-        m_sun.Update(m_skyTime);
-		m_sky.setUniforms(m_sun, m_skyTime);
 		m_sky.render(vLighting, state);
 
         // Render pass
@@ -337,6 +337,8 @@ namespace da::platform {
         m_bloom.render(vBloom, tex, m_width, m_height);
         m_bloom.renderBlur(vBloomBlur, m_width, m_height);
 
+        m_volumetricLight.render(vVolumetricLight, m_width, m_height, ::bgfx::getTexture(m_frameBuffer, 1), m_sun.getScreenSpacePos(m_viewMat, m_projMat));
+
         ::bgfx::discard(BGFX_DISCARD_ALL);
     }
 
@@ -348,6 +350,7 @@ namespace da::platform {
         m_pointLights.shutdown();
         m_ssao.shutdown();
         m_bloom.shutdown();
+        m_volumetricLight.shutdown();
 
 		m_pClusterBuildingComputeProgram->shutdown();
 		m_pResetCounterComputeProgram->shutdown();
@@ -429,6 +432,7 @@ namespace da::platform {
 	{
 		m_ssao.reset(width, height);
         m_bloom.onReset(width, height);
+        m_volumetricLight.onReset(width, height);
 	}
 
 
@@ -468,18 +472,6 @@ namespace da::platform {
 				m_shadow.getCamera().setRotation(r);
 			}
 
-            ImGui::Text("Sky Time: ");
-            ImGui::SameLine();
-            ImGui::DragFloat("###skyTime", &m_skyTime, .1f, 0.f, 24.f);
-
-            ::bgfx::TextureHandle handle = ::bgfx::getTexture(m_ssao.getBuffer());
-
-            if (handle.idx == UINT16_MAX) {
-                return;
-            }
-            ImGui::Image((ImTextureID)handle.idx, { 480, 240 });
-            //ImGui::Image(handle, ImVec2(480, 240));
-            
         }
         ImGui::End();
     }

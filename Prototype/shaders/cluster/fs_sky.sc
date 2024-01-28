@@ -22,5 +22,6 @@ void main()
 	vec3 color = v_skyColor + sun2;
 	color = toGamma(color);
 
-	gl_FragColor = vec4(color, 1.0);
+	gl_FragData[0] = vec4(color, 1.0);
+	gl_FragData[1] = vec4(color, 1.0);
 }

@@ -8,6 +8,10 @@
 #include <glm/ext/quaternion_float.hpp>
 #include <glm/ext/quaternion_trigonometric.hpp>
 #include <bx/math.h>
+#ifdef DA_DEBUG
+#include "DAEngine/debug/debug_menu_bar.h"
+#include <imgui.h>
+#endif
 
 namespace da::platform
 {
@@ -97,8 +101,9 @@ namespace da::platform
 
 	::bgfx::VertexLayout FScreenPosVertex::ms_layout;
 
-	void CBgfxProcSky::initialize(int verticalCount, int horizontalCount)
+	void CBgfxProcSky::initialize(int verticalCount, int horizontalCount, CBgfxSunController& sun) 
 	{
+		m_sun = &sun;
 		m_skyProgram = new CBgfxGraphicsMaterial("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky.sc");
 		m_skyProgramFix = new CBgfxGraphicsMaterial("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky_color_banding_fix.sc");
 
@@ -149,10 +154,17 @@ namespace da::platform
 		u_sunDirection    = bgfx::createUniform("u_sunDirection", bgfx::UniformType::Vec4);
 		u_parameters      = bgfx::createUniform("u_parameters", bgfx::UniformType::Vec4);
 		u_perezCoeff      = bgfx::createUniform("u_perezCoeff", bgfx::UniformType::Vec4, 5);
+
+		m_sun->Update();
+
+#ifdef DA_DEBUG
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Sky"), &m_debug, [this] {renderDebug(); });
+#endif
 	}
 
 	void CBgfxProcSky::render(bgfx::ViewId id, uint64_t state)
 	{
+		setUniforms();
 		bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_DEPTH_TEST_EQUAL | state);
 		bgfx::setIndexBuffer(m_ibh);
 		bgfx::setVertexBuffer(0, m_vbh);
@@ -175,25 +187,29 @@ namespace da::platform
 		BGFXTRYDESTROY(u_parameters);
 		BGFXTRYDESTROY(u_perezCoeff);
 		BGFXTRYDESTROY(u_sunLuminance);
+
+#ifdef DA_DEBUG
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Sky"));
+#endif
 	}
 
-	void CBgfxProcSky::setUniforms(const CBgfxSunController& sun, float time)
+	void CBgfxProcSky::setUniforms()
 	{
-		glm::vec3 sunLuminanceXYZ = m_sunLuminanceXYZ.GetValue(time);
+		m_parameters.w = m_sun->getTime();
+		glm::vec3 sunLuminanceXYZ = m_sunLuminanceXYZ.GetValue(m_parameters.w);
 		glm::vec3 sunLuminanceRGB = xyzToRgb(sunLuminanceXYZ);
 
-		glm::vec3 skyLuminanceXYZ = m_skyLuminanceXYZ.GetValue(time);
+		glm::vec3 skyLuminanceXYZ = m_skyLuminanceXYZ.GetValue(m_parameters.w);
 		glm::vec3 skyLuminanceRGB = xyzToRgb(skyLuminanceXYZ);
 
 		bgfx::setUniform(u_sunLuminance, &sunLuminanceRGB.x);
 		bgfx::setUniform(u_skyLuminanceXYZ, &skyLuminanceXYZ.x);
 		bgfx::setUniform(u_skyLuminance, &skyLuminanceRGB.x);
 
-		bgfx::setUniform(u_sunDirection, &sun.m_sunDir.x);
+		bgfx::setUniform(u_sunDirection, &m_sun->m_sunDir.x);
 
 		// x - sun size, y - sun bloom, z - exposition, w - time
-		float exposition[4] = { 0.02f, 3.0f, 0.1f, time};
-		bgfx::setUniform(u_parameters, exposition);
+		bgfx::setUniform(u_parameters, glm::value_ptr(m_parameters));
 
 		float perezCoeff[4 * 5];
 		float turbidity = 2.15f;
@@ -222,6 +238,35 @@ namespace da::platform
 		return rgb;
 	}
 
+#ifdef DA_DEBUG
+	void CBgfxProcSky::renderDebug()
+	{
+		if (ImGui::Begin("Sky debug", &m_debug))
+		{
+			ImGui::Text("Sun Size: ");
+			ImGui::SameLine();
+			ImGui::InputFloat("##ss", &m_parameters.x);
+
+			ImGui::Text("Sun Bloom: ");
+			ImGui::SameLine();
+			ImGui::InputFloat("##sb", &m_parameters.y);
+
+			ImGui::Text("Sun Exposition: ");
+			ImGui::SameLine();
+			ImGui::InputFloat("##se", &m_parameters.z);
+
+			ImGui::Text("Sky Time: ");
+			ImGui::SameLine();
+			float skyTime = m_sun->getTime();
+			if (ImGui::DragFloat("###skyTime", &skyTime, .1f, 0.f, 24.f)) {
+				m_sun->setTime(skyTime);
+			}
+		}
+
+		ImGui::End();
+	}
+#endif
+
 	CBgfxSunController::CBgfxSunController() : m_northDir(1.0f, 0.0f, 0.0f)
 		, m_sunDir(0.0f, 0.0f, -1.0f)
 		, m_upDir(0.0f, 0.0f, 1.0f)
@@ -233,10 +278,10 @@ namespace da::platform
 
 	}
 
-	void CBgfxSunController::Update(float _time)
+	void CBgfxSunController::Update()
 	{
 		CalculateSunOrbit();
-		UpdateSunPosition(_time - 12.0f);
+		UpdateSunPosition(m_time - 12.0f);
 	}
 
 	void CBgfxSunController::CalculateSunOrbit()
@@ -266,6 +311,26 @@ namespace da::platform
 
 		const glm::quat rot1 = glm::angleAxis(altitude, uxd);
 		m_sunDir = dir * rot1;
+	}
+
+	glm::vec2 CBgfxSunController::getScreenSpacePos(glm::mat4 viewMat, glm::mat4 projMatrix) const
+	{
+		glm::vec4 lightDirectionViewSpace = viewMat * glm::vec4(m_sunDir, 0.0);
+		glm::vec4 lightDirectionClipSpace = projMatrix * lightDirectionViewSpace;
+		glm::vec3 lightDirectionNDC = glm::vec3(lightDirectionClipSpace) / lightDirectionClipSpace.w;
+		glm::vec2 lightDirectionScreenSpace = glm::vec2(0.5) * (glm::vec2(lightDirectionNDC) + glm::vec2(1.0, 1.0));
+		return lightDirectionScreenSpace;
+	}
+
+	float CBgfxSunController::getTime() const
+	{
+		return m_time;
+	}
+
+	void CBgfxSunController::setTime(float time)
+	{
+		m_time = time;
+		Update();
 	}
 
 	glm::vec3 lerp(glm::vec3 x, glm::vec3 y, float t) {
