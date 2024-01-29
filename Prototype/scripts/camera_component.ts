@@ -7,7 +7,7 @@ import { Inputs } from "./daengine/input_enum";
 export class CameraComponent implements Component {
 
     cursorPos : Vector2 = new Vector2();
-    camSpeed : number = .1;
+    camSpeed : number = 50;
 
     initialize(): void {
         print("camera component init");

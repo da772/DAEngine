@@ -3,6 +3,17 @@
 
 #include <bgfx_shader.sh>
 
+#if BGFX_SHADER_LANGUAGE_GLSL
+layout(location = 0) out vec4 outColor;
+layout(location = 1) out vec4 outLightOcclusion;
+
+#define OUT0 outColor
+#define OUT1 outColor
+#else
+#define OUT0 gl_FragData[0]
+#define OUT1 gl_FragData[1]
+#endif
+
 // from screen coordinates (gl_FragCoord) to eye space
 vec4 screen2Eye(vec4 coord)
 {

@@ -11,6 +11,7 @@ uniform vec4 	u_sunDirection;
 uniform vec4 	u_sunLuminance;
 
 #include "common.sh"
+#include "util.sh"
 
 // https://www.shadertoy.com/view/4ssXRX
 // http://www.loopit.dk/banding_in_games.pdf
@@ -42,6 +43,6 @@ void main()
 	float r = n4rand_ss(v_screenPos);
 	color += vec3(r, r, r) / 40.0;
 
-	gl_FragData[0] = vec4(color, 1.0);
-	gl_FragData[1] = vec4(sun, sun, sun, 1.0);
+	OUT0 = vec4(color, 1.0);
+	OUT1 = vec4(sun, sun, sun, 1.0);
 }

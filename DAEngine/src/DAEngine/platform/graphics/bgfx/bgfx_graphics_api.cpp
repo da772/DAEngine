@@ -217,7 +217,7 @@ namespace da::platform {
 		m_nativeWindow->getEventHandler().registerCallback(da::core::events::EEventType::WindowResize, BIND_EVENT_FN(CbgfxGraphicsApi, windowResize));
 
 		// Enable debug text.
-		::bgfx::setDebug(BGFX_DEBUG_TEXT);// | BGFX_DEBUG_STATS);
+		::bgfx::setDebug(BGFX_DEBUG_TEXT | BGFX_DEBUG_PROFILER);// | BGFX_DEBUG_STATS);
 		::bgfx::reset(data.Width, data.Height, BGFX_RESET_MSAA_X8);
 		::bgfx::setViewClear(0
 			, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH

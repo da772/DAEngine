@@ -10,6 +10,7 @@ uniform vec4 u_sunDirection;
 uniform vec4 u_sunLuminance;
 
 #include "common.sh"
+#include "util.sh"
 
 void main()
 {
@@ -22,6 +23,6 @@ void main()
 	vec3 color = v_skyColor + sun2;
 	color = toGamma(color);
 
-	gl_FragData[0] = vec4(color, 1.0);
-	gl_FragData[1] = vec4(color, 1.0);
+	OUT0 = vec4(color, 1.0);
+	OUT1 = vec4(color, 1.0);
 }

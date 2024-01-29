@@ -18,7 +18,9 @@
 #ifdef DA_DEBUG
 #include "DAEngine/platform/imgui/bgfx/bgfx_imgui.h"
 #include "debug/debug_menu_bar.h"
+#include "debug/debug_stats_window.h"
 #endif
+#include <core/time.h>
 
 
 namespace da::platform {
@@ -95,6 +97,40 @@ namespace da::platform {
             vBloom,
             vBloomBlur
         };
+
+#ifdef DA_DEBUG
+        {
+            if (da::core::CTime::getFrameCount() % 100 == 0) {
+                da::debug::CDebugStatsWindow::s_viewTimes = {};
+                for (size_t i = 0; i < ::bgfx::getStats()->numViews; i++) {
+                    const ::bgfx::ViewStats& stats = ::bgfx::getStats()->viewStats[i];
+
+                    double time = (stats.cpuTimeEnd - stats.cpuTimeBegin) / 1000.0;
+
+                    switch (stats.view) {
+                    case vDepth: da::debug::CDebugStatsWindow::s_viewTimes["vDepth"] = time; break;
+                    case vSSAO: da::debug::CDebugStatsWindow::s_viewTimes["vSSAO"] = time; break;
+                    case vSSAOBlur: da::debug::CDebugStatsWindow::s_viewTimes["vSSAOBlur"] = time; break;
+                    case vShadow: da::debug::CDebugStatsWindow::s_viewTimes["vShadow"] += time; break;
+                    case vLightCulling: da::debug::CDebugStatsWindow::s_viewTimes["vLightCulling"] = time; break;
+                    case vLighting: da::debug::CDebugStatsWindow::s_viewTimes["vLighting"] = time; break;
+                    case vVolumetricLight: da::debug::CDebugStatsWindow::s_viewTimes["vVolumetricLight"] = time; break;
+                    case vBloom: da::debug::CDebugStatsWindow::s_viewTimes["vBloom"] = time; break;
+                    case vBloomBlur: da::debug::CDebugStatsWindow::s_viewTimes["vBloomBlur"] += time; break;
+                    }
+
+                    if (stats.view > vBloomBlur) {
+                        da::debug::CDebugStatsWindow::s_viewTimes["vBloomBlur"] += time;
+                    }
+
+                    if (stats.view > vShadow && stats.view < vLightCulling) {
+                        da::debug::CDebugStatsWindow::s_viewTimes["vShadow"] += time;
+                    }
+                }
+            }
+        }
+        
+#endif
 
 		da::core::CScene* scene = da::core::CSceneManager::getScene();
 		const da::core::FComponentContainer& container = scene->getComponents<da::core::CSmeshComponent>();

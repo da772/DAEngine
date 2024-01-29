@@ -15,7 +15,7 @@ local CameraComponent = ____exports.CameraComponent
 CameraComponent.name = "CameraComponent"
 function CameraComponent.prototype.____constructor(self)
     self.cursorPos = __TS__New(Vector2)
-    self.camSpeed = 0.1
+    self.camSpeed = 50
 end
 function CameraComponent.prototype.initialize(self)
     print(nil, "camera component init")

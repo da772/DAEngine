@@ -7,6 +7,7 @@
 #include "script/script_engine.h"
 #include "core/ecs/scene_manager.h"
 #include "core/threading/worker_pool.h"
+#include "core/time.h"
 
 #ifdef DA_DEBUG
 #include "debug/debug.h"
@@ -47,15 +48,16 @@ namespace da
 	{
 		while (m_running)
 		{
+			double timeStep = da::core::CTime::newFrame();
 			for (IModule* m : m_modules) {
 				m->update();
 			}
 #ifdef DA_DEBUG
-			da::debug::CDebug::update(0.1f);
+			da::debug::CDebug::update(timeStep);
 #endif
 			onUpdate();
 			if (core::CScene* scene = core::CSceneManager::getScene()) {
-				scene->update(0.1f);
+				scene->update(timeStep);
 			}
 			for (IModule* m : m_modules) {
 				m->lateUpdate();
