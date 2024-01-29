@@ -43,8 +43,25 @@ extern "C" static int lua_imgui_label_text(lua_State * L)
 
 	if (!title || !fmt) return 0;
 
-	ImGui::LabelText(title, fmt);
+	ImGui::Text(title, fmt);
+	return 0;
+}
 
+
+extern "C" static int lua_imgui_float_input(lua_State * L)
+{
+	const char* title = luaL_checkstring(L, 2);
+	float n = luaL_checknumber(L, 3);
+
+	if (!title) return 0;
+	ImGui::InputFloat(title, &n);
+	lua_pushnumber(L, n);
+	return 1;
+}
+
+extern "C" static int lua_imgui_same_line(lua_State * L)
+{
+	ImGui::SameLine();
 	return 0;
 }
 
@@ -56,5 +73,7 @@ namespace da::script::imgui
 		lua_register(L, "native_imgui_button", lua_imgui_button);
 		lua_register(L, "native_imgui_end", lua_imgui_end);
 		lua_register(L, "native_imgui_label_text", lua_imgui_label_text);
+		lua_register(L, "native_imgui_float_input", lua_imgui_float_input);
+		lua_register(L, "native_imgui_same_line", lua_imgui_same_line);
 	}
 }

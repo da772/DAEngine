@@ -13,7 +13,16 @@ do
         native_imgui_end(nil)
     end
     function ImGui.LabelText(self, title, text)
+        if text == nil then
+            text = ""
+        end
         native_imgui_label_text(nil, title, text)
+    end
+    function ImGui.InputFloat(self, title, value)
+        return native_imgui_float_input(nil, title, value)
+    end
+    function ImGui.SameLine(self)
+        native_imgui_same_line(nil)
     end
 end
 return ____exports

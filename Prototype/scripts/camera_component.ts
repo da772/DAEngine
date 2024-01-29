@@ -3,14 +3,17 @@ import { Input } from "./daengine/input";
 import { Camera } from "./daengine/camera";
 import { Vector2 } from "./daengine/vector";
 import { Inputs } from "./daengine/input_enum";
+import { Debug } from "./daengine/debug";
+import { ImGui } from "./daengine/imgui";
 
 export class CameraComponent implements Component {
 
     cursorPos : Vector2 = new Vector2();
-    camSpeed : number = 50;
+    camSpeed : number = 10;
 
     initialize(): void {
         print("camera component init");
+        Debug.RegisterDebugMenu("CameraComponent", this, CameraComponent.prototype.debugUpdate);
     }
     update(dt: number): void {
         this.cameraInput(dt);
@@ -70,8 +73,21 @@ export class CameraComponent implements Component {
         }
     }
     
+    debugUpdate(this : CameraComponent)
+    {
+        if (ImGui.Begin("Camera Component")) {
+            ImGui.LabelText("Camera Speed");
+            ImGui.SameLine();
+            this.camSpeed = ImGui.InputFloat("##CamSpeed", this.camSpeed);
+        }
+        
+        ImGui.End();
+    }
+
+
     shutdown(): void {
         print("camera component");
+        Debug.UnregisterDebugMenu("CameraComponent");
     }
     
 }

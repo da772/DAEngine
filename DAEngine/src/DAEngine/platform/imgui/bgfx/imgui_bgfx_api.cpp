@@ -5,6 +5,7 @@
 #include "bgfx_imgui.h"
 #include <bx/allocator.h>
 #include "DAEngine/core/arg_handler.h"
+#include <backends/imgui_impl_glfw.cpp>
 
 #ifdef DA_DEBUG
 #include "debug/debug_menu_bar.h"
@@ -26,9 +27,9 @@ namespace da::platform {
 	{
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));
 		m_window->getEventHandler().registerCallback(da::core::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));
-		m_window->getEventHandler().registerCallback(da::core::EEventType::InputKeyboard, BIND_EVENT_FN(CImGuiBgfxApi, onKeyboard));
-		m_window->getEventHandler().registerCallback(da::core::EEventType::InputMouseScroll, BIND_EVENT_FN(CImGuiBgfxApi, onMouseScroll));
 		imguiCreate();
+
+		ImGui_ImplGlfw_InitForOther((GLFWwindow*)m_window->getNativeWindow(), true);
 
 		m_enableDemo = da::core::CArgHandler::contains(HASHSTR("imguidemo"));
 
@@ -39,10 +40,8 @@ namespace da::platform {
 
 	void CImGuiBgfxApi::onUpdate()
 	{
-		imguiBeginFrame((uint32_t)m_mx, (uint32_t)m_my, m_mb, m_msy, m_window->getWindowData().Width, m_window->getWindowData().Height, m_kb);
-		m_msx = 0;
-		m_msy = 0;
-		m_kb = -1;
+		ImGui_ImplGlfw_NewFrame();
+		imguiBeginFrame((uint32_t)m_mx, (uint32_t)m_my, m_mb, 0, m_window->getWindowData().Width, m_window->getWindowData().Height, 0);
 		
 #ifndef DA_DEBUG
 		if (m_enableDemo) ImGui::ShowDemoWindow(&m_enableDemo);
@@ -61,8 +60,6 @@ namespace da::platform {
 #endif
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));
-		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputKeyboard, BIND_EVENT_FN(CImGuiBgfxApi, onKeyboard));
-		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputMouseScroll, BIND_EVENT_FN(CImGuiBgfxApi, onMouseScroll));
 		imguiDestroy();
 	}
 
@@ -84,27 +81,6 @@ namespace da::platform {
 		}
 
 		m_mb = 0;
-	}
-
-	void CImGuiBgfxApi::onKeyboard(const core::CEvent& event)
-	{
-		core::CInputKeyboardEvent* btn = (core::CInputKeyboardEvent*)&event;
-
-		if (btn->getType() == core::EInputType::PRESSED)
-		{
-			m_kb = btn->getBtn();
-			return;
-		}
-
-		m_kb = -1;
-	}
-
-	void CImGuiBgfxApi::onMouseScroll(const core::CEvent& event)
-	{
-		core::CInputScrollEvent* scrll = (core::CInputScrollEvent*)&event;
-		
-		m_msx = scrll->getXOffset();
-		m_msy = scrll->getYOffset();
 	}
 
 }

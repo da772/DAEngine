@@ -10,15 +10,20 @@ local ____vector = require("daengine.vector")
 local Vector2 = ____vector.Vector2
 local ____input_enum = require("daengine.input_enum")
 local Inputs = ____input_enum.Inputs
+local ____debug = require("daengine.debug")
+local Debug = ____debug.Debug
+local ____imgui = require("daengine.imgui")
+local ImGui = ____imgui.ImGui
 ____exports.CameraComponent = __TS__Class()
 local CameraComponent = ____exports.CameraComponent
 CameraComponent.name = "CameraComponent"
 function CameraComponent.prototype.____constructor(self)
     self.cursorPos = __TS__New(Vector2)
-    self.camSpeed = 50
+    self.camSpeed = 10
 end
 function CameraComponent.prototype.initialize(self)
     print(nil, "camera component init")
+    Debug:RegisterDebugMenu("CameraComponent", self, ____exports.CameraComponent.prototype.debugUpdate)
 end
 function CameraComponent.prototype.update(self, dt)
     self:cameraInput(dt)
@@ -56,8 +61,17 @@ function CameraComponent.prototype.cameraInput(self, dt)
         end
     end
 end
+function CameraComponent.prototype.debugUpdate(self)
+    if ImGui:Begin("Camera Component") then
+        ImGui:LabelText("Camera Speed")
+        ImGui:SameLine()
+        self.camSpeed = ImGui:InputFloat("##CamSpeed", self.camSpeed)
+    end
+    ImGui:End()
+end
 function CameraComponent.prototype.shutdown(self)
     print(nil, "camera component")
+    Debug:UnregisterDebugMenu("CameraComponent")
 end
 ____exports.component = __TS__New(____exports.CameraComponent)
 return ____exports

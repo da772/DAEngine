@@ -8,12 +8,21 @@ export namespace ImGui {
     export function End() : void {
         native_imgui_end();
     };
-    export function LabelText(title : string, text : string) : void {
+    export function LabelText(title : string, text : string = "") : void {
         native_imgui_label_text(title, text);
     };
+    export function InputFloat(title : string, value : number) : number {
+        return native_imgui_float_input(title, value);
+    }
+    export function SameLine() : void {
+        native_imgui_same_line();
+    }
 }
 
 declare function native_imgui_begin(title : string) : boolean;
 declare function native_imgui_button(title : string) : boolean;
 declare function native_imgui_label_text(title : string, text : string) : boolean;
+declare function native_imgui_float_input(title : string, value : number) : number;
+declare function native_imgui_same_line() : void;
 declare function native_imgui_end() : void;
+

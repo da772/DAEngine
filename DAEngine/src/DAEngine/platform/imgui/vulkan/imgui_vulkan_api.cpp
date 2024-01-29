@@ -6,7 +6,7 @@
 
 #include <imgui.h>
 #include <backends/imgui_impl_vulkan.cpp>
-#include <backends/imgui_impl_glfw.cpp>
+//#include <backends/imgui_impl_glfw.cpp>
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
@@ -56,7 +56,7 @@ namespace da::platform {
     
         // 2: initialize imgui library
         //this initializes imgui for Vulkan GLFW
-        ImGui_ImplGlfw_InitForVulkan((GLFWwindow*)m_window->getNativeWindow(), true);
+        //ImGui_ImplGlfw_InitForVulkan((GLFWwindow*)m_window->getNativeWindow(), true);
 
         //this initializes imgui for Vulkan
         ImGui_ImplVulkan_InitInfo init_info = {};
@@ -84,7 +84,7 @@ namespace da::platform {
 	void CImGuiVulkanApi::onUpdate()
 	{
         ImGui_ImplVulkan_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
+        //ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
 		//imgui commands
@@ -99,7 +99,7 @@ namespace da::platform {
         // Todo:: shutdown before vulkan and glfw
         vkDestroyDescriptorPool(m_vulkanGraphics->getDevice(), m_imguiPool, nullptr);
         ImGui_ImplVulkan_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
+        //ImGui_ImplGlfw_Shutdown();
 	}
 
 	void CImGuiVulkanApi::renderImGui(VkCommandBuffer cmd)

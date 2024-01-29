@@ -37,11 +37,8 @@ function MyComponent.prototype.update(self, dt)
 end
 function MyComponent.prototype.debugUpdate(self)
     if ImGui:Begin("Hello World!") then
-        ImGui:LabelText(
-            "employee is sick",
-            (self.e.empName .. " is sick: ") .. tostring(self.e.empCode)
-        )
-        ImGui:LabelText("###end", "Hello people")
+        ImGui:LabelText((("employee is sick " .. self.e.empName) .. " is sick: ") .. tostring(self.e.empCode))
+        ImGui:LabelText("Hello people")
         if ImGui:Button("Press Me") then
             local ____self_e_0, ____empCode_1 = self.e, "empCode"
             ____self_e_0[____empCode_1] = ____self_e_0[____empCode_1] + 1

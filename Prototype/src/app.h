@@ -157,17 +157,24 @@ protected:
 		c = e4->addComponent<da::core::CSmeshComponent>("assets/santa/FBX/Character_Santa.fbx", true);
 		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/santa/Textures/Polygon_Texture_01_A.png");
 		e4->setTag(HASHSTR("santa!"));
-		e4->getTransform().setPosition({ 0,5.f,5.f });
-		e4->getTransform().setRotation({ 0,0.f,0.f });
+		e4->getTransform().setPosition({ 3.5f,1.6f,20.f });
+		e4->getTransform().setRotation({ 0,0.f,45.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-		e2->getTransform().setPosition({ 0,0,0 });
+		e2->getTransform().setPosition({ 0,0,20 });
+		e2->getTransform().setRotation({ 0,0,160 });
 		e2->setTag(HASHSTR("plane"));
-		c = e2->addComponent<da::core::CSmeshComponent>("assets/city/city.fbx");
-		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg");
-		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg");
-		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg");
-		c->getStaticMesh()->getMaterial(0).uvScale = { 5.f,5.f };
+		c = e2->addComponent<da::core::CSmeshComponent>("assets/city/city2.fbx");
+		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/city/wallTextures/wallA.jpg");
+		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/city/wallTextures/wallN.jpg");
+		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/city/wallTextures/wallR.jpg");
+		c->getStaticMesh()->getMaterial(0).doubleSided = true;
+
+		c->getStaticMesh()->getMaterial(1).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg");
+		c->getStaticMesh()->getMaterial(1).normalTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg");
+		c->getStaticMesh()->getMaterial(1).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg");
+		c->getStaticMesh()->getMaterial(1).uvScale = { 5.f,5.f };
+		c->getStaticMesh()->getMaterial(1).doubleSided = true;
 		return;
 	
 		

@@ -1466,6 +1466,10 @@ local function __TS__NumberIsFinite(value)
     return type(value) == "number" and value == value and value ~= math.huge and value ~= -math.huge
 end
 
+local function __TS__NumberIsInteger(value)
+    return __TS__NumberIsFinite(value) and math.floor(value) == value
+end
+
 local function __TS__NumberIsNaN(value)
     return value ~= value
 end
@@ -2567,6 +2571,7 @@ return {
   __TS__New = __TS__New,
   __TS__Number = __TS__Number,
   __TS__NumberIsFinite = __TS__NumberIsFinite,
+  __TS__NumberIsInteger = __TS__NumberIsInteger,
   __TS__NumberIsNaN = __TS__NumberIsNaN,
   __TS__ParseInt = __TS__ParseInt,
   __TS__ParseFloat = __TS__ParseFloat,

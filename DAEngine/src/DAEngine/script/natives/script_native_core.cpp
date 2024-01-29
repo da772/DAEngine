@@ -6,6 +6,7 @@
 #include <core/ecs/scene_manager.h>
 #include <core/ecs/entity.h>
 #include <core/ecs/scene.h>
+#include <imgui.h>
 
 extern "C" {
 #include <lua/lua.h>

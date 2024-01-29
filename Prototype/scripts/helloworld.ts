@@ -29,8 +29,8 @@ export class MyComponent extends NativeComponent implements Component {
     debugUpdate(this : MyComponent)
     {
         if (ImGui.Begin("Hello World!")) {
-            ImGui.LabelText("employee is sick", `${this.e.empName} is sick: ${this.e.empCode}`);
-            ImGui.LabelText("###end", "Hello people");
+            ImGui.LabelText(`employee is sick ${this.e.empName} is sick: ${this.e.empCode}`);
+            ImGui.LabelText("Hello people");
 
             if (ImGui.Button("Press Me")) {
                 this.e.empCode++;
