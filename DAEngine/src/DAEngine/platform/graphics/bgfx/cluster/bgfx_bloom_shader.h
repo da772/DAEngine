@@ -35,7 +35,7 @@ namespace da::platform
 		std::vector<::bgfx::FrameBufferHandle> m_processedFrameBuffers;
 
 		glm::vec3 m_bloomParams = { .025, 0.7152f, 0.0722f };
-		glm::vec4 m_intensity = { .450f,1.f,1.f,1.f };
+		glm::vec4 m_intensity = { .90f,1.f,1.f,1.f };
 		uint8_t m_bloomAmount = 5;
 		size_t m_width, m_height;
 
