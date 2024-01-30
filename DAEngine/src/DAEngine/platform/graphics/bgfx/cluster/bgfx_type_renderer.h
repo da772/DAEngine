@@ -124,12 +124,15 @@ namespace da::platform
 
         ::bgfx::VertexBufferHandle m_blitTriangleBuffer = BGFX_INVALID_HANDLE;
         da::platform::CBgfxGraphicsMaterial* m_pDepthprogram;
+
+        ::bgfx::UniformHandle m_bonesUniform = BGFX_INVALID_HANDLE;
     private:
         ::bgfx::UniformHandle m_blitSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_bloomSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_volLightSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_camPosUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_normalMatrixUniform = BGFX_INVALID_HANDLE;
+        
         ::bgfx::UniformHandle m_exposureVecUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_tonemappingModeVecUniform = BGFX_INVALID_HANDLE;
         da::platform::CBgfxGraphicsMaterial* m_pBlipProgram;

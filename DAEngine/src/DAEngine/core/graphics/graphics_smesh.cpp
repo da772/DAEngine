@@ -41,6 +41,9 @@ namespace da::graphics
 		m_meshes = {};
 		m_meshes.reserve(pScene->mNumMeshes);
 
+		std::queue<aiNode*> q;
+		q.push(pScene->mRootNode);
+
 		for (size_t i = 0; i < pScene->mNumMeshes; i++)
 		{
 			std::vector<FVertexBase> vertices;

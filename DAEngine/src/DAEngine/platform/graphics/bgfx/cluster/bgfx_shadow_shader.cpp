@@ -16,6 +16,9 @@ namespace da::platform {
 			m_material = new CBgfxGraphicsMaterial("shaders/cluster/vs_shadow.sc", "shaders/cluster/fs_shadow.sc");
 			m_material->initialize();
 
+			m_skmaterial = new CBgfxGraphicsMaterial("shaders/cluster/vs_sk_shadow.sc", "shaders/cluster/fs_shadow.sc");
+			m_skmaterial->initialize();
+
 		
 			m_depthScaleOffset = bgfx::createUniform("u_depthScaleOffset", bgfx::UniformType::Vec4);
 
@@ -34,6 +37,9 @@ namespace da::platform {
 		m_material = new CBgfxGraphicsMaterial("shaders/cluster/vs_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
 		m_material->initialize();
 
+		m_skmaterial = new CBgfxGraphicsMaterial("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
+		m_skmaterial->initialize();
+
 		for (size_t i = 0; i < SHADOW_MAP_SIZE; i++) {
 			std::string name = std::string("s_shadowMap") + std::to_string(i);
 			m_shadowMaps.ShadowMaps[i].Uniform = ::bgfx::createUniform(name.c_str(), ::bgfx::UniformType::Sampler, SHADOW_MAP_SIZE);
@@ -45,6 +51,9 @@ namespace da::platform {
 		m_material->shutdown();
 		delete m_material;
 		m_material = nullptr;
+		m_skmaterial->shutdown();
+		delete m_skmaterial;
+		m_skmaterial = nullptr;
 
 
 		for (size_t i = 0; i < SHADOW_MAP_SIZE; i++) {
@@ -233,6 +242,11 @@ namespace da::platform {
 		bx::mtxOrtho(glm::value_ptr(lightProj), minX, maxX, minY, maxY, minZ, maxZ, 0, ::bgfx::getCaps()->homogeneousDepth);
 
 		return { lightProj, lightView };
+	}
+
+	da::platform::CBgfxGraphicsMaterial* CBgfxShadowShader::getSKMaterial() const
+	{
+		return m_skmaterial;
 	}
 
 }

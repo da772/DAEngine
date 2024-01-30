@@ -8,7 +8,9 @@
 #include <core/ecs/scene_manager.h>
 #include <core/ecs/smesh_component.h>
 #include "platform/graphics/bgfx/bgfx_static_mesh.h"
+#include "platform/graphics/bgfx/bgfx_skeletal_mesh.h"
 #include "platform/graphics/bgfx/bgfx_graphics_pbr_material.h"
+#include "core/graphics/skeletal_animator.h"
 #include <random>
 #include "logger.h"
 #include "bgfx_samplers.h"
@@ -21,6 +23,7 @@
 #include "debug/debug_stats_window.h"
 #endif
 #include <core/time.h>
+#include <core/ecs/skeletal_mesh_component.h>
 
 
 namespace da::platform {
@@ -57,11 +60,15 @@ namespace da::platform {
         m_pLightingProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered.sc");
         m_pLightingProgram->initialize();
 
+
+        m_pLightingSkeletalProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_sk_clustered.sc", "shaders/cluster/fs_clustered.sc");
+        m_pLightingSkeletalProgram->initialize();
+
         m_pDebugVisProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
         m_pDebugVisProgram->initialize();
 
         m_pointLights.init();
-        generateLights(100);
+        //generateLights(100);
         m_pointLights.update();
 
         m_shadow.initialize();
@@ -133,7 +140,8 @@ namespace da::platform {
 #endif
 
 		da::core::CScene* scene = da::core::CSceneManager::getScene();
-		const da::core::FComponentContainer& container = scene->getComponents<da::core::CSmeshComponent>();
+		const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
+		const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
 
         m_shadow.getLightDir() = m_sun.m_sunDir;
 
@@ -162,8 +170,8 @@ namespace da::platform {
 
         setViewProjection(vDepth);
         // Depth pass
-		for (size_t x = 0; x < container.getCount(); x++) {
-			da::core::CSmeshComponent* meshComponent = container.getComponentAtIndex<da::core::CSmeshComponent>(x);
+		for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
+			da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
 			glm::mat4 model = meshComponent->getParent().getTransform().matrix();
 
             for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
@@ -249,11 +257,33 @@ namespace da::platform {
 
             ::bgfx::setViewTransform(vShadow + i, glm::value_ptr(lightView), glm::value_ptr(lightProj));
 
-			// Shadow map pass
-			for (size_t x = 0; x < container.getCount(); x++) {
-				da::core::CSmeshComponent* meshComponent = container.getComponentAtIndex<da::core::CSmeshComponent>(x);
-                glm::mat4 model = meshComponent->getParent().getTransform().matrix();
+			for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
+				da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
+				const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
 
+				for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
+					da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+
+					if (!mesh->getCastShadows()) continue;
+					if (mesh->getHidden()) continue;
+
+					::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices().data(), 128);
+					::bgfx::setTransform(glm::value_ptr(model));
+					::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+					::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+					::bgfx::setState((m_shadow.useShadowSampler() ? 0 : BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A)
+						| BGFX_STATE_WRITE_Z
+						| BGFX_STATE_DEPTH_TEST_LESS
+						| BGFX_STATE_CULL_CCW
+						| BGFX_STATE_MSAA);
+					::bgfx::submit(vShadow + i, { m_shadow.getSKMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+				}
+			}
+
+			// Shadow map pass
+			for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
+				da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
+                glm::mat4 model = meshComponent->getParent().getTransform().matrix();
                 for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
                     const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
                     ASSERT(mesh);
@@ -272,6 +302,8 @@ namespace da::platform {
                     ::bgfx::submit(vShadow + i, { m_shadow.getMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
                 }
 			}
+
+           
         }
 
         m_clusters.setUniforms(m_width, m_height);
@@ -338,8 +370,8 @@ namespace da::platform {
 		m_sky.render(vLighting, state);
 
         // Render pass
-        for (size_t i = 0; i < container.getCount(); i++) {
-            da::core::CSmeshComponent* meshComponent = container.getComponentAtIndex<da::core::CSmeshComponent>(i);
+        for (size_t i = 0; i < staticMeshcontainer.getCount(); i++) {
+            da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(i);
             const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
            
             for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
@@ -365,6 +397,36 @@ namespace da::platform {
             }
         }
 
+        
+		for (size_t i = 0; i < skeletalMeshcontainer.getCount(); i++) {
+			da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(i);
+			const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
+
+            for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
+                da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+
+                if (mesh->getHidden()) continue;
+
+                ::bgfx::setTransform(glm::value_ptr(model));
+                setNormalMatrix(model);
+                ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices().data(), 128);
+                ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
+                uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
+                for (size_t s = 0; s < m_shadow.getShadowMapsCount(); s++) {
+                    ::bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + s, m_shadow.getShadowMaps().ShadowMaps[s].Uniform, m_shadow.getShadowMaps().ShadowMaps[s].Texture);
+                }
+                m_ssao.bindSSAO();
+
+                //BGFX_STATE_PT_LINES
+                ::bgfx::setState(state | materialState);
+                // preserve buffer bindings between submit calls
+                ::bgfx::submit(vLighting, {m_pLightingSkeletalProgram->getHandle()}, 0, ~BGFX_DISCARD_BINDINGS);
+			}
+		}
+        
+
         ::bgfx::TextureHandle tex = ::bgfx::getTexture(m_frameBuffer, 0);
         m_bloom.render(vBloom, tex, m_width, m_height);
         m_bloom.renderBlur(vBloomBlur, m_width, m_height);
@@ -373,6 +435,7 @@ namespace da::platform {
 
         ::bgfx::discard(BGFX_DISCARD_ALL);
     }
+
 
     void CBgfxClusteredRenderer::onShutdown()
     {
@@ -389,11 +452,13 @@ namespace da::platform {
 		m_pLightCullingComputeProgram->shutdown();
 		m_pLightingProgram->shutdown();
 		m_pDebugVisProgram->shutdown();
+        m_pLightingSkeletalProgram->shutdown();
 
         delete m_pClusterBuildingComputeProgram;
         delete m_pResetCounterComputeProgram;
         delete m_pLightCullingComputeProgram;
         delete m_pLightingProgram;
+        delete m_pLightingSkeletalProgram;
         delete m_pDebugVisProgram;
 
         

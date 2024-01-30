@@ -35,6 +35,7 @@ namespace da::platform {
         m_normalMatrixUniform = bgfx::createUniform("u_normalMatrix", bgfx::UniformType::Mat3);
         m_exposureVecUniform = bgfx::createUniform("u_exposureVec", bgfx::UniformType::Vec4);
         m_tonemappingModeVecUniform = bgfx::createUniform("u_tonemappingModeVec", bgfx::UniformType::Vec4);
+        m_bonesUniform = bgfx::createUniform("u_bones", bgfx::UniformType::Mat4, 128);
 
         // triangle used for blitting
         constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
@@ -117,6 +118,7 @@ namespace da::platform {
         BGFXDESTROY(m_blitTriangleBuffer);
         BGFXDESTROY(m_bloomSampler);
         BGFXDESTROY(m_volLightSampler);
+        BGFXDESTROY(m_bonesUniform);
 
         m_pBlipProgram->shutdown();
         delete m_pBlipProgram;

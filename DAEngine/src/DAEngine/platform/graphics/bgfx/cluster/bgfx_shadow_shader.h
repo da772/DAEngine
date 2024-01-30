@@ -27,6 +27,7 @@ namespace da::platform {
 
 
 		CBgfxGraphicsMaterial* getMaterial() const;
+		CBgfxGraphicsMaterial* getSKMaterial() const;
 		core::CCamera& getCamera();
 		const uint32_t getShadowMapSize() const;
 		std::vector<glm::vec4> getFrustumCornersWorldSpace(const glm::mat4& projView);
@@ -46,6 +47,7 @@ namespace da::platform {
 		glm::vec3 m_shadowDir = { 0.348f, 0.870f, 0.7f };
 
 		CBgfxGraphicsMaterial* m_material;
+		CBgfxGraphicsMaterial* m_skmaterial;
 		core::CCamera m_camera;
 		uint32_t m_shadowMapSize = 2048;
 		bool m_useShadowSampler = true;

@@ -25,6 +25,7 @@ namespace da::platform
         virtual void onReset(size_t width, size_t height) override;
     private:
         void generateLights(uint32_t count);
+
 #ifdef DA_DEBUG
         void renderLightDebug();
 #endif
@@ -35,6 +36,7 @@ namespace da::platform
         da::platform::CBgfxGraphicsMaterial* m_pResetCounterComputeProgram;
         da::platform::CBgfxGraphicsMaterial* m_pLightCullingComputeProgram;
         da::platform::CBgfxGraphicsMaterial* m_pLightingProgram;
+        da::platform::CBgfxGraphicsMaterial* m_pLightingSkeletalProgram;
         da::platform::CBgfxGraphicsMaterial* m_pDebugVisProgram;
 
         CBgfxAmbientLight m_ambientLight;

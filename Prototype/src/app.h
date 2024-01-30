@@ -22,10 +22,12 @@
 #include <DAEngine/core/graphics/camera.h>
 #include <DAEngine/core/input/input.h>
 #include <DAEngine/platform/graphics/bgfx/bgfx_graphics_pbr_material.h>
+#include <daengine/core/graphics/graphics_skmesh.h>
 
 #ifdef DA_DEBUG
 #include <DAEngine/debug/debug_menu_bar.h>
 #endif
+#include <DAEngine/core/ecs/skeletal_mesh_component.h>
 
 //#define WINDOW_2
 
@@ -130,7 +132,7 @@ protected:
 
         e2->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
 		e1->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
-		e1->getTransform().setPosition({ 0,0,1.5f });
+		e1->getTransform().setPosition({ 0,0,25.5f });
 		da::core::FComponentRef<da::core::CSmeshComponent> c = e1->addComponent<da::core::CSmeshComponent>("assets/sniper/Sniper.fbx");
 		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Variation04/Sniper_04_Albedo.png");
 		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Normal.png");
@@ -149,20 +151,29 @@ protected:
 		c->getStaticMesh()->getMaterial(0).occlusionTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Occlusion.png");
 
 		e3->setTag(HASHSTR("Rifle"));
-		e3->getTransform().setPosition({ 0,-5.f,5.f });
+		e3->getTransform().setPosition({ 0,-5.f,25.f });
 		e3->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		e4 = da::core::CSceneManager::getScene()->createEntity();
-		c = e4->addComponent<da::core::CSmeshComponent>("assets/santa/FBX/Character_Santa.fbx", true);
-		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/santa/Textures/Polygon_Texture_01_A.png");
+		da::core::FComponentRef<da::core::CSkeletalMeshComponent> cc = e4->addComponent<da::core::CSkeletalMeshComponent>("assets/vampire/dancing_vampire.dae", "assets/vampire/dancing_vampire.dae", false);
+		cc->getSkeletalMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/vampire/Vampire_diffuse.png");
+		cc->getSkeletalMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/vampire/Vampire_normal2.png");
+		///cc->getSkeletalMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/vampire/Vampire_specular.png");
+		cc->getSkeletalMesh()->getMaterial(0).metallicFactor = 0.f;
+		cc->getSkeletalMesh()->getMaterial(0).roughnessFactor = 0.f;
+		cc->getSkeletalMesh()->getMaterial(0).doubleSided = true;
+		cc->getSkeletalMesh()->getMaterial(0).blend = false;
+		cc->getSkeletalMesh()->getMaterial(0).emissiveFactor = { 0.f,0.f,0.f };
+
 		e4->setTag(HASHSTR("santa!"));
-		e4->getTransform().setPosition({ 3.5f,1.6f,20.f });
-		e4->getTransform().setRotation({ 0,0.f,45.f });
+		e4->getTransform().setPosition({ 0.f,5.f,-.1f });
+		e4->getTransform().setRotation({ 90.f,180.f,0.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-		e2->getTransform().setPosition({ 0,0,20 });
+		e2->getTransform().setPosition({ 0,-1,0 });
 		e2->getTransform().setRotation({ 0,0,160 });
+		e2->getTransform().setScale({ 5,5,5});
 		e2->setTag(HASHSTR("plane"));
 		c = e2->addComponent<da::core::CSmeshComponent>("assets/city/city2.fbx");
 		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/city/wallTextures/wallA.jpg");
