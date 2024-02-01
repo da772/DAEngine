@@ -57,6 +57,16 @@ namespace da::core {
 		return m_skeletalmesh;
 	}
 
+	da::graphics::CSkeletalAnimator* CSkeletalMeshComponent::getSkeletalAnimator() const
+	{
+		return m_animator;
+	}
+
+	da::graphics::CSkeletalAnimation* CSkeletalMeshComponent::getSkeletalAnimation() const
+	{
+		return m_animation;
+	}
+
 #ifdef DA_DEBUG
 	void CSkeletalMeshComponent::onDebugRender()
 	{
@@ -103,17 +113,6 @@ namespace da::core {
 
 		}
 	}
-
-	da::graphics::CSkeletalAnimator* CSkeletalMeshComponent::getSkeletalAnimator() const
-	{
-		return m_animator;
-	}
-
-	da::graphics::CSkeletalAnimation* CSkeletalMeshComponent::getSkeletalAnimation() const
-	{
-		return m_animation;
-	}
-
 #endif
 
 }

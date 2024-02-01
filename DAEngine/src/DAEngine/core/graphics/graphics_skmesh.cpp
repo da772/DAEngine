@@ -171,6 +171,7 @@ namespace da::graphics
 
 			aiString fileBaseColor, fileMetallicRoughness, fileNormals, fileOcclusion, fileEmissive;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &fileBaseColor);
+
 			// TODO AI_MATKEY_METALLIC_TEXTURE + AI_MATKEY_ROUGHNESS_TEXTURE
 			material->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, &fileMetallicRoughness);
 			material->GetTexture(aiTextureType_NORMALS, 0, &fileNormals);
@@ -186,7 +187,13 @@ namespace da::graphics
 			}
 			else if (fileBaseColor.length > 0)
 			{
-				LOG_INFO(ELogChannel::Graphics, "Failed to find albedo texture at: %s for mesh %s", fileBaseColor.C_Str(), m_path);
+				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileBaseColor.C_Str()))
+				{
+					out.baseColorTexture = CTexture2DFactory::Create(fileBaseColor.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData);
+				}
+				else {
+					LOG_INFO(ELogChannel::Graphics, "Failed to find albedo texture at: %s for mesh %s", fileBaseColor.C_Str(), m_path);
+				}
 			}
 
 			aiColor4D baseColorFactor;
@@ -195,14 +202,20 @@ namespace da::graphics
 			out.baseColorFactor = glm::clamp(out.baseColorFactor, 0.0f, 1.0f);
 
 			// metallic/roughness
-
 			if (CAsset::exists(fileMetallicRoughness.C_Str()))
 			{
 				out.metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create(fileMetallicRoughness.C_Str());
 			}
 			else if (fileMetallicRoughness.length > 0)
 			{
-				LOG_INFO(ELogChannel::Graphics, "Failed to find metallic roughness texture at: %s for mesh %s", fileMetallicRoughness.C_Str(), m_path);
+				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileMetallicRoughness.C_Str()))
+				{
+					out.metallicRoughnessTexture = CTexture2DFactory::Create(fileMetallicRoughness.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData);
+				}
+				else {
+					LOG_INFO(ELogChannel::Graphics, "Failed to find metallic roughness texture at: %s for mesh %s", fileMetallicRoughness.C_Str(), m_path);
+				}
+				
 			}
 
 			ai_real metallicFactor;
@@ -219,7 +232,14 @@ namespace da::graphics
 				out.normalTexture = da::graphics::CTexture2DFactory::Create(fileNormals.C_Str());
 			}
 			else if (fileNormals.length > 0) {
-				LOG_INFO(ELogChannel::Graphics, "Failed to find normal texture at: %s for mesh %s", fileNormals.C_Str(), m_path);
+				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileNormals.C_Str()))
+				{
+					out.normalTexture = CTexture2DFactory::Create(fileNormals.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData);
+				}
+				else {
+					LOG_INFO(ELogChannel::Graphics, "Failed to find normal texture at: %s for mesh %s", fileNormals.C_Str(), m_path);
+				}
+				
 			}
 
 			ai_real normalScale;
@@ -239,7 +259,14 @@ namespace da::graphics
 				out.occlusionTexture = da::graphics::CTexture2DFactory::Create(fileOcclusion.C_Str());;
 			}
 			else if (fileOcclusion.length > 0) {
-				LOG_INFO(ELogChannel::Graphics, "Failed to find occlusion texture at: %s for mesh %s", fileOcclusion.C_Str(), m_path);
+				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileOcclusion.C_Str()))
+				{
+					out.occlusionTexture = CTexture2DFactory::Create(fileOcclusion.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData);
+				}
+				else {
+					LOG_INFO(ELogChannel::Graphics, "Failed to find occlusion texture at: %s for mesh %s", fileOcclusion.C_Str(), m_path);
+				}
+				
 			}
 
 			ai_real occlusionStrength;
@@ -253,7 +280,13 @@ namespace da::graphics
 				out.emissiveTexture = da::graphics::CTexture2DFactory::Create(fileEmissive.C_Str());;
 			}
 			else if (fileEmissive.length > 0) {
-				LOG_INFO(ELogChannel::Graphics, "Failed to find emissive texture at: %s for mesh %s", fileEmissive.C_Str(), m_path);
+				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileEmissive.C_Str()))
+				{
+					out.occlusionTexture = CTexture2DFactory::Create(fileEmissive.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData);
+				}
+				else {
+					LOG_INFO(ELogChannel::Graphics, "Failed to find emissive texture at: %s for mesh %s", fileEmissive.C_Str(), m_path);
+				}	
 			}
 
 			aiColor3D emissiveFactor;

@@ -155,20 +155,16 @@ protected:
 		e3->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-		e4 = da::core::CSceneManager::getScene()->createEntity();
-		da::core::FComponentRef<da::core::CSkeletalMeshComponent> cc = e4->addComponent<da::core::CSkeletalMeshComponent>("assets/vampire/dancing_vampire.dae", "assets/vampire/dancing_vampire.dae", false);
-		cc->getSkeletalMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/vampire/Vampire_diffuse.png");
-		cc->getSkeletalMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/vampire/Vampire_normal2.png");
-		///cc->getSkeletalMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/vampire/Vampire_specular.png");
-		cc->getSkeletalMesh()->getMaterial(0).metallicFactor = 0.f;
-		cc->getSkeletalMesh()->getMaterial(0).roughnessFactor = 0.f;
-		cc->getSkeletalMesh()->getMaterial(0).doubleSided = true;
-		cc->getSkeletalMesh()->getMaterial(0).blend = false;
-		cc->getSkeletalMesh()->getMaterial(0).emissiveFactor = { 0.f,0.f,0.f };
+		for (int i = 0; i < 3; i++) {
+			e4 = da::core::CSceneManager::getScene()->createEntity();
+			da::core::FComponentRef<da::core::CSkeletalMeshComponent> cc = e4->addComponent<da::core::CSkeletalMeshComponent>("assets/mannequin/Dancing2.fbx", "assets/mannequin/Dancing2.fbx", false);
+			cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
+			e4->getTransform().setPosition({ i*3.f,5.f+(1.5f*i),-.1f});
+			e4->getTransform().setRotation({ 90.f,180.f,0.f });
 
-		e4->setTag(HASHSTR("santa!"));
-		e4->getTransform().setPosition({ 0.f,5.f,-.1f });
-		e4->getTransform().setRotation({ 90.f,180.f,0.f });
+			
+		}
+
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		e2->getTransform().setPosition({ 0,-1,0 });
@@ -184,7 +180,7 @@ protected:
 		c->getStaticMesh()->getMaterial(1).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg");
 		c->getStaticMesh()->getMaterial(1).normalTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg");
 		c->getStaticMesh()->getMaterial(1).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg");
-		c->getStaticMesh()->getMaterial(1).uvScale = { 5.f,5.f };
+		c->getStaticMesh()->getMaterial(1).uvScale = { 11.f,11.f };
 		c->getStaticMesh()->getMaterial(1).doubleSided = true;
 		return;
 	

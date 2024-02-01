@@ -10,6 +10,7 @@ namespace da::platform::bgfx {
 		CBgfxTexture2D();
 		CBgfxTexture2D(const std::string& s);
 		CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height);
+		CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height, char* data);
 
 		virtual ~CBgfxTexture2D();
 

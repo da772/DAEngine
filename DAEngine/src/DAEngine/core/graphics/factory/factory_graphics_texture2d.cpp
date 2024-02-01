@@ -31,4 +31,11 @@ namespace da::graphics
 #endif
 	}
 
+	da::graphics::CGraphicsTexture2D* CTexture2DFactory::Create(const std::string& name, size_t width, size_t height, char* data)
+	{
+#ifdef DA_GRAPHICS_BGFX
+		return new da::platform::bgfx::CBgfxTexture2D(name, width, height, data);
+#endif
+	}
+
 }

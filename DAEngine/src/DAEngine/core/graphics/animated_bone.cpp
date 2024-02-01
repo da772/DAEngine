@@ -69,7 +69,7 @@ namespace da::graphics
 			if (animationTime < m_Scales[index + 1].timeStamp)
 				return index;
 		}
-		ASSERT(0);
+		return m_NumScalings - 2;
 	}
 
 	int CAnimatedBone::GetRotationIndex(float animationTime)
@@ -79,7 +79,7 @@ namespace da::graphics
 			if (animationTime < m_Rotations[index + 1].timeStamp)
 				return index;
 		}
-		ASSERT(0);
+		return m_NumRotations - 2;
 	}
 
 	int CAnimatedBone::GetPositionIndex(float animationTime)
@@ -89,7 +89,7 @@ namespace da::graphics
 			if (animationTime < m_Positions[index + 1].timeStamp)
 				return index;
 		}
-		ASSERT(0);
+		return m_NumPositions - 2;
 	}
 
 	void CAnimatedBone::Update(float animationTime)
