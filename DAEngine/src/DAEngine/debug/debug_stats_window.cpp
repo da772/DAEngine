@@ -37,8 +37,8 @@ void da::debug::CDebugStatsWindow::update()
 		ImGui::Checkbox("##viewStates", &s_showViewTimes);
 		ImGui::Separator();
 		ImGui::Text("%d FPS", da::core::CTime::getFps());
-		ImGui::Text("App   Time:    %f ms", (s_cpuTime / 1000.0) + (s_gpuTime/1000.0) + (s_waitTime/1000.0));
-		ImGui::Text("Cpu   Time:    %f ms", s_cpuTime/1000.0);
+		ImGui::Text("App   Time:    %f ms", 1000.0/(double)da::core::CTime::getFps());
+		ImGui::Text("Cpu   Time:    %f ms", std::abs(1000.0 / (double)da::core::CTime::getFps() - s_gpuTime / 1000.0));
 		ImGui::Text("Gpu   Time:    %f ms", s_gpuTime/1000.0);
 		ImGui::Text("Wait  Time:    %f ms", s_waitTime/1000.0);
 

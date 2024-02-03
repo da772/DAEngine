@@ -143,7 +143,7 @@ vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
     // directional light
     {
         SunLight light = getSunLight();
-        vec3 L = normalize(light.direction.xyz);
+        vec3 L = light.direction.xyz;
         float NoL = saturate(dot(N, L));
         radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * light.radiance * NoL;
     }

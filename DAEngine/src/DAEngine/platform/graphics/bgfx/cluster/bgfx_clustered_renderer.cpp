@@ -188,6 +188,25 @@ namespace da::platform {
 			}
 		}
 
+		for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
+			da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
+			const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
+
+			for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
+				da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+
+				::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices().data(), 128);
+				::bgfx::setTransform(glm::value_ptr(model));
+				::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+				::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+				::bgfx::setState(
+					BGFX_STATE_WRITE_Z
+					| BGFX_STATE_DEPTH_TEST_LESS
+					| BGFX_STATE_CULL_CCW);
+				::bgfx::submit(vDepth, { m_shadow.getSKMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+			}
+		}
+
         m_ssao.renderSSAO(m_width, m_height, vSSAO, m_depthBuffer);
         m_ssao.renderBlur(m_width, m_height, vSSAOBlur);
 
