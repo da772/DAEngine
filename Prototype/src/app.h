@@ -265,7 +265,7 @@ protected:
 	{
 		if (dt > 1.0) return;
 
-		float moveSpeed = 12.5f;
+		float moveSpeed = 0;// 12.5f;
 
 		glm::vec3 pos = e4->getTransform().position();
 

@@ -17,6 +17,11 @@ namespace da::graphics {
 		bool getBoneWorldTransform(CHashString name, const glm::mat4& modelMat, glm::mat4& out) const;
 		bool getBoneWorldPosition(CHashString name, const glm::mat4& modelMat, glm::vec3& out) const;
 		bool getBoneWorldRotation(CHashString name, const glm::mat4& modelMat, glm::vec3& out) const;
+		float getTimeScale() const;
+		void setTimeScale(float timeScale);
+		float getPlayTime() const;
+		void setPlayTime(float time);
+		float getMaxPlayTime() const;
 
 		const std::vector<glm::mat4>& getFinalBoneMatrices(size_t index) const
 		{
@@ -30,5 +35,6 @@ namespace da::graphics {
 		CSkeletalAnimation* m_CurrentAnimation;
 		float m_CurrentTime;
 		float m_DeltaTime;
+		float m_timeScale = 1.f;
 	};
 }

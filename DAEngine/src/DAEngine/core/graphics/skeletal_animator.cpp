@@ -69,10 +69,11 @@ namespace da::graphics
 
 	void CSkeletalAnimator::updateAnimation(float dt)
 	{
-		m_DeltaTime = dt;
+		float timeScale = dt * m_timeScale;
+		m_DeltaTime = timeScale;
 		if (m_CurrentAnimation)
 		{
-			m_CurrentTime += m_CurrentAnimation->getTicksPerSecond() * dt;
+			m_CurrentTime += m_CurrentAnimation->getTicksPerSecond() * timeScale;
 			m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->getDuration());
 			for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
 				calculateBoneTransform(&m_CurrentAnimation->getRootNode(), i);
@@ -164,6 +165,38 @@ namespace da::graphics
 		out = glm::degrees(glm::eulerAngles(glm::normalize(glm::inverse(rotation))));
 
 		return true;
+	}
+
+	float CSkeletalAnimator::getTimeScale() const
+	{
+		return m_timeScale;
+	}
+
+	void CSkeletalAnimator::setTimeScale(float timeScale)
+	{
+		m_timeScale = timeScale;
+	}
+
+	float CSkeletalAnimator::getPlayTime() const
+	{
+		return m_CurrentTime;
+	}
+
+	void CSkeletalAnimator::setPlayTime(float time)
+	{
+		m_CurrentTime = time;
+		if (m_CurrentTime > getMaxPlayTime()) {
+			m_CurrentTime = getMaxPlayTime();
+		}
+	}
+
+	float CSkeletalAnimator::getMaxPlayTime() const
+	{
+		if (m_CurrentAnimation)
+		{
+			return m_CurrentAnimation->getDuration();
+		}
+		return -1.f;
 	}
 
 }

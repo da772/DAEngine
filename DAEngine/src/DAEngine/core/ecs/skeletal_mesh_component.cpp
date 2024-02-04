@@ -79,71 +79,96 @@ namespace da::core {
 #ifdef DA_DEBUG
 	void CSkeletalMeshComponent::onDebugRender()
 	{
-		char buffer[4096];
-		sprintf_s(buffer, sizeof(buffer), "Mesh: %s", m_skeletalmesh->getPath().c_str());
-		ImGui::Text(buffer);
+		if (ImGui::CollapsingHeader("Anim")) {
+			ImGui::Indent();
+			float playTime = m_animator->getPlayTime();
 
-		sprintf_s(buffer, sizeof(buffer), "Mesh Count: %d", m_skeletalmesh->getMeshes().size());
-		ImGui::Text(buffer);
-		sprintf_s(buffer, sizeof(buffer), "Material Count: %d", m_skeletalmesh->getMaterialCount());
-		ImGui::Text(buffer);
+			ImGui::Text("Play time");
+			ImGui::SameLine();
+			if (ImGui::SliderFloat("##animTime", &playTime, 0.f, m_animator->getMaxPlayTime())) {
+				m_animator->setPlayTime(playTime);
+			}
 
-		size_t vertCount = 0;
-		for (size_t i = 0; i < m_skeletalmesh->getMeshes().size(); i++) {
-			vertCount += m_skeletalmesh->getMeshes()[i].Vertices.size();
+
+			ImGui::Text("Time scale");
+			ImGui::SameLine();
+			float timeScale = m_animator->getTimeScale();
+			if (ImGui::InputFloat("##timeScale", &timeScale, 0.1f, 1.f)) {
+				m_animator->setTimeScale(timeScale);
+			}
+
+			ImGui::Unindent();
 		}
 
-		ImGui::Text("Vertices: %d", vertCount);
+		if (ImGui::CollapsingHeader("Mesh")) {
+			ImGui::Indent();
+			char buffer[4096];
+			sprintf_s(buffer, sizeof(buffer), "Mesh: %s", m_skeletalmesh->getPath().c_str());
+			ImGui::Text(buffer);
 
-		size_t indCount = 0;
-		for (size_t i = 0; i < m_skeletalmesh->getMeshes().size(); i++) {
-			indCount += m_skeletalmesh->getMeshes()[i].Indices.size();
-		}
-		ImGui::Text("Indices:  %d", indCount);
+			sprintf_s(buffer, sizeof(buffer), "Mesh Count: %d", m_skeletalmesh->getMeshes().size());
+			ImGui::Text(buffer);
+			sprintf_s(buffer, sizeof(buffer), "Material Count: %d", m_skeletalmesh->getMaterialCount());
+			ImGui::Text(buffer);
+
+			size_t vertCount = 0;
+			for (size_t i = 0; i < m_skeletalmesh->getMeshes().size(); i++) {
+				vertCount += m_skeletalmesh->getMeshes()[i].Vertices.size();
+			}
+
+			ImGui::Text("Vertices: %d", vertCount);
+
+			size_t indCount = 0;
+			for (size_t i = 0; i < m_skeletalmesh->getMeshes().size(); i++) {
+				indCount += m_skeletalmesh->getMeshes()[i].Indices.size();
+			}
+			ImGui::Text("Indices:  %d", indCount);
 
 
-		if (ImGui::CollapsingHeader("Materials")) {
-			for (size_t i = 0; i < m_skeletalmesh->getMaterialCount(); i++) {
-				ImGui::Indent();
-				if (ImGui::CollapsingHeader((std::string("Material: ") + std::to_string(i) + std::string("##") + std::string(m_guid.c_str())).c_str())) {
-					ImGui::Text("Albedo Factor");
-					ImGui::SameLine();
-					ImGui::InputFloat4((std::string("##albedoFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).baseColorFactor);
+			if (ImGui::CollapsingHeader("Materials")) {
+				for (size_t i = 0; i < m_skeletalmesh->getMaterialCount(); i++) {
+					ImGui::Indent();
+					if (ImGui::CollapsingHeader((std::string("Material: ") + std::to_string(i) + std::string("##") + std::string(m_guid.c_str())).c_str())) {
+						ImGui::Text("Albedo Factor");
+						ImGui::SameLine();
+						ImGui::InputFloat4((std::string("##albedoFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).baseColorFactor);
 
-					ImGui::Text("Metallic Factor");
-					ImGui::SameLine();
-					ImGui::InputFloat((std::string("##metallic") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).metallicFactor);
+						ImGui::Text("Metallic Factor");
+						ImGui::SameLine();
+						ImGui::InputFloat((std::string("##metallic") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).metallicFactor);
 
-					ImGui::Text("Roughness Factor");
-					ImGui::SameLine();
-					ImGui::InputFloat((std::string("##roughness") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).roughnessFactor);
+						ImGui::Text("Roughness Factor");
+						ImGui::SameLine();
+						ImGui::InputFloat((std::string("##roughness") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).roughnessFactor);
 
-					ImGui::Text("Emissive Factor");
-					ImGui::SameLine();
-					ImGui::InputFloat3((std::string("##emissiveFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).emissiveFactor);
+						ImGui::Text("Emissive Factor");
+						ImGui::SameLine();
+						ImGui::InputFloat3((std::string("##emissiveFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).emissiveFactor);
+					}
+					ImGui::Unindent();
 				}
-				ImGui::Unindent();
-			}
-		}
-
-		if (ImGui::Button(m_skeletalmesh->getHidden() ? "Show" : "Hide")) {
-			m_skeletalmesh->hide(!m_skeletalmesh->getHidden());
-		}
-
-		if (ImGui::Button(!m_skeletalmesh->getCastShadows() ? "Cast Shadows" : "Hide Shadows")) {
-			m_skeletalmesh->castShadows(!m_skeletalmesh->getCastShadows());
-		}
-
-		if (ImGui::Button("Reload Mesh")) {
-			std::string path = m_skeletalmesh->getPath();
-			std::vector<da::graphics::FMaterialData> materials = m_skeletalmesh->getMaterials();
-			delete m_skeletalmesh;
-			m_skeletalmesh = new da::platform::CBgfxSkeletalMesh(path, m_inverseNormals);
-
-			for (size_t i = 0; i < m_skeletalmesh->getMaterialCount() && i < materials.size(); i++) {
-				m_skeletalmesh->getMaterial(i) = materials[i];
 			}
 
+			if (ImGui::Button(m_skeletalmesh->getHidden() ? "Show" : "Hide")) {
+				m_skeletalmesh->hide(!m_skeletalmesh->getHidden());
+			}
+
+			if (ImGui::Button(!m_skeletalmesh->getCastShadows() ? "Cast Shadows" : "Hide Shadows")) {
+				m_skeletalmesh->castShadows(!m_skeletalmesh->getCastShadows());
+			}
+
+			if (ImGui::Button("Reload Mesh")) {
+				std::string path = m_skeletalmesh->getPath();
+				std::vector<da::graphics::FMaterialData> materials = m_skeletalmesh->getMaterials();
+				delete m_skeletalmesh;
+				m_skeletalmesh = new da::platform::CBgfxSkeletalMesh(path, m_inverseNormals);
+
+				for (size_t i = 0; i < m_skeletalmesh->getMaterialCount() && i < materials.size(); i++) {
+					m_skeletalmesh->getMaterial(i) = materials[i];
+				}
+
+			}
+			ImGui::Unindent();
 		}
 	}
 #endif
