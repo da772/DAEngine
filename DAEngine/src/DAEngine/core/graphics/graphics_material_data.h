@@ -20,8 +20,8 @@ namespace da::graphics {
         glm::vec2 uvScale = { 1.f,1.f };
 
         CGraphicsTexture2D* metallicRoughnessTexture = nullptr; // blue = metallic, green = roughness
-        float metallicFactor = 1.0f;
-        float roughnessFactor = 1.0f;
+        float metallicFactor = .5f;
+        float roughnessFactor = .5f;
 
         CGraphicsTexture2D* normalTexture = nullptr;
         float normalScale = 1.0f;

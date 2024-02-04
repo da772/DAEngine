@@ -1,4 +1,7 @@
 #include "dapch.h"
+
+#include <bgfx/bgfx.h>
+
 #include "bgfx_skeletal_mesh.h"
 #include "bgfx_util.h"
 

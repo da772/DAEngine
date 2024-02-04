@@ -13,6 +13,7 @@
 #include "debug/debug.h"
 #include "debug/debug_menu_bar.h"
 #endif
+#include <core/graphics/animation_manager.h>
 
 namespace da
 {
@@ -49,6 +50,7 @@ namespace da
 		while (m_running)
 		{
 			double timeStep = da::core::CTime::newFrame();
+			da::graphics::CAnimationManager::updateBegin(timeStep);
 			for (IModule* m : m_modules) {
 				m->update();
 			}
@@ -59,10 +61,12 @@ namespace da
 			if (core::CScene* scene = core::CSceneManager::getScene()) {
 				scene->update(timeStep);
 			}
+
+			da::graphics::CAnimationManager::updateEnd();
 			for (IModule* m : m_modules) {
 				m->lateUpdate();
 			}
-
+			
 			if (m_reset) {
 				shutdown();
 				initialize();

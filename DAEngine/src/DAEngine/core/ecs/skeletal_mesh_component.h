@@ -15,17 +15,19 @@ namespace da::core
 {
 	class CSkeletalMeshComponent {
 #ifdef DA_DEBUG
-		COMPONENT_H_DEBUG(CSkeletalMeshComponent);
+		COMPONENT_H_NO_UPDATE_DEBUG(CSkeletalMeshComponent);
 #else
-		COMPONENT_H(CSkeletalMeshComponent);
+		COMPONENT_H_NO_UPDATE(CSkeletalMeshComponent);
 #endif
 
 	public:
 		CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, CEntity& parent);
+		CSkeletalMeshComponent(da::graphics::CSkeletalMesh* mesh, da::graphics::CSkeletalAnimation* anim, da::graphics::CSkeletalAnimator* animator,CEntity& parent);
 		CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, bool inverseNormals, CEntity& parent);
 
 		void onInitialize();
-		void onUpdate(float dt);
+		void render();
+		void updateAnimation(float dt);
 		void onShutdown();
 		da::graphics::CSkeletalMesh* getSkeletalMesh() const;
 		da::graphics::CSkeletalAnimation* getSkeletalAnimation() const;

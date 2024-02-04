@@ -107,6 +107,11 @@ namespace da::platform {
 
         auto setTextureOrDefault = [&](uint8_t stage, bgfx::UniformHandle uniform, da::graphics::CGraphicsTexture2D* texture2d) -> bool {
             bgfx::TextureHandle texture = m_defaultTexture;
+
+            if (!texture2d) {
+                return false;
+            }
+
             if (texture2d && texture2d->getTextureNative()) {
                 texture = *(bgfx::TextureHandle*)(texture2d->getTextureNative());;
             }

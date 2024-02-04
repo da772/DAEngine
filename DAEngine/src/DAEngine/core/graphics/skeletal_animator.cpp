@@ -20,33 +20,46 @@ namespace da::graphics
 	}
 
 
-	void CSkeletalAnimator::calculateBoneTransform(const FAssimpNodeData* node, glm::mat4 parentTransform)
+	void CSkeletalAnimator::calculateBoneTransform(const FAssimpNodeData* n)
 	{
-		CHashString nodeName = node->name;
-		glm::mat4 nodeTransform = node->transformation;
+		std::vector<std::pair<const FAssimpNodeData*, glm::mat4>> nodeQ;
+		nodeQ.push_back({ n, glm::mat4(1) });
 
-		CAnimatedBone* Bone = m_CurrentAnimation->FindBone(nodeName);
-
-		if (Bone)
+		while (!nodeQ.empty())
 		{
-			Bone->Update(m_CurrentTime);
-			nodeTransform = Bone->GetLocalTransform();
+			const std::pair<const FAssimpNodeData*, glm::mat4> node = nodeQ.back();
+			nodeQ.pop_back();
+
+			if (!node.first) {
+				continue;
+			}
+
+			glm::mat4 nodeTransform = node.first->transformation;
+
+			CAnimatedBone* bone = m_CurrentAnimation->FindBone(node.first->name);
+			
+			if (bone)
+			{
+				bone->Update(m_CurrentTime);
+				nodeTransform = bone->GetLocalTransform();
+			}
+
+			glm::mat4 globalTransformation = node.second * nodeTransform;
+			const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap().find(node.first->name);
+
+			if (it != m_CurrentAnimation->getBoneIDMap().end())
+			{
+				int index = it->second.id;
+				glm::mat4 offset = it->second.offset;
+				m_FinalBoneMatrices[index] = globalTransformation * offset;
+			}
+
+			for (int i = 0; i < node.first->childrenCount; i++)
+			{
+				nodeQ.push_back({ &node.first->children[i], globalTransformation });
+			}
 		}
-
-		glm::mat4 globalTransformation = parentTransform * nodeTransform;
-
-		const std::unordered_map<CHashString, FBoneInfo>& boneInfoMap = m_CurrentAnimation->getBoneIDMap();
-		auto it = boneInfoMap.find(nodeName);
-
-		if (it != boneInfoMap.end())
-		{
-			int index = it->second.id;
-			glm::mat4 offset = it->second.offset;
-			m_FinalBoneMatrices[index] = globalTransformation * offset;
-		}
-
-		for (int i = 0; i < node->childrenCount; i++)
-			calculateBoneTransform(&node->children[i], globalTransformation);
+			
 	}
 
 	void CSkeletalAnimator::updateAnimation(float dt)
@@ -56,7 +69,7 @@ namespace da::graphics
 		{
 			m_CurrentTime += m_CurrentAnimation->getTicksPerSecond() * dt;
 			m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->getDuration());
-			calculateBoneTransform(&m_CurrentAnimation->getRootNode(), glm::mat4(1.0f));
+			calculateBoneTransform(&m_CurrentAnimation->getRootNode());
 		}
 	}
 

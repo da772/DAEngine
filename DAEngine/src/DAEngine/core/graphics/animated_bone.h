@@ -27,6 +27,7 @@ namespace da::graphics {
     public:
 
         CAnimatedBone(CHashString name, int ID, const aiNodeAnim* channel);
+        inline CAnimatedBone() {};
 
         /*interpolates  b/w positions,rotations & scaling keys based on the curren time of
         the animation and prepares the local transformation matrix by combining all keys

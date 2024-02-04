@@ -52,6 +52,7 @@ namespace da::core {
 	{
 		for (std::pair<const CHashString, FComponentContainer>& kv : m_components) {
 			FECSLifeCycle& f = m_componentLifeCycle[kv.first];
+			if (!f.update) continue;
 			for (size_t i = 0; i < kv.second.getCount(); i++) {
 				f.update((void*)kv.second.getComponentAtIndex(i), dt);
 			}

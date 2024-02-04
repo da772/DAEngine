@@ -12,9 +12,9 @@
 
 namespace da::core {
 #ifdef DA_DEBUG
-	COMPONENT_CPP_DEBUG(CSkeletalMeshComponent);
+	COMPONENT_CPP_NO_UPDATE_DEBUG(CSkeletalMeshComponent);
 #else
-	COMPONENT_CPP(CSkeletalMeshComponent);
+	COMPONENT_CPP_NO_UPDATE(CSkeletalMeshComponent);
 #endif
 
 	CSkeletalMeshComponent::CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(false)
@@ -31,18 +31,27 @@ namespace da::core {
 		m_animator = new da::graphics::CSkeletalAnimator(m_animation);
 	}
 
+	CSkeletalMeshComponent::CSkeletalMeshComponent(da::graphics::CSkeletalMesh* mesh, da::graphics::CSkeletalAnimation* anim, da::graphics::CSkeletalAnimator* animator, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
+	{
+		m_skeletalmesh = mesh;
+		m_animation = anim;
+		m_animator = animator;
+	}
+
 	void CSkeletalMeshComponent::onInitialize()
 	{
 		m_animator->playAnimation(m_animation);
 	}
 
-	void CSkeletalMeshComponent::onUpdate(float dt)
-	{
-		glm::mat4 m = m_parent.getTransform().matrix();
-		::bgfx::setTransform(&m);
-		((da::platform::CBgfxSkeletalMesh*)m_skeletalmesh)->setBuffers(0, 0);
 
+	void CSkeletalMeshComponent::updateAnimation(float dt)
+	{
 		m_animator->updateAnimation(dt);
+	}
+
+	void CSkeletalMeshComponent::render()
+	{
+		((da::platform::CBgfxSkeletalMesh*)m_skeletalmesh)->setBuffers(0, 0);
 	}
 
 	void CSkeletalMeshComponent::onShutdown()

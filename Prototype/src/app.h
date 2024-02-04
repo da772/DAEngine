@@ -24,10 +24,15 @@
 #include <DAEngine/platform/graphics/bgfx/bgfx_graphics_pbr_material.h>
 #include <daengine/core/graphics/graphics_skmesh.h>
 
+#include <DAEngine\platform\graphics\bgfx\bgfx_skeletal_mesh.h>
+#include <DAEngine\core\graphics\skeletal_animation.h>
+#include <DAEngine\core\graphics\skeletal_animator.h>
+
 #ifdef DA_DEBUG
 #include <DAEngine/debug/debug_menu_bar.h>
 #endif
 #include <DAEngine/core/ecs/skeletal_mesh_component.h>
+#include <DAEngine/core/time.h>
 
 //#define WINDOW_2
 
@@ -155,14 +160,20 @@ protected:
 		e3->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-		for (int i = 0; i < 3; i++) {
-			e4 = da::core::CSceneManager::getScene()->createEntity();
-			da::core::FComponentRef<da::core::CSkeletalMeshComponent> cc = e4->addComponent<da::core::CSkeletalMeshComponent>("assets/mannequin/Dancing2.fbx", "assets/mannequin/Dancing2.fbx", false);
-			cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
-			e4->getTransform().setPosition({ i*3.f,5.f+(1.5f*i),-.1f});
-			e4->getTransform().setRotation({ 90.f,180.f,0.f });
+		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/Walking.fbx", false);
+		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/Walking.fbx", (da::graphics::FSkeletalMesh*)&mesh->getMeshes()[0]);
+		da::graphics::CSkeletalAnimator* animator = new da::graphics::CSkeletalAnimator(animation);
 
+		for (int i = 0; i < 1; i++) {
+			e4 = da::core::CSceneManager::getScene()->createEntity();
+			da::core::FComponentRef<da::core::CSkeletalMeshComponent> cc = e4->addComponent<da::core::CSkeletalMeshComponent>(mesh, animation, animator);
+			//cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
 			
+			e4->getTransform().setPosition({ 0,5, -.6 });
+			e4->getTransform().setRotation({ -90.f,0.f,0.f });
+
+			//e4->getTransform().setPosition({ i*3.f,5.f+(1.5f*i),-.1f});
+			//e4->getTransform().setRotation({ 90.f,180.f,0.f });
 		}
 
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
@@ -229,5 +240,17 @@ protected:
 
 	inline virtual void onUpdate() override
 	{   
+		float dt = da::core::CTime::getTimeStep();
+
+		if (dt > 1.0) return;
+
+		float moveSpeed = 7.5f;
+
+		glm::vec3 pos = e4->getTransform().position();
+
+		pos.y += moveSpeed * dt;
+
+		e4->getTransform().setPosition(pos);
+
 	}
 };

@@ -6,6 +6,7 @@
 #include <functional>
 #include <mutex>
 #include <map>
+#include <unordered_set>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 

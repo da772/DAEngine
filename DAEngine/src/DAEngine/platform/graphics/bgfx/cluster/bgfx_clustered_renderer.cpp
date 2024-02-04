@@ -68,7 +68,7 @@ namespace da::platform {
         m_pDebugVisProgram->initialize();
 
         m_pointLights.init();
-        //generateLights(100);
+        //generateLights(250);
         m_pointLights.update();
 
         m_shadow.initialize();

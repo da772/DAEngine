@@ -19,7 +19,7 @@ namespace da::graphics {
 			return m_FinalBoneMatrices;
 		}
 	private:
-		void calculateBoneTransform(const FAssimpNodeData* node, glm::mat4 parentTransform);
+		void calculateBoneTransform(const FAssimpNodeData* node);
 
 	private:
 		std::vector<glm::mat4> m_FinalBoneMatrices;

@@ -53,8 +53,8 @@ namespace da::graphics
 				boneInfoMap[boneName].id = boneCount;
 				boneCount++;
 			}
-			m_Bones.push_back(CAnimatedBone(channel->mNodeName.data,
-				boneInfoMap[channel->mNodeName.data].id, channel));
+			m_Bones[boneName] = CAnimatedBone(channel->mNodeName.data,
+				boneInfoMap[channel->mNodeName.data].id, channel);
 		}
 
 		m_BoneInfoMap = boneInfoMap;

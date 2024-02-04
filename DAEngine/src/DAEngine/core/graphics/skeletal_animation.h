@@ -22,14 +22,14 @@ namespace da::graphics
 
 		inline CAnimatedBone* FindBone(const CHashString& name)
 		{
-			auto iter = std::find_if(m_Bones.begin(), m_Bones.end(),
-				[&](const CAnimatedBone& Bone)
-				{
-					return Bone.GetBoneName() == name;
-				}
-			);
-			if (iter == m_Bones.end()) return nullptr;
-			else return &(*iter);
+			const std::unordered_map<CHashString, CAnimatedBone>::iterator& it = m_Bones.find(name);
+
+			if (it == m_Bones.end())
+			{
+				return nullptr;
+			}
+
+			return &it->second;
 		}
 
 
@@ -51,7 +51,7 @@ namespace da::graphics
 	private:
 		float m_Duration;
 		int m_TicksPerSecond;
-		std::vector<CAnimatedBone> m_Bones;
+		std::unordered_map<CHashString, CAnimatedBone> m_Bones;
 		FAssimpNodeData m_RootNode;
 		std::unordered_map<CHashString, FBoneInfo> m_BoneInfoMap;
 	};

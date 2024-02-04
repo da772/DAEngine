@@ -1,8 +1,14 @@
 #pragma once
 #pragma once
 
-#include <bgfx/bgfx.h>
-#include "core/graphics/graphics_skmesh.h"
+#include "daengine/core/graphics/graphics_skmesh.h"
+
+namespace bgfx {
+	struct VertexBufferHandle;
+	struct IndexBufferHandle;
+	struct VertexLayout;
+}
+
 
 namespace da::platform {
 
