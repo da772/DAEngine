@@ -2,9 +2,9 @@
 #include "skeletal_animator.h"
 #include "animated_bone.h"
 #include "skeletal_animation.h"
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include <assimp/scene.h>
-
 namespace da::graphics
 {
 
@@ -86,5 +86,84 @@ namespace da::graphics
 		m_CurrentTime = 0.0f;
 	}
 
+
+	bool CSkeletalAnimator::getBoneLocalTransform(CHashString name, glm::mat4& out) const
+	{
+		ASSERT(m_CurrentAnimation->getMeshCount() != 0);
+
+		const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(0).find(name);
+
+		if (it == m_CurrentAnimation->getBoneIDMap(0).end())
+		{
+			return false;
+		}
+
+		out = m_FinalBoneMatrices[0][it->second.id] * glm::inverse(it->second.offset);
+
+		return true;
+	}
+
+
+	bool CSkeletalAnimator::getBoneWorldTransform(CHashString name, const glm::mat4& modelMat, glm::mat4& out) const
+	{
+		ASSERT(m_CurrentAnimation->getMeshCount() != 0);
+
+		const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(0).find(name);
+
+		if (it == m_CurrentAnimation->getBoneIDMap(0).end())
+		{
+			return false;
+		}
+
+		out = modelMat * (m_FinalBoneMatrices[0][it->second.id] * glm::inverse(it->second.offset));
+
+		return true;
+	}
+
+
+	bool CSkeletalAnimator::getBoneWorldPosition(CHashString name, const glm::mat4& modelMat, glm::vec3& out) const
+	{
+		glm::mat4 m;
+
+		if (!getBoneWorldTransform(name, modelMat, m))
+		{
+			return false;
+		}
+
+		out = m[3];
+		return true;
+	}
+
+	bool CSkeletalAnimator::getBoneWorldRotation(CHashString name, const glm::mat4& modelMat, glm::vec3& out) const
+	{
+		glm::mat4 m;
+
+		if (!getBoneWorldTransform(name, modelMat, m))
+		{
+			return false;
+		}
+
+		ASSERT(m_CurrentAnimation->getMeshCount() != 0);
+
+		const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(0).find(name);
+
+		if (it == m_CurrentAnimation->getBoneIDMap(0).end())
+		{
+			return false;
+		}
+
+		m = modelMat * m_FinalBoneMatrices[0][it->second.id];
+
+		glm::vec3 scale;
+		glm::quat rotation;
+		glm::vec3 translation;
+		glm::vec3 skew;
+		glm::vec4 perspective;
+		glm::decompose(m, scale, rotation, translation, skew, perspective);
+
+		out = glm::degrees(glm::eulerAngles(glm::normalize(glm::inverse(rotation))));
+
+		return true;
+	}
 
 }

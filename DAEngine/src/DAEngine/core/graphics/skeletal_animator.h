@@ -13,6 +13,10 @@ namespace da::graphics {
 
 		void updateAnimation(float dt);
 		void playAnimation(CSkeletalAnimation* pAnimation);
+		bool getBoneLocalTransform(CHashString name, glm::mat4& out) const;
+		bool getBoneWorldTransform(CHashString name, const glm::mat4& modelMat, glm::mat4& out) const;
+		bool getBoneWorldPosition(CHashString name, const glm::mat4& modelMat, glm::vec3& out) const;
+		bool getBoneWorldRotation(CHashString name, const glm::mat4& modelMat, glm::vec3& out) const;
 
 		const std::vector<glm::mat4>& getFinalBoneMatrices(size_t index) const
 		{

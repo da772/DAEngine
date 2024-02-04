@@ -57,7 +57,7 @@ namespace da
 #ifdef DA_DEBUG
 			da::debug::CDebug::update(timeStep);
 #endif
-			onUpdate();
+			onUpdate(timeStep);
 			if (core::CScene* scene = core::CSceneManager::getScene()) {
 				scene->update(timeStep);
 			}

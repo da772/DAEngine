@@ -28,6 +28,9 @@
 #include <DAEngine\core\graphics\skeletal_animation.h>
 #include <DAEngine\core\graphics\skeletal_animator.h>
 
+#include <glm/gtx/matrix_decompose.hpp>
+
+
 #ifdef DA_DEBUG
 #include <DAEngine/debug/debug_menu_bar.h>
 #endif
@@ -104,7 +107,7 @@ private:
 	da::graphics::CMaterial* m_cubeMat = 0;
 	da::graphics::CMaterial* m_cubeMat2 = 0;
 	da::modules::CWindowModule* m_window = 0;
-	da::core::CEntity* e1,* e2, *e3, *e4;
+	da::core::CEntity* e1,* e2, *e3, *e4, *e5;
 	bool m_showScriptDebug = false;
 	bool m_showScriptDebugHard = false;
  
@@ -160,12 +163,24 @@ protected:
 		e3->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
+		e5 = da::core::CSceneManager::getScene()->createEntity();
+		c = e5->addComponent<da::core::CSmeshComponent>("assets/blade_LOTR/blade_LOTR.fbx");
+		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_BaseColor.png");
+		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_Normal_OpenGL.png");
+		c->getStaticMesh()->getMaterial(0).occlusionTexture = da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_AmbientOcclusion_Mixed.png");
+
+		e5->setTag(HASHSTR("hat"));
+		e5->getTransform().setPosition({ 0,0,0 });
+		e5->getTransform().setRotation({ 45.f,0.f,180.f });
+		e5->getTransform().setScale({ 4.5f,4.5f,4.5f });
+		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
+
 		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/zombie.fbx", false);
 		mesh->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/mannequin/alpha_body_mat.png");
 		mesh->getMaterial(0).metallicFactor = .1500f;
 		mesh->getMaterial(0).roughnessFactor = 0.f;
 		mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
-		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/zombie.fbx", mesh);
+		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
 		da::graphics::CSkeletalAnimator* animator = new da::graphics::CSkeletalAnimator(animation);
 
 		for (int i = 0; i < 1; i++) {
@@ -244,13 +259,13 @@ protected:
 		
 	}
 
-	inline virtual void onUpdate() override
-	{   
-		float dt = da::core::CTime::getTimeStep();
+	glm::vec3 rotOffset = { 175.f,71.f,75.f };
 
+	inline virtual void onUpdate(float dt) override
+	{
 		if (dt > 1.0) return;
 
-		float moveSpeed = 1.5f;
+		float moveSpeed = 12.5f;
 
 		glm::vec3 pos = e4->getTransform().position();
 
@@ -258,5 +273,41 @@ protected:
 
 		e4->getTransform().setPosition(pos);
 
+		da::core::FComponentRef<da::core::CSkeletalMeshComponent> component = e4->getComponent<da::core::CSkeletalMeshComponent>();
+
+		glm::mat4 worldBoneTransform;
+		if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_RightHand"), e4->getTransform().matrix(), worldBoneTransform)) {
+			worldBoneTransform = glm::translate(worldBoneTransform, glm::vec3(0.f, -3.f, -9.f));
+			glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(-rotOffset.y), glm::vec3(0.0f, 1.0f, 0.0f))
+				* glm::rotate(glm::mat4(1.0f), glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f))
+				* glm::rotate(glm::mat4(1.0f), glm::radians(-rotOffset.z), glm::vec3(0.0f, 0.0f, 1.0f));
+			worldBoneTransform = worldBoneTransform*rotationMatrix;
+
+			glm::vec3 scale;
+			glm::quat rotation;
+			glm::vec3 translation;
+			glm::vec3 skew;
+			glm::vec4 perspective;
+			glm::decompose(worldBoneTransform, scale, rotation, translation, skew, perspective);
+
+			e5->getTransform().setPosition(translation);
+			e5->getTransform().setRotation(glm::degrees(glm::eulerAngles(rotation)));
+		}
+
+
+		if (ImGui::Begin("WODKAD"))
+		{
+			ImGui::DragFloat3("rot", &rotOffset.x, 1.f, -360, 360);
+		}
+
+		ImGui::End();
+
+		glm::vec3 worldBoneRot;
+		if (component->getSkeletalAnimator()->getBoneWorldRotation(HASHSTR("mixamorig_RightHand"), e4->getTransform().matrix(), worldBoneRot)) {
+			//e5->getTransform().setRotation(worldBoneRot + rotOffset);
+
+		}
+
+	
 	}
 };

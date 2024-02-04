@@ -70,6 +70,18 @@ namespace da::core {
 								e->getTransform().setRotation(r);
 							}
 						}
+						
+
+						{
+							glm::vec3 s = e->getTransform().scale();
+							float scale[] = { s.x ,s.y, s.z };
+							ImGui::Text("Scale");
+							ImGui::SameLine();
+							if (ImGui::InputFloat3((std::string("##scale") + std::string(e->getId().c_str())).c_str(), scale, "%.3f")) {
+								s = { scale[0], scale[1], scale[2] };
+								e->getTransform().setScale(s);
+							}
+						}
 
 						e->debugRender();
 						ImGui::Unindent();
