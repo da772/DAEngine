@@ -20,14 +20,14 @@ namespace da::core {
 	CSkeletalMeshComponent::CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(false)
 	{
 		m_skeletalmesh = new da::platform::CBgfxSkeletalMesh(meshPath, false);
-		m_animation = new da::graphics::CSkeletalAnimation(animPath, (da::graphics::FSkeletalMesh*)&m_skeletalmesh->getMeshes()[0]);
+		m_animation = new da::graphics::CSkeletalAnimation(animPath, m_skeletalmesh);
 		m_animator = new da::graphics::CSkeletalAnimator(m_animation);
 	}
 
 	CSkeletalMeshComponent::CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, bool inverseNormals, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(inverseNormals)
 	{
 		m_skeletalmesh = new da::platform::CBgfxSkeletalMesh(meshPath, inverseNormals);
-		m_animation = new da::graphics::CSkeletalAnimation(animPath, (da::graphics::FSkeletalMesh*)&m_skeletalmesh->getMeshes()[0]);
+		m_animation = new da::graphics::CSkeletalAnimation(animPath, m_skeletalmesh);
 		m_animator = new da::graphics::CSkeletalAnimator(m_animation);
 	}
 
@@ -101,6 +101,30 @@ namespace da::core {
 		}
 		ImGui::Text("Indices:  %d", indCount);
 
+
+		if (ImGui::CollapsingHeader("Materials")) {
+			for (size_t i = 0; i < m_skeletalmesh->getMaterialCount(); i++) {
+				ImGui::Indent();
+				if (ImGui::CollapsingHeader((std::string("Material: ") + std::to_string(i) + std::string("##") + std::string(m_guid.c_str())).c_str())) {
+					ImGui::Text("Albedo Factor");
+					ImGui::SameLine();
+					ImGui::InputFloat4((std::string("##albedoFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).baseColorFactor);
+
+					ImGui::Text("Metallic Factor");
+					ImGui::SameLine();
+					ImGui::InputFloat((std::string("##metallic") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).metallicFactor);
+
+					ImGui::Text("Roughness Factor");
+					ImGui::SameLine();
+					ImGui::InputFloat((std::string("##roughness") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).roughnessFactor);
+
+					ImGui::Text("Emissive Factor");
+					ImGui::SameLine();
+					ImGui::InputFloat3((std::string("##emissiveFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_skeletalmesh->getMaterial(i).emissiveFactor);
+				}
+				ImGui::Unindent();
+			}
+		}
 
 		if (ImGui::Button(m_skeletalmesh->getHidden() ? "Show" : "Hide")) {
 			m_skeletalmesh->hide(!m_skeletalmesh->getHidden());

@@ -29,7 +29,7 @@ namespace da::platform
 		::bgfx::UniformHandle m_uniformParamHandle = BGFX_INVALID_HANDLE;
 		::bgfx::UniformHandle m_ssaoUniformHandle = BGFX_INVALID_HANDLE;
 
-		glm::vec4 m_param1 = {0.6f, 0.2f, 0.015f, 0.002 };
+		glm::vec4 m_param1 = {0.3f, 0.15f, 0.015f, 0.025 };
 
 #ifdef DA_DEBUG
 		void renderDebug();

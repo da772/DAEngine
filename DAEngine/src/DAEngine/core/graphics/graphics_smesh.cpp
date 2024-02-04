@@ -231,8 +231,8 @@ namespace da::graphics
 
 	da::graphics::FMaterialData& CStaticMesh::getMaterial(size_t index)
 	{
-		ASSERT(index < m_materials.size());
 		return m_materials[index];
+		ASSERT(index < m_materials.size());
 	}
 
 }

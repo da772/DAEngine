@@ -14,15 +14,15 @@ namespace da::graphics {
 		void updateAnimation(float dt);
 		void playAnimation(CSkeletalAnimation* pAnimation);
 
-		const std::vector<glm::mat4>& getFinalBoneMatrices() const
+		const std::vector<glm::mat4>& getFinalBoneMatrices(size_t index) const
 		{
-			return m_FinalBoneMatrices;
+			return m_FinalBoneMatrices[index];
 		}
 	private:
-		void calculateBoneTransform(const FAssimpNodeData* node);
+		void calculateBoneTransform(const FAssimpNodeData* node, size_t index);
 
 	private:
-		std::vector<glm::mat4> m_FinalBoneMatrices;
+		std::vector<std::vector<glm::mat4>> m_FinalBoneMatrices;
 		CSkeletalAnimation* m_CurrentAnimation;
 		float m_CurrentTime;
 		float m_DeltaTime;

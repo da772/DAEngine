@@ -17,7 +17,7 @@
 namespace da::graphics
 {
 
-	CSkeletalAnimation::CSkeletalAnimation(const std::string& animationPath, FSkeletalMesh* model)
+	CSkeletalAnimation::CSkeletalAnimation(const std::string& animationPath, CSkeletalMesh* model)
 	{
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate
@@ -27,15 +27,20 @@ namespace da::graphics
 			| aiProcess_PreTransformVertices
 			| aiProcess_TransformUVCoords
 			| aiProcess_FlipUVs);
-		assert(scene && scene->mRootNode);
+		ASSERT(scene && scene->mRootNode);
 		auto animation = scene->mAnimations[0];
 		m_Duration = animation->mDuration;
 		m_TicksPerSecond = animation->mTicksPerSecond;
 		ReadHeirarchyData(m_RootNode, scene->mRootNode);
-		ReadMissingBones(animation, *model);
+
+		for (size_t i = 0; i < model->getMeshes().size(); i++) {
+			m_Bones.push_back({});
+			const FSkeletalMesh& m = model->getMeshes()[i];
+			ReadMissingBones(animation, (FSkeletalMesh&)m, i);
+		}
 	}
 
-	void CSkeletalAnimation::ReadMissingBones(const aiAnimation* animation, FSkeletalMesh& mesh)
+	void CSkeletalAnimation::ReadMissingBones(const aiAnimation* animation, FSkeletalMesh& mesh, size_t index)
 	{
 		int size = animation->mNumChannels;
 
@@ -53,11 +58,11 @@ namespace da::graphics
 				boneInfoMap[boneName].id = boneCount;
 				boneCount++;
 			}
-			m_Bones[boneName] = CAnimatedBone(channel->mNodeName.data,
+			m_Bones[index][boneName] = CAnimatedBone(channel->mNodeName.data,
 				boneInfoMap[channel->mNodeName.data].id, channel);
 		}
 
-		m_BoneInfoMap = boneInfoMap;
+		m_BoneInfoMap.push_back(boneInfoMap);
 	}
 
 	void CSkeletalAnimation::ReadHeirarchyData(FAssimpNodeData& dest, const aiNode* src)

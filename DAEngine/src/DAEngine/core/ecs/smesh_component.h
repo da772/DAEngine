@@ -15,9 +15,9 @@ namespace da::core
 
 	class CSmeshComponent {
 #ifdef DA_DEBUG
-		COMPONENT_H_DEBUG(CSmeshComponent);
+		COMPONENT_H_NO_UPDATE_DEBUG(CSmeshComponent);
 #else
-		COMPONENT_H(CSmeshComponent);
+		COMPONENT_NO_UPDATE_H(CSmeshComponent);
 #endif
 
 	public:
@@ -25,7 +25,6 @@ namespace da::core
 		CSmeshComponent(const std::string& meshPath, bool inverseNormals, CEntity& parent);
 
 		void onInitialize();
-		void onUpdate(float dt);
 		void onShutdown();
 		da::graphics::CStaticMesh* getStaticMesh() const;
 #ifdef DA_DEBUG

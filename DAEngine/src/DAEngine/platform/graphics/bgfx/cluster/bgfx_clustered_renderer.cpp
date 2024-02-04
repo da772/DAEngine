@@ -195,7 +195,7 @@ namespace da::platform {
 			for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
 				da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
 
-				::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices().data(), 128);
+				::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
 				::bgfx::setTransform(glm::value_ptr(model));
 				::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
 				::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
@@ -286,7 +286,7 @@ namespace da::platform {
 					if (!mesh->getCastShadows()) continue;
 					if (mesh->getHidden()) continue;
 
-					::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices().data(), 128);
+					::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
 					::bgfx::setTransform(glm::value_ptr(model));
 					::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
 					::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
@@ -428,7 +428,7 @@ namespace da::platform {
 
                 ::bgfx::setTransform(glm::value_ptr(model));
                 setNormalMatrix(model);
-                ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices().data(), 128);
+                ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
                 ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
                 ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
                 m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);

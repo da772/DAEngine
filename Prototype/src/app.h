@@ -160,8 +160,12 @@ protected:
 		e3->getTransform().setRotation({ 0,0.f,90.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/Walking.fbx", false);
-		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/Walking.fbx", (da::graphics::FSkeletalMesh*)&mesh->getMeshes()[0]);
+		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/zombie.fbx", false);
+		mesh->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/mannequin/alpha_body_mat.png");
+		mesh->getMaterial(0).metallicFactor = .1500f;
+		mesh->getMaterial(0).roughnessFactor = 0.f;
+		mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
+		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/zombie.fbx", mesh);
 		da::graphics::CSkeletalAnimator* animator = new da::graphics::CSkeletalAnimator(animation);
 
 		for (int i = 0; i < 1; i++) {
@@ -186,6 +190,8 @@ protected:
 		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/city/wallTextures/wallA.jpg");
 		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/city/wallTextures/wallN.jpg");
 		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/city/wallTextures/wallR.jpg");
+		c->getStaticMesh()->getMaterial(0).metallicFactor = .25f;
+		c->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
 		c->getStaticMesh()->getMaterial(0).doubleSided = true;
 
 		c->getStaticMesh()->getMaterial(1).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg");
@@ -244,7 +250,7 @@ protected:
 
 		if (dt > 1.0) return;
 
-		float moveSpeed = 7.5f;
+		float moveSpeed = 1.5f;
 
 		glm::vec3 pos = e4->getTransform().position();
 

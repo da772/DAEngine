@@ -8,7 +8,7 @@ layout(location = 0) out vec4 outColor;
 layout(location = 1) out vec4 outLightOcclusion;
 
 #define OUT0 outColor
-#define OUT1 outColor
+#define OUT1 outLightOcclusion
 #else
 #define OUT0 gl_FragData[0]
 #define OUT1 gl_FragData[1]

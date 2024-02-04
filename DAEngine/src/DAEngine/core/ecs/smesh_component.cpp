@@ -9,9 +9,9 @@
 
 namespace da::core {
 #ifdef DA_DEBUG
-	COMPONENT_CPP_DEBUG(CSmeshComponent);
+	COMPONENT_CPP_NO_UPDATE_DEBUG(CSmeshComponent);
 #else
-	COMPONENT_CPP(CSmeshComponent);
+	COMPONENT_CPP_NO_UPDATE(CSmeshComponent);
 #endif
 
 	CSmeshComponent::CSmeshComponent(const std::string& meshPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(false)
@@ -27,13 +27,6 @@ namespace da::core {
 	void CSmeshComponent::onInitialize()
 	{
 		
-	}
-
-	void CSmeshComponent::onUpdate(float dt)
-	{
-		glm::mat4 m = m_parent.getTransform().matrix();
-		::bgfx::setTransform(&m);
-		((da::platform::CBgfxStaticMesh*) m_staticMesh)->setBuffers(0, 0);
 	}
 
 	void CSmeshComponent::onShutdown()
@@ -71,6 +64,32 @@ namespace da::core {
 		}
 		ImGui::Text("Indices:  %d", indCount);
 
+
+
+		if (ImGui::CollapsingHeader("Materials")) {
+			for (size_t i = 0; i < m_staticMesh->getMaterialCount(); i++) {
+				ImGui::Indent();
+				if (ImGui::CollapsingHeader((std::string("Material: ") + std::to_string(i) + std::string("##") + std::string(m_guid.c_str())).c_str())) {
+					ImGui::Text("Albedo Factor");
+					ImGui::SameLine();
+					ImGui::InputFloat4((std::string("##albedoFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_staticMesh->getMaterial(i).baseColorFactor);
+
+					ImGui::Text("Metallic Factor");
+					ImGui::SameLine();
+					ImGui::InputFloat((std::string("##metallic") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_staticMesh->getMaterial(i).metallicFactor);
+
+					ImGui::Text("Roughness Factor");
+					ImGui::SameLine();
+					ImGui::InputFloat((std::string("##roughness") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_staticMesh->getMaterial(i).roughnessFactor);
+
+					ImGui::Text("Emissive Factor");
+					ImGui::SameLine();
+					ImGui::InputFloat3((std::string("##emissiveFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_staticMesh->getMaterial(i).emissiveFactor);
+
+				}
+				ImGui::Unindent();
+			}
+		}
 
 		if (ImGui::Button(m_staticMesh->getHidden() ? "Show" : "Hide")) {
 			m_staticMesh->hide(!m_staticMesh->getHidden());
