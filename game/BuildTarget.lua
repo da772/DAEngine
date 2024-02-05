@@ -1,7 +1,7 @@
 CC="clang"
 CXX="clang++"
 
-workspace "Prototype"
+workspace "game"
 	architecture "x64"
 
 	configurations
@@ -25,8 +25,8 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 include "DAEngine"
 
-project "Prototype"
-	location "Prototype"
+project "game"
+	location "game"
 	kind "ConsoleApp"
 	language "C++"
 			cppdialect "C++latest"
@@ -37,7 +37,7 @@ project "Prototype"
 
 	defines 
 	{
-		"DA_PROJECT_Prototype"
+		"DA_PROJECT_game"
 	}
 	
 	files 
