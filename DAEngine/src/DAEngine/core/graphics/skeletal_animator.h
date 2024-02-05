@@ -16,7 +16,7 @@ namespace da::graphics {
 		bool getBoneLocalTransform(CHashString name, glm::mat4& out) const;
 		bool getBoneWorldTransform(CHashString name, const glm::mat4& modelMat, glm::mat4& out) const;
 		bool getBoneWorldPosition(CHashString name, const glm::mat4& modelMat, glm::vec3& out) const;
-		bool getBoneWorldRotation(CHashString name, const glm::mat4& modelMat, glm::vec3& out) const;
+		bool getBoneWorldRotation(CHashString name, const glm::mat4& modelMat, glm::quat& out) const;
 		float getTimeScale() const;
 		void setTimeScale(float timeScale);
 		float getPlayTime() const;

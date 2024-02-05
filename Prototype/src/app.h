@@ -36,6 +36,7 @@
 #endif
 #include <DAEngine/core/ecs/skeletal_mesh_component.h>
 #include <DAEngine/core/time.h>
+#include <glm/gtx/quaternion.hpp>
 
 //#define WINDOW_2
 
@@ -180,7 +181,7 @@ protected:
 		mesh->getMaterial(0).metallicFactor = .1500f;
 		mesh->getMaterial(0).roughnessFactor = 0.f;
 		mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
-		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
+		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordSlash.fbx", mesh);
 		da::graphics::CSkeletalAnimator* animator = new da::graphics::CSkeletalAnimator(animation);
 
 		for (int i = 0; i < 1; i++) {
@@ -189,7 +190,7 @@ protected:
 			//cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
 			
 			e4->getTransform().setPosition({ 0,5, -.6 });
-			e4->getTransform().setRotation({ -90.f,0.f,0.f });
+			e4->getTransform().setRotation({ 90.f,0.f,0.f });
 
 			//e4->getTransform().setPosition({ i*3.f,5.f+(1.5f*i),-.1f});
 			//e4->getTransform().setRotation({ 90.f,180.f,0.f });
@@ -259,7 +260,7 @@ protected:
 		
 	}
 
-	glm::vec3 rotOffset = { 175.f,71.f,75.f };
+	glm::vec3 rotOffset = { 80.f,185.f,84.f };
 
 	inline virtual void onUpdate(float dt) override
 	{
@@ -278,10 +279,7 @@ protected:
 		glm::mat4 worldBoneTransform;
 		if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_RightHand"), e4->getTransform().matrix(), worldBoneTransform)) {
 			worldBoneTransform = glm::translate(worldBoneTransform, glm::vec3(0.f, -3.f, -9.f));
-			glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(-rotOffset.y), glm::vec3(0.0f, 1.0f, 0.0f))
-				* glm::rotate(glm::mat4(1.0f), glm::radians(-rotOffset.x), glm::vec3(1.0f, 0.0f, 0.0f))
-				* glm::rotate(glm::mat4(1.0f), glm::radians(-rotOffset.z), glm::vec3(0.0f, 0.0f, 1.0f));
-			worldBoneTransform = worldBoneTransform*rotationMatrix;
+			worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(rotOffset)));
 
 			glm::vec3 scale;
 			glm::quat rotation;
@@ -291,7 +289,7 @@ protected:
 			glm::decompose(worldBoneTransform, scale, rotation, translation, skew, perspective);
 
 			e5->getTransform().setPosition(translation);
-			e5->getTransform().setRotation(glm::degrees(glm::eulerAngles(rotation)));
+			e5->getTransform().setRotation(rotation);
 		}
 
 
@@ -302,7 +300,7 @@ protected:
 
 		ImGui::End();
 
-		glm::vec3 worldBoneRot;
+		glm::quat worldBoneRot;
 		if (component->getSkeletalAnimator()->getBoneWorldRotation(HASHSTR("mixamorig_RightHand"), e4->getTransform().matrix(), worldBoneRot)) {
 			//e5->getTransform().setRotation(worldBoneRot + rotOffset);
 

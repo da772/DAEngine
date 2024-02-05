@@ -3,6 +3,7 @@
 
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp> >
 
 namespace da::maths
 {
@@ -26,13 +27,27 @@ namespace da::maths
 
 	void CTransform::setRotation(const glm::vec3& rot)
 	{
+		m_rotation = glm::quat(glm::radians(rot));
+		m_dirty = true;
+	}
+
+	void CTransform::setRotation(const glm::quat& rot)
+	{
 		m_rotation = rot;
 		m_dirty = true;
 	}
 
 	void CTransform::offsetRotation(const glm::vec3& delta)
 	{
-		setRotation(m_rotation + delta);
+		glm::vec3 currentEulerAngles = glm::degrees(glm::eulerAngles(m_rotation));
+
+		currentEulerAngles += delta;
+		currentEulerAngles.y = 0.0f;
+		m_rotation = glm::quat(glm::radians(currentEulerAngles));
+
+		setRotation(glm::normalize(m_rotation));
+
+
 		m_dirty = true;
 	}
 
@@ -43,7 +58,7 @@ namespace da::maths
 
 	glm::vec3 CTransform::rotation() const
 	{
-		return m_rotation;
+		return glm::degrees(glm::eulerAngles(m_rotation));
 	}
 
 	const glm::mat4& CTransform::matrix()
@@ -51,9 +66,7 @@ namespace da::maths
 		if (m_dirty) {
 			m_dirty = false;
 			glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position);
-			glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.y), glm::vec3(0.0f, 1.0f, 0.0f))
-				* glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
-				* glm::rotate(glm::mat4(1.0f), glm::radians(-m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+			glm::mat4 rotationMatrix = glm::toMat4(m_rotation);
 			glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0), m_scale);
 			m_mat = translationMatrix * rotationMatrix * scaleMatrix;;
 		}
@@ -86,5 +99,4 @@ namespace da::maths
 	{
 		return m_scale;
 	}
-
 }

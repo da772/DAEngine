@@ -14,9 +14,9 @@ namespace da::graphics
 	void CAnimationManager::updateBegin(float deltaTime)
 	{
 		
-		const da::core::FComponentContainer& skeletalMeshcontainer = da::core::CSceneManager::getScene()->getComponents<da::core::CSkeletalMeshComponent>();
+		//const da::core::FComponentContainer& skeletalMeshcontainer = da::core::CSceneManager::getScene()->getComponents<da::core::CSkeletalMeshComponent>();
 		
-		da::core::CWorkerPool::addJob([deltaTime] {
+		//da::core::CWorkerPool::addJob([deltaTime] {
 			CAnimationManager::s_mutex.lock();
 			
 			const da::core::FComponentContainer& skeletalMeshcontainer = da::core::CSceneManager::getScene()->getComponents<da::core::CSkeletalMeshComponent>();
@@ -34,7 +34,7 @@ namespace da::graphics
 			}
 
 			CAnimationManager::s_mutex.unlock();
-		});
+		//});
 		
 	}
 
@@ -43,9 +43,6 @@ namespace da::graphics
 		while (!s_mutex.try_lock())
 		{
 
-		}
-		for (const std::pair<void*, bool>& kv : s_animators) {
-			//((da::core::CSkeletalMeshComponent*)kv.first)->render();
 		}
 		CAnimationManager::s_mutex.unlock();
 		s_animators = {};

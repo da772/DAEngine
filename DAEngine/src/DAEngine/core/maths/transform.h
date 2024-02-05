@@ -13,6 +13,7 @@ namespace da::maths
 		virtual void setPosition(const glm::vec3& pos);
 		void offsetPosition(const glm::vec3& delta);
 		virtual void setRotation(const glm::vec3& rot);
+		virtual void setRotation(const glm::quat& rot);
 		void setScale(const glm::vec3& scale);
 		void offsetRotation(const glm::vec3& delta);
 		glm::vec3 position() const;
@@ -25,7 +26,7 @@ namespace da::maths
 
 	protected:
 		glm::vec3 m_position;
-		glm::vec3 m_rotation;
+		glm::quat m_rotation;
 		glm::vec3 m_scale = {1.f,1.f,1.f};
 		glm::vec3 m_up;
 		glm::vec3 m_right;

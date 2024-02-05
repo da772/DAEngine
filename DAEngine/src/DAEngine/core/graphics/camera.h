@@ -20,6 +20,7 @@ namespace da::core
 
 		virtual const glm::mat4& matrix() override;
 		virtual void setRotation(const glm::vec3& rot) override;
+		virtual void setRotation(const glm::quat& rot) override;
 
 		void zoom(float offset);
 		void lookAt(const glm::vec3& position);

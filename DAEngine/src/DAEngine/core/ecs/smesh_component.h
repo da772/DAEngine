@@ -17,7 +17,7 @@ namespace da::core
 #ifdef DA_DEBUG
 		COMPONENT_H_NO_UPDATE_DEBUG(CSmeshComponent);
 #else
-		COMPONENT_NO_UPDATE_H(CSmeshComponent);
+		COMPONENT_H_NO_UPDATE(CSmeshComponent);
 #endif
 
 	public:

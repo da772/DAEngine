@@ -135,34 +135,21 @@ namespace da::graphics
 		return true;
 	}
 
-	bool CSkeletalAnimator::getBoneWorldRotation(CHashString name, const glm::mat4& modelMat, glm::vec3& out) const
+	bool CSkeletalAnimator::getBoneWorldRotation(CHashString name, const glm::mat4& modelMat, glm::quat& out) const
 	{
-		glm::mat4 m;
-
-		if (!getBoneWorldTransform(name, modelMat, m))
-		{
+		glm::mat4 transform;
+		if (!getBoneWorldTransform(name, modelMat, transform)) {
 			return false;
 		}
-
-		ASSERT(m_CurrentAnimation->getMeshCount() != 0);
-
-		const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(0).find(name);
-
-		if (it == m_CurrentAnimation->getBoneIDMap(0).end())
-		{
-			return false;
-		}
-
-		m = modelMat * m_FinalBoneMatrices[0][it->second.id];
 
 		glm::vec3 scale;
 		glm::quat rotation;
 		glm::vec3 translation;
 		glm::vec3 skew;
 		glm::vec4 perspective;
-		glm::decompose(m, scale, rotation, translation, skew, perspective);
+		glm::decompose(transform, scale, rotation, translation, skew, perspective);
 
-		out = glm::degrees(glm::eulerAngles(glm::normalize(glm::inverse(rotation))));
+		out = rotation;
 
 		return true;
 	}
