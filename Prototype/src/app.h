@@ -108,7 +108,7 @@ private:
 	da::graphics::CMaterial* m_cubeMat = 0;
 	da::graphics::CMaterial* m_cubeMat2 = 0;
 	da::modules::CWindowModule* m_window = 0;
-	da::core::CEntity* e1,* e2, *e3, *e4, *e5;
+	da::core::CEntity* e1,* e2, *e3, *e4, *e5, *e6;
 	bool m_showScriptDebug = false;
 	bool m_showScriptDebugHard = false;
  
@@ -170,26 +170,48 @@ protected:
 		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_Normal_OpenGL.png");
 		c->getStaticMesh()->getMaterial(0).occlusionTexture = da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_AmbientOcclusion_Mixed.png");
 
-		e5->setTag(HASHSTR("hat"));
+		e5->setTag(HASHSTR("sw0rd"));
 		e5->getTransform().setPosition({ 0,0,0 });
 		e5->getTransform().setRotation({ 45.f,0.f,180.f });
 		e5->getTransform().setScale({ 4.5f,4.5f,4.5f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
+		e6 = da::core::CSceneManager::getScene()->createEntity();
+		c = e6->addComponent<da::core::CSmeshComponent>("assets/hat/hat.fbx");
+		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/hat/Hat_albedo.jpg");
+		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/hat/Hat_normal.png");
+		c->getStaticMesh()->getMaterial(0).occlusionTexture = da::graphics::CTexture2DFactory::Create("assets/hat/Hat_AO.jpg");
+		c->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
+		c->getStaticMesh()->getMaterial(0).metallicFactor = 0.f;
+
+		e6->setTag(HASHSTR("hat"));
+		e6->getTransform().setPosition({ 0,0,0 });
+		e6->getTransform().setRotation({ 45.f,0.f,180.f });
+		e6->getTransform().setScale({ .6f,.6f,.6f });
+		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
+
 		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/zombie.fbx", false);
 		mesh->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/mannequin/alpha_body_mat.png");
+		mesh->getMaterial(0).normalTexture = nullptr;
 		mesh->getMaterial(0).metallicFactor = .1500f;
 		mesh->getMaterial(0).roughnessFactor = 0.f;
 		mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
-		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordSlash.fbx", mesh);
+		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
 		da::graphics::CSkeletalAnimator* animator = new da::graphics::CSkeletalAnimator(animation);
 
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 2; i++) {
+
+			if (i == 1) {
+				animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordSlash.fbx", mesh);
+				animator = new da::graphics::CSkeletalAnimator(animation);
+			}
+
 			e4 = da::core::CSceneManager::getScene()->createEntity();
+			e4->setTag(HASHSTR("Mannequin"));
 			da::core::FComponentRef<da::core::CSkeletalMeshComponent> cc = e4->addComponent<da::core::CSkeletalMeshComponent>(mesh, animation, animator);
 			//cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
 			
-			e4->getTransform().setPosition({ 0,5, -.6 });
+			e4->getTransform().setPosition({ 0,5+ (i*5.f), -.6});
 			e4->getTransform().setRotation({ 90.f,0.f,0.f });
 
 			//e4->getTransform().setPosition({ i*3.f,5.f+(1.5f*i),-.1f});
@@ -260,7 +282,7 @@ protected:
 		
 	}
 
-	glm::vec3 rotOffset = { 80.f,185.f,84.f };
+	glm::vec3 rotOffset = {0.f,0.f,0.f};
 
 	inline virtual void onUpdate(float dt) override
 	{
@@ -279,7 +301,7 @@ protected:
 		glm::mat4 worldBoneTransform;
 		if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_RightHand"), e4->getTransform().matrix(), worldBoneTransform)) {
 			worldBoneTransform = glm::translate(worldBoneTransform, glm::vec3(0.f, -3.f, -9.f));
-			worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(rotOffset)));
+			worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(glm::vec3(80.f,185.f,84.f ))));
 
 			glm::vec3 scale;
 			glm::quat rotation;
@@ -290,6 +312,21 @@ protected:
 
 			e5->getTransform().setPosition(translation);
 			e5->getTransform().setRotation(rotation);
+		}
+
+		if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_Head"), e4->getTransform().matrix(), worldBoneTransform)) {
+			worldBoneTransform = glm::translate(worldBoneTransform, glm::vec3(0.f, 18.f, 0.f));
+			worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(glm::vec3(-80.f, 184.f, 0.f))));
+
+			glm::vec3 scale;
+			glm::quat rotation;
+			glm::vec3 translation;
+			glm::vec3 skew;
+			glm::vec4 perspective;
+			glm::decompose(worldBoneTransform, scale, rotation, translation, skew, perspective);
+
+			e6->getTransform().setPosition(translation);
+			e6->getTransform().setRotation(rotation);
 		}
 
 
