@@ -5,6 +5,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 
 #include <assimp/scene.h>
+#include "graphics_debug_render.h"
 namespace da::graphics
 {
 
@@ -104,6 +105,22 @@ namespace da::graphics
 		return true;
 	}
 
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+	void CSkeletalAnimator::debugRenderJoints(const glm::mat4& modelMat)
+	{
+		for (const std::pair<CHashString, FBoneInfo>& kv : m_CurrentAnimation->getBoneIDMap(0)) {
+			glm::mat4 transform = modelMat * (m_FinalBoneMatrices[0][kv.second.id] * glm::inverse(kv.second.offset));
+			glm::vec3 scale;
+			glm::quat rotation;
+			glm::vec3 translation;
+			glm::vec3 skew;
+			glm::vec4 perspective;
+			glm::decompose(transform, scale, rotation, translation, skew, perspective);
+
+			da::graphics::CDebugRender::getInstance()->drawCube(translation, rotation, {.1f, .1f, .1f}, {1.f, 0.f, 1.f, .5f}, false);
+		}
+	}
+#endif
 
 	bool CSkeletalAnimator::getBoneWorldTransform(CHashString name, const glm::mat4& modelMat, glm::mat4& out) const
 	{
@@ -185,5 +202,8 @@ namespace da::graphics
 		}
 		return -1.f;
 	}
+
+
+
 
 }

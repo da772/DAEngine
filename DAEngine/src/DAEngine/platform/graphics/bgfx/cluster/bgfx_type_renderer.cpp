@@ -31,6 +31,9 @@ namespace da::platform {
         m_blitSampler = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
         m_bloomSampler = bgfx::createUniform("s_texBloom", bgfx::UniformType::Sampler);
         m_volLightSampler = bgfx::createUniform("m_volLightSampler", bgfx::UniformType::Sampler);
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+        m_debugSamplerUniform = bgfx::createUniform("s_debugSamplerUniform", bgfx::UniformType::Sampler);
+#endif
         m_camPosUniform = bgfx::createUniform("u_camPos", bgfx::UniformType::Vec4);
         m_normalMatrixUniform = bgfx::createUniform("u_normalMatrix", bgfx::UniformType::Mat3);
         m_exposureVecUniform = bgfx::createUniform("u_exposureVec", bgfx::UniformType::Vec4);
@@ -119,6 +122,9 @@ namespace da::platform {
         BGFXDESTROY(m_bloomSampler);
         BGFXDESTROY(m_volLightSampler);
         BGFXDESTROY(m_bonesUniform);
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+        BGFXDESTROY(m_debugSamplerUniform);
+#endif
 
         m_pBlipProgram->shutdown();
         delete m_pBlipProgram;
@@ -240,6 +246,10 @@ namespace da::platform {
 		bgfx::setTexture(1, m_bloomSampler, bloomTexture);
         bgfx::TextureHandle volLightTexture = bgfx::getTexture(m_volumetricLight.getBuffer(), 0);
 		bgfx::setTexture(2, m_volLightSampler, volLightTexture);
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+        bgfx::TextureHandle debugTexture = bgfx::getTexture(m_debugRenderer.getFrameBuffer(), 0);
+		bgfx::setTexture(3, m_debugSamplerUniform, debugTexture);
+#endif
         float exposureVec[4] = { da::core::CCamera::getCamera()->exposure };
         bgfx::setUniform(m_exposureVecUniform, exposureVec);
         float tonemappingModeVec[4] = { (float)m_tonemappingMode };

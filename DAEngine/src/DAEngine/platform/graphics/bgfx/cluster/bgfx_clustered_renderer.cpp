@@ -24,6 +24,7 @@
 #endif
 #include <core/time.h>
 #include <core/ecs/skeletal_mesh_component.h>
+#include <core/graphics/graphics_debug_render.h>
 
 
 namespace da::platform {
@@ -77,6 +78,10 @@ namespace da::platform {
 
 
         m_ssao.initialize();
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+        m_debugRenderer.initialize();
+        da::graphics::CDebugRender::setInstance(&m_debugRenderer);
+#endif
 
 		m_ambientLight.irradiance = { .25f, .25f, .25f };
 
@@ -94,6 +99,9 @@ namespace da::platform {
         enum : ::bgfx::ViewId
         {
             vDepth = 0,
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+            vDebug,
+#endif
             vSSAO,
             vSSAOBlur,
             vShadow,
@@ -102,7 +110,7 @@ namespace da::platform {
             vLighting,
             vVolumetricLight,
             vBloom,
-            vBloomBlur
+            vBloomBlur,
         };
 
 #ifdef DA_DEBUG
@@ -116,6 +124,7 @@ namespace da::platform {
 
                     switch (stats.view) {
                     case vDepth: da::debug::CDebugStatsWindow::s_viewTimes["vDepth"] = time; break;
+                    case vDebug: da::debug::CDebugStatsWindow::s_viewTimes["vDebug"] = time; break;
                     case vSSAO: da::debug::CDebugStatsWindow::s_viewTimes["vSSAO"] = time; break;
                     case vSSAOBlur: da::debug::CDebugStatsWindow::s_viewTimes["vSSAOBlur"] = time; break;
                     case vShadow: da::debug::CDebugStatsWindow::s_viewTimes["vShadow"] += time; break;
@@ -167,6 +176,15 @@ namespace da::platform {
 		::bgfx::setViewName(vBloom, "Bloom first pass");
 		::bgfx::setViewClear(vBloom, BGFX_CLEAR_COLOR, 0x00000000, 1.0f, 0);
 		::bgfx::touch(vBloom);
+
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		::bgfx::setViewName(vDebug, "Debug Renderer");
+		::bgfx::setViewClear(vDebug, BGFX_CLEAR_COLOR, 0x00000000, 1.0f, 0);
+        ::bgfx::setViewRect(vDebug, 0, 0, m_width, m_height);
+        ::bgfx::setViewFrameBuffer(vDebug, m_debugRenderer.getFrameBuffer());
+		::bgfx::touch(vDebug);
+		setViewProjection(vDebug);
+#endif
 
         setViewProjection(vDepth);
         // Depth pass
@@ -452,6 +470,10 @@ namespace da::platform {
 
         m_volumetricLight.render(vVolumetricLight, m_width, m_height, ::bgfx::getTexture(m_frameBuffer, 1), m_sun.getScreenSpacePos(m_viewMat, m_projMat));
 
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+        m_debugRenderer.render(vDebug);
+#endif
+
         ::bgfx::discard(BGFX_DISCARD_ALL);
     }
 
@@ -465,6 +487,9 @@ namespace da::platform {
         m_ssao.shutdown();
         m_bloom.shutdown();
         m_volumetricLight.shutdown();
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+        m_debugRenderer.shutdown();
+#endif
 
 		m_pClusterBuildingComputeProgram->shutdown();
 		m_pResetCounterComputeProgram->shutdown();
@@ -549,6 +574,9 @@ namespace da::platform {
 		m_ssao.reset(width, height);
         m_bloom.onReset(width, height);
         m_volumetricLight.onReset(width, height);
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+        m_debugRenderer.onReset(width, height);
+#endif
 	}
 
 

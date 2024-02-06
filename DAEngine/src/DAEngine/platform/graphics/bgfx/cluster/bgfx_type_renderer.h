@@ -11,6 +11,7 @@
 #include <map>
 #include "bgfx_bloom_shader.h"
 #include "bgfx_volumetric_light_shader.h"
+#include <platform/graphics/bgfx/bgfx_debug_renderer.h>
 
 namespace da::core {
     class CCamera;
@@ -114,6 +115,9 @@ namespace da::platform
         CBgfxSunController m_sun;
         CBgfxBloomShader m_bloom;
         CBgfxVolumetricLightShader m_volumetricLight;
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+        CBgfxDebugRenderer m_debugRenderer;
+#endif
 
         uint32_t m_clearColor = 0;
         float m_time = 0.f;
@@ -132,6 +136,9 @@ namespace da::platform
         ::bgfx::UniformHandle m_volLightSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_camPosUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_normalMatrixUniform = BGFX_INVALID_HANDLE;
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+        ::bgfx::UniformHandle m_debugSamplerUniform = BGFX_INVALID_HANDLE;
+#endif
         
         ::bgfx::UniformHandle m_exposureVecUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_tonemappingModeVecUniform = BGFX_INVALID_HANDLE;

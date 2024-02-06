@@ -1,0 +1,59 @@
+#pragma once
+
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+
+#include <bgfx/bgfx.h>
+#include "DAEngine/core/graphics/graphics_debug_render.h"
+
+
+namespace da::graphics
+{
+	class CStaticMesh;
+}
+
+namespace da::platform
+{
+	class CBgfxGraphicsMaterial;
+
+	enum class EDebugShapes
+	{
+		Cube,
+		Sphere,
+		Capsule,
+		Cone,
+		Plane
+	};
+
+	class CBgfxDebugRenderer : public da::graphics::CDebugRender
+	{
+	public:
+		virtual void drawCube(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true) override;
+		virtual void drawSphere(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true) override;
+		virtual void drawCapsule(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true) override;
+		virtual void drawCone(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true) override;
+		virtual void drawPlane(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true) override;
+
+		void initialize();
+		void render(::bgfx::ViewId view);
+		void shutdown();
+
+		void onReset(size_t width, size_t height);
+		::bgfx::FrameBufferHandle getFrameBuffer() const;
+
+	private:
+		::bgfx::FrameBufferHandle createFrameBuffer();
+		
+
+	private:
+		::bgfx::FrameBufferHandle m_frameBuffer;
+		::bgfx::UniformHandle m_uniform;
+		CBgfxGraphicsMaterial* m_shader;
+		std::unordered_map<EDebugShapes, da::graphics::CStaticMesh*> m_shapes;
+		std::vector<std::function<bool()>> m_toDraw;
+	};
+
+
+
+}
+
+#endif

@@ -9,6 +9,8 @@
 #include <unordered_set>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 
 #ifndef DA_DEBUG
 #define NDEBUG

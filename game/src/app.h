@@ -37,6 +37,7 @@
 #include <DAEngine/core/ecs/skeletal_mesh_component.h>
 #include <DAEngine/core/time.h>
 #include <glm/gtx/quaternion.hpp>
+#include <DAEngine/core/graphics/graphics_debug_render.h>
 
 //#define WINDOW_2
 
@@ -221,7 +222,7 @@ protected:
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		e2->getTransform().setPosition({ 0,-1,0 });
-		e2->getTransform().setRotation({ 0,0,160 });
+		e2->getTransform().setRotation({ 0,0,180 });
 		e2->getTransform().setScale({ 5,5,5});
 		e2->setTag(HASHSTR("plane"));
 		c = e2->addComponent<da::core::CSmeshComponent>("assets/city/city2.fbx");
@@ -288,7 +289,7 @@ protected:
 	{
 		if (dt > 1.0) return;
 
-		float moveSpeed = 0;// 12.5f;
+		float moveSpeed = 0.f;//1.5f;
 
 		glm::vec3 pos = e4->getTransform().position();
 
@@ -314,6 +315,11 @@ protected:
 			e5->getTransform().setRotation(rotation);
 		}
 
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		component->getSkeletalAnimator()->debugRenderJoints(e4->getTransform().matrix());
+		da::graphics::CDebugRender::getInstance()->drawCapsule(e4->getTransform().position() + glm::vec3(0.f, 0.f, 4.75f), {}, { 3.f, 3.f, 3.f }, { 1.f,0.f,1.f,.5f });
+#endif
+
 		if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_Head"), e4->getTransform().matrix(), worldBoneTransform)) {
 			worldBoneTransform = glm::translate(worldBoneTransform, glm::vec3(0.f, 18.f, 0.f));
 			worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(glm::vec3(-80.f, 184.f, 0.f))));
@@ -328,14 +334,6 @@ protected:
 			e6->getTransform().setPosition(translation);
 			e6->getTransform().setRotation(rotation);
 		}
-
-
-		if (ImGui::Begin("WODKAD"))
-		{
-			ImGui::DragFloat3("rot", &rotOffset.x, 1.f, -360, 360);
-		}
-
-		ImGui::End();
 
 		glm::quat worldBoneRot;
 		if (component->getSkeletalAnimator()->getBoneWorldRotation(HASHSTR("mixamorig_RightHand"), e4->getTransform().matrix(), worldBoneRot)) {

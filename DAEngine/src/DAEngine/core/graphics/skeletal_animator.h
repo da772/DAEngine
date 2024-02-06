@@ -23,6 +23,10 @@ namespace da::graphics {
 		void setPlayTime(float time);
 		float getMaxPlayTime() const;
 
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		void debugRenderJoints(const glm::mat4& modelMat);
+#endif
+
 		const std::vector<glm::mat4>& getFinalBoneMatrices(size_t index) const
 		{
 			return m_FinalBoneMatrices[index];
