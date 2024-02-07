@@ -24,19 +24,43 @@ namespace da::platform
 		m_shapes[EDebugShapes::Capsule] = new CBgfxStaticMesh("assets/capsule.fbx", false);
 	}
 
-	void CBgfxDebugRenderer::render(::bgfx::ViewId view)
+	void CBgfxDebugRenderer::renderXRay(::bgfx::ViewId view)
 	{
 		::bgfx::setViewFrameBuffer(view, m_frameBuffer);
-		for (size_t i = 0; i < m_toDraw.size(); i++) {
+		for (int i = m_toDraw.size()-1; i >= 0; i--) {
 			uint64_t state = BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A;
-			if (m_toDraw[i]()) {
+			const std::pair<std::function<bool()>, bool>& kv = m_toDraw[i];
+
+			if (!kv.second) continue;
+
+			if (kv.first()) {
 				state |= BGFX_STATE_PT_LINES | BGFX_STATE_LINEAA | BGFX_STATE_BLEND_ALPHA;
 			}
 			
 			::bgfx::setState(state);
 			::bgfx::submit(view, { m_shader->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+			m_toDraw.erase(m_toDraw.begin() + i);
 		}
-		m_toDraw = {};
+	}
+
+	void CBgfxDebugRenderer::render(::bgfx::ViewId view)
+	{
+		for (int i = m_toDraw.size() - 1; i >= 0; i--) {
+			uint64_t state = BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A;
+			const std::pair<std::function<bool()>, bool>& kv = m_toDraw[i];
+
+			if (kv.second) continue;
+
+			if (kv.first()) {
+				state |= BGFX_STATE_PT_LINES | BGFX_STATE_LINEAA | BGFX_STATE_BLEND_ALPHA;
+			}
+
+			state |= BGFX_STATE_DEPTH_TEST_LESS;
+
+			::bgfx::setState(state);
+			::bgfx::submit(view, { m_shader->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+			m_toDraw.erase(m_toDraw.begin() + i);
+		}
 	}
 
 	void CBgfxDebugRenderer::shutdown()
@@ -53,9 +77,9 @@ namespace da::platform
 		BGFXTRYDESTROY(m_uniform);
 	}
 
-	void CBgfxDebugRenderer::drawCube(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame)
+	void CBgfxDebugRenderer::drawCube(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame, bool xray)
 	{
-		m_toDraw.push_back([position, rot, scale, color, this, wireFrame] {
+		m_toDraw.push_back({ [position, rot, scale, color, this, wireFrame] {
 			glm::mat4 transform = glm::translate(glm::mat4(1), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1), scale);
 
 			bgfx::setTransform(glm::value_ptr(transform));
@@ -64,12 +88,12 @@ namespace da::platform
 			::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)m_shapes[EDebugShapes::Cube]->getNativeVBIndex(0)));
 			::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)m_shapes[EDebugShapes::Cube]->getNativeIBIndex(0)));
 			return wireFrame;
-		});
+		}, xray });
 	}
 
-	void CBgfxDebugRenderer::drawSphere(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame)
+	void CBgfxDebugRenderer::drawSphere(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame, bool xray)
 	{
-		m_toDraw.push_back([position, rot, scale, color, this, wireFrame] {
+		m_toDraw.push_back({ [position, rot, scale, color, this, wireFrame] {
 			glm::mat4 transform = glm::translate(glm::mat4(1), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1), scale);
 
 			bgfx::setTransform(glm::value_ptr(transform));
@@ -78,12 +102,12 @@ namespace da::platform
 			::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)m_shapes[EDebugShapes::Sphere]->getNativeVBIndex(0)));
 			::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)m_shapes[EDebugShapes::Sphere]->getNativeIBIndex(0)));
 			return wireFrame;
-			});
+			}, xray });
 	}
 
-	void CBgfxDebugRenderer::drawCapsule(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame)
+	void CBgfxDebugRenderer::drawCapsule(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame, bool xray)
 	{
-		m_toDraw.push_back([position, rot, scale, color, this, wireFrame] {
+		m_toDraw.push_back({ [position, rot, scale, color, this, wireFrame] {
 			glm::mat4 transform = glm::translate(glm::mat4(1), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1), scale);
 
 			bgfx::setTransform(glm::value_ptr(transform));
@@ -92,12 +116,12 @@ namespace da::platform
 			::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)m_shapes[EDebugShapes::Capsule]->getNativeVBIndex(0)));
 			::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)m_shapes[EDebugShapes::Capsule]->getNativeIBIndex(0)));
 			return wireFrame;
-			});
+			}, xray });
 	}
 
-	void CBgfxDebugRenderer::drawCone(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame)
+	void CBgfxDebugRenderer::drawCone(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame, bool xray)
 	{
-		m_toDraw.push_back([position, rot, scale, color, this, wireFrame] {
+		m_toDraw.push_back({ [position, rot, scale, color, this, wireFrame] {
 			glm::mat4 transform = glm::translate(glm::mat4(1), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1), scale);
 
 			bgfx::setTransform(glm::value_ptr(transform));
@@ -106,12 +130,12 @@ namespace da::platform
 			::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)m_shapes[EDebugShapes::Cone]->getNativeVBIndex(0)));
 			::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)m_shapes[EDebugShapes::Cone]->getNativeIBIndex(0)));
 			return wireFrame;
-			});
+			}, xray });
 	}
 
-	void CBgfxDebugRenderer::drawPlane(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame)
+	void CBgfxDebugRenderer::drawPlane(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame, bool xray)
 	{
-		m_toDraw.push_back([position, rot, scale, color, this, wireFrame] {
+		m_toDraw.push_back({ [position, rot, scale, color, this, wireFrame] {
 			glm::mat4 transform = glm::translate(glm::mat4(1), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1), scale);
 
 			bgfx::setTransform(glm::value_ptr(transform));
@@ -120,7 +144,7 @@ namespace da::platform
 			::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)m_shapes[EDebugShapes::Plane]->getNativeVBIndex(0)));
 			::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)m_shapes[EDebugShapes::Plane]->getNativeIBIndex(0)));
 			return wireFrame;
-			});
+			}, xray });
 	}
 
 	::bgfx::FrameBufferHandle CBgfxDebugRenderer::createFrameBuffer()

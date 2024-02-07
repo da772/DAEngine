@@ -9,7 +9,7 @@ import { ImGui } from "./daengine/imgui";
 export class CameraComponent implements Component {
 
     cursorPos : Vector2 = new Vector2();
-    camSpeed : number = 10;
+    camSpeed : number = 5;
 
     initialize(): void {
         print("camera component init");

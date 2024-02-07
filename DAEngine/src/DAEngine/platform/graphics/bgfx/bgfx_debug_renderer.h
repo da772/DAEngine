@@ -27,13 +27,14 @@ namespace da::platform
 	class CBgfxDebugRenderer : public da::graphics::CDebugRender
 	{
 	public:
-		virtual void drawCube(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true) override;
-		virtual void drawSphere(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true) override;
-		virtual void drawCapsule(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true) override;
-		virtual void drawCone(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true) override;
-		virtual void drawPlane(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true) override;
+		virtual void drawCube(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
+		virtual void drawSphere(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
+		virtual void drawCapsule(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
+		virtual void drawCone(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
+		virtual void drawPlane(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
 
 		void initialize();
+		void renderXRay(::bgfx::ViewId view);
 		void render(::bgfx::ViewId view);
 		void shutdown();
 
@@ -49,7 +50,7 @@ namespace da::platform
 		::bgfx::UniformHandle m_uniform;
 		CBgfxGraphicsMaterial* m_shader;
 		std::unordered_map<EDebugShapes, da::graphics::CStaticMesh*> m_shapes;
-		std::vector<std::function<bool()>> m_toDraw;
+		std::vector<std::pair<std::function<bool()>, bool>> m_toDraw;
 	};
 
 

@@ -219,7 +219,7 @@ namespace da::platform {
 		}
 
 		// Tune this parameter according to the scene
-		constexpr float zMult = 1.5f;
+		constexpr float zMult = 3.f;
 		if (minZ < 0)
 		{
 			minZ *= zMult;

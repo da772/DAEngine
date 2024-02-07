@@ -37,8 +37,8 @@ namespace da::graphics
 			| aiProcess_PreTransformVertices
 			| aiProcess_TransformUVCoords
 		);
-		//static glm::mat4 transformMat = glm::mat4(1.0f) * glm::rotate(glm::mat4(1.0f), glm::radians(180.f), glm::vec3(0.0f, 1.0f, 0.0f));
-		static glm::mat4 transformMat = glm::mat4(1.0f);
+
+		static glm::mat4 transformMat = glm::mat4(1.f);//glm::toMat4(glm::quat(glm::radians(glm::vec3(90.f))));
 
 		m_meshes = {};
 		m_meshes.reserve(pScene->mNumMeshes);

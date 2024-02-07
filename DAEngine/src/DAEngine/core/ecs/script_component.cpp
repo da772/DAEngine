@@ -44,6 +44,7 @@ namespace da::core {
         
         m_scriptClass.cleanup(soft);
         m_scriptClass.setup(m_parent.getId(), m_guid);
+		m_scriptClass.classInitialize();
     }
 
 #ifdef DA_DEBUG

@@ -184,8 +184,10 @@ namespace da::script
 		luaL_unref(L, LUA_REGISTRYINDEX, m_setIdRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, m_setEntityRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, m_getEntityRef);
+
+		luaL_unref(L, LUA_REGISTRYINDEX, m_classRef);
         
-        m_baseRef = 0, m_funcRef = 0, m_initRef = 0, m_updateRef = 0, m_shutdownRef = 0;
+        m_baseRef = 0, m_funcRef = 0, m_initRef = 0, m_updateRef = 0, m_shutdownRef = 0, m_classRef = 0;
         if (!keepObj) m_objRef = 0;
 	}
 

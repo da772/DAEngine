@@ -248,23 +248,23 @@ namespace da::platform {
             float nearPlane = 1000.f* (50.f * i);
             float farPlane = (1000.f * (50.f * i) + 1000.f);
             if (i == 0) {
-                nearPlane = 1.f;
-                farPlane  = 25.f;
+                nearPlane = .1f;
+                farPlane  = 3.f;
             }
 
             if (i == 1) {
-                nearPlane = 25.f;
-                farPlane = 75.f;
+                nearPlane = 3.f;
+                farPlane = 6.f;
             }
 
 			if (i == 2) {
-				nearPlane = 75.f;
-				farPlane = 125.f;
+				nearPlane = 6.f;
+				farPlane = 15.f;
 			}
 
 			if (i == 3) {
-				nearPlane = 150.f;
-				farPlane = 300.f;
+				nearPlane = 15.f;
+				farPlane = 45.f;
 			}
 
             //bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, nearPlane, farPlane, ::bgfx::getCaps()->homogeneousDepth);
@@ -471,7 +471,8 @@ namespace da::platform {
         m_volumetricLight.render(vVolumetricLight, m_width, m_height, ::bgfx::getTexture(m_frameBuffer, 1), m_sun.getScreenSpacePos(m_viewMat, m_projMat));
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
-        m_debugRenderer.render(vDebug);
+        m_debugRenderer.renderXRay(vDebug);
+        m_debugRenderer.render(vLighting);
 #endif
 
         ::bgfx::discard(BGFX_DISCARD_ALL);

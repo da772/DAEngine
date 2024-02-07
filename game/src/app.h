@@ -174,7 +174,7 @@ protected:
 		e5->setTag(HASHSTR("sw0rd"));
 		e5->getTransform().setPosition({ 0,0,0 });
 		e5->getTransform().setRotation({ 45.f,0.f,180.f });
-		e5->getTransform().setScale({ 4.5f,4.5f,4.5f });
+		e5->getTransform().setScale({ 1.f,1.f,1.f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 		e6 = da::core::CSceneManager::getScene()->createEntity();
@@ -188,22 +188,22 @@ protected:
 		e6->setTag(HASHSTR("hat"));
 		e6->getTransform().setPosition({ 0,0,0 });
 		e6->getTransform().setRotation({ 45.f,0.f,180.f });
-		e6->getTransform().setScale({ .6f,.6f,.6f });
+		e6->getTransform().setScale({ .1f,.1f,.1f });
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/zombie.fbx", false);
+		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/SwordSlash.fbx", false);
 		mesh->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/mannequin/alpha_body_mat.png");
 		mesh->getMaterial(0).normalTexture = nullptr;
 		mesh->getMaterial(0).metallicFactor = .1500f;
 		mesh->getMaterial(0).roughnessFactor = 0.f;
 		mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
-		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
+		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordSlash.fbx", mesh);
 		da::graphics::CSkeletalAnimator* animator = new da::graphics::CSkeletalAnimator(animation);
 
 		for (int i = 0; i < 2; i++) {
 
 			if (i == 1) {
-				animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordSlash.fbx", mesh);
+				animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
 				animator = new da::graphics::CSkeletalAnimator(animation);
 			}
 
@@ -212,7 +212,7 @@ protected:
 			da::core::FComponentRef<da::core::CSkeletalMeshComponent> cc = e4->addComponent<da::core::CSkeletalMeshComponent>(mesh, animation, animator);
 			//cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
 			
-			e4->getTransform().setPosition({ 0,5+ (i*5.f), -.6});
+			e4->getTransform().setPosition({ 0,5+ (i*-5.f), 0.f});
 			e4->getTransform().setRotation({ 90.f,0.f,0.f });
 
 			//e4->getTransform().setPosition({ i*3.f,5.f+(1.5f*i),-.1f});
@@ -221,23 +221,17 @@ protected:
 
 		da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-		e2->getTransform().setPosition({ 0,-1,0 });
-		e2->getTransform().setRotation({ 0,0,180 });
-		e2->getTransform().setScale({ 5,5,5});
+		e2->getTransform().setPosition({ 0,0,0 });
+		e2->getTransform().setRotation({ 0,0,0});
+		e2->getTransform().setScale({ 10,10,5});
 		e2->setTag(HASHSTR("plane"));
-		c = e2->addComponent<da::core::CSmeshComponent>("assets/city/city2.fbx");
-		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/city/wallTextures/wallA.jpg");
-		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/city/wallTextures/wallN.jpg");
-		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/city/wallTextures/wallR.jpg");
-		c->getStaticMesh()->getMaterial(0).metallicFactor = .25f;
-		c->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
-		c->getStaticMesh()->getMaterial(0).doubleSided = true;
+		c = e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx");
 
-		c->getStaticMesh()->getMaterial(1).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg");
-		c->getStaticMesh()->getMaterial(1).normalTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg");
-		c->getStaticMesh()->getMaterial(1).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg");
-		c->getStaticMesh()->getMaterial(1).uvScale = { 11.f,11.f };
-		c->getStaticMesh()->getMaterial(1).doubleSided = true;
+		c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg");
+		c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg");
+		c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg");
+		c->getStaticMesh()->getMaterial(0).uvScale = { 11.f,11.f };
+		c->getStaticMesh()->getMaterial(0).doubleSided = true;
 		return;
 	
 		
@@ -317,7 +311,7 @@ protected:
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 		component->getSkeletalAnimator()->debugRenderJoints(e4->getTransform().matrix());
-		da::graphics::CDebugRender::getInstance()->drawCapsule(e4->getTransform().position() + glm::vec3(0.f, 0.f, 4.75f), {}, { 3.f, 3.f, 3.f }, { 1.f,0.f,1.f,.5f });
+		da::graphics::CDebugRender::getInstance()->drawCapsule(e4->getTransform().position() + glm::vec3(0.f,0.f,.875f), {}, {1.f, 1.f, 1.f}, {1.f,0.f,0.f,.5f}, true, false);
 #endif
 
 		if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_Head"), e4->getTransform().matrix(), worldBoneTransform)) {

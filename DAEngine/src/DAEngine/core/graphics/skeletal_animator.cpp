@@ -117,7 +117,7 @@ namespace da::graphics
 			glm::vec4 perspective;
 			glm::decompose(transform, scale, rotation, translation, skew, perspective);
 
-			da::graphics::CDebugRender::getInstance()->drawCube(translation, rotation, {.1f, .1f, .1f}, {1.f, 0.f, 1.f, .5f}, false);
+			da::graphics::CDebugRender::getInstance()->drawCone(translation, glm::inverse(rotation), { .01f, .01f, .01f }, { 1.f, 0.f, 1.f, .5f }, false);
 		}
 	}
 #endif
