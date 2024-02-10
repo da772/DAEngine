@@ -4,6 +4,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp> >
+#include <glm/gtx/matrix_decompose.hpp>
 
 namespace da::maths
 {
@@ -99,4 +100,22 @@ namespace da::maths
 	{
 		return m_scale;
 	}
+
+	void CTransform::setTransform(const glm::mat4& transform)
+	{
+		glm::vec3 scale, translation, skew;
+		glm::quat orientation;
+		glm::vec4 prespective;
+
+		glm::decompose(transform, scale, orientation, translation, skew, prespective);
+
+		setPosition(translation);
+		setRotation(orientation);
+	}
+
+	bool CTransform::isDirty() const
+	{
+		return m_dirty;
+	}
+
 }

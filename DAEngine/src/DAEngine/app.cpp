@@ -9,6 +9,8 @@
 #include "core/threading/worker_pool.h"
 #include "core/time.h"
 
+#include "physics/physics.h"
+
 #ifdef DA_DEBUG
 #include "debug/debug.h"
 #include "debug/debug_menu_bar.h"
@@ -36,6 +38,7 @@ namespace da
 #endif
 #endif
 
+		da::physics::CPhysics::initialize();
 		for (IModule* m : m_modules) {
 			m->initialize();
 		}
@@ -61,6 +64,8 @@ namespace da
 			if (core::CScene* scene = core::CSceneManager::getScene()) {
 				scene->update(timeStep);
 			}
+
+			da::physics::CPhysics::update(timeStep);
 
 			da::graphics::CAnimationManager::updateEnd();
 			for (IModule* m : m_modules) {
@@ -89,6 +94,7 @@ namespace da
 			delete m;
 		}
 		m_modules = {};
+		da::physics::CPhysics::shutdown();
 #ifndef DA_TEST
 		script::CScriptEngine::shutdown();
 #ifdef DA_DEBUG

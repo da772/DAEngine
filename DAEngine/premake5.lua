@@ -18,6 +18,7 @@ IncludeDir["bimg"] = "%{wks.location}/DAEngine/thirdparty/bimg/include"
 IncludeDir["bgfx"] = "%{wks.location}/DAEngine/thirdparty/bgfx/"
 IncludeDir["luajit"] = "%{wks.location}/DAEngine/thirdparty/luajit/include"
 IncludeDir["lua51"] = "%{wks.location}/DAEngine/thirdparty/lua51/include"
+IncludeDir["bullet3"] = "%{wks.location}/DAEngine/thirdparty/bullet3/include"
 
 group "ThirdParty"
 if os.host() == "macosx" then
@@ -30,6 +31,7 @@ if os.host() == "macosx" then
 	include "thirdparty/bimg"
 	include "thirdparty/bgfx"
 	include "thirdparty/lua51"
+	include "thirdparty/bullet3"
 end
 
 if os.host() == "windows" then
@@ -42,6 +44,7 @@ if os.host() == "windows" then
 	include "thirdparty/bimg"
 	include "thirdparty/bgfx"
 	include "thirdparty/luajit"
+	include "thirdparty/bullet3"
 end
 
 if os.host() == "linux" then
@@ -54,6 +57,7 @@ if os.host() == "linux" then
 	include "thirdparty/bimg"
 	include "thirdparty/bgfx"
 	include "thirdparty/lua51"
+	include "thirdparty/bullet3"
 end
 
 group ""
@@ -108,7 +112,8 @@ project "DAEngine"
 		"%{IncludeDir.bimg}",
 		"%{IncludeDir.bgfx}/include",
 		"%{IncludeDir.bgfx}",
-		"%{IncludeDir.lua51}"
+		"%{IncludeDir.lua51}",
+		"%{IncludeDir.bullet3}"
 	}
 	
 	libdirs
@@ -154,7 +159,8 @@ project "DAEngine"
 			"Metal.framework",
 			"Cocoa.framework",
 			"IOKit.framework",
-			"CoreVideo.framework"
+			"CoreVideo.framework",
+			"bullet3"
 		}
 		
 		includedirs
@@ -212,7 +218,8 @@ project "DAEngine"
 			"bx",
 			"bimg",
 			"bgfx",
-			"luajit"
+			"luajit",
+			"bullet3"
 		}
 
 		buildoptions
@@ -269,7 +276,8 @@ project "DAEngine"
 			"GL",
 			"pthread",
 			"X11",
-			"lua51"
+			"lua51",
+			"bullet3"
 		}
 		
 		includedirs

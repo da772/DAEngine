@@ -80,7 +80,7 @@ namespace da::platform
 	void CBgfxDebugRenderer::drawCube(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame, bool xray)
 	{
 		m_toDraw.push_back({ [position, rot, scale, color, this, wireFrame] {
-			glm::mat4 transform = glm::translate(glm::mat4(1), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1), scale);
+			glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1.f), scale);
 
 			bgfx::setTransform(glm::value_ptr(transform));
 
@@ -94,7 +94,7 @@ namespace da::platform
 	void CBgfxDebugRenderer::drawSphere(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame, bool xray)
 	{
 		m_toDraw.push_back({ [position, rot, scale, color, this, wireFrame] {
-			glm::mat4 transform = glm::translate(glm::mat4(1), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1), scale);
+			glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1.f), scale);
 
 			bgfx::setTransform(glm::value_ptr(transform));
 
@@ -108,7 +108,7 @@ namespace da::platform
 	void CBgfxDebugRenderer::drawCapsule(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame, bool xray)
 	{
 		m_toDraw.push_back({ [position, rot, scale, color, this, wireFrame] {
-			glm::mat4 transform = glm::translate(glm::mat4(1), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1), scale);
+			glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1.f), scale);
 
 			bgfx::setTransform(glm::value_ptr(transform));
 

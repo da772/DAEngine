@@ -1,8 +1,7 @@
-#include <DAengine.h>
-#include "app.h"
-
+#include <DAEngine/core/entry.h>
+#include "game.h"
 
 da::CApp* da::createApp(int argc, const char** argv)
 {
-	return new ProtoTypeApp(argc, argv);
+	return new CGame(argc, argv);
 }

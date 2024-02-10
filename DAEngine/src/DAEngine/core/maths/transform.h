@@ -16,6 +16,7 @@ namespace da::maths
 		virtual void setRotation(const glm::quat& rot);
 		void setScale(const glm::vec3& scale);
 		void offsetRotation(const glm::vec3& delta);
+		void setTransform(const glm::mat4& transform);
 		glm::vec3 position() const;
 		glm::vec3 rotation() const;
 		glm::vec3 scale() const;
@@ -23,6 +24,7 @@ namespace da::maths
 		glm::vec3 forward() const;
 		glm::vec3 up() const;
 		glm::vec3 right() const;
+		bool isDirty() const;
 
 	protected:
 		glm::vec3 m_position;

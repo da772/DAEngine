@@ -1,0 +1,101 @@
+#include "dapch.h"
+#include "physics_bullet3_rigid_body.h"
+#include "physics.h"
+#include "bullet3_physics.h"
+#include "physics_bullet3_motion_state.h"
+#include "physics_bullet3_shape.h"
+
+namespace da::physics
+{
+	CBullet3RigidBody::CBullet3RigidBody(IPhysicsShape* shape, IPhysicsMotionState* state, float mass, const glm::vec3& inertia) : IPhysicsRigidBody(shape, state, mass, inertia)
+	{
+		ASSERT(shape);
+		ASSERT(state);
+
+		CBullet3Physics* physics = dynamic_cast<CBullet3Physics*>(CPhysics::getPhysicsType());
+		ASSERT(physics);
+
+		CBullet3MotionState* motionState = dynamic_cast<CBullet3MotionState*>(state);
+		ASSERT(motionState);
+
+		CBullet3Shape* b3shape = dynamic_cast<CBullet3Shape*>(shape);
+		ASSERT(shape);
+
+		btVector3 b3Intertia(inertia.x, inertia.y, inertia.z);
+		if (mass != 0.f)
+			b3shape->getShape()->calculateLocalInertia(mass, b3Intertia);
+
+		btRigidBody::btRigidBodyConstructionInfo info(mass, motionState->getMotionState(), b3shape->getShape(), b3Intertia);
+		m_rigidBody = new btRigidBody(info);
+		physics->getDynamicsWorld()->addRigidBody(m_rigidBody);
+	}
+
+	glm::mat4 CBullet3RigidBody::getTransform() const
+	{
+		ASSERT(m_rigidBody);
+		glm::mat4 out;
+		m_rigidBody->getWorldTransform().getOpenGLMatrix(glm::value_ptr(out));
+		return out;
+	}
+
+	void CBullet3RigidBody::setTransform(const glm::mat4& transform)
+	{
+		ASSERT(m_rigidBody);
+		btTransform trnsform;
+		trnsform.setFromOpenGLMatrix(glm::value_ptr(transform));
+		m_rigidBody->setWorldTransform(trnsform);
+	}
+
+	void CBullet3RigidBody::applyImpulse(const glm::vec3& impulse)
+	{
+		ASSERT(m_rigidBody);
+		setActivationState(EPhysicsActivationState::ActiveTag);
+		m_rigidBody->applyCentralImpulse({ impulse.x, impulse.y, impulse.z });
+	}
+
+	void CBullet3RigidBody::setActivationState(EPhysicsActivationState state)
+	{
+		ASSERT(m_rigidBody);
+		setActivationState(EPhysicsActivationState::ActiveTag);
+		m_rigidBody->setActivationState((int)state);
+	}
+
+	void CBullet3RigidBody::setRestitution(float restitution)
+	{
+		ASSERT(m_rigidBody);
+		m_rigidBody->setRestitution(restitution);
+	}
+
+	class btRigidBody* CBullet3RigidBody::getRigidBody() const
+	{
+		return m_rigidBody;
+	}
+
+	CBullet3RigidBody::~CBullet3RigidBody()
+	{
+		CBullet3Physics* physics = dynamic_cast<CBullet3Physics*>(CPhysics::getPhysicsType());
+		ASSERT(physics);
+		physics->getDynamicsWorld()->removeRigidBody(m_rigidBody);
+		delete m_rigidBody;
+	}
+
+	void CBullet3RigidBody::setUserData(void* ptr)
+	{
+		ASSERT(m_rigidBody);
+		m_rigidBody->setUserPointer(ptr);
+	}
+
+	void CBullet3RigidBody::setAngularVelocity(const glm::vec3& velocity) const
+	{
+		ASSERT(m_rigidBody);
+		m_rigidBody->setAngularVelocity({ velocity.x, velocity.y, velocity.z});
+	}
+
+	const glm::vec3& CBullet3RigidBody::getAngularVelocity() const
+	{
+		ASSERT(m_rigidBody);
+		btVector3 velocity = m_rigidBody->getAngularVelocity();
+		return { velocity.x(), velocity.y(), velocity.z()};
+	}
+
+}
