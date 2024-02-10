@@ -1,6 +1,6 @@
 #pragma once
 
-#include "physics.h"
+#include "../physics.h"
 #include <bullet3/btBulletDynamicsCommon.h>
 
 namespace da::physics

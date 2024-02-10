@@ -147,6 +147,20 @@ namespace da::platform
 			}, xray });
 	}
 
+	void CBgfxDebugRenderer::drawMesh(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, da::graphics::CStaticMesh* mesh, const glm::vec4& color, bool wireFrame /*= true*/, bool xray /*= true*/)
+	{
+		m_toDraw.push_back({ [position, rot, scale, color, mesh, this, wireFrame] {
+			glm::mat4 transform = glm::translate(glm::mat4(1), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1), scale);
+
+			bgfx::setTransform(glm::value_ptr(transform));
+
+			::bgfx::setUniform(m_uniform, glm::value_ptr(color));
+			::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(0)));
+			::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(0)));
+			return wireFrame;
+			}, xray });
+	}
+
 	::bgfx::FrameBufferHandle CBgfxDebugRenderer::createFrameBuffer()
 	{
 		bgfx::TextureHandle textures[1];
@@ -177,7 +191,6 @@ namespace da::platform
 	{
 		return m_frameBuffer;
 	}
-
 }
 
 #endif

@@ -1,7 +1,7 @@
 #include "dapch.h"
 
 #include "physics_rigid_body.h"
-#include "physics_bullet3_rigid_body.h"
+#include "bullet3/physics_bullet3_rigid_body.h"
 
 namespace da::physics
 {

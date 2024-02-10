@@ -167,9 +167,9 @@ void CGame::onInitialize()
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 	e7 = da::core::CSceneManager::getScene()->createEntity();
-	c = e7->addComponent<da::core::CSmeshComponent>("assets/cube.fbx");	
-	e7->getTransform().setPosition({5.f,0.f, 20.f});
-	e7->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({1.f,1.f,1.f}), da::physics::CPhysicsDefaultMotionState::create(e7->getTransform().matrix()), 1.f, { 0.f,0.f,0.f }));
+	c = e7->addComponent<da::core::CSmeshComponent>("assets/sphere.fbx");	
+	e7->getTransform().setPosition({0.f,-3.f, 20.f});
+	e7->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeSphere::create(1.f), da::physics::CPhysicsDefaultMotionState::create(e7->getTransform().matrix()), 1.f, { 0.f,0.f,0.f }));
 	c->getStaticMesh()->getMaterial(0).roughnessFactor = 0.f;
 	c->getStaticMesh()->getMaterial(0).metallicFactor = .5f;
 	e7->setTag(HASHSTR("sphere"));
@@ -206,10 +206,12 @@ void CGame::onInitialize()
 
 	e2->getTransform().setPosition({ 0,0,0 });
 	e2->getTransform().setRotation({ 0,0,0 });
-	e2->getTransform().setScale({ 10,10,5 });
+	e2->getTransform().setScale({ 1,1,1 });
 	e2->setTag(HASHSTR("plane"));
-	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 10.f, 10.f, .01f }), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
-	c = e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx");
+	c = e2->addComponent<da::core::CSmeshComponent>("assets/terrain/terrain1.fbx");
+	
+	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(c->getStaticMesh()), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
+	
 
 	c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg");
 	c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg");

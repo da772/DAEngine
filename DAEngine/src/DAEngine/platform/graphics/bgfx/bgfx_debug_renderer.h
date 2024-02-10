@@ -4,6 +4,7 @@
 
 #include <bgfx/bgfx.h>
 #include "DAEngine/core/graphics/graphics_debug_render.h"
+#include <core/graphics/graphics_vertex.h>
 
 
 namespace da::graphics
@@ -32,6 +33,7 @@ namespace da::platform
 		virtual void drawCapsule(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
 		virtual void drawCone(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
 		virtual void drawPlane(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
+		virtual void drawMesh(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, da::graphics::CStaticMesh* mesh, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
 
 		void initialize();
 		void renderXRay(::bgfx::ViewId view);

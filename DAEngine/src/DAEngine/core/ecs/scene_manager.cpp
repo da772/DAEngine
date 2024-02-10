@@ -61,7 +61,7 @@ namespace da::core {
 						}
 
 						{
-							glm::vec3 r = e->getTransform().rotation();
+							glm::vec3 r = e->getTransform().rotationEuler();
 							float rot[] = { r.x ,r.y, r.z };
 							ImGui::Text("Rotation");
 							ImGui::SameLine();
@@ -108,7 +108,7 @@ namespace da::core {
 					camera->setPosition(newPos);
 				}
 
-				glm::vec3 rot = camera->rotation();
+				glm::vec3 rot = camera->rotationEuler();
 				float pRot[] = { rot.x, rot.y, rot.z };
 				if (ImGui::InputFloat3("Rotation", pRot)) {
 					glm::vec3 newRot = { pRot[0], pRot[1], pRot[2] };

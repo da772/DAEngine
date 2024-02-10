@@ -249,22 +249,22 @@ namespace da::platform {
             float farPlane = (1000.f * (50.f * i) + 1000.f);
             if (i == 0) {
                 nearPlane = .1f;
-                farPlane  = 3.f;
+                farPlane  = 1.f;
             }
 
             if (i == 1) {
-                nearPlane = 3.f;
-                farPlane = 6.f;
+                nearPlane = 1.f;
+                farPlane = 3.f;
             }
 
 			if (i == 2) {
-				nearPlane = 6.f;
-				farPlane = 15.f;
+				nearPlane = 3.f;
+				farPlane = 5.f;
 			}
 
 			if (i == 3) {
-				nearPlane = 15.f;
-				farPlane = 45.f;
+				nearPlane = 5.f;
+				farPlane = 15.f;
 			}
 
             //bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, nearPlane, farPlane, ::bgfx::getCaps()->homogeneousDepth);

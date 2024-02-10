@@ -18,7 +18,8 @@ namespace da::maths
 		void offsetRotation(const glm::vec3& delta);
 		void setTransform(const glm::mat4& transform);
 		glm::vec3 position() const;
-		glm::vec3 rotation() const;
+		glm::vec3 rotationEuler() const;
+		glm::quat rotation() const;
 		glm::vec3 scale() const;
 		virtual const glm::mat4& matrix();
 		glm::vec3 forward() const;

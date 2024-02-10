@@ -1,7 +1,7 @@
 #include "dapch.h"
 #include "physics_motion_state.h"
 
-#include "physics_bullet3_motion_state.h"
+#include "bullet3/physics_bullet3_motion_state.h"
 
 namespace da::physics
 {

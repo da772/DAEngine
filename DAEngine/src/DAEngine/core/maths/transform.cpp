@@ -57,7 +57,14 @@ namespace da::maths
 		return m_position;
 	}
 
-	glm::vec3 CTransform::rotation() const
+
+	glm::quat CTransform::rotation() const
+	{
+		return m_rotation;
+	}
+
+
+	glm::vec3 CTransform::rotationEuler() const
 	{
 		return glm::degrees(glm::eulerAngles(m_rotation));
 	}

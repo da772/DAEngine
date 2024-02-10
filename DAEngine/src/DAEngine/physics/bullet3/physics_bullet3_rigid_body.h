@@ -1,6 +1,6 @@
 #pragma once
 
-#include "physics_rigid_body.h"
+#include "../physics_rigid_body.h"
 
 class btRigidBody;
 

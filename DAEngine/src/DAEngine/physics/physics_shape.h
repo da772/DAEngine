@@ -1,11 +1,19 @@
 #pragma once
 
+
+namespace da::graphics
+{
+	class CStaticMesh;
+}
+
+
 namespace da::physics {
 
 	enum class EPhysicsShapeType
 	{
 		Cube,
-		Sphere
+		Sphere,
+		TriangleMesh
 	};
 
 	class IPhysicsShape
@@ -38,5 +46,17 @@ namespace da::physics {
 	protected:
 		inline CPhysicsShapeSphere(const float radius) {};
 		inline virtual ~CPhysicsShapeSphere() {};
+	};
+
+	class CPhysicsShapeTriangleMesh : public IPhysicsShape
+	{
+	public:
+		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::TriangleMesh; }
+		inline virtual da::graphics::CStaticMesh* getMesh() const { return nullptr; }
+
+		static CPhysicsShapeTriangleMesh* create(da::graphics::CStaticMesh* mesh);
+	protected:
+		inline CPhysicsShapeTriangleMesh(da::graphics::CStaticMesh* mesh) {};
+		inline virtual ~CPhysicsShapeTriangleMesh() {};
 	};
 }

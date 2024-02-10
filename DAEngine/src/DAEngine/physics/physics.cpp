@@ -1,6 +1,6 @@
 #include "dapch.h"
 #include "physics.h"
-#include "bullet3_physics.h"
+#include "bullet3/bullet3_physics.h"
 
 namespace da::physics
 {

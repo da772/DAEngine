@@ -51,6 +51,14 @@ namespace da::core {
 					da::graphics::CDebugRender::getInstance()->drawSphere(m_parent.getTransform().position(), m_parent.getTransform().rotation(), m_parent.getTransform().scale(), { 1.f,0.f,0.f,1.f }, true, false);
 					break;
 				}
+				case da::physics::EPhysicsShapeType::TriangleMesh:
+				{
+					if (da::physics::CPhysicsShapeTriangleMesh* shape = dynamic_cast<da::physics::CPhysicsShapeTriangleMesh*>(m_rigidBody->getShape()))
+					{
+						da::graphics::CDebugRender::getInstance()->drawMesh(m_parent.getTransform().position(), m_parent.getTransform().rotation(), m_parent.getTransform().scale(), shape->getMesh(), { 1.f,0.f,0.f,1.f }, true, false);
+					}
+					break;
+				}
 			}
 		}
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "physics_motion_state.h"
+#include "../physics_motion_state.h"
 #include "bullet3_physics.h"
 
 namespace da::physics

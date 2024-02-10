@@ -1,6 +1,6 @@
 #include "dapch.h"
 #include "physics_bullet3_rigid_body.h"
-#include "physics.h"
+#include "../physics.h"
 #include "bullet3_physics.h"
 #include "physics_bullet3_motion_state.h"
 #include "physics_bullet3_shape.h"
@@ -19,7 +19,7 @@ namespace da::physics
 		ASSERT(motionState);
 
 		CBullet3Shape* b3shape = dynamic_cast<CBullet3Shape*>(shape);
-		ASSERT(shape);
+		ASSERT(b3shape);
 
 		btVector3 b3Intertia(inertia.x, inertia.y, inertia.z);
 		if (mass != 0.f)
