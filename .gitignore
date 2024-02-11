@@ -38,6 +38,7 @@ enc_temp_folder/
 .vscode/
 Makefile
 node_modules/
+.idea/
 
 Prototype/assets/cubemap.ktx
 *.ktx
