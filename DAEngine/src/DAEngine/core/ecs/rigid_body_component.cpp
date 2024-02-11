@@ -18,7 +18,7 @@ namespace da::core {
 
 	void CRigidBodyComponent::onInitialize()
 	{
-		m_rigidBody->setUserData((void*)& m_parent.getTransform());
+		m_rigidBody->setUserData((void*)&m_parent);
 	}
 
 	void CRigidBodyComponent::onShutdown()

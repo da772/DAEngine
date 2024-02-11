@@ -13,12 +13,16 @@ namespace da::physics
 		void shutdown() override;
 
 		inline btDiscreteDynamicsWorld* getDynamicsWorld() const { return m_dynamicsWorld; }
+
+		void rayCast(FRayData& ray) override;
+
 	private:
 		btDefaultCollisionConfiguration* m_collisionConfiguration;
 		btCollisionDispatcher* m_dispatcher;
 		btBroadphaseInterface* m_overlappingPairCache;
 		btSequentialImpulseConstraintSolver* m_solver;
 		btDiscreteDynamicsWorld* m_dynamicsWorld;
+		btCollisionWorld* m_collisionWorld;
 
 	};
 }

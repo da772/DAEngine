@@ -26,8 +26,16 @@ namespace da::physics
 		virtual void setRestitution(float restitution) = 0;
 		virtual void setActivationState(EPhysicsActivationState state) = 0;
 		virtual void setUserData(void* ptr) = 0;
+
+		virtual void setAngularVelocity(const glm::vec3&) = 0;
+		virtual void setAngularFactor(const glm::vec3& factor) = 0;
+		virtual void setGravityFactor(const glm::vec3& factor) = 0;
+		virtual void setLinearFactor(const glm::vec3& factor) = 0;
+
+		virtual const glm::vec3& getLinearFactor() const = 0;
+		virtual const glm::vec3& getGravityFactor() const = 0;
+		virtual const glm::vec3& getAngularFactor() const = 0;
 		virtual const glm::vec3& getAngularVelocity() const = 0;
-		virtual void setAngularVelocity(const glm::vec3&) const = 0;
 
 		IPhysicsShape* getShape() const;
 

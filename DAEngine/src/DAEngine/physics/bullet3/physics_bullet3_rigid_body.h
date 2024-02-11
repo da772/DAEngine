@@ -17,11 +17,21 @@ namespace da::physics
 		void setActivationState(EPhysicsActivationState state) override;
 		btRigidBody* getRigidBody() const;
 		virtual void setRestitution(float restitution) override;
-		void setUserData(void* ptr) override;
+		virtual void setUserData(void* ptr) override;
+		
+
+		virtual void setAngularVelocity(const glm::vec3&) override;
+		virtual void setAngularFactor(const glm::vec3& factor) override;
+		virtual void setGravityFactor(const glm::vec3& factor) override;
+		virtual void setLinearFactor(const glm::vec3& factor) override;
+
+		virtual const glm::vec3& getLinearFactor() const override;
+		virtual const glm::vec3& getGravityFactor() const override;
+		virtual const glm::vec3& getAngularFactor() const override;
 		virtual const glm::vec3& getAngularVelocity() const override;
-		virtual void setAngularVelocity(const glm::vec3&) const override;
 
 	private:
 		btRigidBody* m_rigidBody;
+		glm::vec3 m_linearFactor, m_gravityFactor, m_angularFactor;
 	};
 }

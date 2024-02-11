@@ -7,7 +7,8 @@
 
 namespace da::physics
 {
-	CBullet3RigidBody::CBullet3RigidBody(IPhysicsShape* shape, IPhysicsMotionState* state, float mass, const glm::vec3& inertia) : IPhysicsRigidBody(shape, state, mass, inertia)
+	CBullet3RigidBody::CBullet3RigidBody(IPhysicsShape* shape, IPhysicsMotionState* state, float mass, const glm::vec3& inertia)
+		: IPhysicsRigidBody(shape, state, mass, inertia), m_linearFactor(1.f), m_angularFactor(1.f), m_gravityFactor(1.f)
 	{
 		ASSERT(shape);
 		ASSERT(state);
@@ -85,10 +86,9 @@ namespace da::physics
 		m_rigidBody->setUserPointer(ptr);
 	}
 
-	void CBullet3RigidBody::setAngularVelocity(const glm::vec3& velocity) const
+	void CBullet3RigidBody::setAngularVelocity(const glm::vec3&)
 	{
-		ASSERT(m_rigidBody);
-		m_rigidBody->setAngularVelocity({ velocity.x, velocity.y, velocity.z});
+		throw std::logic_error("The method or operation is not implemented.");
 	}
 
 	const glm::vec3& CBullet3RigidBody::getAngularVelocity() const
@@ -96,6 +96,42 @@ namespace da::physics
 		ASSERT(m_rigidBody);
 		btVector3 velocity = m_rigidBody->getAngularVelocity();
 		return { velocity.x(), velocity.y(), velocity.z()};
+	}
+
+	void CBullet3RigidBody::setAngularFactor(const glm::vec3& factor)
+	{
+		ASSERT(m_rigidBody);
+		m_angularFactor = factor;
+		m_rigidBody->setAngularFactor({ factor.x, factor.y, factor.z });
+	}
+
+	void CBullet3RigidBody::setGravityFactor(const glm::vec3& factor)
+	{
+		ASSERT(m_rigidBody);
+		m_gravityFactor = factor;
+		m_rigidBody->setGravity({ factor.x, factor.y, factor.z });
+	}
+
+	void CBullet3RigidBody::setLinearFactor(const glm::vec3& factor)
+	{
+		ASSERT(m_rigidBody);
+		m_linearFactor = factor;
+		m_rigidBody->setLinearFactor({ factor.x, factor.y, factor.z });
+	}
+
+	const glm::vec3& CBullet3RigidBody::getLinearFactor() const
+	{
+		return m_linearFactor;
+	}
+
+	const glm::vec3& CBullet3RigidBody::getGravityFactor() const
+	{
+		return m_gravityFactor;
+	}
+
+	const glm::vec3& CBullet3RigidBody::getAngularFactor() const
+	{
+		return m_angularFactor;
 	}
 
 }

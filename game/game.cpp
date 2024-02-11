@@ -293,11 +293,22 @@ void CGame::onUpdate(float dt)
 		e6->getTransform().setRotation(rotation);
 	}
 
-	glm::quat worldBoneRot;
-	if (component->getSkeletalAnimator()->getBoneWorldRotation(HASHSTR("mixamorig_RightHand"), e4->getTransform().matrix(), worldBoneRot)) {
-		//e5->getTransform().setRotation(worldBoneRot + rotOffset);
+	da::physics::FRayData data(da::physics::ERayType::All, { 0.f,0.f, 10.f }, { 0.f, 0.f, -10.f });
+	da::physics::CPhysics::rayCast(data);
 
+	if (ImGui::Begin("Hit?")) {
+		if (data.bHit) {
+			for (int i = 0; i < data.vHits.size(); i++) {
+				ImGui::Text("HIT: %s", data.vHits[i].pEntity->getTag().c_str());
+			}
+		}
+		else
+		{
+			ImGui::Text("NO HIT");
+		}
 	}
+
+	ImGui::End();
 }
 
 void CGame::onShutdown()

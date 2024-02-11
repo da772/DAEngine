@@ -14,11 +14,13 @@ namespace da::physics
 
 	void CPhysics::update(float dt)
 	{
+		ASSERT(s_physicsType);
 		s_physicsType->update(dt);
 	}
 
 	void CPhysics::shutdown()
 	{
+		ASSERT(s_physicsType);
 		s_physicsType->shutdown();
 		delete s_physicsType;
 	}
@@ -27,6 +29,12 @@ namespace da::physics
 	da::physics::CPhysicsType* CPhysics::getPhysicsType()
 	{
 		return s_physicsType;
+	}
+
+	void CPhysics::rayCast(FRayData& ray)
+	{
+		ASSERT(s_physicsType);
+		s_physicsType->rayCast(ray);
 	}
 
 }

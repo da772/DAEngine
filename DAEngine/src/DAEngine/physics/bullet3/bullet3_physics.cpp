@@ -4,7 +4,7 @@
 #include "daengine/core/graphics/graphics_debug_render.h"
 #include <glm/gtx/matrix_decompose.hpp>
 #include <imgui.h>
-#include <core/graphics/camera.h>
+#include "daengine/core/ecs/entity.h"
 
 namespace da::physics
 {
@@ -19,6 +19,8 @@ namespace da::physics
 		m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_overlappingPairCache, m_solver, m_collisionConfiguration);
 
 		m_dynamicsWorld->setGravity(btVector3(0, 0, -10));
+
+		m_collisionWorld = new btCollisionWorld(m_dispatcher, m_overlappingPairCache, m_collisionConfiguration);
 	}
 
 	void CBullet3Physics::update(float dt)
@@ -30,11 +32,11 @@ namespace da::physics
 			
 			if (body && body->getMotionState())
 			{
-				if (da::maths::CTransform* e = (da::maths::CTransform*)body->getUserPointer()) {
-					if (e->isDirty()) {
+				if (da::core::CEntity* e = (da::core::CEntity*)body->getUserPointer()) {
+					if (e->getTransform().isDirty()) {
 						btTransform trans;
 						body->setActivationState(ACTIVE_TAG);
-						trans.setFromOpenGLMatrix(glm::value_ptr(e->matrix()));
+						trans.setFromOpenGLMatrix(glm::value_ptr(e->getTransform().matrix()));
 						body->setWorldTransform(trans);
 					}
 				}
@@ -57,10 +59,10 @@ namespace da::physics
 				glm::mat4 transform;
 				trans.getOpenGLMatrix(glm::value_ptr(transform));
 
-				if (da::maths::CTransform* e = (da::maths::CTransform*)body->getUserPointer()) {
-					e->setTransform(transform);
+				if (da::core::CEntity* e = (da::core::CEntity*)body->getUserPointer()) {
+					e->getTransform().setTransform(transform);
 				}
-			}	
+			}
 		}
 	}
 
@@ -91,6 +93,61 @@ namespace da::physics
 		delete m_dispatcher;
 
 		delete m_collisionConfiguration;
+
+		delete m_collisionWorld;
+	}
+
+	void CBullet3Physics::rayCast(FRayData& ray)
+	{
+		if (ray.eType == ERayType::All)
+		{
+			btCollisionWorld::AllHitsRayResultCallback callback({ ray.startPos.x, ray.startPos.y, ray.startPos.z }, { ray.startPos.x, ray.endPos.y, ray.endPos.z });
+			m_collisionWorld->rayTest(callback.m_rayFromWorld, callback.m_rayToWorld, callback);
+
+			ray.bHit = callback.hasHit();
+
+			if (ray.bHit)
+			{
+				for (int i = 0; i < callback.m_collisionObjects.size(); i++) {
+					FHitData hitData;
+					hitData.pEntity = (da::core::CEntity*)callback.m_collisionObjects[i]->getUserPointer();
+
+					std::vector<FHitData>::iterator it = std::find_if(ray.vHits.begin(), ray.vHits.end(), [hitData](const FHitData& d) {
+						return d.pEntity == hitData.pEntity;
+					});
+
+					if (it != ray.vHits.end()) {
+						continue;
+					}
+
+					btVector3 hitPos = callback.m_hitPointWorld[i];
+					hitData.position = { hitPos.x(), hitPos.y(), hitPos.z() };
+					btVector3 hitNormal = callback.m_hitNormalWorld[i];
+					hitData.normal = { hitNormal.x(), hitNormal.y(), hitNormal.z() };
+
+					ray.vHits.push_back(std::move(hitData));
+				}
+			}
+			return;
+		}
+
+		btCollisionWorld::ClosestRayResultCallback callback({ ray.startPos.x, ray.startPos.y, ray.startPos.z }, { ray.startPos.x, ray.endPos.y, ray.endPos.z });
+		m_collisionWorld->rayTest(callback.m_rayFromWorld, callback.m_rayToWorld, callback);
+
+		ray.bHit = callback.hasHit();
+
+		if (ray.bHit)
+		{
+			FHitData hitData;
+			hitData.pEntity = (da::core::CEntity*)callback.m_collisionObject->getUserPointer();
+			btVector3 hitPos = callback.m_hitPointWorld;
+			hitData.position = { hitPos.x(), hitPos.y(), hitPos.z() };
+			btVector3 hitNormal = callback.m_hitNormalWorld;
+			hitData.normal = { hitNormal.x(), hitNormal.y(), hitNormal.z() };
+
+			ray.vHits.push_back(std::move(hitData));
+
+		}
 	}
 
 }
