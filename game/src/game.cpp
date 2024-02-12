@@ -296,6 +296,7 @@ void CGame::onUpdate(float dt)
 	da::physics::FRayData data(da::physics::ERayType::All, { 0.f,0.f, 10.f }, { 0.f, 0.f, -10.f });
 	da::physics::CPhysics::rayCast(data);
 
+#ifdef DA_DEBUG
 	if (ImGui::Begin("Hit?")) {
 		if (data.bHit) {
 			for (int i = 0; i < data.vHits.size(); i++) {
@@ -309,6 +310,8 @@ void CGame::onUpdate(float dt)
 	}
 
 	ImGui::End();
+#endif
+
 }
 
 void CGame::onShutdown()

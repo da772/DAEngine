@@ -40,5 +40,6 @@ namespace da::graphics {
 		float m_CurrentTime;
 		float m_DeltaTime;
 		float m_timeScale = 1.f;
+		float m_tickTime = 0.f;
 	};
 }

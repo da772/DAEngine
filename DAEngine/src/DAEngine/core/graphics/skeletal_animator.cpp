@@ -70,16 +70,31 @@ namespace da::graphics
 
 	void CSkeletalAnimator::updateAnimation(float dt)
 	{
-		float timeScale = dt * m_timeScale;
-		m_DeltaTime = timeScale;
-		if (m_CurrentAnimation)
+		if (!m_CurrentAnimation)
 		{
-			m_CurrentTime += m_CurrentAnimation->getTicksPerSecond() * timeScale;
-			m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->getDuration());
-			for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
-				calculateBoneTransform(&m_CurrentAnimation->getRootNode(), i);
-			}
+			return;
 		}
+
+		// sample the animations at 144 fps and interpolate between frames
+		constexpr float minSampleRate = 144.f;
+		float tickSampleRate = std::max(minSampleRate, m_CurrentAnimation->getTicksPerSecond());
+		float tickTime = 1.0f / tickSampleRate;
+
+		m_DeltaTime = dt * m_timeScale;
+		m_tickTime += dt;
+
+		m_CurrentTime += m_CurrentAnimation->getTicksPerSecond() * m_DeltaTime;
+		m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->getDuration());
+
+		if (m_tickTime < tickTime) {
+			return;
+		}
+
+		m_tickTime = 0.f;
+		for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
+			calculateBoneTransform(&m_CurrentAnimation->getRootNode(), i);
+		}
+	
 	}
 
 	void CSkeletalAnimator::playAnimation(CSkeletalAnimation* pAnimation)
