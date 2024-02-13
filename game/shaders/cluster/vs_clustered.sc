@@ -1,10 +1,10 @@
 $input a_position, a_normal, a_tangent, a_texcoord0
-$output v_worldpos, v_normal, v_tangent, v_texcoord0, v_shadowcoord0, v_shadowcoord1,v_shadowcoord2, v_shadowcoord3
+$output v_worldpos, v_normal, v_tangent, v_texcoord0, v_shadowcoord0, v_shadowcoord1,v_shadowcoord2
 
 #include <bgfx_shader.sh>
 
 uniform mat3 u_normalMatrix;
-uniform mat4 u_sunLightMtx[4];
+uniform mat4 u_sunLightMtx[3];
 
 void main()
 {
@@ -19,5 +19,4 @@ void main()
     v_shadowcoord0 = mul(u_sunLightMtx[0], vec4(posOffset, 1.0) );
     v_shadowcoord1 = mul(u_sunLightMtx[1], vec4(posOffset, 1.0) );
     v_shadowcoord2 = mul(u_sunLightMtx[2], vec4(posOffset, 1.0) );
-    v_shadowcoord3 = mul(u_sunLightMtx[3], vec4(posOffset, 1.0) );
 }

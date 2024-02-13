@@ -15,7 +15,6 @@ SAMPLER2DARRAY(s_shadowMap2, SAMPLER_SHADOW_MAP_FAR);
 SAMPLER2DSHADOW(s_shadowMap0, SAMPLER_SHADOW_MAP_NEAR);
 SAMPLER2DSHADOW(s_shadowMap1, SAMPLER_SHADOW_MAP_MED);
 SAMPLER2DSHADOW(s_shadowMap2, SAMPLER_SHADOW_MAP_FAR);
-SAMPLER2DSHADOW(s_shadowMap3, SAMPLER_SHADOW_MAP_VFAR);
 #	define Sampler sampler2DShadow
 #endif // SHADOW_PACKED_DEPTH
 
@@ -81,7 +80,7 @@ float PCF(Sampler _sampler, vec4 _shadowCoord, float _bias, vec2 _texelSize)
 	return result / 16.0;
 }
 
-vec3 shadowPass(vec4 v_shadowcoord0, vec4 v_shadowcoord1, vec4 v_shadowcoord2, vec4 v_shadowcoord3)
+vec3 shadowPass(vec4 v_shadowcoord0, vec4 v_shadowcoord1, vec4 v_shadowcoord2)
 {
 	float shadowMapBias = 0.005;
 
@@ -92,16 +91,14 @@ vec3 shadowPass(vec4 v_shadowcoord0, vec4 v_shadowcoord1, vec4 v_shadowcoord2, v
     vec3 visibility0 =  (1.0-PCF(s_shadowMap0, v_shadowcoord0, shadowMapBias, texelSize)) * vec3(1.0, 0.0, 0.0);
     vec3 visibility1 =  (1.0-PCF(s_shadowMap1, v_shadowcoord1, shadowMapBias, texelSize)) * vec3(0.0, 1.0, 0.0);
     vec3 visibility2 = (1.0-PCF(s_shadowMap2, v_shadowcoord2, shadowMapBias, texelSize)) * vec3(0.0, 0.0, 1.0);
-    vec3 visibility3 = (1.0-PCF(s_shadowMap3, v_shadowcoord3, shadowMapBias, texelSize)) * vec3(1.0, 1.0, 0.0);
     
-    return  vec4(visibility0 + visibility1 + visibility2 + visibility3, 1.0);
+    return  vec4(visibility0 + visibility1 + visibility2, 1.0);
     
     */
 	
     float visibility = PCF(s_shadowMap0, v_shadowcoord0, shadowMapBias, texelSize);
     visibility = min(visibility, PCF(s_shadowMap1, v_shadowcoord1, shadowMapBias, texelSize));
     visibility = min(visibility, PCF(s_shadowMap2, v_shadowcoord2, shadowMapBias, texelSize));
-    visibility = min(visibility, PCF(s_shadowMap3, v_shadowcoord3, shadowMapBias, texelSize));
 
 	float outVis = 1.0;
 	for (int i = 0; i < 4; i++) {

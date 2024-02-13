@@ -6,7 +6,7 @@
 namespace da::platform {
 	class CBgfxGraphicsMaterial;
 
-#define SHADOW_MAP_SIZE 4
+#define SHADOW_MAP_SIZE 3
 
 	struct FBgfxShadowMap
 	{
