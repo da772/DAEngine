@@ -59,6 +59,7 @@ namespace da::graphics {
 		int m_NumRotations;
 		int m_NumScalings;
 
+        float m_lastUpdateTime = -1.f;
 		glm::mat4 m_LocalTransform;
 		CHashString m_Name;
 		int m_ID;

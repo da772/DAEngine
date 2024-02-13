@@ -180,13 +180,16 @@ void CGame::onInitialize()
 	mesh->getMaterial(0).metallicFactor = .1500f;
 	mesh->getMaterial(0).roughnessFactor = 0.f;
 	mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
-	da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordSlash.fbx", mesh);
-	da::graphics::CSkeletalAnimator* animator = new da::graphics::CSkeletalAnimator(animation);
+	m_swordSlashAnimation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordSlash.fbx", mesh);
+	da::graphics::CSkeletalAnimator* animator = new da::graphics::CSkeletalAnimator(m_swordSlashAnimation);
+
+	da::graphics::CSkeletalAnimation* animation = m_swordSlashAnimation;
 
 	for (int i = 0; i < 2; i++) {
 
 		if (i == 1) {
-			animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
+			m_runAnimation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
+			animation = m_runAnimation;
 			animator = new da::graphics::CSkeletalAnimator(animation);
 		}
 
@@ -306,6 +309,13 @@ void CGame::onUpdate(float dt)
 		else
 		{
 			ImGui::Text("NO HIT");
+		}
+
+		if (ImGui::Button("Swing sword anim")) {
+			component->getSkeletalAnimator()->playAnimation(m_swordSlashAnimation, .25f);
+		}
+		if (ImGui::Button("Run Anim")) {
+			component->getSkeletalAnimator()->playAnimation(m_runAnimation, .15f);
 		}
 	}
 

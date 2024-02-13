@@ -94,6 +94,11 @@ namespace da::graphics
 
 	void CAnimatedBone::Update(float animationTime)
 	{
+		if (m_lastUpdateTime == animationTime) {
+			return;
+		}
+
+		m_lastUpdateTime = animationTime;
 		glm::mat4 translation = InterpolatePosition(animationTime);
 		glm::mat4 rotation = InterpolateRotation(animationTime);
 		glm::mat4 scale = InterpolateScaling(animationTime);

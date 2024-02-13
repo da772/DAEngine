@@ -12,6 +12,7 @@ namespace da
 	namespace graphics
 	{
 		class CMaterial;
+		class CSkeletalAnimation;
 	}
 
 	namespace core
@@ -51,5 +52,7 @@ private:
 	da::core::CEntity* e1, * e2, * e3, * e4, * e5, * e6, *e7;
 	bool m_showScriptDebug = false;
 	bool m_showScriptDebugHard = false;
+	da::graphics::CSkeletalAnimation* m_swordSlashAnimation;
+	da::graphics::CSkeletalAnimation* m_runAnimation;
 
 };
