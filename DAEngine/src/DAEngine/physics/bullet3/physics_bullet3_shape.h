@@ -43,4 +43,13 @@ namespace da::physics
 		da::graphics::CStaticMesh* m_mesh;
 
 	};
+
+	class CBullet3Capsule : public CBullet3Shape, public CPhysicsShapeCapsule
+	{
+	public:
+		CBullet3Capsule(float radius, float height);
+		virtual ~CBullet3Capsule();
+		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::Capsule; }
+
+	};
 }

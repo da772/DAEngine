@@ -43,6 +43,7 @@ namespace da::physics
 	{
 		ASSERT(m_rigidBody);
 		btTransform trnsform;
+		setActivationState(EPhysicsActivationState::ActiveTag);
 		trnsform.setFromOpenGLMatrix(glm::value_ptr(transform));
 		m_rigidBody->setWorldTransform(trnsform);
 	}
@@ -51,13 +52,13 @@ namespace da::physics
 	{
 		ASSERT(m_rigidBody);
 		setActivationState(EPhysicsActivationState::ActiveTag);
+		m_rigidBody->activate(true);
 		m_rigidBody->applyCentralImpulse({ impulse.x, impulse.y, impulse.z });
 	}
 
 	void CBullet3RigidBody::setActivationState(EPhysicsActivationState state)
 	{
 		ASSERT(m_rigidBody);
-		setActivationState(EPhysicsActivationState::ActiveTag);
 		m_rigidBody->setActivationState((int)state);
 	}
 

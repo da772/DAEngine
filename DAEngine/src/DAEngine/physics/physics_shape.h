@@ -13,7 +13,8 @@ namespace da::physics {
 	{
 		Cube,
 		Sphere,
-		TriangleMesh
+		TriangleMesh,
+		Capsule
 	};
 
 	class IPhysicsShape
@@ -58,5 +59,17 @@ namespace da::physics {
 	protected:
 		inline CPhysicsShapeTriangleMesh(da::graphics::CStaticMesh* mesh) {};
 		inline virtual ~CPhysicsShapeTriangleMesh() {};
+	};
+
+	class CPhysicsShapeCapsule : public IPhysicsShape
+	{
+	public:
+		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::Capsule; }
+		inline virtual da::graphics::CStaticMesh* getMesh() const { return nullptr; }
+
+		static CPhysicsShapeCapsule* create(float radius, float height);
+	protected:
+		inline CPhysicsShapeCapsule(float radius, float height) {};
+		inline virtual ~CPhysicsShapeCapsule() {};
 	};
 }

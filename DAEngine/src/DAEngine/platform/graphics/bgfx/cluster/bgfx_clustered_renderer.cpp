@@ -69,7 +69,7 @@ namespace da::platform {
         m_pDebugVisProgram->initialize();
 
         m_pointLights.init();
-        //generateLights(250);
+        generateLights(100);
         m_pointLights.update();
 
         m_shadow.initialize();
@@ -249,17 +249,17 @@ namespace da::platform {
             float farPlane = (1000.f * (50.f * i) + 1000.f);
             if (i == 0) {
                 nearPlane = .1f;
-                farPlane  = 1.f;
+                farPlane  = 5.f;
             }
 
             if (i == 1) {
-                nearPlane = 1.f;
-                farPlane = 3.f;
+                nearPlane = 5.f;
+                farPlane = 20.f;
             }
 
 			if (i == 2) {
-				nearPlane = 3.f;
-				farPlane = 5.f;
+				nearPlane = 20.f;
+				farPlane = 50.f;
 			}
 
 			if (i == 3) {

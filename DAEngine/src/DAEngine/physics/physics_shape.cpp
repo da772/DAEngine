@@ -21,4 +21,9 @@ namespace da::physics
 		return new da::physics::CBullet3TriangleMesh(mesh);
 	}
 
+	da::physics::CPhysicsShapeCapsule* CPhysicsShapeCapsule::create(float radius, float height)
+	{
+		return new da::physics::CBullet3Capsule(radius, height);
+	}
+
 }

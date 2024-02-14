@@ -33,12 +33,12 @@ namespace da::physics
 			if (body && body->getMotionState())
 			{
 				if (da::core::CEntity* e = (da::core::CEntity*)body->getUserPointer()) {
-					if (e->getTransform().isDirty()) {
+					//if (e->getTransform().isDirty()) {
 						btTransform trans;
 						body->setActivationState(ACTIVE_TAG);
 						trans.setFromOpenGLMatrix(glm::value_ptr(e->getTransform().matrix()));
 						body->setWorldTransform(trans);
-					}
+					//}
 				}
 			}
 

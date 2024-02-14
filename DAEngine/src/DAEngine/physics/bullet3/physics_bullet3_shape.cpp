@@ -49,4 +49,14 @@ namespace da::physics
 		return m_mesh;
 	}
 
+	CBullet3Capsule::CBullet3Capsule(float radius, float height) : CBullet3Shape(), CPhysicsShapeCapsule(radius, height)
+	{
+		m_shape = new btCapsuleShape(radius, height);
+	}
+
+	CBullet3Capsule::~CBullet3Capsule()
+	{
+
+	}
+
 }
