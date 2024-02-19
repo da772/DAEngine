@@ -39,6 +39,11 @@ namespace da::platform
 		}
 	}
 
+	CBgfxStaticMesh::CBgfxStaticMesh() : CStaticMesh()
+	{
+
+	}
+
 	bgfx::VertexLayout CBgfxStaticMesh::getLayout()
 	{
 		if (s_init) return s_layout;
@@ -63,6 +68,8 @@ namespace da::platform
 			BGFXDESTROY(m_ibh[i]);
 		}
 		
+		m_vbh = {};
+		m_ibh = {};
 	}
 
 	void CBgfxStaticMesh::setBuffers(size_t index, uint8_t stream)

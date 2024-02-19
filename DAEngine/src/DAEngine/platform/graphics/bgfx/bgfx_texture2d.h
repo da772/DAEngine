@@ -12,7 +12,7 @@ namespace da::platform::bgfx {
 		CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height);
 		CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height, char* data);
 
-		virtual ~CBgfxTexture2D();
+		~CBgfxTexture2D() override;
 
 		inline const uint16_t getHandle() const { return m_handle; }
 		inline virtual void* getTextureNative() const { return (void*)&m_handle; }
@@ -21,6 +21,7 @@ namespace da::platform::bgfx {
 	private:
 		da::CAsset m_fileAsset;
 		uint16_t m_handle = UINT16_MAX;
+		std::mutex* m_mutex;
 
 	};
 }

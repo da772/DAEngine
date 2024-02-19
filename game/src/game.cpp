@@ -119,21 +119,21 @@ void CGame::onInitialize()
 	e1->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
 	e1->getTransform().setPosition({ 0,0,25.5f });
 	da::core::FComponentRef<da::core::CSmeshComponent> c = e1->addComponent<da::core::CSmeshComponent>("assets/sniper/Sniper.fbx");
-	c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Variation04/Sniper_04_Albedo.png");
-	c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Normal.png");
-	c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Variation04/Sniper_05_Metallic.png");
-	c->getStaticMesh()->getMaterial(0).emissiveTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Emission.png");
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Variation04/Sniper_04_Albedo.png"));
+	c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Normal.png"));
+	c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Variation04/Sniper_05_Metallic.png"));
+	c->getStaticMesh()->getMaterial(0).setEmissiveTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Emission.png"));
 	c->getStaticMesh()->getMaterial(0).emissiveFactor = { 1.f,1.f,1.f };
-	c->getStaticMesh()->getMaterial(0).occlusionTexture = da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Occlusion.png");
+	c->getStaticMesh()->getMaterial(0).setOcclusionTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Occlusion.png"));
 
 	e3 = da::core::CSceneManager::getScene()->createEntity();
 	c = e3->addComponent<da::core::CSmeshComponent>("assets/rifle/Rifle.fbx");
-	c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Albedo.png");
-	c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Normal.png");
-	c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Metallic.png");
-	c->getStaticMesh()->getMaterial(0).emissiveTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Emission.png");
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Albedo.png"));
+	c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Normal.png"));
+	c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Metallic.png"));
+	c->getStaticMesh()->getMaterial(0).setEmissiveTexture(da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Emission.png"));
 	c->getStaticMesh()->getMaterial(0).emissiveFactor = { 1.f,1.f,1.f };
-	c->getStaticMesh()->getMaterial(0).occlusionTexture = da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Occlusion.png");
+	c->getStaticMesh()->getMaterial(0).setOcclusionTexture(da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Occlusion.png"));
 
 	e3->setTag(HASHSTR("Rifle"));
 	e3->getTransform().setPosition({ 0,-5.f,25.f });
@@ -142,9 +142,9 @@ void CGame::onInitialize()
 
 	e5 = da::core::CSceneManager::getScene()->createEntity();
 	c = e5->addComponent<da::core::CSmeshComponent>("assets/blade_LOTR/blade_LOTR.fbx");
-	c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_BaseColor.png");
-	c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_Normal_OpenGL.png");
-	c->getStaticMesh()->getMaterial(0).occlusionTexture = da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_AmbientOcclusion_Mixed.png");
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_BaseColor.png"));
+	c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_Normal_OpenGL.png"));
+	c->getStaticMesh()->getMaterial(0).setOcclusionTexture(da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_AmbientOcclusion_Mixed.png"));
 
 	e5->setTag(HASHSTR("sw0rd"));
 	e5->getTransform().setPosition({ 0,0,0 });
@@ -154,9 +154,9 @@ void CGame::onInitialize()
 
 	e6 = da::core::CSceneManager::getScene()->createEntity();
 	c = e6->addComponent<da::core::CSmeshComponent>("assets/hat/hat.fbx");
-	c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/hat/Hat_albedo.jpg");
-	c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/hat/Hat_normal.png");
-	c->getStaticMesh()->getMaterial(0).occlusionTexture = da::graphics::CTexture2DFactory::Create("assets/hat/Hat_AO.jpg");
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/hat/Hat_albedo.jpg"));
+	c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/hat/Hat_normal.png"));
+	c->getStaticMesh()->getMaterial(0).setOcclusionTexture(da::graphics::CTexture2DFactory::Create("assets/hat/Hat_AO.jpg"));
 	c->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
 	c->getStaticMesh()->getMaterial(0).metallicFactor = 0.f;
 
@@ -175,8 +175,8 @@ void CGame::onInitialize()
 	e7->setTag(HASHSTR("sphere"));
 
 	da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/SwordSlash.fbx", false);
-	mesh->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/mannequin/alpha_body_mat.png");
-	mesh->getMaterial(0).normalTexture = nullptr;
+	mesh->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/mannequin/alpha_body_mat.png"));
+	mesh->getMaterial(0).setNormalTexture(nullptr);
 	mesh->getMaterial(0).metallicFactor = .1500f;
 	mesh->getMaterial(0).roughnessFactor = 0.f;
 	mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
@@ -185,7 +185,7 @@ void CGame::onInitialize()
 
 	da::graphics::CSkeletalAnimation* animation = m_swordSlashAnimation;
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 1; i < 2; i++) {
 
 		if (i == 1) {
 			m_runAnimation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
@@ -216,9 +216,9 @@ void CGame::onInitialize()
 	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(c->getStaticMesh()), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
 	
 
-	c->getStaticMesh()->getMaterial(0).baseColorTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg");
-	c->getStaticMesh()->getMaterial(0).normalTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg");
-	c->getStaticMesh()->getMaterial(0).metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg");
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg"));
+	c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg"));
+	c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg"));
 	c->getStaticMesh()->getMaterial(0).uvScale = { 11.f,11.f };
 	c->getStaticMesh()->getMaterial(0).doubleSided = true;
 	return;
@@ -295,7 +295,7 @@ void CGame::onUpdate(float dt)
 		e6->getTransform().setPosition(translation);
 		e6->getTransform().setRotation(rotation);
 	}
-
+	
 	da::physics::FRayData data(da::physics::ERayType::All, { 0.f,0.f, 10.f }, { 0.f, 0.f, -10.f });
 	da::physics::CPhysics::rayCast(data);
 

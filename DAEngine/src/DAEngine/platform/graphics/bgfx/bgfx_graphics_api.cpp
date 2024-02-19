@@ -229,8 +229,9 @@ namespace da::platform {
 
 		m_renderer = new CBgfxClusteredRenderer();
 
-		m_renderer->reset(data.Width, data.Height);
+		
 		m_renderer->initialize();
+		m_renderer->reset(data.Width, data.Height);
 
 		s_test->Initialize(m_nativeWindow);
 

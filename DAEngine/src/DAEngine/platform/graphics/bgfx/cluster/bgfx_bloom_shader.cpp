@@ -204,8 +204,7 @@ namespace da::platform
 
 		for (size_t i = 0; i < m_processedFrameBuffers.size(); i++) {
 
-			if (!::bgfx::isValid(m_processedFrameBuffers[i]))
-				m_processedFrameBuffers[i] = createFrameBuffer(true, width >> i, height >> i);
+			BGFXTRYDESTROY(m_processedFrameBuffers[i]);	
 		}
 
 		m_processedFrameBuffers = {};

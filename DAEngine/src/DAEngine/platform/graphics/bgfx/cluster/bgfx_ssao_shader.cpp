@@ -75,9 +75,11 @@ namespace da::platform
 		m_pSsaoBlurProgram = nullptr;
 
 		BGFXTRYDESTROY(m_ssaoBuffer);
+		BGFXTRYDESTROY(m_ssaoProcessedBuffer);
 		BGFXTRYDESTROY(m_blitTriangleBuffer);
 		BGFXTRYDESTROY(m_uniformHandle);
 		BGFXTRYDESTROY(m_uniformParamHandle);
+		BGFXTRYDESTROY(m_ssaoUniformHandle);
 #ifdef DA_DEBUG
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("SSAO"));
 #endif

@@ -15,22 +15,34 @@ namespace da::graphics {
         bool blend = false;
         bool doubleSided = false;
 
-        CGraphicsTexture2D* baseColorTexture = nullptr;
+        
         glm::vec4 baseColorFactor = { 1.0f, 1.0f, 1.0f, 1.0f };
         glm::vec2 uvScale = { 1.f,1.f };
-
-        CGraphicsTexture2D* metallicRoughnessTexture = nullptr; // blue = metallic, green = roughness
         float metallicFactor = .5f;
         float roughnessFactor = .5f;
-
-        CGraphicsTexture2D* normalTexture = nullptr;
         float normalScale = 1.0f;
-
-        CGraphicsTexture2D* occlusionTexture = nullptr;
         float occlusionStrength = 1.0f;
-
-        CGraphicsTexture2D* emissiveTexture = nullptr;
         glm::vec3 emissiveFactor = { 0.0f, 0.0f, 0.0f };
+
+		void setBaseColorTexture(CGraphicsTexture2D* texture);
+		void setEmissiveTexture(CGraphicsTexture2D* texture);
+		void setOcclusionTexture(CGraphicsTexture2D* texture);
+		void setMetallicRoughnessTexture(CGraphicsTexture2D* texture);
+		void setNormalTexture(CGraphicsTexture2D* texture);
+
+
+        CGraphicsTexture2D* getBaseColorTexture() const;
+        CGraphicsTexture2D* getEmissiveTexture() const;
+        CGraphicsTexture2D* getOcclusionTexture() const;
+        CGraphicsTexture2D* getMetallicRoughnessTexture() const;
+        CGraphicsTexture2D* getNormalTexture() const;
+
+    private:
+        CGraphicsTexture2D* m_baseColorTexture = nullptr;
+        CGraphicsTexture2D* m_emissiveTexture = nullptr;
+        CGraphicsTexture2D* m_occlusionTexture = nullptr;
+        CGraphicsTexture2D* m_normalTexture = nullptr;
+        CGraphicsTexture2D* m_metallicRoughnessTexture = nullptr;
     };
 
 }

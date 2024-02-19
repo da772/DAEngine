@@ -13,4 +13,9 @@ namespace da::graphics
 
 	}
 
+	CGraphicsTexture2D::~CGraphicsTexture2D()
+	{
+		
+	}
+
 }

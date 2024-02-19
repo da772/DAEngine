@@ -7,6 +7,7 @@
 #include "bgfx_util.h"
 #include "bgfx_static_mesh.h"
 #include "bgfx_graphics_material.h"
+#include "bgfx_line_mesh.h"
 
 namespace da::platform
 {
@@ -22,6 +23,7 @@ namespace da::platform
 		m_shapes[EDebugShapes::Plane] = new CBgfxStaticMesh("assets/plane.fbx", false);
 		m_shapes[EDebugShapes::Cone] = new CBgfxStaticMesh("assets/cone.fbx", false);
 		m_shapes[EDebugShapes::Capsule] = new CBgfxStaticMesh("assets/capsule.fbx", false);
+		m_shapes[EDebugShapes::Line] = new CBgfxLineMesh();
 	}
 
 	void CBgfxDebugRenderer::renderXRay(::bgfx::ViewId view)
@@ -61,6 +63,7 @@ namespace da::platform
 			::bgfx::submit(view, { m_shader->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
 			m_toDraw.erase(m_toDraw.begin() + i);
 		}
+
 	}
 
 	void CBgfxDebugRenderer::shutdown()
@@ -147,6 +150,24 @@ namespace da::platform
 			}, xray });
 	}
 
+	void CBgfxDebugRenderer::drawLine(const glm::vec3& startPosition, const glm::vec3& endPosition, float width, const glm::vec4& color, bool wireFrame /*= true*/, bool xray /*= true*/)
+	{
+		m_toDraw.push_back({ [startPosition, endPosition, color, width, this, wireFrame] {
+
+			CBgfxLineMesh* line = (CBgfxLineMesh*)m_shapes[EDebugShapes::Line];
+			::bgfx::setUniform(m_uniform, glm::value_ptr(color));
+			FTransientBufferData data = line->addTransientLine(startPosition, endPosition, width);
+
+			::bgfx::setVertexBuffer(0, data.pVBH);
+			::bgfx::setIndexBuffer(data.pIBH);
+
+			delete data.pVBH;
+			delete data.pIBH;
+
+			return wireFrame;
+			}, xray });
+	}
+
 	void CBgfxDebugRenderer::drawMesh(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, da::graphics::CStaticMesh* mesh, const glm::vec4& color, bool wireFrame /*= true*/, bool xray /*= true*/)
 	{
 		m_toDraw.push_back({ [position, rot, scale, color, mesh, this, wireFrame] {
@@ -191,6 +212,8 @@ namespace da::platform
 	{
 		return m_frameBuffer;
 	}
+
+
 }
 
 #endif

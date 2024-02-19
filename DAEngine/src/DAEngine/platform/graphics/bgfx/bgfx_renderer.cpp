@@ -92,6 +92,7 @@ namespace da::platform::bgfx {
 		BGFXDESTROY(m_tonemappingModeVecUniform);
 		BGFXDESTROY(m_blitTriangleBuffer);
 		BGFXDESTROY(m_frameBuffer);
+		BGFXDESTROY(m_skyFrameBuffer);
 
 
 

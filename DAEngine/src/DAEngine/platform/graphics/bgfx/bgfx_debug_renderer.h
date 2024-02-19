@@ -22,7 +22,8 @@ namespace da::platform
 		Sphere,
 		Capsule,
 		Cone,
-		Plane
+		Plane,
+		Line
 	};
 
 	class CBgfxDebugRenderer : public da::graphics::CDebugRender
@@ -34,6 +35,7 @@ namespace da::platform
 		virtual void drawCone(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
 		virtual void drawPlane(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
 		virtual void drawMesh(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, da::graphics::CStaticMesh* mesh, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
+		virtual void drawLine(const glm::vec3& startPosition, const glm::vec3& endPosition, float width, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
 
 		void initialize();
 		void renderXRay(::bgfx::ViewId view);

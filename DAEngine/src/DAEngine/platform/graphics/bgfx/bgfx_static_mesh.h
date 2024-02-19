@@ -10,6 +10,7 @@ namespace da::platform {
 	public:
 
 		CBgfxStaticMesh(const std::string& path, bool inverseNormals);
+		CBgfxStaticMesh();
 		virtual ~CBgfxStaticMesh();
 
 		void setBuffers(size_t index, uint8_t stream);
@@ -18,7 +19,7 @@ namespace da::platform {
 		virtual const void* getNativeVBIndex(size_t index) const override;
 		virtual const void* getNativeIBIndex(size_t index) const override;
 
-	private:
+		protected:
 		std::vector<::bgfx::VertexBufferHandle> m_vbh;
 		std::vector<::bgfx::IndexBufferHandle>m_ibh;
 

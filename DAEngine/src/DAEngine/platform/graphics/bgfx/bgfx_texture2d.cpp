@@ -12,9 +12,10 @@ namespace da::platform::bgfx {
 
 
 	CBgfxTexture2D::CBgfxTexture2D(const std::string& s) 
-		: da::graphics::CGraphicsTexture2D(s), m_fileAsset(s)
+		: da::graphics::CGraphicsTexture2D(s), m_fileAsset(s), m_mutex(new std::mutex())
 	{
 		da::core::CWorkerPool::addJob([this] {
+			std::lock_guard<std::mutex> guard(*m_mutex);
 			stbi_uc* pixels = stbi_load_from_memory((const stbi_uc*)m_fileAsset.data(), m_fileAsset.size(), (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);
 			m_channels = 4;
 			const ::bgfx::Memory* mem = ::bgfx::copy(pixels, m_width * m_height * m_channels * sizeof(char));
@@ -27,7 +28,7 @@ namespace da::platform::bgfx {
 	}
 
 	CBgfxTexture2D::CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height) 
-		: da::graphics::CGraphicsTexture2D(name, width, height),m_fileAsset(name, width*height*4)
+		: da::graphics::CGraphicsTexture2D(name, width, height),m_fileAsset(name, width*height*4), m_mutex(new std::mutex())
 	{
 		memset((void*)m_fileAsset.data(), 0xff, width * height * 4);
 		m_channels = 4;
@@ -38,16 +39,17 @@ namespace da::platform::bgfx {
 		m_fileAsset = {};
 	}
 
-	CBgfxTexture2D::CBgfxTexture2D() : CGraphicsTexture2D("")
+	CBgfxTexture2D::CBgfxTexture2D() : CGraphicsTexture2D(""), m_mutex(new std::mutex())
 	{
 
 	}
 
-	CBgfxTexture2D::CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height, char* data) : CGraphicsTexture2D(name)
+	CBgfxTexture2D::CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height, char* data) : CGraphicsTexture2D(name), m_mutex(new std::mutex())
 	{
 		char* d = (char*)malloc(width);
 		memcpy(d, data, width);
 		da::core::CWorkerPool::addJob([this, width, height, d] {
+			std::lock_guard<std::mutex> guard(*m_mutex);
 			stbi_uc* pixels = stbi_load_from_memory((const stbi_uc*)d, width, (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);
 			m_channels = 4;
 			const ::bgfx::Memory* mem = ::bgfx::copy(pixels, m_width * m_height * m_channels * sizeof(char));
@@ -60,6 +62,12 @@ namespace da::platform::bgfx {
 
 	void CBgfxTexture2D::destroy()
 	{
+		{
+			std::lock_guard<std::mutex> guard(*m_mutex);
+		}
+
+		delete m_mutex;
+		m_mutex = nullptr;
 		if (m_handle == INVALID_HANDLE) return;
 
 		::bgfx::TextureHandle handle{ m_handle };

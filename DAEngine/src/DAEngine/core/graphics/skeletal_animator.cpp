@@ -212,16 +212,82 @@ namespace da::graphics
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 	void CSkeletalAnimator::debugRenderJoints(const glm::mat4& modelMat)
 	{
-		for (const std::pair<CHashString, FBoneInfo>& kv : m_CurrentAnimation->getBoneIDMap(0)) {
-			glm::mat4 transform = modelMat * (m_FinalBoneMatrices[0][kv.second.id] * glm::inverse(kv.second.offset));
-			glm::vec3 scale;
-			glm::quat rotation;
-			glm::vec3 translation;
-			glm::vec3 skew;
-			glm::vec4 perspective;
-			glm::decompose(transform, scale, rotation, translation, skew, perspective);
+		std::queue<const FAssimpNodeData*> bones;
+		bones.push(&m_CurrentAnimation->getRootNode());
 
-			da::graphics::CDebugRender::getInstance()->drawCone(translation, glm::inverse(rotation), scale, { 1.f, 0.f, 1.f, .5f }, false);
+		std::unordered_map<CHashString, glm::mat4> cachedBones;
+
+		while (!bones.empty())
+		{
+			const FAssimpNodeData* b = bones.front();
+			glm::vec3 baseTranslation;
+			bones.pop();
+			{
+
+				const std::unordered_map<CHashString, FBoneInfo>::const_iterator& bIt = m_CurrentAnimation->getBoneIDMap(0).find(b->name);
+				
+				if (bIt == m_CurrentAnimation->getBoneIDMap(0).end()) {
+					for (size_t i = 0; i < b->children.size(); i++) {
+						bones.push(&b->children[i]);
+					}
+					continue;
+				}
+
+				const FBoneInfo& bInfo = bIt->second;
+
+				glm::mat4 transform;
+				const std::unordered_map<CHashString, glm::mat4>::iterator& it = cachedBones.find(b->name);
+
+				if (it == cachedBones.end())
+				{
+					getBoneWorldTransform(b->name, modelMat, transform);
+					cachedBones[b->name] = transform;
+				}
+				else {
+					transform = cachedBones[b->name];
+				}
+
+				glm::vec3 scale;
+				glm::quat rotation;
+
+				glm::vec3 skew;
+				glm::vec4 perspective;
+				glm::decompose(transform, scale, rotation, baseTranslation, skew, perspective);
+			}
+
+			for (size_t i = 0; i < b->children.size(); i++) {
+
+				const std::unordered_map<CHashString, FBoneInfo>::const_iterator& cbIt = m_CurrentAnimation->getBoneIDMap(0).find(b->children[i].name);
+
+				if (cbIt == m_CurrentAnimation->getBoneIDMap(0).end()) {
+					bones.push(&b->children[i]);
+					continue;
+				}
+
+				const FBoneInfo& bInfo = m_CurrentAnimation->getBoneIDMap(0).at(b->children[i].name);
+
+				glm::mat4 transform;
+				const std::unordered_map<CHashString, glm::mat4>::iterator& it = cachedBones.find(b->children[i].name);
+
+				if (it == cachedBones.end())
+				{
+					getBoneWorldTransform(b->children[i].name, modelMat, transform);
+					cachedBones[b->children[i].name] = transform;
+				}
+				else {
+					transform = cachedBones[b->children[i].name];
+				}
+
+				glm::vec3 scale;
+				glm::quat rotation;
+				glm::vec3 translation;
+				glm::vec3 skew;
+				glm::vec4 perspective;
+				glm::decompose(transform, scale, rotation, translation, skew, perspective);
+				da::graphics::CDebugRender::getInstance()->drawLine(baseTranslation, translation, .025f, { 1.f,0.f,1.f,1.f }, false, true);
+
+				bones.push(&b->children[i]);
+			}
 		}
 	}
 #endif

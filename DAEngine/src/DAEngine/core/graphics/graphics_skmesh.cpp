@@ -183,13 +183,13 @@ namespace da::graphics
 
 			if (CAsset::exists(fileBaseColor.C_Str()))
 			{
-				out.baseColorTexture = da::graphics::CTexture2DFactory::Create(fileBaseColor.C_Str());
+				out.setBaseColorTexture(da::graphics::CTexture2DFactory::Create(fileBaseColor.C_Str()));
 			}
 			else if (fileBaseColor.length > 0)
 			{
 				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileBaseColor.C_Str()))
 				{
-					out.baseColorTexture = CTexture2DFactory::Create(fileBaseColor.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData);
+					out.setBaseColorTexture(CTexture2DFactory::Create(fileBaseColor.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData));
 				}
 				else {
 					LOG_INFO(ELogChannel::Graphics, "Failed to find albedo texture at: %s for mesh %s", fileBaseColor.C_Str(), m_path);
@@ -204,13 +204,13 @@ namespace da::graphics
 			// metallic/roughness
 			if (CAsset::exists(fileMetallicRoughness.C_Str()))
 			{
-				out.metallicRoughnessTexture = da::graphics::CTexture2DFactory::Create(fileMetallicRoughness.C_Str());
+				out.setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create(fileMetallicRoughness.C_Str()));
 			}
 			else if (fileMetallicRoughness.length > 0)
 			{
 				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileMetallicRoughness.C_Str()))
 				{
-					out.metallicRoughnessTexture = CTexture2DFactory::Create(fileMetallicRoughness.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData);
+					out.setMetallicRoughnessTexture(CTexture2DFactory::Create(fileMetallicRoughness.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData));
 				}
 				else {
 					LOG_INFO(ELogChannel::Graphics, "Failed to find metallic roughness texture at: %s for mesh %s", fileMetallicRoughness.C_Str(), m_path);
@@ -229,12 +229,12 @@ namespace da::graphics
 
 			if (CAsset::exists(fileNormals.C_Str()))
 			{
-				out.normalTexture = da::graphics::CTexture2DFactory::Create(fileNormals.C_Str());
+				out.setNormalTexture(da::graphics::CTexture2DFactory::Create(fileNormals.C_Str()));
 			}
 			else if (fileNormals.length > 0) {
 				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileNormals.C_Str()))
 				{
-					out.normalTexture = CTexture2DFactory::Create(fileNormals.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData);
+					out.setNormalTexture(CTexture2DFactory::Create(fileNormals.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData));
 				}
 				else {
 					LOG_INFO(ELogChannel::Graphics, "Failed to find normal texture at: %s for mesh %s", fileNormals.C_Str(), m_path);
@@ -252,16 +252,16 @@ namespace da::graphics
 			{
 				// some GLTF files combine metallic/roughness and occlusion values into one texture
 				// don't load it twice
-				out.occlusionTexture = out.metallicRoughnessTexture;
+				out.setOcclusionTexture(out.getMetallicRoughnessTexture());
 			}
 			else if (CAsset::exists(fileOcclusion.C_Str()))
 			{
-				out.occlusionTexture = da::graphics::CTexture2DFactory::Create(fileOcclusion.C_Str());;
+				out.setOcclusionTexture(da::graphics::CTexture2DFactory::Create(fileOcclusion.C_Str()));
 			}
 			else if (fileOcclusion.length > 0) {
 				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileOcclusion.C_Str()))
 				{
-					out.occlusionTexture = CTexture2DFactory::Create(fileOcclusion.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData);
+					out.setOcclusionTexture(CTexture2DFactory::Create(fileOcclusion.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData));
 				}
 				else {
 					LOG_INFO(ELogChannel::Graphics, "Failed to find occlusion texture at: %s for mesh %s", fileOcclusion.C_Str(), m_path);
@@ -277,12 +277,12 @@ namespace da::graphics
 
 			if (CAsset::exists(fileEmissive.C_Str()))
 			{
-				out.emissiveTexture = da::graphics::CTexture2DFactory::Create(fileEmissive.C_Str());;
+				out.setEmissiveTexture(da::graphics::CTexture2DFactory::Create(fileEmissive.C_Str()));
 			}
 			else if (fileEmissive.length > 0) {
 				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileEmissive.C_Str()))
 				{
-					out.occlusionTexture = CTexture2DFactory::Create(fileEmissive.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData);
+					out.setOcclusionTexture(CTexture2DFactory::Create(fileEmissive.C_Str(), texture->mWidth, texture->mHeight, (char*)texture->pcData));
 				}
 				else {
 					LOG_INFO(ELogChannel::Graphics, "Failed to find emissive texture at: %s for mesh %s", fileEmissive.C_Str(), m_path);
@@ -304,6 +304,27 @@ namespace da::graphics
 
 	CSkeletalMesh::~CSkeletalMesh()
 	{
+		for (size_t i = 0; i < m_materials.size(); i++) {
+			if (m_materials[i].getBaseColorTexture()) {
+				delete m_materials[i].getBaseColorTexture();
+			}
+
+			if (m_materials[i].getEmissiveTexture()) {
+				delete m_materials[i].getEmissiveTexture();
+			}
+
+			if (m_materials[i].getMetallicRoughnessTexture()) {
+				delete m_materials[i].getMetallicRoughnessTexture();
+			}
+
+			if (m_materials[i].getNormalTexture()) {
+				delete m_materials[i].getNormalTexture();
+			}
+
+			if (m_materials[i].getOcclusionTexture()) {
+				delete m_materials[i].getOcclusionTexture();
+			}
+		}
 	}
 
 	da::graphics::FMaterialData& CSkeletalMesh::getMaterial(size_t index)

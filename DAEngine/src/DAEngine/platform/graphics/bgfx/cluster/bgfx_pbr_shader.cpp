@@ -123,11 +123,11 @@ namespace da::platform {
             };
 
         const uint32_t hasTexturesMask = 0
-			| ((setTextureOrDefault(CBgfxSamplers::PBR_BASECOLOR, m_baseColorSampler, material.baseColorTexture) ? 1 : 0) << 0)
-			| ((setTextureOrDefault(CBgfxSamplers::PBR_METALROUGHNESS, m_metallicRoughnessSampler, material.metallicRoughnessTexture) ? 1 : 0) << 1)
-			| ((setTextureOrDefault(CBgfxSamplers::PBR_NORMAL, m_normalSampler, material.normalTexture) ? 1 : 0) << 2)
-			| ((setTextureOrDefault(CBgfxSamplers::PBR_OCCLUSION, m_occlusionSampler, material.occlusionTexture) ? 1 : 0) << 3)
-			| ((setTextureOrDefault(CBgfxSamplers::PBR_EMISSIVE, m_emissiveSampler, material.emissiveTexture) ? 1 : 0) << 4);
+			| ((setTextureOrDefault(CBgfxSamplers::PBR_BASECOLOR, m_baseColorSampler, material.getBaseColorTexture()) ? 1 : 0) << 0)
+			| ((setTextureOrDefault(CBgfxSamplers::PBR_METALROUGHNESS, m_metallicRoughnessSampler, material.getMetallicRoughnessTexture()) ? 1 : 0) << 1)
+			| ((setTextureOrDefault(CBgfxSamplers::PBR_NORMAL, m_normalSampler, material.getNormalTexture()) ? 1 : 0) << 2)
+			| ((setTextureOrDefault(CBgfxSamplers::PBR_OCCLUSION, m_occlusionSampler, material.getOcclusionTexture()) ? 1 : 0) << 3)
+			| ((setTextureOrDefault(CBgfxSamplers::PBR_EMISSIVE, m_emissiveSampler, material.getEmissiveTexture()) ? 1 : 0) << 4);
         hasTexturesValues[0] = static_cast<float>(hasTexturesMask);
 
         bgfx::setUniform(m_hasTexturesUniform, hasTexturesValues);

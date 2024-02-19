@@ -11,13 +11,13 @@ namespace da::platform {
 	{
 		m_materialData = {};
 		if (albedo != "")
-			m_materialData.baseColorTexture = new da::platform::bgfx::CBgfxTexture2D(albedo);
+			m_materialData.setBaseColorTexture(new da::platform::bgfx::CBgfxTexture2D(albedo));
 		if (normal != "")
-			m_materialData.normalTexture = new da::platform::bgfx::CBgfxTexture2D(normal);
+			m_materialData.setNormalTexture(new da::platform::bgfx::CBgfxTexture2D(normal));
 		if (roughness != "")
-			m_materialData.metallicRoughnessTexture = new da::platform::bgfx::CBgfxTexture2D(roughness);
+			m_materialData.setMetallicRoughnessTexture(new da::platform::bgfx::CBgfxTexture2D(roughness));
 		if (emissive != "") {
-			m_materialData.emissiveTexture = new da::platform::bgfx::CBgfxTexture2D(emissive);
+			m_materialData.setEmissiveTexture(new da::platform::bgfx::CBgfxTexture2D(emissive));
 			m_materialData.emissiveFactor = { 1.f,1.f,1.f };
 		}
 
