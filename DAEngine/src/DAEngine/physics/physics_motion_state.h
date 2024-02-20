@@ -1,5 +1,10 @@
 #pragma once
 
+namespace da::core
+{
+	class CEntity;
+}
+
 namespace da::physics
 {
 	class IPhysicsMotionState
@@ -16,6 +21,18 @@ namespace da::physics
 	protected:
 		inline CPhysicsDefaultMotionState(const glm::mat4& transform) {};
 		inline virtual ~CPhysicsDefaultMotionState() {};
+
+
+	};
+
+	class CPhysicsEntityMotionState : public IPhysicsMotionState
+	{
+	public:
+		static CPhysicsEntityMotionState* create(da::core::CEntity* entity);
+	protected:
+		inline CPhysicsEntityMotionState(da::core::CEntity* entity) : m_entity(entity){};
+		inline virtual ~CPhysicsEntityMotionState() {};
+		da::core::CEntity* m_entity;
 
 
 	};

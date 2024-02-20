@@ -31,6 +31,7 @@ inline static void x(const ELogChannel& channel, const std::string& message, Arg
 		Platform,
 		Application,
 		Graphics,
+		Physics,
 		Window,
 		Script
 	};
@@ -106,7 +107,7 @@ inline static void x(const ELogChannel& channel, const std::string& message, Arg
 		static void logInternal(std::string&& message);
 		static void logCallstack(ELogType type, ELogChannel channel);
 
-		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "Application", "Graphics", "Window", "Script"};
+		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "Application", "Graphics", "Physics", "Window", "Script"};
 		inline static const char* logTypeMap[] = { "Info", "Debug", "Warning", "Error", "Assert" };
 #ifdef DA_COLORED_OUT
 		inline static const char* colorTypeMap[] = { "\033[39m", "\033[36m", "\033[33m", "\033[31m", "\033[35m", "\033[39m" };

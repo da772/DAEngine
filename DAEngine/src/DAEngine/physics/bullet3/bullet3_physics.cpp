@@ -6,6 +6,10 @@
 #include <imgui.h>
 #include "daengine/core/ecs/entity.h"
 
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#include "bullet3_debug_draw.h"
+#endif
+
 namespace da::physics
 {
 	
@@ -21,6 +25,12 @@ namespace da::physics
 		m_dynamicsWorld->setGravity(btVector3(0, 0, -10));
 
 		m_collisionWorld = new btCollisionWorld(m_dispatcher, m_overlappingPairCache, m_collisionConfiguration);
+
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		m_debugDraw = new CBullet3DebugDraw();
+		m_dynamicsWorld->setDebugDrawer(m_debugDraw);
+		m_collisionWorld->setDebugDrawer(m_debugDraw);
+#endif
 	}
 
 	void CBullet3Physics::update(float dt)
@@ -34,10 +44,10 @@ namespace da::physics
 			{
 				if (da::core::CEntity* e = (da::core::CEntity*)body->getUserPointer()) {
 					//if (e->getTransform().isDirty()) {
-						btTransform trans;
-						body->setActivationState(ACTIVE_TAG);
-						trans.setFromOpenGLMatrix(glm::value_ptr(e->getTransform().matrix()));
-						body->setWorldTransform(trans);
+						//btTransform trans;
+						//body->setActivationState(ACTIVE_TAG);
+						//trans.setFromOpenGLMatrix(glm::value_ptr(e->getTransform().matrix()));
+						//body->setWorldTransform(trans);
 					//}
 				}
 			}
@@ -45,6 +55,8 @@ namespace da::physics
 		}
 
 		m_dynamicsWorld->stepSimulation(dt, 10, 1.f / 60.f);
+		m_collisionWorld->debugDrawWorld();
+		m_dynamicsWorld->debugDrawWorld();
 
 		//print positions of all objects
 		for (int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
@@ -60,7 +72,7 @@ namespace da::physics
 				trans.getOpenGLMatrix(glm::value_ptr(transform));
 
 				if (da::core::CEntity* e = (da::core::CEntity*)body->getUserPointer()) {
-					e->getTransform().setTransform(transform);
+					//e->getTransform().setTransform(transform);
 				}
 			}
 		}
@@ -95,6 +107,11 @@ namespace da::physics
 		delete m_collisionConfiguration;
 
 		delete m_collisionWorld;
+
+
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		delete m_debugDraw;
+#endif
 	}
 
 	void CBullet3Physics::rayCast(FRayData& ray)

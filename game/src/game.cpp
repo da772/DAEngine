@@ -116,7 +116,6 @@ void CGame::onInitialize()
 	LOG_DEBUG(da::ELogChannel::Application, "%s, %s, %s", tst2->data1.c_str(), tst2->data2.c_str(), tst22->data1.c_str());
 
 	e2->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
-	e1->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
 	e1->getTransform().setPosition({ 0,0,25.5f });
 	da::core::FComponentRef<da::core::CSmeshComponent> c = e1->addComponent<da::core::CSmeshComponent>("assets/sniper/Sniper.fbx");
 	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Variation04/Sniper_04_Albedo.png"));
@@ -167,12 +166,17 @@ void CGame::onInitialize()
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 	e7 = da::core::CSceneManager::getScene()->createEntity();
-	c = e7->addComponent<da::core::CSmeshComponent>("assets/sphere.fbx");	
-	e7->getTransform().setPosition({0.f,-3.f, 20.f});
-	e7->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeSphere::create(1.f), da::physics::CPhysicsDefaultMotionState::create(e7->getTransform().matrix()), 1.f, { 0.f,0.f,0.f }));
+	c = e7->addComponent<da::core::CSmeshComponent>("assets/cube.fbx");	
+	e7->getTransform().setPosition({3.f,0.f, 2.f});
+	e7->addComponent<da::core::CRigidBodyComponent>(
+		da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({1.f,1.f,1.f})
+			, da::physics::CPhysicsEntityMotionState::create(e7)
+			, 1.f
+			, { 0.f,0.f,0.f }));
+	//e7->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeSphere::create(1.f), da::physics::CPhysicsDefaultMotionState::create(e7->getTransform().matrix()), 1.f, { 0.f,0.f,0.f }));
 	c->getStaticMesh()->getMaterial(0).roughnessFactor = 0.f;
 	c->getStaticMesh()->getMaterial(0).metallicFactor = .5f;
-	e7->setTag(HASHSTR("sphere"));
+	e7->setTag(HASHSTR("cube"));
 
 	da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/SwordSlash.fbx", false);
 	mesh->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/mannequin/alpha_body_mat.png"));
@@ -196,11 +200,25 @@ void CGame::onInitialize()
 		e4 = da::core::CSceneManager::getScene()->createEntity();
 		e4->setTag(HASHSTR("Mannequin"));
 		da::core::FComponentRef<da::core::CSkeletalMeshComponent> cc = e4->addComponent<da::core::CSkeletalMeshComponent>(mesh, animation, animator);
+		e4->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
+		
 		//cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
 
-		e4->getTransform().setPosition({ 0,5 + (i * -5.f), 0.f });
-		e4->getTransform().setRotation({ 90.f,0.f,0.f });
+		e4->getTransform().setPosition({ 0,5 + (i * -5.f), 5.f });
+		e4->getTransform().setRotation({ 90.f,0.f,90.f });
 
+		glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.15f });
+
+		cc->setTransform(offset);
+
+		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = e4->addComponent<da::core::CRigidBodyComponent>(
+			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCapsule::create(.3f, 1.7f)
+				, da::physics::CPhysicsEntityMotionState::create(e4)
+				, 1.f
+				, { 0.f,0.f,0.f }));
+
+
+		rb->getPhysicsBody()->setAngularFactor({ 0.f,0.f,0.f });
 		//e4->getTransform().setPosition({ i*3.f,5.f+(1.5f*i),-.1f});
 		//e4->getTransform().setRotation({ 90.f,180.f,0.f });
 	}
@@ -209,11 +227,14 @@ void CGame::onInitialize()
 
 	e2->getTransform().setPosition({ 0,0,0 });
 	e2->getTransform().setRotation({ 0,0,0 });
-	e2->getTransform().setScale({ 1,1,1 });
+
+	c = e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx");
+	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 10.f, 10.f, .01f }), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
+
+	e2->getTransform().setScale({ 10,10,1.f });
 	e2->setTag(HASHSTR("plane"));
-	c = e2->addComponent<da::core::CSmeshComponent>("assets/terrain/terrain1.fbx");
-	
-	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(c->getStaticMesh()), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
+	//c = e2->addComponent<da::core::CSmeshComponent>("assets/terrain/terrain1.fbx");
+	//e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(c->getStaticMesh()), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
 	
 
 	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg"));
@@ -261,7 +282,7 @@ void CGame::onUpdate(float dt)
 	da::core::FComponentRef<da::core::CSkeletalMeshComponent> component = e4->getComponent<da::core::CSkeletalMeshComponent>();
 
 	glm::mat4 worldBoneTransform;
-	if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_RightHand"), e4->getTransform().matrix(), worldBoneTransform)) {
+	if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_RightHand"), component->getTransform(), worldBoneTransform)) {
 		worldBoneTransform = glm::translate(worldBoneTransform, glm::vec3(0.f, -3.f, -9.f));
 		worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(glm::vec3(80.f, 185.f, 84.f))));
 
@@ -277,11 +298,11 @@ void CGame::onUpdate(float dt)
 	}
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
-	component->getSkeletalAnimator()->debugRenderJoints(e4->getTransform().matrix());
-	da::graphics::CDebugRender::getInstance()->drawCapsule(e4->getTransform().position() + glm::vec3(0.f, 0.f, .875f), {}, { 1.f, 1.f, 1.f }, { 1.f,0.f,0.f,.5f }, true, false);
+	component->getSkeletalAnimator()->debugRenderJoints(component->getTransform());
+	//da::graphics::CDebugRender::getInstance()->drawLine({ 0.f, 0.f, -10.f }, { 0.f,0.f, 10.f }, 1.f, { 1.f,0.f,0.f,1.f });
 #endif
 
-	if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_Head"), e4->getTransform().matrix(), worldBoneTransform)) {
+	if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_Head"), component->getTransform(), worldBoneTransform)) {
 		worldBoneTransform = glm::translate(worldBoneTransform, glm::vec3(0.f, 18.f, 0.f));
 		worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(glm::vec3(-80.f, 184.f, 0.f))));
 

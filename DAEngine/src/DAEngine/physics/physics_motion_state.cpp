@@ -9,4 +9,10 @@ namespace da::physics
 	{
 		return new da::physics::CBullet3DefaultMotionState(transform);
 	}
+
+	da::physics::CPhysicsEntityMotionState* CPhysicsEntityMotionState::create(da::core::CEntity* entity)
+	{
+		return new da::physics::CBullet3EntityMotionState(entity);
+	}
+
 }

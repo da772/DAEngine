@@ -41,6 +41,7 @@ namespace da::core {
 	void CSkeletalMeshComponent::onInitialize()
 	{
 		m_animator->playAnimation(m_animation);
+		m_parent.getTransform().addOnTransform(BIND_EVENT_FN_2(da::core::CSkeletalMeshComponent, onTransform));
 	}
 
 
@@ -59,6 +60,7 @@ namespace da::core {
 		delete m_skeletalmesh;
 		delete m_animation;
 		delete m_animator;
+		m_parent.getTransform().removeOnTransform(BIND_EVENT_FN_2(da::core::CSkeletalMeshComponent, onTransform));
 	}
 
 	da::graphics::CSkeletalMesh* CSkeletalMeshComponent::getSkeletalMesh() const
@@ -171,6 +173,27 @@ namespace da::core {
 			ImGui::Unindent();
 		}
 	}
+
+	glm::mat4 CSkeletalMeshComponent::getTransform()
+	{
+		if (m_parent.getTransform().isDirty()) {
+			m_finalTransform = m_transform * m_parent.getTransform().matrix();
+		}
+
+		return m_finalTransform;
+	}
+
+	void CSkeletalMeshComponent::setTransform(const glm::mat4& transform)
+	{
+		m_transform = transform;
+		m_finalTransform = m_transform * m_parent.getTransform().matrix() ;
+	}
+
+	void CSkeletalMeshComponent::onTransform(const glm::mat4& oldT, const glm::mat4& newT)
+	{
+		m_finalTransform = m_transform * newT;
+	}
+
 #endif
 
 }

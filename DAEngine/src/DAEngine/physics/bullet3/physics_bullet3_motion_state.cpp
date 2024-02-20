@@ -3,6 +3,7 @@
 
 #include "bullet3_physics.h"
 #include <glm/gtx/matrix_decompose.hpp>
+#include "DAEngine/core/ecs/entity.h"
 
 namespace da::physics
 {
@@ -29,10 +30,36 @@ namespace da::physics
 		m_motionState = new btDefaultMotionState(trnsfrm);
 	}
 
+	
+
 	CBullet3DefaultMotionState::~CBullet3DefaultMotionState()
 	{
 		ASSERT(m_motionState);
 		delete m_motionState;
+	}
+
+	CBullet3EntityMotionState::CBullet3EntityMotionState(da::core::CEntity* entity) : CPhysicsEntityMotionState(entity)
+	{
+		m_motionState = this;
+		m_finalTransform = entity->getTransform().matrix();
+	}
+
+	void CBullet3EntityMotionState::getWorldTransform(btTransform& worldTrans) const
+	{
+		worldTrans.setFromOpenGLMatrix(glm::value_ptr(m_finalTransform));
+	}
+
+	void CBullet3EntityMotionState::setWorldTransform(const btTransform& worldTrans)
+	{
+		glm::mat4 transform;
+		worldTrans.getOpenGLMatrix(glm::value_ptr(transform));
+		m_entity->getTransform().setTransform(transform);
+		m_finalTransform = transform;
+	}
+
+	CBullet3EntityMotionState::~CBullet3EntityMotionState()
+	{
+
 	}
 
 }

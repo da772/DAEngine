@@ -7,6 +7,8 @@
 #include <core/ecs/entity.h>
 #include <core/ecs/scene.h>
 #include <imgui.h>
+#include "DAEngine/physics/physics_rigid_body.h"
+#include <core/ecs/rigid_body_component.h>
 
 extern "C" {
 #include <lua/lua.h>
@@ -155,6 +157,45 @@ extern "C" static int lua_entity_set_pos(lua_State * L)
 	return 0;
 }
 
+extern "C" static int lua_entity_apply_vel(lua_State * L)
+{
+	uint64_t id1 = lua_tointeger(L, 2);
+	uint64_t id2 = lua_tointeger(L, 3);
+
+	uint8_t ch[16];
+	memcpy(&ch[0], &id1, sizeof(id1));
+	memcpy(&ch[sizeof(id2)], &id2, sizeof(id2));
+
+	da::core::CGuid guid(ch);
+
+	if (!guid.isValid()) return 0;
+
+	da::core::CEntity* entity = nullptr;
+
+	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
+		for (da::core::CEntity* e : scene->getEntities()) {
+			if (e->getId() == guid) {
+				entity = e;
+				break;
+			}
+		}
+	}
+
+	if (!entity) return 0;
+
+	da::core::FComponentRef<da::core::CRigidBodyComponent> c = entity->getComponent<da::core::CRigidBodyComponent>();
+
+	if (!c.isValid()) return 0;
+
+	float x = luaL_checknumber(L, 4);
+	float y = luaL_checknumber(L, 5);
+	float z = luaL_checknumber(L, 6);
+
+	c->getPhysicsBody()->applyImpulse({ x,y,z });
+
+	return 0;
+}
+
 extern "C" static int lua_entity_get_pos(lua_State * L)
 {
 	uint64_t id1 = lua_tointeger(L, 2);
@@ -193,6 +234,121 @@ extern "C" static int lua_entity_get_pos(lua_State * L)
 	return 1;
 }
 
+extern "C" static int lua_entity_get_forward(lua_State * L)
+{
+	uint64_t id1 = lua_tointeger(L, 2);
+	uint64_t id2 = lua_tointeger(L, 3);
+
+	uint8_t ch[16];
+	memcpy(&ch[0], &id1, sizeof(id1));
+	memcpy(&ch[sizeof(id2)], &id2, sizeof(id2));
+
+	da::core::CGuid guid(ch);
+
+	if (!guid.isValid()) return 0;
+
+	const da::core::CEntity* entity = nullptr;
+
+	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
+		for (const da::core::CEntity* e : scene->getEntities()) {
+			if (e->getId() == guid) {
+				entity = e;
+				break;
+			}
+		}
+	}
+
+	if (!entity) return 0;
+
+	lua_newtable(L);
+	lua_newtable(L);
+	lua_pushnumber(L, entity->getTransform().forward().x);
+	lua_rawseti(L, -2, 1);
+	lua_pushnumber(L, entity->getTransform().forward().y);
+	lua_rawseti(L, -2, 2);
+	lua_pushnumber(L, entity->getTransform().forward().z);
+	lua_rawseti(L, -2, 3);
+
+	return 1;
+}
+
+extern "C" static int lua_entity_get_right(lua_State * L)
+{
+	uint64_t id1 = lua_tointeger(L, 2);
+	uint64_t id2 = lua_tointeger(L, 3);
+
+	uint8_t ch[16];
+	memcpy(&ch[0], &id1, sizeof(id1));
+	memcpy(&ch[sizeof(id2)], &id2, sizeof(id2));
+
+	da::core::CGuid guid(ch);
+
+	if (!guid.isValid()) return 0;
+
+	const da::core::CEntity* entity = nullptr;
+
+	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
+		for (const da::core::CEntity* e : scene->getEntities()) {
+			if (e->getId() == guid) {
+				entity = e;
+				break;
+			}
+		}
+	}
+
+	if (!entity) return 0;
+
+	lua_newtable(L);
+	lua_newtable(L);
+	lua_pushnumber(L, entity->getTransform().right().x);
+	lua_rawseti(L, -2, 1);
+	lua_pushnumber(L, entity->getTransform().right().y);
+	lua_rawseti(L, -2, 2);
+	lua_pushnumber(L, entity->getTransform().right().z);
+	lua_rawseti(L, -2, 3);
+
+	return 1;
+}
+
+extern "C" static int lua_entity_get_up(lua_State * L)
+{
+	uint64_t id1 = lua_tointeger(L, 2);
+	uint64_t id2 = lua_tointeger(L, 3);
+
+	uint8_t ch[16];
+	memcpy(&ch[0], &id1, sizeof(id1));
+	memcpy(&ch[sizeof(id2)], &id2, sizeof(id2));
+
+	da::core::CGuid guid(ch);
+
+	if (!guid.isValid()) return 0;
+
+	const da::core::CEntity* entity = nullptr;
+
+	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
+		for (const da::core::CEntity* e : scene->getEntities()) {
+			if (e->getId() == guid) {
+				entity = e;
+				break;
+			}
+		}
+	}
+
+	if (!entity) return 0;
+
+	lua_newtable(L);
+	lua_newtable(L);
+	lua_pushnumber(L, entity->getTransform().up().x);
+	lua_rawseti(L, -2, 1);
+	lua_pushnumber(L, entity->getTransform().up().y);
+	lua_rawseti(L, -2, 2);
+	lua_pushnumber(L, entity->getTransform().up().z);
+	lua_rawseti(L, -2, 3);
+
+	return 1;
+}
+
+
 namespace da::script::core
 {
 
@@ -212,7 +368,12 @@ namespace da::script::core
 
 		// Entity
 		lua_register(L, "native_entity_get_position", lua_entity_get_pos);
+		lua_register(L, "native_entity_get_forward", lua_entity_get_forward);
+		lua_register(L, "native_entity_get_up", lua_entity_get_right);
+		lua_register(L, "native_entity_get_right", lua_entity_get_up);
+
 		lua_register(L, "native_entity_set_position", lua_entity_set_pos);
+		lua_register(L, "native_entity_apply_velocity", lua_entity_apply_vel);
 	}
 
 }

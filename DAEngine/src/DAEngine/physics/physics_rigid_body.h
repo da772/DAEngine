@@ -37,6 +37,10 @@ namespace da::physics
 		virtual const glm::vec3& getAngularFactor() const = 0;
 		virtual const glm::vec3& getAngularVelocity() const = 0;
 
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		virtual void debugDraw() = 0;
+#endif
+
 		IPhysicsShape* getShape() const;
 
 		static IPhysicsRigidBody* create(IPhysicsShape* shape, IPhysicsMotionState* state, float mass, const glm::vec3& inertia);

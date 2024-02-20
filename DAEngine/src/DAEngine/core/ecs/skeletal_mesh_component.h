@@ -29,6 +29,8 @@ namespace da::core
 		void render();
 		void updateAnimation(float dt);
 		void onShutdown();
+		void setTransform(const glm::mat4& transform);
+		glm::mat4 getTransform();
 		da::graphics::CSkeletalMesh* getSkeletalMesh() const;
 		da::graphics::CSkeletalAnimation* getSkeletalAnimation() const;
 		da::graphics::CSkeletalAnimator* getSkeletalAnimator() const;
@@ -37,10 +39,14 @@ namespace da::core
 #endif
 
 	private:
+		void onTransform(const glm::mat4& oldT, const glm::mat4& newT);
+	private:
 		da::graphics::CSkeletalMesh* m_skeletalmesh;
 		da::graphics::CSkeletalAnimation* m_animation;
 		da::graphics::CSkeletalAnimator* m_animator;
 		bool m_inverseNormals;
+		glm::mat4 m_transform = glm::mat4(1.f);;
+		glm::mat4 m_finalTransform;
 
 	};
 }

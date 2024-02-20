@@ -43,6 +43,15 @@ namespace da::platform
 			::bgfx::submit(view, { m_shader->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
 			m_toDraw.erase(m_toDraw.begin() + i);
 		}
+
+		CBgfxLineMesh* line = (CBgfxLineMesh*)m_shapes[EDebugShapes::Line];
+		uint64_t state = BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A;
+		glm::vec3 color(1.f);
+		::bgfx::setUniform(m_uniform, glm::value_ptr(color));
+		line->setBufferData();
+
+		::bgfx::setState(state);
+		::bgfx::submit(view, { m_shader->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
 	}
 
 	void CBgfxDebugRenderer::render(::bgfx::ViewId view)
@@ -152,20 +161,8 @@ namespace da::platform
 
 	void CBgfxDebugRenderer::drawLine(const glm::vec3& startPosition, const glm::vec3& endPosition, float width, const glm::vec4& color, bool wireFrame /*= true*/, bool xray /*= true*/)
 	{
-		m_toDraw.push_back({ [startPosition, endPosition, color, width, this, wireFrame] {
-
-			CBgfxLineMesh* line = (CBgfxLineMesh*)m_shapes[EDebugShapes::Line];
-			::bgfx::setUniform(m_uniform, glm::value_ptr(color));
-			FTransientBufferData data = line->addTransientLine(startPosition, endPosition, width);
-
-			::bgfx::setVertexBuffer(0, data.pVBH);
-			::bgfx::setIndexBuffer(data.pIBH);
-
-			delete data.pVBH;
-			delete data.pIBH;
-
-			return wireFrame;
-			}, xray });
+		CBgfxLineMesh* line = (CBgfxLineMesh*)m_shapes[EDebugShapes::Line];
+		line->addTransientLine(startPosition, endPosition, color, width);
 	}
 
 	void CBgfxDebugRenderer::drawMesh(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, da::graphics::CStaticMesh* mesh, const glm::vec4& color, bool wireFrame /*= true*/, bool xray /*= true*/)
@@ -213,6 +210,11 @@ namespace da::platform
 		return m_frameBuffer;
 	}
 
+	void CBgfxDebugRenderer::clear()
+	{
+		CBgfxLineMesh* line = (CBgfxLineMesh*)m_shapes[EDebugShapes::Line];
+		line->clearAll();
+	}
 
 }
 

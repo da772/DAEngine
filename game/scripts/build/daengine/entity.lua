@@ -26,6 +26,28 @@ function Entity.prototype.getPosition(self)
     local result = native_entity_get_position(nil, self.Id.d1, self.Id.d2)
     return __TS__New(Vector3, result[1], result[2], result[3])
 end
+function Entity.prototype.getForward(self)
+    local result = native_entity_get_forward(nil, self.Id.d1, self.Id.d2)
+    return __TS__New(Vector3, result[1], result[2], result[3])
+end
+function Entity.prototype.getRight(self)
+    local result = native_entity_get_right(nil, self.Id.d1, self.Id.d2)
+    return __TS__New(Vector3, result[1], result[2], result[3])
+end
+function Entity.prototype.getUp(self)
+    local result = native_entity_get_up(nil, self.Id.d1, self.Id.d2)
+    return __TS__New(Vector3, result[1], result[2], result[3])
+end
+function Entity.prototype.applyVelocity(self, vel)
+    native_entity_apply_velocity(
+        nil,
+        self.Id.d1,
+        self.Id.d2,
+        vel.x,
+        vel.y,
+        vel.z
+    )
+end
 function Entity.prototype.GetId(self)
     return self.Id
 end

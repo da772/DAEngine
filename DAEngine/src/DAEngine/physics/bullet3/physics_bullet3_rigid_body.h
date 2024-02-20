@@ -30,6 +30,10 @@ namespace da::physics
 		virtual const glm::vec3& getAngularFactor() const override;
 		virtual const glm::vec3& getAngularVelocity() const override;
 
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		virtual void debugDraw() override;
+#endif
+
 	private:
 		btRigidBody* m_rigidBody;
 		glm::vec3 m_linearFactor, m_gravityFactor, m_angularFactor;

@@ -72,6 +72,6 @@ namespace da::core
 		// Ensure vectors are orthogonalized
 		m_right = -glm::normalize(m_right);
 		m_up = glm::normalize(m_up);
-		m_forward = glm::cross(-m_right, m_up);
+		m_forward = glm::cross(m_right, m_up);
 	}
 }

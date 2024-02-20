@@ -208,7 +208,7 @@ namespace da::platform {
 
 		for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
 			da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
-			const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
+            const glm::mat4& model = meshComponent->getTransform();
 
 			for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
 				da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
@@ -296,7 +296,7 @@ namespace da::platform {
 
 			for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
 				da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
-				const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
+                const glm::mat4& model = meshComponent->getTransform();
 
 				for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
 					da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
@@ -437,7 +437,7 @@ namespace da::platform {
         
 		for (size_t i = 0; i < skeletalMeshcontainer.getCount(); i++) {
 			da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(i);
-			const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
+            const glm::mat4& model = meshComponent->getTransform();
 
             for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
                 da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();

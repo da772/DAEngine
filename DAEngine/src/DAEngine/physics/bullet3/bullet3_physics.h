@@ -5,6 +5,8 @@
 
 namespace da::physics
 {
+	class CBullet3DebugDraw;
+
 	class CBullet3Physics : public CPhysicsType
 	{
 	public:
@@ -23,6 +25,9 @@ namespace da::physics
 		btSequentialImpulseConstraintSolver* m_solver;
 		btDiscreteDynamicsWorld* m_dynamicsWorld;
 		btCollisionWorld* m_collisionWorld;
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		CBullet3DebugDraw* m_debugDraw;
+#endif
 
 	};
 }

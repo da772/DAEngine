@@ -27,6 +27,9 @@ namespace da::maths
 		glm::vec3 right() const;
 		bool isDirty() const;
 
+		void addOnTransform(const std::function<void(const glm::mat4& oldT, const glm::mat4&)>& f);
+		void removeOnTransform(const std::function<void(const glm::mat4& oldT, const glm::mat4&)>& f);
+
 	protected:
 		glm::vec3 m_position;
 		glm::quat m_rotation;
@@ -39,5 +42,7 @@ namespace da::maths
 
 		bool m_dirty = true;
 
+	private:
+		std::vector <std::function<void(const glm::mat4& oldT, const glm::mat4& newT)>> m_callbacks;
 	};
 }

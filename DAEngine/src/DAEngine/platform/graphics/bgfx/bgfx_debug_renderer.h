@@ -26,7 +26,7 @@ namespace da::platform
 		Line
 	};
 
-	class CBgfxDebugRenderer : public da::graphics::CDebugRender
+	class CBgfxDebugRenderer : public da::graphics::IDebugRenderer
 	{
 	public:
 		virtual void drawCube(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;
@@ -44,6 +44,9 @@ namespace da::platform
 
 		void onReset(size_t width, size_t height);
 		::bgfx::FrameBufferHandle getFrameBuffer() const;
+
+
+		void clear() override;
 
 	private:
 		::bgfx::FrameBufferHandle createFrameBuffer();

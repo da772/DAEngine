@@ -82,7 +82,7 @@ float PCF(Sampler _sampler, vec4 _shadowCoord, float _bias, vec2 _texelSize)
 
 vec3 shadowPass(vec4 v_shadowcoord0, vec4 v_shadowcoord1, vec4 v_shadowcoord2)
 {
-	float shadowMapBias = 0.005;
+	float shadowMapBias = 0.003;
 
 	vec2 texelSize = vec2_splat(1.0/2048.0);
 
@@ -101,7 +101,7 @@ vec3 shadowPass(vec4 v_shadowcoord0, vec4 v_shadowcoord1, vec4 v_shadowcoord2)
     visibility = min(visibility, PCF(s_shadowMap2, v_shadowcoord2, shadowMapBias, texelSize));
 
 	float outVis = 1.0;
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 3; i++) {
 		outVis -= 0.2*(1.0-visibility);
 	}
 	

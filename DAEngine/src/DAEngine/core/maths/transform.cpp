@@ -73,10 +73,19 @@ namespace da::maths
 	{
 		if (m_dirty) {
 			m_dirty = false;
+			glm::mat4 oldMat = m_mat;
 			glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position);
 			glm::mat4 rotationMatrix = glm::toMat4(m_rotation);
 			glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0), m_scale);
-			m_mat = translationMatrix * rotationMatrix * scaleMatrix;;
+			m_mat = translationMatrix * rotationMatrix * scaleMatrix;
+
+			m_up = glm::vec3(m_mat[0][0], m_mat[1][0], m_mat[2][0]);
+			m_right = glm::vec3(m_mat[0][1], m_mat[1][1], m_mat[2][1]);
+			m_forward = glm::vec3(m_mat[0][2], m_mat[1][2], m_mat[2][2]);
+
+			for (const auto& f : m_callbacks) {
+				f(oldMat, m_mat);
+			}
 		}
 		
 		return m_mat;
@@ -84,7 +93,7 @@ namespace da::maths
 
 	glm::vec3 CTransform::forward() const
 	{
-		return -m_forward;
+		return m_forward;
 	}
 
 	glm::vec3 CTransform::up() const
@@ -123,6 +132,24 @@ namespace da::maths
 	bool CTransform::isDirty() const
 	{
 		return m_dirty;
+	}
+
+	void CTransform::addOnTransform(const std::function<void(const glm::mat4&, const glm::mat4&)>& f)
+	{
+		m_callbacks.push_back(f);
+	}
+
+	void CTransform::removeOnTransform(const std::function<void(const glm::mat4&, const glm::mat4&)>& f)
+	{
+		const auto& it = std::find_if(m_callbacks.begin(), m_callbacks.end(), [f](const std::function<void(const glm::mat4&, const glm::mat4&)>& ff) {
+			return f.target<void(const glm::mat4&, const glm::mat4&)>() == ff.target<void(const glm::mat4&, const glm::mat4&)>();
+			});
+
+		if (it == m_callbacks.end()) {
+			return;
+		}
+
+		m_callbacks.erase(it);
 	}
 
 }

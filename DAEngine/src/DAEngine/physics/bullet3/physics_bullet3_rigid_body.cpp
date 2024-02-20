@@ -135,4 +135,17 @@ namespace da::physics
 		return m_angularFactor;
 	}
 
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+	void CBullet3RigidBody::debugDraw()
+	{
+		ASSERT(m_rigidBody);
+		CBullet3Physics* physics = dynamic_cast<CBullet3Physics*>(CPhysics::getPhysicsType());
+		ASSERT(physics);
+		CBullet3Shape* shape = dynamic_cast<CBullet3Shape*>(m_shape);
+		ASSERT(shape);
+		
+		physics->getDynamicsWorld()->debugDrawObject(m_rigidBody->getWorldTransform(), shape->getShape(), { 1.f, 0.f,0.f });
+	}
+#endif
+
 }

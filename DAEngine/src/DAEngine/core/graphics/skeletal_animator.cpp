@@ -284,7 +284,7 @@ namespace da::graphics
 				glm::vec3 skew;
 				glm::vec4 perspective;
 				glm::decompose(transform, scale, rotation, translation, skew, perspective);
-				da::graphics::CDebugRender::getInstance()->drawLine(baseTranslation, translation, .025f, { 1.f,0.f,1.f,1.f }, false, true);
+				da::graphics::CDebugRender::drawLine(baseTranslation, translation, .025f, { 1.f,0.f,1.f,1.f }, false, true);
 
 				bones.push(&b->children[i]);
 			}
