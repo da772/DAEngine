@@ -89,15 +89,15 @@ export class CameraComponent extends NativeComponent implements Component {
 
         if (Input.KeyPressed(Inputs.KEY_LEFT)) // A
         {
-            this.GetEntity().applyVelocity(this.GetEntity().getRight().mul(this.velSpeed).mul(dt));
+            this.GetEntity().applyVelocity(this.GetEntity().getRight().mul(this.velSpeed).mul(dt).neg());
         }
 
         if (Input.KeyPressed(Inputs.KEY_RIGHT)) // D
         {
-            this.GetEntity().applyVelocity(this.GetEntity().getRight().mul(this.velSpeed).mul(dt).neg());
+            this.GetEntity().applyVelocity(this.GetEntity().getRight().mul(this.velSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_SPACE)) // Space
+        if (Input.KeyPressed(Inputs.KEY_B)) // Space
         {
             this.GetEntity().applyVelocity(this.GetEntity().getUp().mul(this.velSpeed).mul(dt));
         }

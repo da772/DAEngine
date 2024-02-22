@@ -20,13 +20,15 @@ namespace da::graphics
 	CSkeletalAnimation::CSkeletalAnimation(const std::string& animationPath, CSkeletalMesh* model)
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate
+		const aiScene* scene = importer.ReadFile(animationPath,
+			  aiProcess_Triangulate
 			| aiProcess_GenSmoothNormals
-			| aiProcess_ConvertToLeftHanded
 			| aiProcess_CalcTangentSpace
+			| aiProcess_FixInfacingNormals
 			| aiProcess_PreTransformVertices
 			| aiProcess_TransformUVCoords
-			| aiProcess_FlipUVs);
+			| aiProcess_FlipUVs
+			| aiProcess_FlipWindingOrder);
 		ASSERT(scene && scene->mRootNode);
 		auto animation = scene->mAnimations[0];
 		m_Duration = animation->mDuration;

@@ -64,14 +64,13 @@ namespace da::core
 
 	void CCamera::updateVectors()
 	{
-		glm::mat4 rotationMatrix = glm::toMat4(m_rotation);
-		m_forward = glm::vec3(rotationMatrix * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
-		m_right = glm::vec3(rotationMatrix * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
-		m_up = glm::vec3(rotationMatrix * glm::vec4(0.0f, 0.0f, 1.0f, 0.0f));
+		m_forward = glm::rotate(m_rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+		m_right = glm::cross(m_forward, glm::vec3(0.0f, 0.0f, 1.0f));
+		m_up = glm::cross(m_right, m_forward);
 
 		// Ensure vectors are orthogonalized
-		m_right = -glm::normalize(m_right);
+		m_right = glm::normalize(m_right);
 		m_up = glm::normalize(m_up);
-		m_forward = glm::cross(m_right, m_up);
+		m_forward = glm::normalize(m_forward);
 	}
 }

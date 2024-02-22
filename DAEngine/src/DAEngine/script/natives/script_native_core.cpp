@@ -55,7 +55,7 @@ extern "C" static int lua_camera_rotate(lua_State * L)
 	float x = luaL_checknumber(L, 2);
 	float y = luaL_checknumber(L, 3);
 
-	da::core::CCamera::getCamera()->offsetRotation({ x,0.f, -y });
+	da::core::CCamera::getCamera()->offsetRotation({ x,0.f, y });
 	return 0;
 }
 
@@ -369,8 +369,8 @@ namespace da::script::core
 		// Entity
 		lua_register(L, "native_entity_get_position", lua_entity_get_pos);
 		lua_register(L, "native_entity_get_forward", lua_entity_get_forward);
-		lua_register(L, "native_entity_get_up", lua_entity_get_right);
-		lua_register(L, "native_entity_get_right", lua_entity_get_up);
+		lua_register(L, "native_entity_get_up", lua_entity_get_up);
+		lua_register(L, "native_entity_get_right", lua_entity_get_right);
 
 		lua_register(L, "native_entity_set_position", lua_entity_set_pos);
 		lua_register(L, "native_entity_apply_velocity", lua_entity_apply_vel);

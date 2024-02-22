@@ -31,11 +31,12 @@ namespace da::graphics
 		const aiScene* pScene = importer.ReadFileFromMemory(file.data(), file.size() * sizeof(char),
 			aiProcess_Triangulate
 			| aiProcess_GenSmoothNormals
-			| aiProcess_ConvertToLeftHanded
 			| aiProcess_CalcTangentSpace
 			| aiProcess_FixInfacingNormals
 			| aiProcess_PreTransformVertices
 			| aiProcess_TransformUVCoords
+			| aiProcess_FlipUVs
+			| aiProcess_FlipWindingOrder
 		);
 
 		static glm::mat4 transformMat = glm::mat4(1.f);//glm::toMat4(glm::quat(glm::radians(glm::vec3(90.f))));

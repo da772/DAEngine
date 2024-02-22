@@ -176,7 +176,7 @@ namespace da::platform {
 		glm::vec3 _at = cam->position() + cam->forward();
 		bx::Vec3 at(_at.x, _at.y, _at.z);
 		bx::Vec3 up(cam->up().x, cam->up().y, cam->up().z);
-		bx::mtxLookAt(glm::value_ptr(lightView), pos, at, up);
+		bx::mtxLookAt(glm::value_ptr(lightView), pos, at, up, bx::Handedness::Right);
 		// projection matrix
 		
 		glm::mat4 proj;
@@ -187,7 +187,7 @@ namespace da::platform {
 			nearPlane,
 			farPlane,
 			bgfx::getCaps()->homogeneousDepth,
-			bx::Handedness::Left);
+			bx::Handedness::Right);
 
 		const auto corners = getFrustumCornersWorldSpace(proj * lightView);
 
@@ -198,7 +198,7 @@ namespace da::platform {
 		}
 		center /= corners.size();
 		glm::vec3 lightDir = getLightDir() + center;;
-		bx::mtxLookAt(glm::value_ptr(lightView), {lightDir.x, lightDir.y, lightDir.z}, { center.x, center.y, center.z }, { 0.f,0.f,1.f });
+		bx::mtxLookAt(glm::value_ptr(lightView), {lightDir.x, lightDir.y, lightDir.z}, { center.x, center.y, center.z }, { 0.f,0.f,1.f }, bx::Handedness::Right);
 		//const auto lightView = glm::lookAt(center + lightDir, center, glm::vec3(0.0f, 0.0f, 1.0f));
 
 		float minX = std::numeric_limits<float>::max();
@@ -239,7 +239,7 @@ namespace da::platform {
 
 
 		glm::mat4 lightProj;
-		bx::mtxOrtho(glm::value_ptr(lightProj), minX, maxX, minY, maxY, minZ, maxZ, 0, ::bgfx::getCaps()->homogeneousDepth);
+		bx::mtxOrtho(glm::value_ptr(lightProj), minX, maxX, minY, maxY, minZ, maxZ, 0, ::bgfx::getCaps()->homogeneousDepth, bx::Handedness::Right);
 
 		return { lightProj, lightView };
 	}

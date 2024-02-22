@@ -187,8 +187,8 @@ namespace da::platform {
         bx::Vec3 pos(cam->position().x, cam->position().y, cam->position().z);
         glm::vec3 _at = cam->position() + cam->forward();
         bx::Vec3 at(_at.x, _at.y, _at.z);
-        bx::Vec3 up(cam->up().x, cam->up().y, cam->up().z);
-        bx::mtxLookAt(glm::value_ptr(m_viewMat), pos, at, up);
+        bx::Vec3 up(0.f, 0.f, cam->up().z);
+        bx::mtxLookAt(glm::value_ptr(m_viewMat), pos, at, up, bx::Handedness::Right);
         // projection matrix
         bx::mtxProj(glm::value_ptr(m_projMat),
             da::core::CCamera::getCamera()->fov,
@@ -196,7 +196,7 @@ namespace da::platform {
             da::core::CCamera::getCamera()->zNear,
             da::core::CCamera::getCamera()->zFar,
             bgfx::getCaps()->homogeneousDepth,
-            bx::Handedness::Left);
+            bx::Handedness::Right);
         bgfx::setViewTransform(view, glm::value_ptr(m_viewMat), glm::value_ptr(m_projMat));
     }
 
@@ -211,7 +211,7 @@ namespace da::platform {
             zNear,
             zFar,
 			bgfx::getCaps()->homogeneousDepth,
-			bx::Handedness::Left);
+			bx::Handedness::Right);
         //glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, .1f, 1000.f);
 		bgfx::setViewTransform(view, glm::value_ptr(viewMat), glm::value_ptr(projMat));
 	}

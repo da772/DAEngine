@@ -268,7 +268,7 @@ namespace da::platform {
 			}
 
             //bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, nearPlane, farPlane, ::bgfx::getCaps()->homogeneousDepth);
-            bx::mtxOrtho(glm::value_ptr(lightProj), -farPlane, farPlane, -farPlane, farPlane, nearPlane, farPlane, 0, ::bgfx::getCaps()->homogeneousDepth);
+            bx::mtxOrtho(glm::value_ptr(lightProj), -farPlane, farPlane, -farPlane, farPlane, nearPlane, farPlane, 0, ::bgfx::getCaps()->homogeneousDepth, bx::Handedness::Right);
             lightView = m_shadow.getCamera().matrix();
             std::pair<glm::mat4, glm::mat4> p = m_shadow.getLightSpaceProjMatrix(nearPlane, farPlane, i, lightView);;
             lightProj = p.first;

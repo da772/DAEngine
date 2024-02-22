@@ -76,12 +76,12 @@ function CameraComponent.prototype.characterInput(self, dt)
         self:GetEntity():applyVelocity(self:GetEntity():getForward():mul(self.velSpeed):mul(dt):neg())
     end
     if Input:KeyPressed(Inputs.KEY_LEFT) then
-        self:GetEntity():applyVelocity(self:GetEntity():getRight():mul(self.velSpeed):mul(dt))
-    end
-    if Input:KeyPressed(Inputs.KEY_RIGHT) then
         self:GetEntity():applyVelocity(self:GetEntity():getRight():mul(self.velSpeed):mul(dt):neg())
     end
-    if Input:KeyPressed(Inputs.KEY_SPACE) then
+    if Input:KeyPressed(Inputs.KEY_RIGHT) then
+        self:GetEntity():applyVelocity(self:GetEntity():getRight():mul(self.velSpeed):mul(dt))
+    end
+    if Input:KeyPressed(Inputs.KEY_B) then
         self:GetEntity():applyVelocity(self:GetEntity():getUp():mul(self.velSpeed):mul(dt))
     end
 end

@@ -79,9 +79,10 @@ namespace da::maths
 			glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0), m_scale);
 			m_mat = translationMatrix * rotationMatrix * scaleMatrix;
 
-			m_up = glm::vec3(m_mat[0][0], m_mat[1][0], m_mat[2][0]);
-			m_right = glm::vec3(m_mat[0][1], m_mat[1][1], m_mat[2][1]);
-			m_forward = glm::vec3(m_mat[0][2], m_mat[1][2], m_mat[2][2]);
+
+			m_right = -glm::vec3(rotationMatrix[0]);
+			m_forward = -glm::vec3(rotationMatrix[1]);
+			m_up = glm::vec3(rotationMatrix[2]);
 
 			for (const auto& f : m_callbacks) {
 				f(oldMat, m_mat);

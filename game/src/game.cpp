@@ -205,9 +205,10 @@ void CGame::onInitialize()
 		//cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
 
 		e4->getTransform().setPosition({ 0,5 + (i * -5.f), 5.f });
-		e4->getTransform().setRotation({ 90.f,0.f,90.f });
+		e4->getTransform().setRotation({0.f,0.f,180.f});
+		
 
-		glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.15f });
+		glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.15f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(90.f, 0.f, 0.f))));
 
 		cc->setTransform(offset);
 
@@ -282,9 +283,11 @@ void CGame::onUpdate(float dt)
 	da::core::FComponentRef<da::core::CSkeletalMeshComponent> component = e4->getComponent<da::core::CSkeletalMeshComponent>();
 
 	glm::mat4 worldBoneTransform;
+
+
 	if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_RightHand"), component->getTransform(), worldBoneTransform)) {
-		worldBoneTransform = glm::translate(worldBoneTransform, glm::vec3(0.f, -3.f, -9.f));
-		worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(glm::vec3(80.f, 185.f, 84.f))));
+		worldBoneTransform = glm::translate(worldBoneTransform, glm::vec3(0.f, -3.f, 10.f));
+		worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(glm::vec3(-90.f, 185.f, 90.f))));
 
 		glm::vec3 scale;
 		glm::quat rotation;
@@ -301,10 +304,13 @@ void CGame::onUpdate(float dt)
 	component->getSkeletalAnimator()->debugRenderJoints(component->getTransform());
 	//da::graphics::CDebugRender::getInstance()->drawLine({ 0.f, 0.f, -10.f }, { 0.f,0.f, 10.f }, 1.f, { 1.f,0.f,0.f,1.f });
 #endif
+	
+
+
 
 	if (component->getSkeletalAnimator()->getBoneWorldTransform(HASHSTR("mixamorig_Head"), component->getTransform(), worldBoneTransform)) {
 		worldBoneTransform = glm::translate(worldBoneTransform, glm::vec3(0.f, 18.f, 0.f));
-		worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(glm::vec3(-80.f, 184.f, 0.f))));
+		worldBoneTransform = worldBoneTransform * glm::toMat4(glm::quat(glm::radians(glm::vec3(80.f, -180.f, 0.f))));
 
 		glm::vec3 scale;
 		glm::quat rotation;
@@ -319,6 +325,29 @@ void CGame::onUpdate(float dt)
 	
 	da::physics::FRayData data(da::physics::ERayType::All, { 0.f,0.f, 10.f }, { 0.f, 0.f, -10.f });
 	da::physics::CPhysics::rayCast(data);
+
+	da::core::FComponentRef<da::core::CRigidBodyComponent> rb = e4->getComponent<da::core::CRigidBodyComponent>();
+
+	if (ImGui::Button("Forward+"))
+	{
+		
+		rb->getPhysicsBody()->applyImpulse(e4->getTransform().forward() * 1000.f * dt);
+	}
+
+	if (ImGui::Button("Forward-"))
+	{
+		rb->getPhysicsBody()->applyImpulse(e4->getTransform().forward() * -1000.f * dt);
+	}
+
+	if (ImGui::Button("Right+"))
+	{
+		rb->getPhysicsBody()->applyImpulse(e4->getTransform().right() * 1000.f * dt);
+	}
+
+	if (ImGui::Button("Right-"))
+	{
+		rb->getPhysicsBody()->applyImpulse(e4->getTransform().right() * -1000.f * dt);
+	}
 
 #ifdef DA_DEBUG
 	if (ImGui::Begin("Hit?")) {
