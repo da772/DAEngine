@@ -156,7 +156,7 @@ namespace da::platform {
 	void CBgfxPBRShader::bindLightPos(const glm::vec3& pos, const glm::mat4* mtx)
 	{
         glm::vec4 p(pos, 1.0);
-        bgfx::setUniform(m_lightMtx, &(mtx[0]), SHADOW_MAP_SIZE);
+        bgfx::setUniform(m_lightMtx, (void*)mtx, SHADOW_MAP_SIZE);
 	}
 
 }
