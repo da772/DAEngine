@@ -2,7 +2,7 @@
 #include <bgfx/bgfx.h>
 
 #define SHADOW_MAP_RENDER_TARGETS 4
-#define SHADOW_MAP_RENDER_TARGET_SIZE 2048
+#define SHADOW_MAP_RENDER_TARGET_SIZE 4096
 
 namespace da::core
 {
@@ -31,6 +31,10 @@ namespace da::platform
 		void splitFrustum(float* _splits, uint8_t _numSplits, float _near, float _far, float _splitWeight = 0.75f);
 		void worldSpaceFrustumCorners(float* _corners24f, float _near, float _far, float _projWidth, float _projHeight, const float* _invViewMtx);
 		void convertLeftToRightHandedZUp(float* matrix);
+
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		void renderDebug();
+#endif
 
 	private:
 		union
@@ -214,6 +218,11 @@ namespace da::platform
 		::bgfx::FrameBufferHandle m_rtShadowMap[SHADOW_MAP_RENDER_TARGETS];
 
 		std::function<void(uint8_t id, CBgfxGraphicsMaterial* shader, uint64_t state)> m_renderFunc;
+
+		float m_near, m_far;
+		float m_cascadePerc;
+
+		bool m_showDebug;
 
 	};
 }

@@ -7,8 +7,11 @@
 #include <bx/math.h>
 #include "DAEngine\platform\graphics\bgfx\bgfx_graphics_material.h"
 
-#define RNEAR .1f
-#define RFAR 100.f
+#include "DAEngine/debug/debug_menu_bar.h"
+#include <imgui.h>
+
+#define RNEAR m_near
+#define RFAR m_far
 
 namespace da::platform
 {
@@ -18,6 +21,7 @@ namespace da::platform
 		m_ambientPass = 1.0f;
 		m_lightingPass = 1.0f;
 
+	
 
 		m_csmFarDistances[0] = 30.0f;
 		m_csmFarDistances[1] = 90.0f;
@@ -30,6 +34,9 @@ namespace da::platform
 		m_shadowMapParam1 = 500.f;
 		m_depthValuePow = 1.0f;
 		m_showSmCoverage = 0.0f;
+		m_near = .1f;
+		m_far = 100.f;
+		m_cascadePerc = .6f;
 
 		m_shadowMapTexelSize = 1 / SHADOW_MAP_RENDER_TARGET_SIZE;
 
@@ -62,13 +69,17 @@ namespace da::platform
 		//m_hBlur = new CBgfxGraphicsMaterial("shaders/cluster/vs_shadowmaps_hblur", "shaders/cluster/fs_shadowmaps_hblur.sc");
 		m_drawDepth = new CBgfxGraphicsMaterial("shaders/cluster/vs_shadowmaps_unpackdepth.sc", "shaders/cluster/fs_shadowmaps_unpackdepth.sc");
 		m_packDepth = new CBgfxGraphicsMaterial("shaders/cluster/vs_shadowmaps_packdepth_linear.sc", "shaders/cluster/fs_shadowmaps_packdepth_linear.sc");
-		m_colorLighting = new CBgfxGraphicsMaterial("shaders/cluster/vs_shadowmaps_color_lighting_linear_csm.sc", "shaders/cluster/fs_shadowmaps_color_lighting_hard_linear_csm.sc");
+		//m_colorLighting = new CBgfxGraphicsMaterial("shaders/cluster/vs_shadowmaps_color_lighting_linear_csm.sc", "shaders/cluster/fs_shadowmaps_color_lighting_hard_linear_csm.sc");
 
 		//m_vBlur->initialize();
 		//m_hBlur->initialize();
 		m_drawDepth->initialize();
 		m_packDepth->initialize();
-		m_colorLighting->initialize();
+		//m_colorLighting->initialize();
+
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Shadows"), &m_showDebug, [this]() { this->renderDebug(); });
+#endif
 	}
 
 	void CBgfxShadowCSM::submitUniforms()
@@ -88,7 +99,7 @@ namespace da::platform
 
 		glm::vec3 dir = glm::radians(lightDir);
 
-		bx::mtxLookAt(lightView[0], { dir.x, dir.y, dir.z }, { 0, 0, 0}, { 0.f,0.f,1.f }, bx::Handedness::Right);
+		bx::mtxLookAt(lightView[0], { 3, 3, 10 }, { 0, 0, 0}, { 0.f,0.f,1.f }, bx::Handedness::Right);
 
 		float invCamView[16];
 		float fov = 0.f;
@@ -101,7 +112,7 @@ namespace da::platform
 			bx::Vec3 up(cam->up().x, cam->up().y, cam->up().z);
 			float lightView[16];
 			bx::mtxLookAt(lightView, pos, at, up, bx::Handedness::Right);
-			bx::mtxInverse(invCamView, lightView);
+			bx::mtxInverse(invCamView, glm::value_ptr(cam->matrix()));
 		}
 
 		// Compute split distances.
@@ -112,7 +123,7 @@ namespace da::platform
 			, uint8_t(4)
 			, RNEAR
 			, RFAR
-			, .75f
+			, m_cascadePerc
 		);
 
 		// Update uniforms.
@@ -148,6 +159,17 @@ namespace da::platform
 
 			bx::Vec3 min = { 9000.0f,  9000.0f,  9000.0f };
 			bx::Vec3 max = { -9000.0f, -9000.0f, -9000.0f };
+
+			glm::vec3 center = glm::vec3(0.f);
+
+			for (uint8_t jj = 0; jj < numCorners; ++jj)
+			{
+				bx::Vec3 xyz = bx::load<bx::Vec3>(frustumCorners[ii][jj]);
+				center = center + glm::vec3(xyz.x,xyz.y, xyz.z);
+			}
+
+			center /= (float)numCorners;
+			//bx::mtxLookAt(lightView[0], { lightDir.x, lightDir.y, lightDir.z }, { center.x, center.y, center.z }, { 0.f,0.f,1.f }, bx::Handedness::Right);
 
 			for (uint8_t jj = 0; jj < numCorners; ++jj)
 			{
@@ -375,6 +397,10 @@ namespace da::platform
 		delete m_drawDepth;
 		delete m_packDepth;
 		delete m_colorLighting;
+
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Shadows"));
+#endif
 	}
 
 	void CBgfxShadowCSM::setRenderFunc(const std::function<void(uint8_t id, CBgfxGraphicsMaterial* shader, uint64_t state)>& f)
@@ -418,5 +444,24 @@ namespace da::platform
 
 		memcpy(matrix, tmp, sizeof(tmp));
 	}
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+	void CBgfxShadowCSM::renderDebug()
+	{
+		if (ImGui::Begin("Shadow Debug", &m_showDebug)) {
+
+			ImGui::InputFloat("m_shadowMapBias", &m_shadowMapBias);
+			ImGui::InputFloat("m_shadowMapOffset", &m_shadowMapOffset);
+			ImGui::InputFloat("m_shadowMapParam0", &m_shadowMapParam0);
+			ImGui::InputFloat("m_shadowMapParam1", &m_shadowMapParam1);
+			ImGui::InputFloat("m_depthValuePow", &m_depthValuePow);
+			ImGui::InputFloat("m_showSmCoverage", &m_showSmCoverage);
+			ImGui::InputFloat("m_far", &m_far);
+			ImGui::InputFloat("m_near", &m_near);
+			ImGui::InputFloat("m_cascadePerc", &m_cascadePerc);
+
+		}
+		ImGui::End();
+	}
+#endif
 
 }

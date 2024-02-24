@@ -172,7 +172,7 @@
 					, u_shadowMapHardness
 					);
 #endif
-
+/*
 	vec3 v = v_viewDir;
 	vec3 vd = -normalize(v_viewDir);
 	vec3 n = v_normal;
@@ -196,4 +196,6 @@
 	vec3 final = toGamma(abs(ambient + brdf)) + (colorCoverage * u_shadowMapShowCoverage);
 	gl_FragColor.xyz = vec3(visibility,visibility,visibility);//mix(fogColor, final, fogFactor);
 	gl_FragColor.w = 1.0;
+*/
+	return visibility;
 }

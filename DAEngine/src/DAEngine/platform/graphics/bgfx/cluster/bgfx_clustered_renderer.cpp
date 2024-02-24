@@ -350,21 +350,21 @@ namespace da::platform {
                 if (mesh->getHidden()) continue;
 
                 ::bgfx::setTransform(glm::value_ptr(model));
-                //setNormalMatrix(model);
+                setNormalMatrix(model);
                 ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
                 ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
                 m_shadowCSM.submitUniforms();
                 m_pbr.bindLightPos(m_shadow.getCamera().position(), (glm::mat4*)m_shadowCSM.getShadowMat(0));
-                //uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
+                uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
                 for (size_t s = 0; s < SHADOW_MAP_RENDER_TARGETS; s++) {
                     ::bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + s, m_shadow.getShadowMaps().ShadowMaps[s].Uniform, m_shadowCSM.getShadowMap(s));
                 }
-                //m_ssao.bindSSAO();
+                m_ssao.bindSSAO();
 
                 //BGFX_STATE_PT_LINES
-                ::bgfx::setState(state | 0);
+                ::bgfx::setState(state | state);
                 // preserve buffer bindings between submit calls
-                ::bgfx::submit(vLighting, {m_shadowCSM.TEST_GET_MAT()->getHandle()}, 0, ~BGFX_DISCARD_BINDINGS);
+                ::bgfx::submit(vLighting, program, 0, ~BGFX_DISCARD_BINDINGS);
             }
         }
 
