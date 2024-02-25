@@ -230,6 +230,8 @@ namespace da::platform {
 
         glm::mat4 lightMtx[SHADOW_MAP_SIZE];
 
+        glm::vec4 cascades[4] = { {5.f, 0.1f,0.f,0.f}, {10.f,5.f,0.f, 0.f}, {50.f,10.f,0.f,0.f} };
+
         for (size_t i = 0; i < m_shadow.getShadowMapsCount(); i++) {
 
             if (!::bgfx::isValid(m_shadow.getShadowMaps().ShadowMaps[i].FrameBuffer))
@@ -245,27 +247,9 @@ namespace da::platform {
             );
 
             glm::mat4 lightProj, lightView;
-            float nearPlane = 1000.f* (50.f * i);
-            float farPlane = (1000.f * (50.f * i) + 1000.f);
-            if (i == 0) {
-                nearPlane = .1f;
-                farPlane  = 5.f;
-            }
-
-            if (i == 1) {
-                nearPlane = 5.f;
-                farPlane = 20.f;
-            }
-
-			if (i == 2) {
-				nearPlane = 20.f;
-				farPlane = 50.f;
-			}
-
-			if (i == 3) {
-				nearPlane = 5.f;
-				farPlane = 15.f;
-			}
+            float nearPlane = cascades[i].y;
+            float farPlane = cascades[i].x;
+            
 
             //bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, nearPlane, farPlane, ::bgfx::getCaps()->homogeneousDepth);
             bx::mtxOrtho(glm::value_ptr(lightProj), -farPlane, farPlane, -farPlane, farPlane, nearPlane, farPlane, 0, ::bgfx::getCaps()->homogeneousDepth, bx::Handedness::Right);
@@ -273,24 +257,23 @@ namespace da::platform {
             std::pair<glm::mat4, glm::mat4> p = m_shadow.getLightSpaceProjMatrix(nearPlane, farPlane, i, lightView);;
             lightProj = p.first;
             lightView = p.second;
-            lightMtx[i] = lightProj * lightView;
 
 
-            const ::bgfx::Caps* caps = ::bgfx::getCaps();
-            const float sy = caps->originBottomLeft ? 0.5f : -0.5f;
-            const float sz = caps->homogeneousDepth ? 0.5f : 1.0f;
-            const float tz = caps->homogeneousDepth ? 0.5f : 0.0f;
-            const float mtxCrop[16] =
-            {
-                0.5f, 0.0f, 0.0f, 0.0f,
-                0.0f,   sy, 0.0f, 0.0f,
-                0.0f, 0.0f, sz,   0.0f,
-                0.5f, 0.5f, tz,   1.0f,
-            };
+			const ::bgfx::Caps* caps = ::bgfx::getCaps();
+			const float sy = caps->originBottomLeft ? 0.5f : -0.5f;
+			const float sz = caps->homogeneousDepth ? 0.5f : 1.0f;
+			const float tz = caps->homogeneousDepth ? 0.5f : 0.0f;
+			const float mtxCrop[16] =
+			{
+				0.5f, 0.0f, 0.0f, 0.0f,
+				0.0f,   sy, 0.0f, 0.0f,
+				0.0f, 0.0f, sz,   0.0f,
+				0.5f, 0.5f, tz,   1.0f,
+			};
 
-            float mtxTmp[16];
-            bx::mtxMul(mtxTmp, glm::value_ptr(lightProj), mtxCrop);
-            bx::mtxMul(glm::value_ptr(lightMtx[i]), glm::value_ptr(lightView), mtxTmp);
+			float mtxTmp[16];
+			bx::mtxMul(mtxTmp, glm::value_ptr(lightProj), mtxCrop);
+			bx::mtxMul(glm::value_ptr(lightMtx[i]), glm::value_ptr(lightView), mtxTmp);
 
             ::bgfx::setViewTransform(vShadow + i, glm::value_ptr(lightView), glm::value_ptr(lightProj));
 
@@ -422,6 +405,7 @@ namespace da::platform {
                 ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
                 m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
                 uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
+                ::bgfx::setUniform(m_shadow.getCascadeLevelUniform(), cascades, 3);
                 for (size_t s = 0; s < m_shadow.getShadowMapsCount(); s++) {
                     ::bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + s, m_shadow.getShadowMaps().ShadowMaps[s].Uniform, m_shadow.getShadowMaps().ShadowMaps[s].Texture);
                 }
@@ -449,6 +433,9 @@ namespace da::platform {
                 ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
                 ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
                 ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+
+               
+                ::bgfx::setUniform(m_shadow.getCascadeLevelUniform(), cascades, 3);
                 m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
                 uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
                 for (size_t s = 0; s < m_shadow.getShadowMapsCount(); s++) {

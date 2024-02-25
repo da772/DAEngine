@@ -39,10 +39,13 @@ namespace da::platform {
 		void createFrameBuffers();
 		inline bool useShadowSampler() const { return m_useShadowSampler; }
 
+		inline ::bgfx::UniformHandle getCascadeLevelUniform() const { return m_cascadeLevels; }
+
 		inline glm::vec3& getLightDir() { return m_shadowDir; }
 
 	private:
 		::bgfx::UniformHandle m_depthScaleOffset = BGFX_INVALID_HANDLE;
+		::bgfx::UniformHandle m_cascadeLevels = BGFX_INVALID_HANDLE;
 		FBgfxShadowMaps m_shadowMaps;
 		glm::vec3 m_shadowDir = { 0.348f, 0.870f, 0.7f };
 

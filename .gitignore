@@ -50,3 +50,4 @@ Prototype/shaders/output.txt
 *.rdc
 game/shaders/output.txt
 game/shaders/timestamp.txt
+*.hlsl

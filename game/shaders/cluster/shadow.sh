@@ -18,6 +18,9 @@ SAMPLER2DSHADOW(s_shadowMap2, SAMPLER_SHADOW_MAP_FAR);
 #	define Sampler sampler2DShadow
 #endif // SHADOW_PACKED_DEPTH
 
+uniform mat4 u_sunLightMtx[3];
+uniform vec4 u_cascadePlaneDistances[3];
+
 vec2 lit(vec3 _ld, vec3 _n, vec3 _vd, float _exp)
 {
 	//diff
@@ -31,9 +34,8 @@ vec2 lit(vec3 _ld, vec3 _n, vec3 _vd, float _exp)
 	return max(vec2(ndotl, spec), 0.0);
 }
 
-float hardShadow(Sampler _sampler, vec4 _shadowCoord, float _bias)
+float hardShadow(Sampler _sampler, vec3 texCoord, float _bias)
 {
-	vec3 texCoord = _shadowCoord.xyz/_shadowCoord.w;
 #if SHADOW_PACKED_DEPTH
 	return step(texCoord.z-_bias, unpackRgbaToFloat(texture2D(_sampler, texCoord.xy) ) );
 #else
@@ -41,13 +43,9 @@ float hardShadow(Sampler _sampler, vec4 _shadowCoord, float _bias)
 #endif // SHADOW_PACKED_DEPTH
 }
 
-float PCF(Sampler _sampler, vec4 _shadowCoord, float _bias, vec2 _texelSize)
+float PCF(Sampler _sampler, vec3 _shadowCoord, float _bias, vec2 _texelSize)
 {
-	vec2 texCoord = _shadowCoord.xy/_shadowCoord.w;
-
-	bool outside = any(greaterThan(texCoord, vec2_splat(1.0)))
-				|| any(lessThan   (texCoord, vec2_splat(0.0)))
-				 ;
+	bool outside = any(greaterThan(_shadowCoord.xy, vec2_splat(1.0))) || any(lessThan   (_shadowCoord.xy, vec2_splat(0.0)));
 
 	if (outside)
 	{
@@ -55,58 +53,87 @@ float PCF(Sampler _sampler, vec4 _shadowCoord, float _bias, vec2 _texelSize)
 	}
 
 	float result = 0.0;
-	vec2 offset = _texelSize * _shadowCoord.w;
+	vec2 offset = _texelSize;
 
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(-1.5, -1.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(-1.5, -0.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(-1.5,  0.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(-1.5,  1.5) * offset, 0.0, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-1.5, -1.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-1.5, -0.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-1.5,  0.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-1.5,  1.5) * offset, 0.0), _bias);
 
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(-0.5, -1.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(-0.5, -0.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(-0.5,  0.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(-0.5,  1.5) * offset, 0.0, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-0.5, -1.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-0.5, -0.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-0.5,  0.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-0.5,  1.5) * offset, 0.0), _bias);
 
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(0.5, -1.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(0.5, -0.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(0.5,  0.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(0.5,  1.5) * offset, 0.0, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(0.5, -1.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(0.5, -0.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(0.5,  0.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(0.5,  1.5) * offset, 0.0), _bias);
 
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(1.5, -1.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(1.5, -0.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(1.5,  0.5) * offset, 0.0, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec4(vec2(1.5,  1.5) * offset, 0.0, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(1.5, -1.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(1.5, -0.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(1.5,  0.5) * offset, 0.0), _bias);
+	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(1.5,  1.5) * offset, 0.0), _bias);
 
 	return result / 16.0;
 }
 
-vec3 shadowPass(vec4 v_shadowcoord0, vec4 v_shadowcoord1, vec4 v_shadowcoord2)
+vec3 shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal)
 {
-	float shadowMapBias = 0.003;
+	float shadowMapBias = mix(0.005, 0.0, v_lightNormal);
 
-	vec2 texelSize = vec2_splat(1.0/2048.0);
+	vec4 fragPosViewSpace = mul(v_view, vec4(fragPosWorldSpace, 1.0));
+	float depthValue = abs(fragPosViewSpace.z);
 
-    /*  Debug cascaded shadow maps */
-    /*
-    vec3 visibility0 =  (1.0-PCF(s_shadowMap0, v_shadowcoord0, shadowMapBias, texelSize)) * vec3(1.0, 0.0, 0.0);
-    vec3 visibility1 =  (1.0-PCF(s_shadowMap1, v_shadowcoord1, shadowMapBias, texelSize)) * vec3(0.0, 1.0, 0.0);
-    vec3 visibility2 = (1.0-PCF(s_shadowMap2, v_shadowcoord2, shadowMapBias, texelSize)) * vec3(0.0, 0.0, 1.0);
-    
-    return  vec4(visibility0 + visibility1 + visibility2, 1.0);
-    
-    */
+ 	int layer = -1;
+    for (int i = 0; i < 2; ++i)
+    {
+        if (depthValue < u_cascadePlaneDistances[i].x)
+        {
+            layer = i;
+            break;
+        }
+    }
+    if (layer == -1)
+    {
+        layer = 2;
+    }
+
+	vec4 fragPosLightSpace = mul(u_sunLightMtx[layer], vec4(fragPosWorldSpace, 1.0));
+
+	vec2 texelSize = vec2_splat(1.0/4096.0);
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    //projCoords = projCoords * 0.5 + 0.5;
+
+	float currentDepth = projCoords.z;
+
+	// keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
+    if (currentDepth > 1.0)
+    {
+        return 1.0;
+    }
 	
-    float visibility = PCF(s_shadowMap0, v_shadowcoord0, shadowMapBias, texelSize);
-    visibility = min(visibility, PCF(s_shadowMap1, v_shadowcoord1, shadowMapBias, texelSize));
-    visibility = min(visibility, PCF(s_shadowMap2, v_shadowcoord2, shadowMapBias, texelSize));
+	bool selection0 = layer == 0;
+	bool selection1 = layer == 1;
+	bool selection2 = layer == 2;
 
-	float outVis = 1.0;
-	for (int i = 0; i < 3; i++) {
-		outVis -= 0.2*(1.0-visibility);
+	float visibility = 1.0;
+
+	if (selection0)
+	{
+		visibility = PCF(s_shadowMap0, projCoords, shadowMapBias, texelSize);
+	} 
+	else if (selection1)
+	{
+		visibility = PCF(s_shadowMap1, projCoords, shadowMapBias, texelSize);
+	}
+	else if (selection2)
+	{
+		visibility = PCF(s_shadowMap2, projCoords, shadowMapBias, texelSize);
 	}
 	
-	
-	return outVis;
+	return visibility;
 }
 
 

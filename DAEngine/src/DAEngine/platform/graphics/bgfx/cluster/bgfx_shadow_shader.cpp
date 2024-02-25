@@ -40,6 +40,8 @@ namespace da::platform {
 		m_skmaterial = new CBgfxGraphicsMaterial("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
 		m_skmaterial->initialize();
 
+		m_cascadeLevels = bgfx::createUniform("u_cascadePlaneDistances", bgfx::UniformType::Vec4, SHADOW_MAP_SIZE);
+
 		for (size_t i = 0; i < SHADOW_MAP_SIZE; i++) {
 			std::string name = std::string("s_shadowMap") + std::to_string(i);
 			m_shadowMaps.ShadowMaps[i].Uniform = ::bgfx::createUniform(name.c_str(), ::bgfx::UniformType::Sampler, SHADOW_MAP_SIZE);
@@ -54,6 +56,8 @@ namespace da::platform {
 		m_skmaterial->shutdown();
 		delete m_skmaterial;
 		m_skmaterial = nullptr;
+
+		BGFXDESTROY(m_cascadeLevels);
 
 
 		for (size_t i = 0; i < SHADOW_MAP_SIZE; i++) {
@@ -163,20 +167,17 @@ namespace da::platform {
 	}
 
 	std::pair<glm::mat4, glm::mat4> CBgfxShadowShader::getLightSpaceProjMatrix(const float nearPlane, const float farPlane, int i, glm::mat4 lightView1)
-	{
-		da::core::CCamera* camera = da::core::CCamera::getCamera();
-
-		
+	{	
 		// view matrix
 		da::core::CCamera* cam = da::core::CCamera::getCamera();
 
-		glm::mat4 lightView;
+		glm::mat4 camView;
 
 		bx::Vec3 pos(cam->position().x, cam->position().y, cam->position().z);
 		glm::vec3 _at = cam->position() + cam->forward();
 		bx::Vec3 at(_at.x, _at.y, _at.z);
 		bx::Vec3 up(cam->up().x, cam->up().y, cam->up().z);
-		bx::mtxLookAt(glm::value_ptr(lightView), pos, at, up, bx::Handedness::Right);
+		bx::mtxLookAt(glm::value_ptr(camView), pos, at, up, bx::Handedness::Right);
 		// projection matrix
 		
 		glm::mat4 proj;
@@ -189,7 +190,7 @@ namespace da::platform {
 			bgfx::getCaps()->homogeneousDepth,
 			bx::Handedness::Right);
 
-		const auto corners = getFrustumCornersWorldSpace(proj * lightView);
+		const auto corners = getFrustumCornersWorldSpace(proj * camView);
 
 		glm::vec3 center = glm::vec3(0, 0, 0);
 		for (const auto& v : corners)
@@ -197,9 +198,8 @@ namespace da::platform {
 			center += glm::vec3(v);
 		}
 		center /= corners.size();
-		glm::vec3 lightDir = getLightDir() + center;;
-		bx::mtxLookAt(glm::value_ptr(lightView), {lightDir.x, lightDir.y, lightDir.z}, { center.x, center.y, center.z }, { 0.f,0.f,1.f }, bx::Handedness::Right);
-		//const auto lightView = glm::lookAt(center + lightDir, center, glm::vec3(0.0f, 0.0f, 1.0f));
+
+		const auto lightView = glm::lookAt(center + getLightDir(), center, glm::vec3(0.0f, 0.0f, 1.0f));
 
 		float minX = std::numeric_limits<float>::max();
 		float maxX = std::numeric_limits<float>::lowest();
@@ -219,7 +219,7 @@ namespace da::platform {
 		}
 
 		// Tune this parameter according to the scene
-		constexpr float zMult = 1.f;
+		constexpr float zMult = 3.f;
 		if (minZ < 0)
 		{
 			minZ *= zMult;

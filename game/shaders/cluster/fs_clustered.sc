@@ -1,4 +1,4 @@
-$input v_worldpos, v_normal, v_tangent, v_texcoord0, v_shadowcoord0, v_shadowcoord1,v_shadowcoord2
+$input v_worldpos, v_normal, v_tangent, v_texcoord0
 
 #define READ_MATERIAL
 #define INCLUDE_PASS
@@ -15,7 +15,7 @@ uniform vec4 u_camPos;
 void main()
 {
     // Shadow mapping   
-    float visibility = shadowPass(v_shadowcoord0, v_shadowcoord1, v_shadowcoord2);
+    float visibility = shadowPass(v_worldpos, u_view, (dot(-u_sunLightDirection, normalize(v_normal))) );
 
     // Lighting pass
     vec3 radianceOut = lightPass(v_worldpos, v_normal, v_tangent, v_texcoord0, u_camPos, gl_FragCoord, visibility);

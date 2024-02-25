@@ -127,6 +127,17 @@ int main(int argc, const char* argv[])
 		return -1;
 	}
 
+	bool debug = false;
+
+	for (int i = 0; i < argc; i++) {
+		std::string a(argv[i]);
+
+		if (a == "--debug") {
+			debug = true;
+			break;
+		}
+	}
+
 	const std::filesystem::path p(argv[1]);
 	
 	da::cout.stream.open((p.string() + "/output.txt").c_str(), std::ofstream::out);
@@ -173,7 +184,10 @@ int main(int argc, const char* argv[])
 			da::cout << "Creating Directory for: " << dirEntry.path().string() << " AT: " << folderPath << da::endl; 
 			for (EShaderTypes shaderType : s_platformShaderTypes[i])
 			{
-				GenerateShader({"-i", argv[1]}, dirEntry, (EPlatformTypes)i, shaderType);
+				std::vector<std::string> args = { "-i", argv[1] };
+				if (debug) args.push_back("--debug");
+
+				GenerateShader(args, dirEntry, (EPlatformTypes)i, shaderType);
 			}
 		}
 		
@@ -231,6 +245,8 @@ int GenerateShader(std::vector<std::string> args, const std::filesystem::directo
 
 	args.push_back("--profile");
 	args.push_back(s_shaderPlatform[(int)shaderType]);
+
+	args.push_back("--debug");
 
 
 	int totalSize = 0;
