@@ -18,8 +18,10 @@ SAMPLER2DSHADOW(s_shadowMap2, SAMPLER_SHADOW_MAP_FAR);
 #	define Sampler sampler2DShadow
 #endif // SHADOW_PACKED_DEPTH
 
-uniform mat4 u_sunLightMtx[3];
-uniform vec4 u_cascadePlaneDistances[3];
+#define CASCADE_COUNT 3
+
+uniform mat4 u_sunLightMtx[CASCADE_COUNT];
+uniform vec4 u_cascadePlaneDistances[CASCADE_COUNT];
 
 vec2 lit(vec3 _ld, vec3 _n, vec3 _vd, float _exp)
 {
@@ -78,15 +80,32 @@ float PCF(Sampler _sampler, vec3 _shadowCoord, float _bias, vec2 _texelSize)
 	return result / 16.0;
 }
 
-vec3 shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal)
+float calculateShadow(Sampler _sampler, float _currentDepth, vec3 _shadowCoord, float _bias, vec2 _texelSize)
 {
-	float shadowMapBias = mix(0.005, 0.0, v_lightNormal);
+    // PCF
+    float shadow = 0.0;
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = shadow2D(_sampler, vec3(_shadowCoord.xy + vec2(x, y) * _texelSize, _shadowCoord.z-_bias));
+            shadow += (_currentDepth - _bias) > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+    shadow /= 9.0;
+        
+    return 1.0-shadow;
+}
+
+float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal)
+{
+	float shadowMapBias = mix(0.0035, 0.0, v_lightNormal);
 
 	vec4 fragPosViewSpace = mul(v_view, vec4(fragPosWorldSpace, 1.0));
 	float depthValue = abs(fragPosViewSpace.z);
 
  	int layer = -1;
-    for (int i = 0; i < 2; ++i)
+    for (int i = 0; i < CASCADE_COUNT-1; ++i)
     {
         if (depthValue < u_cascadePlaneDistances[i].x)
         {
@@ -120,20 +139,39 @@ vec3 shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal)
 
 	float visibility = 1.0;
 
+	const float biasModifier = 0.5f;
+	shadowMapBias *= (1 / ((u_cascadePlaneDistances[layer].x) * biasModifier));
+
+#if 0
 	if (selection0)
 	{
-		visibility = PCF(s_shadowMap0, projCoords, shadowMapBias, texelSize);
+		return vec3(1.0,0.0,0.0);
 	} 
 	else if (selection1)
 	{
-		visibility = PCF(s_shadowMap1, projCoords, shadowMapBias, texelSize);
+		return vec3(0.0,1.0,0.0);
 	}
 	else if (selection2)
 	{
-		visibility = PCF(s_shadowMap2, projCoords, shadowMapBias, texelSize);
+		return vec3(0.0,0.0,1.0);
 	}
-	
+#endif
+
+	if (selection0)
+	{
+		visibility = calculateShadow(s_shadowMap0, currentDepth, projCoords, shadowMapBias, texelSize);
+	} 
+	else if (selection1)
+	{
+		visibility = calculateShadow(s_shadowMap1, currentDepth, projCoords, shadowMapBias, texelSize);
+	}
+	else if (selection2)
+	{
+		visibility = calculateShadow(s_shadowMap2, currentDepth, projCoords, shadowMapBias, texelSize);
+	}
+
 	return visibility;
+	
 }
 
 

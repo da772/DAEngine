@@ -163,6 +163,9 @@ int main(int argc, const char* argv[])
 	timeStamp << std::to_string(newTime);
 	timeStamp.close();
 
+
+	std::vector<std::string> failed;
+
 	for (const auto& dirEntry : recursive_directory_iterator(p)) {
 		if (dirEntry.is_directory()) {
 			continue;
@@ -187,11 +190,28 @@ int main(int argc, const char* argv[])
 				std::vector<std::string> args = { "-i", argv[1] };
 				if (debug) args.push_back("--debug");
 
-				GenerateShader(args, dirEntry, (EPlatformTypes)i, shaderType);
+				if (GenerateShader(args, dirEntry, (EPlatformTypes)i, shaderType) != 0)
+				{
+					failed.push_back(folderPath + std::string("\\") + dirEntry.path().filename().string() + std::string(".") + s_shaderName[(int)shaderType]);
+				}
 			}
 		}
 		
 	}
+
+	if (!failed.empty())
+	{
+		da::cout << "\nShader compilation FAILED, see log for details:" << da::endl;
+		for (const std::string& s : failed) {
+			da::cout << s << da::endl;
+		}
+		da::cout << "\nShader compilation FAILED, see log for details:" << da::endl;
+	}
+	else
+	{
+		da::cout << "\nShader compilation SUCCESS" << da::endl;
+	}
+
 
 	return 0;
 }
