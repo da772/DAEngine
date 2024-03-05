@@ -27,6 +27,7 @@ namespace da::physics
 		virtual void setActivationState(EPhysicsActivationState state) = 0;
 		virtual void setUserData(void* ptr) = 0;
 
+		virtual void setLinearVelocity(const glm::vec3& impulse) = 0;
 		virtual void setAngularVelocity(const glm::vec3&) = 0;
 		virtual void setAngularFactor(const glm::vec3& factor) = 0;
 		virtual void setGravityFactor(const glm::vec3& factor) = 0;

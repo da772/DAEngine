@@ -55,7 +55,7 @@ namespace da::core {
 			T* component = findComponent<T>(guid);
 
 			if (!component) return false;
-
+			component->~T();
 			m_components.erase(component, component + sizeof(T));
 			m_count--;
 			return true;

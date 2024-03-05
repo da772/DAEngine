@@ -1,5 +1,5 @@
 #include <DAEngine/core/entry.h>
-#include "game.h"
+#include "game/game.h"
 
 da::CApp* da::createApp(int argc, const char** argv)
 {

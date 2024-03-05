@@ -20,6 +20,7 @@ namespace da::physics
 		virtual void setUserData(void* ptr) override;
 		
 
+		virtual void setLinearVelocity(const glm::vec3& impulse) override;
 		virtual void setAngularVelocity(const glm::vec3&) override;
 		virtual void setAngularFactor(const glm::vec3& factor) override;
 		virtual void setGravityFactor(const glm::vec3& factor) override;

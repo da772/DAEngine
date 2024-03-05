@@ -87,9 +87,16 @@ namespace da::physics
 		m_rigidBody->setUserPointer(ptr);
 	}
 
-	void CBullet3RigidBody::setAngularVelocity(const glm::vec3&)
+	void CBullet3RigidBody::setLinearVelocity(const glm::vec3& impulse)
 	{
-		throw std::logic_error("The method or operation is not implemented.");
+		ASSERT(m_rigidBody);
+		m_rigidBody->setLinearVelocity({impulse.x, impulse.y, impulse.z});
+	}
+
+	void CBullet3RigidBody::setAngularVelocity(const glm::vec3& impulse)
+	{
+		ASSERT(m_rigidBody);
+		m_rigidBody->setAngularVelocity({ impulse.x, impulse.y, impulse.z });
 	}
 
 	const glm::vec3& CBullet3RigidBody::getAngularVelocity() const

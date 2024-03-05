@@ -21,6 +21,8 @@ namespace da
 	}
 }
 
+class CCharacter;
+
 class CGame : public da::CApp {
 
 public:
@@ -54,5 +56,6 @@ private:
 	bool m_showScriptDebugHard = false;
 	da::graphics::CSkeletalAnimation* m_swordSlashAnimation;
 	da::graphics::CSkeletalAnimation* m_runAnimation;
+	CCharacter* m_character;
 
 };

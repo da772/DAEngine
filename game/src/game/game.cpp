@@ -39,6 +39,8 @@
 #include <DAEngine/physics/physics_rigid_body.h>
 #include <DAEngine/core/ecs/rigid_body_component.h>
 
+#include "character/character.h"
+
 
 void CGame::createModules()
 {
@@ -190,7 +192,7 @@ void CGame::onInitialize()
 	da::graphics::CSkeletalAnimation* animation = m_swordSlashAnimation;
 
 	for (int i = 1; i < 2; i++) {
-
+		break;
 		if (i == 1) {
 			m_runAnimation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
 			animation = m_runAnimation;
@@ -243,6 +245,10 @@ void CGame::onInitialize()
 	c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg"));
 	c->getStaticMesh()->getMaterial(0).uvScale = { 11.f,11.f };
 	c->getStaticMesh()->getMaterial(0).doubleSided = true;
+
+	m_character = new CCharacter();
+	m_character->initialize();
+
 	return;
 
 
@@ -270,6 +276,8 @@ void CGame::onInitialize()
 
 void CGame::onUpdate(float dt)
 {
+	m_character->update(dt);
+	return;
 	if (dt > 1.0) return;
 
 	float moveSpeed = 0.f;//1.5f;
@@ -328,26 +336,11 @@ void CGame::onUpdate(float dt)
 
 	da::core::FComponentRef<da::core::CRigidBodyComponent> rb = e4->getComponent<da::core::CRigidBodyComponent>();
 
-	if (ImGui::Button("Forward+"))
-	{
-		
-		rb->getPhysicsBody()->applyImpulse(e4->getTransform().forward() * 1000.f * dt);
-	}
+	glm::vec3 cPos = e4->getTransform().position();
+	glm::vec3 cOffset = (e4->getTransform().up() * .5f) + e4->getTransform().forward()*-2.f;
 
-	if (ImGui::Button("Forward-"))
-	{
-		rb->getPhysicsBody()->applyImpulse(e4->getTransform().forward() * -1000.f * dt);
-	}
-
-	if (ImGui::Button("Right+"))
-	{
-		rb->getPhysicsBody()->applyImpulse(e4->getTransform().right() * 1000.f * dt);
-	}
-
-	if (ImGui::Button("Right-"))
-	{
-		rb->getPhysicsBody()->applyImpulse(e4->getTransform().right() * -1000.f * dt);
-	}
+	da::core::CCamera::getCamera()->setPosition(cPos+cOffset);
+	//da::core::CCamera::getCamera()->lookAt(cPos + e4->getTransform().up()*.25f);
 
 #ifdef DA_DEBUG
 	if (ImGui::Begin("Hit?")) {
@@ -376,6 +369,8 @@ void CGame::onUpdate(float dt)
 
 void CGame::onShutdown()
 {
+	m_character->shutdown();
+	delete m_character;
 #ifdef DA_DEBUG
 	da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"));
 #endif

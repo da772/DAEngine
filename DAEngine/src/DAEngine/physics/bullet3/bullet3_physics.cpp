@@ -55,8 +55,8 @@ namespace da::physics
 		}
 
 		m_dynamicsWorld->stepSimulation(dt, 10, 1.f / 60.f);
-		m_collisionWorld->debugDrawWorld();
-		m_dynamicsWorld->debugDrawWorld();
+		//m_collisionWorld->debugDrawWorld();
+		//m_dynamicsWorld->debugDrawWorld();
 
 		//print positions of all objects
 		for (int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
