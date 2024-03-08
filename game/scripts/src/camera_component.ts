@@ -10,7 +10,7 @@ export class CameraComponent extends NativeComponent implements Component {
 
     cursorPos : Vector2 = new Vector2();
     camSpeed : number = 5;
-    velSpeed : number = 5;
+    velSpeed : number = 5000;
 
     initialize(): void {
         print("camera component init");
@@ -18,7 +18,6 @@ export class CameraComponent extends NativeComponent implements Component {
     }
     update(dt: number): void {
         this.cameraInput(dt);
-        this.characterInput(dt);
         
         let pos : Vector2 = Input.CursorPos();
         
@@ -72,34 +71,6 @@ export class CameraComponent extends NativeComponent implements Component {
             {
                 Camera.Rotate(new Vector2(this.cursorPos.y - pos.y, this.cursorPos.x - pos.x).mul(180.0 / 600.0));
             }
-        }
-    }
-    
-    characterInput(dt: number)
-    {
-        if (Input.KeyPressed(Inputs.KEY_UP)) // W
-        {
-            this.GetEntity().applyVelocity(this.GetEntity().getForward().mul(this.velSpeed).mul(dt));
-        }
-
-        if (Input.KeyPressed(Inputs.KEY_DOWN)) // S
-        {
-            this.GetEntity().applyVelocity(this.GetEntity().getForward().mul(this.velSpeed).mul(dt).neg());
-        }
-
-        if (Input.KeyPressed(Inputs.KEY_LEFT)) // A
-        {
-            this.GetEntity().applyVelocity(this.GetEntity().getRight().mul(this.velSpeed).mul(dt).neg());
-        }
-
-        if (Input.KeyPressed(Inputs.KEY_RIGHT)) // D
-        {
-            this.GetEntity().applyVelocity(this.GetEntity().getRight().mul(this.velSpeed).mul(dt));
-        }
-
-        if (Input.KeyPressed(Inputs.KEY_B)) // Space
-        {
-            this.GetEntity().applyVelocity(this.GetEntity().getUp().mul(this.velSpeed).mul(dt));
         }
     }
 

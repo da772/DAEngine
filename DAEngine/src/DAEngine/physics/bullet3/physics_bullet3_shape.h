@@ -52,4 +52,16 @@ namespace da::physics
 		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::Capsule; }
 
 	};
+
+	class CBullet3ConvexHullShape : public CBullet3Shape, public  CPhysicsShapeConvexHull
+	{
+	public:
+		CBullet3ConvexHullShape(da::graphics::CStaticMesh* mesh);
+		virtual ~CBullet3ConvexHullShape();
+		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::ConvexHull; }
+		virtual da::graphics::CStaticMesh* getMesh() const override;
+	private:
+		da::graphics::CStaticMesh* m_mesh;
+
+	};
 }

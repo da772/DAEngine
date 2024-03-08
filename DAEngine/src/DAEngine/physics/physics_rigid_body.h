@@ -23,6 +23,7 @@ namespace da::physics
 		virtual glm::mat4 getTransform() const = 0;
 		virtual void setTransform(const glm::mat4& transform) = 0;
 		virtual void applyImpulse(const glm::vec3& impulse) = 0;
+		virtual void applyImpulse(const glm::vec3& impulse, const glm::vec3& location) = 0;
 		virtual void setRestitution(float restitution) = 0;
 		virtual void setActivationState(EPhysicsActivationState state) = 0;
 		virtual void setUserData(void* ptr) = 0;
@@ -37,6 +38,7 @@ namespace da::physics
 		virtual const glm::vec3& getGravityFactor() const = 0;
 		virtual const glm::vec3& getAngularFactor() const = 0;
 		virtual const glm::vec3& getAngularVelocity() const = 0;
+		virtual const glm::vec3& getLinearVelocity() const = 0;
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 		virtual void debugDraw() = 0;

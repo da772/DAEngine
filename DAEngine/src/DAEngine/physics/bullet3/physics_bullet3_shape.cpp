@@ -59,4 +59,30 @@ namespace da::physics
 
 	}
 
+	da::graphics::CStaticMesh* CBullet3ConvexHullShape::getMesh() const
+	{
+		return m_mesh;
+	}
+
+	CBullet3ConvexHullShape::CBullet3ConvexHullShape(da::graphics::CStaticMesh* mesh) : CPhysicsShapeConvexHull(mesh)
+	{
+		m_mesh = mesh;
+		const da::graphics::FMesh& m = mesh->getMeshes()[0];
+
+		btConvexHullShape* convexHull = new btConvexHullShape(0, 0, sizeof(btVector3));
+
+		btVector3* points = new btVector3[m.Indices.size()];
+
+		for (size_t i = 0; i < m.Indices.size(); i++) {
+			const auto& pos = m.Vertices[m.Indices[i]].Pos;
+			convexHull->addPoint({ pos.x, pos.y, pos.z });
+		}
+
+		m_shape = convexHull;
+	}
+
+	CBullet3ConvexHullShape::~CBullet3ConvexHullShape()
+	{
+	}
+
 }

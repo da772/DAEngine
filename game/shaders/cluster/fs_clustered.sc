@@ -15,8 +15,8 @@ uniform vec4 u_camPos;
 void main()
 {
     // Shadow mapping   
-    float visibility = shadowPass(v_worldpos, u_view, (dot(-u_sunLightDirection, normalize(v_normal))) );
-
+    float visibility = shadowPass(v_worldpos, u_view, dot( normalize(v_normal), u_sunLightDirection ));
+    
     // Lighting pass
     vec3 radianceOut = lightPass(v_worldpos, v_normal, v_tangent, v_texcoord0, u_camPos, gl_FragCoord, visibility);
 

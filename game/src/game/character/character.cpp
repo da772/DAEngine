@@ -35,17 +35,16 @@ void CCharacter::initialize()
 		//cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
 
 		m_entity->getTransform().setPosition({ 0,5, 5.f });
-		m_entity->getTransform().setRotation({ 0.f,0.f,180.f });
+		m_entity->setTag(HASHSTR("Character"));
 
-
-		glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.15f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(90.f, 0.f, 0.f))));
+		glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.15f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(90.f, 0.f, 180.f))));
 
 		cc->setTransform(offset);
 
 		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->addComponent<da::core::CRigidBodyComponent>(
 			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCapsule::create(.3f, 1.7f)
 				, da::physics::CPhysicsEntityMotionState::create(m_entity)
-				, 1.f
+				, 500.f
 				, { 0.f,0.f,0.f }));
 
 

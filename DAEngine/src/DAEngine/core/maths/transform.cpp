@@ -80,8 +80,8 @@ namespace da::maths
 			m_mat = translationMatrix * rotationMatrix * scaleMatrix;
 
 
-			m_right = -glm::vec3(rotationMatrix[0]);
-			m_forward = -glm::vec3(rotationMatrix[1]);
+			m_right = glm::vec3(rotationMatrix[0]);
+			m_forward = glm::vec3(rotationMatrix[1]);
 			m_up = glm::vec3(rotationMatrix[2]);
 
 			for (const auto& f : m_callbacks) {

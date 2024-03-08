@@ -14,6 +14,7 @@ namespace da::physics
 		glm::mat4 getTransform() const override;
 		virtual void setTransform(const glm::mat4& transform) override;
 		virtual void applyImpulse(const glm::vec3& impulse) override;
+		virtual void applyImpulse(const glm::vec3& impulse, const glm::vec3& location) override;
 		void setActivationState(EPhysicsActivationState state) override;
 		btRigidBody* getRigidBody() const;
 		virtual void setRestitution(float restitution) override;
@@ -30,6 +31,7 @@ namespace da::physics
 		virtual const glm::vec3& getGravityFactor() const override;
 		virtual const glm::vec3& getAngularFactor() const override;
 		virtual const glm::vec3& getAngularVelocity() const override;
+		virtual const glm::vec3& getLinearVelocity() const override;
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 		virtual void debugDraw() override;

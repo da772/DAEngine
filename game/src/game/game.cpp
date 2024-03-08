@@ -232,9 +232,9 @@ void CGame::onInitialize()
 	e2->getTransform().setRotation({ 0,0,0 });
 
 	c = e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx");
-	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 10.f, 10.f, .01f }), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
+	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 100.f, 100.f, .01f }), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
 
-	e2->getTransform().setScale({ 10,10,1.f });
+	e2->getTransform().setScale({ 100,100,1.f });
 	e2->setTag(HASHSTR("plane"));
 	//c = e2->addComponent<da::core::CSmeshComponent>("assets/terrain/terrain1.fbx");
 	//e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(c->getStaticMesh()), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
@@ -248,6 +248,9 @@ void CGame::onInitialize()
 
 	m_character = new CCharacter();
 	m_character->initialize();
+
+	m_vehicle = new CVehicle();
+	m_vehicle->initialize();
 
 	return;
 
@@ -277,6 +280,7 @@ void CGame::onInitialize()
 void CGame::onUpdate(float dt)
 {
 	m_character->update(dt);
+	m_vehicle->update(dt);
 	return;
 	if (dt > 1.0) return;
 
@@ -371,6 +375,9 @@ void CGame::onShutdown()
 {
 	m_character->shutdown();
 	delete m_character;
+
+	m_vehicle->shutdown();
+	delete m_vehicle;
 #ifdef DA_DEBUG
 	da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"));
 #endif

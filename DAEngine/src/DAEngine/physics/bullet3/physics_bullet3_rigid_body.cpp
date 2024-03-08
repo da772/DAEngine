@@ -56,6 +56,14 @@ namespace da::physics
 		m_rigidBody->applyCentralImpulse({ impulse.x, impulse.y, impulse.z });
 	}
 
+	void CBullet3RigidBody::applyImpulse(const glm::vec3& impulse, const glm::vec3& location)
+	{
+		ASSERT(m_rigidBody);
+		setActivationState(EPhysicsActivationState::ActiveTag);
+		m_rigidBody->activate(true);
+		m_rigidBody->applyImpulse({ impulse.x, impulse.y, impulse.z }, {location.x, location.y, location.z});
+	}
+
 	void CBullet3RigidBody::setActivationState(EPhysicsActivationState state)
 	{
 		ASSERT(m_rigidBody);
@@ -91,6 +99,13 @@ namespace da::physics
 	{
 		ASSERT(m_rigidBody);
 		m_rigidBody->setLinearVelocity({impulse.x, impulse.y, impulse.z});
+	}
+
+	const glm::vec3& CBullet3RigidBody::getLinearVelocity() const
+	{
+		ASSERT(m_rigidBody);
+		btVector3 velocity = m_rigidBody->getLinearVelocity();
+		return { velocity.x(), velocity.y(), velocity.z() };
 	}
 
 	void CBullet3RigidBody::setAngularVelocity(const glm::vec3& impulse)
@@ -153,6 +168,7 @@ namespace da::physics
 		
 		physics->getDynamicsWorld()->debugDrawObject(m_rigidBody->getWorldTransform(), shape->getShape(), { 1.f, 0.f,0.f });
 	}
+
 #endif
 
 }

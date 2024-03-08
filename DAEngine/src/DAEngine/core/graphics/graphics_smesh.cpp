@@ -37,7 +37,7 @@ namespace da::graphics
 			| aiProcess_FlipWindingOrder
 			| aiProcess_FlipUVs
 		);
-		static glm::mat4 transformMat = glm::mat4(1.0f) * glm::rotate(glm::mat4(1.0f), glm::radians(180.f), glm::vec3(0.0f, 1.0f, 0.0f));
+		static glm::mat4 transformMat = glm::mat4(1.0f);// *glm::rotate(glm::mat4(1.0f), glm::radians(180.f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		m_meshes = {};
 		m_meshes.reserve(pScene->mNumMeshes);

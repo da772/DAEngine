@@ -1,6 +1,7 @@
 #pragma once
 
 #include <daengine.h>
+#include "vehicle/vehicle.h"
 
 namespace da
 {
@@ -57,5 +58,6 @@ private:
 	da::graphics::CSkeletalAnimation* m_swordSlashAnimation;
 	da::graphics::CSkeletalAnimation* m_runAnimation;
 	CCharacter* m_character;
+	CVehicle* m_vehicle;
 
 };

@@ -26,4 +26,9 @@ namespace da::physics
 		return new da::physics::CBullet3Capsule(radius, height);
 	}
 
+	da::physics::CPhysicsShapeConvexHull* CPhysicsShapeConvexHull::create(da::graphics::CStaticMesh* mesh)
+	{
+		return new da::physics::CBullet3ConvexHullShape(mesh);
+	}
+
 }

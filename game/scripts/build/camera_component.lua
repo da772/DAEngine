@@ -25,7 +25,7 @@ function CameraComponent.prototype.____constructor(self, ...)
     NativeComponent.prototype.____constructor(self, ...)
     self.cursorPos = __TS__New(Vector2)
     self.camSpeed = 5
-    self.velSpeed = 5
+    self.velSpeed = 5000
 end
 function CameraComponent.prototype.initialize(self)
     print(nil, "camera component init")
@@ -33,7 +33,6 @@ function CameraComponent.prototype.initialize(self)
 end
 function CameraComponent.prototype.update(self, dt)
     self:cameraInput(dt)
-    self:characterInput(dt)
     local pos = Input:CursorPos()
     if not pos:equals(self.cursorPos) then
         self.cursorPos = pos
@@ -66,23 +65,6 @@ function CameraComponent.prototype.cameraInput(self, dt)
         if self.cursorPos.x >= 0 and self.cursorPos.y >= 0 then
             Camera:Rotate(__TS__New(Vector2, self.cursorPos.y - pos.y, self.cursorPos.x - pos.x):mul(180 / 600))
         end
-    end
-end
-function CameraComponent.prototype.characterInput(self, dt)
-    if Input:KeyPressed(Inputs.KEY_UP) then
-        self:GetEntity():applyVelocity(self:GetEntity():getForward():mul(self.velSpeed):mul(dt))
-    end
-    if Input:KeyPressed(Inputs.KEY_DOWN) then
-        self:GetEntity():applyVelocity(self:GetEntity():getForward():mul(self.velSpeed):mul(dt):neg())
-    end
-    if Input:KeyPressed(Inputs.KEY_LEFT) then
-        self:GetEntity():applyVelocity(self:GetEntity():getRight():mul(self.velSpeed):mul(dt):neg())
-    end
-    if Input:KeyPressed(Inputs.KEY_RIGHT) then
-        self:GetEntity():applyVelocity(self:GetEntity():getRight():mul(self.velSpeed):mul(dt))
-    end
-    if Input:KeyPressed(Inputs.KEY_B) then
-        self:GetEntity():applyVelocity(self:GetEntity():getUp():mul(self.velSpeed):mul(dt))
     end
 end
 function CameraComponent.prototype.debugUpdate(self)
