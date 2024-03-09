@@ -102,5 +102,6 @@ void CVehicle::update(float dt)
 
 void CVehicle::shutdown()
 {
+	da::core::CSceneManager::getScene()->removeEntity(m_entity);
 	delete m_vehicle;
 }

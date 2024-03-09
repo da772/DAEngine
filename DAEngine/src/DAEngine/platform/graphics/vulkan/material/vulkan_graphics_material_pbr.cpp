@@ -54,13 +54,13 @@ namespace da::platform
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 		UniformBufferObject ubo{};
-		ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(Position.x, Position.y, Position.z))
+		/*ubo.model = glm::translate(glm::mat4(1.0f), glm::vec3(Position.x, Position.y, Position.z))
 			* glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f))
 			* glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f))
 			* glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))
 			* glm::rotate(glm::mat4(1.0f), time * glm::radians(RotationSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
 		ubo.model = glm::scale(ubo.model, glm::vec3(Scale.x, Scale.y, Scale.z));
-		ubo.view = glm::lookAt(glm::vec3(CamPosition.x, CamPosition.y, CamPosition.z), glm::vec3(Position.x, Position.y, Position.z), { 0.f, 0.f, 1.f });
+		ubo.view = glm::lookAt(glm::vec3(CamPosition.x, CamPosition.y, CamPosition.z), glm::vec3(Position.x, Position.y, Position.z), { 0.f, 0.f, 1.f });*/
 			/*glm::translate(glm::mat4(1.0f), glm::vec3(CamPosition.x, CamPosition.y, CamPosition.z))
 			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.x), glm::vec3(1.f, 0.f, 0.f))
 			* glm::rotate(glm::mat4(1.0f), glm::radians(CamRot.y), glm::vec3(0.f, 1.f, 0.f))

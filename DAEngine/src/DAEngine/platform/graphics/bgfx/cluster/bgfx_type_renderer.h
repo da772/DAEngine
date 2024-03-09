@@ -17,6 +17,11 @@ namespace da::core {
     class CCamera;
 }
 
+namespace da::graphics
+{
+    class CMaterial;
+}
+
 namespace da::platform
 {
     class CBgfxGraphicsMaterial;
@@ -127,7 +132,7 @@ namespace da::platform
         glm::mat4 m_projMat = glm::mat4(1.0);
 
         ::bgfx::VertexBufferHandle m_blitTriangleBuffer = BGFX_INVALID_HANDLE;
-        da::platform::CBgfxGraphicsMaterial* m_pDepthprogram;
+        da::graphics::CMaterial* m_pDepthprogram;
 
         ::bgfx::UniformHandle m_bonesUniform = BGFX_INVALID_HANDLE;
     private:
@@ -142,7 +147,7 @@ namespace da::platform
         
         ::bgfx::UniformHandle m_exposureVecUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_tonemappingModeVecUniform = BGFX_INVALID_HANDLE;
-        da::platform::CBgfxGraphicsMaterial* m_pBlipProgram;
+        da::graphics::CMaterial* m_pBlipProgram;
         
     };
 }

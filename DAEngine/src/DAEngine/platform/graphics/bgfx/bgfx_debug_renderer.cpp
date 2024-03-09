@@ -14,8 +14,7 @@ namespace da::platform
 	void CBgfxDebugRenderer::initialize()
 	{
 		m_frameBuffer = createFrameBuffer();
-		m_shader = new CBgfxGraphicsMaterial("shaders/cluster/vs_debug_geometry.sc", "shaders/cluster/fs_debug_geometry.sc");
-		m_shader->initialize();
+		m_shader = da::graphics::CMaterialFactory::create("shaders/cluster/vs_debug_geometry.sc", "shaders/cluster/fs_debug_geometry.sc");
 		m_uniform = ::bgfx::createUniform("u_Color", ::bgfx::UniformType::Vec4);
 
 		m_shapes[EDebugShapes::Cube] = new CBgfxStaticMesh("assets/cube.fbx", false);
@@ -82,8 +81,7 @@ namespace da::platform
 		}
 		m_shapes = {};
 
-		m_shader->shutdown();
-		delete m_shader;
+		da::graphics::CMaterialFactory::remove(m_shader);
 
 		BGFXTRYDESTROY(m_frameBuffer);
 		BGFXTRYDESTROY(m_uniform);

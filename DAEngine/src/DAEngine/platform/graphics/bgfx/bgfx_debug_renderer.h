@@ -10,6 +10,7 @@
 namespace da::graphics
 {
 	class CStaticMesh;
+	class CMaterial;
 }
 
 namespace da::platform
@@ -55,7 +56,7 @@ namespace da::platform
 	private:
 		::bgfx::FrameBufferHandle m_frameBuffer;
 		::bgfx::UniformHandle m_uniform;
-		CBgfxGraphicsMaterial* m_shader;
+		da::graphics::CMaterial* m_shader;
 		std::unordered_map<EDebugShapes, da::graphics::CStaticMesh*> m_shapes;
 		std::vector<std::pair<std::function<bool()>, bool>> m_toDraw;
 	};

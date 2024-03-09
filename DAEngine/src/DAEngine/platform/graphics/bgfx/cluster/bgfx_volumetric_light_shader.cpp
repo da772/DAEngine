@@ -14,8 +14,7 @@ namespace da::platform
 {
 	void CBgfxVolumetricLightShader::initialize()
 	{
-		m_pVolLightShader = new CBgfxGraphicsMaterial("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_vol_lighting.sc");
-		m_pVolLightShader->initialize();
+		m_pVolLightShader = da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_vol_lighting.sc");
 
 		m_frameBuffer = createFrameBuffer(true);
 
@@ -56,8 +55,7 @@ namespace da::platform
 
 	void CBgfxVolumetricLightShader::shutdown()
 	{
-		m_pVolLightShader->shutdown();
-		delete m_pVolLightShader;
+		da::graphics::CMaterialFactory::remove(m_pVolLightShader);
 
 		BGFXTRYDESTROY(m_frameBuffer);
 		BGFXTRYDESTROY(m_blurParams);

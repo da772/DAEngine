@@ -1,9 +1,13 @@
 #pragma once
 #include "bgfx/bgfx.h"
 
+namespace da::graphics
+{
+	class CMaterial;
+}
+
 namespace da::platform
 {
-	class CBgfxGraphicsMaterial;
 
 	class CBgfxBloomShader
 	{
@@ -24,9 +28,9 @@ namespace da::platform
 
 	private:
 		::bgfx::VertexBufferHandle m_blitTriangleBuffer = BGFX_INVALID_HANDLE;
-		da::platform::CBgfxGraphicsMaterial* m_pBloomShader;
-		da::platform::CBgfxGraphicsMaterial* m_pDownscaleShader;
-		da::platform::CBgfxGraphicsMaterial* m_pUpscaleShader;
+		da::graphics::CMaterial* m_pBloomShader;
+		da::graphics::CMaterial* m_pDownscaleShader;
+		da::graphics::CMaterial* m_pUpscaleShader;
 		::bgfx::UniformHandle m_textureUniform = BGFX_INVALID_HANDLE;
 		::bgfx::UniformHandle m_bloomParamsUniform = BGFX_INVALID_HANDLE;
 		::bgfx::UniformHandle m_pixelSizeUniform = BGFX_INVALID_HANDLE;

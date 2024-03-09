@@ -81,14 +81,18 @@ namespace da
  	}
 	void CApp::shutdown()
 	{
+		onShutdown();
+
 		if (core::CScene* scene = core::CSceneManager::getScene()) {
 			scene->shutdown();
+			delete scene;
 			core::CSceneManager::setScene(nullptr);
 		}
+
 		for (IModule* m : m_modules) {
 			m->shutdown();
 		}
-		onShutdown();
+
 		for (IModule* m : m_modules) {
 			m->lateShutdown();
 			delete m;

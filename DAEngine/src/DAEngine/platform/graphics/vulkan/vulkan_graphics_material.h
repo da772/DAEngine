@@ -31,7 +31,7 @@ namespace da::platform
 	public:
 		CVulkanGraphicsMaterial(da::graphics::CGraphicsPipeline& pipeline);
 		virtual void initialize() override;
-		virtual void update(int frame) override;
+		virtual void update(int frame);
 		virtual void shutdown() override;
 		void render(VkCommandBuffer& commandBuffer, int frame);
 

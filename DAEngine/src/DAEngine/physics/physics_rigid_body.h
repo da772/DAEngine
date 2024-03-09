@@ -19,6 +19,7 @@ namespace da::physics
 	{
 	public:
 		IPhysicsRigidBody(IPhysicsShape* shape, IPhysicsMotionState* state, float mass, const glm::vec3& inertia);
+		virtual ~IPhysicsRigidBody() {};
 
 		virtual glm::mat4 getTransform() const = 0;
 		virtual void setTransform(const glm::mat4& transform) = 0;

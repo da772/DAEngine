@@ -46,5 +46,12 @@ namespace da::core {
 		}
 
 	}
+
+	CRigidBodyComponent::~CRigidBodyComponent()
+	{
+		ASSERT(m_rigidBody);
+		delete m_rigidBody;
+	}
+
 #endif
 }

@@ -20,7 +20,7 @@
 #include <chrono>
 #include <unordered_map>
 #include <backends/imgui_impl_vulkan.h>
-#include "DAEngine/core/graphics/factory/factory_graphics_material.h"
+
 #include "vulkan_graphics_texture2d.h"
 
 #include "core/graphics/graphics_smesh.h"

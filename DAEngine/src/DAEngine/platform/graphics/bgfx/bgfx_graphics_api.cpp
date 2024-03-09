@@ -6,7 +6,6 @@
 #include <bgfx/bgfx.h>
 #include <bx/allocator.h>
 #include "DAEngine/core/arg_handler.h"
-#include "test/bgfx_graphics_test.h"
 #include "cluster/bgfx_type_renderer.h"
 #include "cluster/bgfx_clustered_renderer.h"
 
@@ -155,20 +154,16 @@ namespace da::platform {
 		bool m_trace = false;
 	};
 
-	CBgfxGraphicsTest* s_test;
-
 	CbgfxGraphicsApi::CbgfxGraphicsApi(core::CWindow* windowModule) : CGraphicsApi(windowModule)
 	{	
 		m_allocator = new FDAllocator();
 		m_callbacks = new FDACallbacks();
-		s_test = new CBgfxGraphicsTest();
 	}
 
 	CbgfxGraphicsApi::~CbgfxGraphicsApi()
 	{
 		delete m_allocator;
 		delete m_callbacks;
-		delete s_test;
 	}
 
 	void CbgfxGraphicsApi::initialize()
@@ -233,8 +228,6 @@ namespace da::platform {
 		m_renderer->initialize();
 		m_renderer->reset(data.Width, data.Height);
 
-		s_test->Initialize(m_nativeWindow);
-
 #ifdef DA_DEBUG
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Info"), &s_showDebugTitle, renderDebugTitle);
 #endif
@@ -277,7 +270,6 @@ namespace da::platform {
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Info"));
 #endif
 		m_renderer->shutdown();
-		s_test->Shutdown();
 #ifdef DA_DEBUG || DA_RELEASE
 		bgfx::setGraphicsDebuggerPresent(true);
 #endif

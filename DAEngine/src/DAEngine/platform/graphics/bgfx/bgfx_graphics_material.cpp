@@ -10,17 +10,21 @@
 
 namespace da::platform {
 
-
+	std::unordered_map<CHashString, FShaderData> CBgfxGraphicsMaterial::ms_shaderHandles;
 
 	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial(const std::string& vsPath, const std::string& fsPath) : m_vsPath(vsPath), m_fsPath(fsPath)
 	{
 		getPlatformPath(m_vsPath);
 		getPlatformPath(m_fsPath);
+
+		initialize();
 	}
 
 	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial(const std::string& csPath) : m_csPath(csPath)
 	{
 		getPlatformPath(m_csPath);
+
+		initialize();
 	}
 
 	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial()
@@ -31,38 +35,118 @@ namespace da::platform {
 	void CBgfxGraphicsMaterial::initialize()
 	{
 		if (!m_csPath.empty()) {
-			CAsset cs(m_csPath);
 
-			const ::bgfx::Memory* csM = ::bgfx::copy(cs.data(), (uint32_t)(cs.size() + 1ull));
+			CHashString csHash(m_csPath.c_str());
 
-			::bgfx::ShaderHandle handle1 = ::bgfx::createShader(csM);
-			::bgfx::setName(handle1, m_csPath.c_str());
-			m_program = ::bgfx::createProgram(handle1, true).idx;
+			const std::unordered_map<CHashString, FShaderData>::iterator& it = ms_shaderHandles.find(csHash);
+
+			::bgfx::ShaderHandle handle1 = BGFX_INVALID_HANDLE;
+			if (it != ms_shaderHandles.end()) {
+				it->second.Count++;
+				handle1 = { it->second.Handle };
+			}
+			else {
+				handle1 = { createShader(m_csPath, csHash) };
+			}
+
+			m_program = ::bgfx::createProgram(handle1, false).idx;
 			return;
 		}
 
-		CAsset vs(m_vsPath.c_str()), fs(m_fsPath.c_str());
+		::bgfx::ShaderHandle handle1 = BGFX_INVALID_HANDLE;
+		::bgfx::ShaderHandle handle2 = BGFX_INVALID_HANDLE;
 
-		const ::bgfx::Memory* vsM = ::bgfx::copy(vs.data(), (uint32_t)(vs.size() + 1ull));
-		const ::bgfx::Memory* fsM = ::bgfx::copy(fs.data(), (uint32_t)(fs.size() + 1ull));
+		{
+			CHashString vsHash(m_vsPath.c_str());
+			const std::unordered_map<CHashString, FShaderData>::iterator& it = ms_shaderHandles.find(vsHash);
 
-		::bgfx::ShaderHandle handle1 = ::bgfx::createShader(vsM);
-		::bgfx::setName(handle1, m_vsPath.c_str());
+			if (it != ms_shaderHandles.end()) {
+				it->second.Count++;
+				handle1 = { it->second.Handle };
+			}
+			else {
+				handle1 = { createShader(m_vsPath, vsHash) };
+			}
 
-		::bgfx::ShaderHandle handle2 = ::bgfx::createShader(fsM);
-		::bgfx::setName(handle2, m_fsPath.c_str());
+			ASSERT(::bgfx::isValid(handle1));
+		}
 
-		m_program = ::bgfx::createProgram(handle1, handle2, true).idx;
+		{
+			CHashString fsHash(m_fsPath.c_str());
+			const std::unordered_map<CHashString, FShaderData>::iterator& it = ms_shaderHandles.find(fsHash);
+
+			if (it != ms_shaderHandles.end()) {
+				it->second.Count++;
+				handle2 = { it->second.Handle };
+			}
+			else {
+				handle2 = { createShader(m_fsPath, fsHash) };
+			}
+
+			ASSERT(::bgfx::isValid(handle2));
+		}
+
+		m_program = ::bgfx::createProgram(handle1, handle2, false).idx;
 	}
 
-	void CBgfxGraphicsMaterial::update(int frame)
+
+	uint16_t CBgfxGraphicsMaterial::createShader(const std::string& path, CHashString hash)
 	{
-		
+		CAsset vs(path);
+		const ::bgfx::Memory* mem = ::bgfx::copy(vs.data(), (uint32_t)(vs.size() + 1ull));
+
+		::bgfx::ShaderHandle handle = ::bgfx::createShader(mem);
+		::bgfx::setName(handle, path.c_str());
+
+		ms_shaderHandles[hash] = { handle.idx, 1 };
+		return handle.idx;
 	}
 
 	void CBgfxGraphicsMaterial::shutdown()
 	{
-        ::bgfx::ProgramHandle handle = {m_program};
+		{
+			CHashString vsHash(m_vsPath.c_str());
+			const std::unordered_map<CHashString, FShaderData>::iterator& it = ms_shaderHandles.find(vsHash);
+			if (it != ms_shaderHandles.end()) {
+				ASSERT(it->second.Count);
+				--it->second.Count;
+				if (!it->second.Count) {
+					::bgfx::ShaderHandle handle({ it->second.Handle });
+					::bgfx::destroy(handle);
+					ms_shaderHandles.erase(it);
+				}
+			}
+		}
+
+		{
+			CHashString fsHash(m_fsPath.c_str());
+			const std::unordered_map<CHashString, FShaderData>::iterator& it = ms_shaderHandles.find(fsHash);
+			if (it != ms_shaderHandles.end()) {
+				ASSERT(it->second.Count);
+				--it->second.Count;
+				if (!it->second.Count) {
+					::bgfx::ShaderHandle handle({ it->second.Handle });
+					::bgfx::destroy(handle);
+					ms_shaderHandles.erase(it);
+				}
+			}
+		}
+
+		{
+			CHashString csHash(m_csPath.c_str());
+			const std::unordered_map<CHashString, FShaderData>::iterator& it = ms_shaderHandles.find(csHash);
+			if (it != ms_shaderHandles.end()) {
+				ASSERT(it->second.Count);
+				--it->second.Count;
+				if (!it->second.Count) {
+					::bgfx::ShaderHandle handle({ it->second.Handle });
+					::bgfx::destroy(handle);
+					ms_shaderHandles.erase(it);
+				}
+			}
+		}
+
+		::bgfx::ProgramHandle handle = { m_program };
 		BGFXDESTROY(handle);
 		m_program = handle.idx;
 	}
@@ -108,6 +192,11 @@ namespace da::platform {
 	uint16_t CBgfxGraphicsMaterial::getHandle() const
 	{
 		return m_program;
+	}
+
+	CBgfxGraphicsMaterial::~CBgfxGraphicsMaterial()
+	{
+		shutdown();
 	}
 
 }

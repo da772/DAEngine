@@ -32,12 +32,12 @@ namespace da::platform
     private:
         glm::mat4 m_oldProjMat = glm::mat4(0.0f);
 
-        da::platform::CBgfxGraphicsMaterial* m_pClusterBuildingComputeProgram;
-        da::platform::CBgfxGraphicsMaterial* m_pResetCounterComputeProgram;
-        da::platform::CBgfxGraphicsMaterial* m_pLightCullingComputeProgram;
-        da::platform::CBgfxGraphicsMaterial* m_pLightingProgram;
-        da::platform::CBgfxGraphicsMaterial* m_pLightingSkeletalProgram;
-        da::platform::CBgfxGraphicsMaterial* m_pDebugVisProgram;
+        da::graphics::CMaterial* m_pClusterBuildingComputeProgram;
+        da::graphics::CMaterial* m_pResetCounterComputeProgram;
+        da::graphics::CMaterial* m_pLightCullingComputeProgram;
+        da::graphics::CMaterial* m_pLightingProgram;
+        da::graphics::CMaterial* m_pLightingSkeletalProgram;
+        da::graphics::CMaterial* m_pDebugVisProgram;
 
         CBgfxAmbientLight m_ambientLight;
         CBgfxPointLightList m_pointLights;

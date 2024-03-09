@@ -5,7 +5,6 @@ namespace da::script
 	class CScriptClass {
 	public:
 		CScriptClass(const std::string& path, const std::string& classType, const std::string& objName);
-		CScriptClass();
 
 		void setup(const da::core::CGuid& parent, const da::core::CGuid& guid);
 		void cleanup(bool keepObj = false);

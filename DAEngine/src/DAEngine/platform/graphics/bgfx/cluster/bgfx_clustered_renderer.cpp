@@ -49,24 +49,18 @@ namespace da::platform {
         // OpenGL backend: uniforms must be created before loading shaders
         m_clusters.initialize();
 
-        m_pClusterBuildingComputeProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/cs_clustered_clusterbuilding.sc");
-        m_pClusterBuildingComputeProgram->initialize();
+        m_pClusterBuildingComputeProgram = da::graphics::CMaterialFactory::create("shaders/cluster/cs_clustered_clusterbuilding.sc");
 
-        m_pResetCounterComputeProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/cs_clustered_reset_counter.sc");
-        m_pResetCounterComputeProgram->initialize();
+        m_pResetCounterComputeProgram = da::graphics::CMaterialFactory::create("shaders/cluster/cs_clustered_reset_counter.sc");
 
-        m_pLightCullingComputeProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/cs_clustered_lightculling.sc");
-        m_pLightCullingComputeProgram->initialize();
+        m_pLightCullingComputeProgram = da::graphics::CMaterialFactory::create("shaders/cluster/cs_clustered_lightculling.sc");
 
-        m_pLightingProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered.sc");
-        m_pLightingProgram->initialize();
+        m_pLightingProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered.sc");
 
 
-        m_pLightingSkeletalProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_sk_clustered.sc", "shaders/cluster/fs_clustered.sc");
-        m_pLightingSkeletalProgram->initialize();
+        m_pLightingSkeletalProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sk_clustered.sc", "shaders/cluster/fs_clustered.sc");
 
-        m_pDebugVisProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
-        m_pDebugVisProgram->initialize();
+        m_pDebugVisProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
 
         m_pointLights.init();
         //generateLights(100);
@@ -479,21 +473,12 @@ namespace da::platform {
         m_debugRenderer.shutdown();
 #endif
 
-		m_pClusterBuildingComputeProgram->shutdown();
-		m_pResetCounterComputeProgram->shutdown();
-		m_pLightCullingComputeProgram->shutdown();
-		m_pLightingProgram->shutdown();
-		m_pDebugVisProgram->shutdown();
-        m_pLightingSkeletalProgram->shutdown();
-
-        delete m_pClusterBuildingComputeProgram;
-        delete m_pResetCounterComputeProgram;
-        delete m_pLightCullingComputeProgram;
-        delete m_pLightingProgram;
-        delete m_pLightingSkeletalProgram;
-        delete m_pDebugVisProgram;
-
-        
+        da::graphics::CMaterialFactory::remove(m_pClusterBuildingComputeProgram);
+		da::graphics::CMaterialFactory::remove(m_pResetCounterComputeProgram);
+		da::graphics::CMaterialFactory::remove(m_pLightCullingComputeProgram);
+		da::graphics::CMaterialFactory::remove(m_pLightingProgram);
+		da::graphics::CMaterialFactory::remove(m_pDebugVisProgram);
+        da::graphics::CMaterialFactory::remove(m_pLightingSkeletalProgram);
 
         m_pClusterBuildingComputeProgram = m_pResetCounterComputeProgram = m_pLightCullingComputeProgram = m_pLightingProgram =
             m_pDebugVisProgram = nullptr;

@@ -15,10 +15,8 @@ namespace da::platform
 {
 	void CBgfxSSAOShader::initialize()
 	{
-		m_pSsaoProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_ssao.sc");
-		m_pSsaoBlurProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_blur.sc");
-		m_pSsaoProgram->initialize();
-		m_pSsaoBlurProgram->initialize();
+		m_pSsaoProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_ssao.sc");
+		m_pSsaoBlurProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_blur.sc");
 
 		// triangle used for blitting
 		constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
@@ -67,12 +65,8 @@ namespace da::platform
 
 	void CBgfxSSAOShader::shutdown()
 	{
-		m_pSsaoProgram->shutdown();
-		delete m_pSsaoProgram;
-		m_pSsaoProgram = nullptr;
-		m_pSsaoBlurProgram->shutdown();
-		delete m_pSsaoBlurProgram;
-		m_pSsaoBlurProgram = nullptr;
+		da::graphics::CMaterialFactory::remove(m_pSsaoProgram);
+		da::graphics::CMaterialFactory::remove(m_pSsaoBlurProgram);
 
 		BGFXTRYDESTROY(m_ssaoBuffer);
 		BGFXTRYDESTROY(m_ssaoProcessedBuffer);

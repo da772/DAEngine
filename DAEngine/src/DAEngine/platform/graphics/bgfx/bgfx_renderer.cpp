@@ -1,6 +1,7 @@
 #include "dapch.h"
 #include "bgfx_renderer.h"
 #include <core/graphics/camera.h>
+#include "DAEngine/core/graphics/graphics_material.h"
 
 #ifdef DA_GRAPHICS_BGFX
 
@@ -41,8 +42,7 @@ namespace da::platform::bgfx {
 		const PosVertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
 		m_blitTriangleBuffer = ::bgfx::createVertexBuffer(::bgfx::copy(&vertices, sizeof(vertices)), PosVertex::layout);
 
-		m_blitProgram = CBgfxGraphicsMaterial("shaders/Cluster/vs_tonemap.sc", "shaders/Cluster/fs_tonemap.sc");
-		m_blitProgram.initialize();
+		m_blitProgram = da::graphics::CMaterialFactory::create("shaders/Cluster/vs_tonemap.sc", "shaders/Cluster/fs_tonemap.sc");
 
 		m_pbr.initialize();
 		m_pbr.generateAlbedoLUT();
@@ -81,7 +81,7 @@ namespace da::platform::bgfx {
 	{
 		onShutdown();
 
-		m_blitProgram.shutdown();
+		da::graphics::CMaterialFactory::remove(m_blitProgram);
 		m_pbr.shutdown();
 
 		BGFXDESTROY(m_blitSampler);
@@ -151,7 +151,7 @@ namespace da::platform::bgfx {
 		float tonemappingModeVec[4] = { (float)tonemappingMode };
 		::bgfx::setUniform(m_tonemappingModeVecUniform, tonemappingModeVec);
 		::bgfx::setVertexBuffer(0, m_blitTriangleBuffer);
-		::bgfx::submit(view, { m_blitProgram.getHandle() });
+		::bgfx::submit(view, { m_blitProgram->getHandle() });
 	}
 
 	::bgfx::TextureFormat::Enum CBgfxRenderer::findDepthFormat(uint64_t textureFlags, bool stencil /*= false*/)

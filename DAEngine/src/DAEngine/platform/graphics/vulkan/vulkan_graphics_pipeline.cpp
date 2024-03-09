@@ -332,17 +332,14 @@ namespace da::platform {
 			vkFreeMemory(m_vulkanGraphicsApi.getDevice(), stagingBufferMemory, &m_vulkanGraphicsApi.getAllocCallbacks());
 		}
 
-		meshData.Material->initialize();
+		
 
 		return meshData;
 	}
 
 	void CVulkanGraphicsPipeline::update(int frame)
 	{
-		for (const FVulkanMeshData& data : m_renderables)
-		{
-			data.Material->update(frame);
-		}
+		
 	}
 
 	void CVulkanGraphicsPipeline::clean()
@@ -355,7 +352,7 @@ namespace da::platform {
 			vkDestroyBuffer(m_vulkanGraphicsApi.getDevice(), data.IndexBuffer, &m_vulkanGraphicsApi.getAllocCallbacks());
 			vkFreeMemory(m_vulkanGraphicsApi.getDevice(), data.IndexMemory, &m_vulkanGraphicsApi.getAllocCallbacks());
 
-			data.Material->shutdown();
+			da::graphics::CMaterialFactory::remove(data.Material);
 		}
 
 		m_renderables.clear();

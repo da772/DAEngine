@@ -4,10 +4,14 @@
 #include <glm/glm.hpp>
 #include <core/graphics/graphics_material_data.h>
 
+namespace da::graphics
+{
+    class CMaterial;
+}
+
 namespace da::platform
 {
     struct CBgfxMaterial;
-    class CBgfxGraphicsMaterial;
 
     class CBgfxPBRShader
     {
@@ -47,7 +51,7 @@ namespace da::platform
         ::bgfx::TextureHandle m_albedoLUTTexture = BGFX_INVALID_HANDLE;
         ::bgfx::TextureHandle m_defaultTexture = BGFX_INVALID_HANDLE;
 
-        da::platform::CBgfxGraphicsMaterial* m_pAlbedoLUTProgram;
+        da::graphics::CMaterial* m_pAlbedoLUTProgram;
     };
 
 }

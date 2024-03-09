@@ -13,12 +13,8 @@ namespace da::platform {
 	void CBgfxShadowShader::initialize()
 	{
 		if (!useShadowSampler()) {
-			m_material = new CBgfxGraphicsMaterial("shaders/cluster/vs_shadow.sc", "shaders/cluster/fs_shadow.sc");
-			m_material->initialize();
-
-			m_skmaterial = new CBgfxGraphicsMaterial("shaders/cluster/vs_sk_shadow.sc", "shaders/cluster/fs_shadow.sc");
-			m_skmaterial->initialize();
-
+			m_material = da::graphics::CMaterialFactory::create("shaders/cluster/vs_shadow.sc", "shaders/cluster/fs_shadow.sc");
+			m_skmaterial = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sk_shadow.sc", "shaders/cluster/fs_shadow.sc");
 		
 			m_depthScaleOffset = bgfx::createUniform("u_depthScaleOffset", bgfx::UniformType::Vec4);
 
@@ -34,11 +30,8 @@ namespace da::platform {
 			return;
 		}
 
-		m_material = new CBgfxGraphicsMaterial("shaders/cluster/vs_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
-		m_material->initialize();
-
-		m_skmaterial = new CBgfxGraphicsMaterial("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
-		m_skmaterial->initialize();
+		m_material =   da::graphics::CMaterialFactory::create("shaders/cluster/vs_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
+		m_skmaterial = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
 
 		m_cascadeLevels = bgfx::createUniform("u_cascadePlaneDistances", bgfx::UniformType::Vec4, SHADOW_MAP_SIZE);
 
@@ -50,12 +43,9 @@ namespace da::platform {
 
 	void CBgfxShadowShader::shutdown()
 	{
-		m_material->shutdown();
-		delete m_material;
-		m_material = nullptr;
-		m_skmaterial->shutdown();
-		delete m_skmaterial;
-		m_skmaterial = nullptr;
+
+		da::graphics::CMaterialFactory::remove(m_material);
+		da::graphics::CMaterialFactory::remove(m_skmaterial);
 
 		BGFXDESTROY(m_cascadeLevels);
 
@@ -72,7 +62,7 @@ namespace da::platform {
 		}
 	}
 
-	da::platform::CBgfxGraphicsMaterial* CBgfxShadowShader::getMaterial() const
+	da::graphics::CMaterial* CBgfxShadowShader::getMaterial() const
 	{
 		return m_material;
 	}
@@ -244,7 +234,7 @@ namespace da::platform {
 		return { lightProj, lightView };
 	}
 
-	da::platform::CBgfxGraphicsMaterial* CBgfxShadowShader::getSKMaterial() const
+	da::graphics::CMaterial* CBgfxShadowShader::getSKMaterial() const
 	{
 		return m_skmaterial;
 	}

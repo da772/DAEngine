@@ -87,7 +87,7 @@ namespace da::platform::bgfx {
 		CBgfxPBRShader m_pbr;
 
 	private:
-		da::platform::CBgfxGraphicsMaterial m_blitProgram;
+		da::graphics::CMaterial* m_blitProgram;
         ::bgfx::UniformHandle m_blitSampler = {INVALID_HANDLE};
         ::bgfx::UniformHandle m_skySampler = {INVALID_HANDLE};
         ::bgfx::UniformHandle m_camPosUniform = {INVALID_HANDLE};

@@ -20,8 +20,8 @@ namespace da::platform
 		::bgfx::FrameBufferHandle createFrameBuffer(bool hdr);
 
 	private:
-		da::platform::CBgfxGraphicsMaterial* m_pSsaoProgram = nullptr;
-		da::platform::CBgfxGraphicsMaterial* m_pSsaoBlurProgram = nullptr;
+		da::graphics::CMaterial* m_pSsaoProgram = nullptr;
+		da::graphics::CMaterial* m_pSsaoBlurProgram = nullptr;
 		::bgfx::FrameBufferHandle m_ssaoBuffer = BGFX_INVALID_HANDLE;
 		::bgfx::FrameBufferHandle m_ssaoProcessedBuffer = BGFX_INVALID_HANDLE;
 		::bgfx::VertexBufferHandle m_blitTriangleBuffer = BGFX_INVALID_HANDLE;

@@ -32,7 +32,7 @@ namespace da::core {
 		const auto& it = std::find(m_entities.begin(), m_entities.end(), entity);
 
 		if (it == m_entities.end()) return false;
-		delete* it;
+		delete entity;
 
 		m_entities.erase(it);
 		return true;
@@ -46,6 +46,7 @@ namespace da::core {
 				f.init((void*)kv.second.getComponentAtIndex(i));
 			}
 		}
+		m_initialized = true;
 	}
 
 	void CScene::update(float dt)
@@ -66,6 +67,15 @@ namespace da::core {
 			for (size_t i = 0; i < kv.second.getCount(); i++) {
 				f.shutdown((void*)kv.second.getComponentAtIndex(i));
 			}
+		}
+
+		m_initialized = false;
+	}
+
+	CScene::~CScene()
+	{
+		for (int32_t i = m_entities.size()-1; i >= 0; i--) {
+			removeEntity(m_entities[i]);
 		}
 	}
 

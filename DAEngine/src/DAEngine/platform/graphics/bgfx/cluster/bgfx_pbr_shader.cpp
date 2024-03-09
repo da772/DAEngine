@@ -38,8 +38,7 @@ namespace da::platform {
             bgfx::TextureFormat::RGBA32F,
             BGFX_SAMPLER_UVW_CLAMP | BGFX_TEXTURE_COMPUTE_WRITE);
 
-        m_pAlbedoLUTProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/cs_multiple_scattering_lut.sc");
-        m_pAlbedoLUTProgram->initialize();
+        m_pAlbedoLUTProgram = da::graphics::CMaterialFactory::create("shaders/cluster/cs_multiple_scattering_lut.sc");
     }
 
     void CBgfxPBRShader::shutdown()
@@ -75,9 +74,7 @@ namespace da::platform {
         ASSERT(::bgfx::isValid(m_uvScaleUniform));
 		bgfx::destroy(m_uvScaleUniform);
 
-        m_pAlbedoLUTProgram->shutdown();
-        delete m_pAlbedoLUTProgram;
-        m_pAlbedoLUTProgram = nullptr;
+        da::graphics::CMaterialFactory::remove(m_pAlbedoLUTProgram);
 
         m_baseColorFactorUniform = m_metallicRoughnessNormalOcclusionFactorUniform = m_emissiveFactorUniform =
             m_hasTexturesUniform = m_multipleScatteringUniform = m_albedoLUTSampler = m_baseColorSampler =

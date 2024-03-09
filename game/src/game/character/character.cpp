@@ -64,5 +64,5 @@ void CCharacter::update(float dt)
 
 void CCharacter::shutdown()
 {
-	// TODO: Cleanup
+	da::core::CSceneManager::getScene()->removeEntity(m_entity);
 }

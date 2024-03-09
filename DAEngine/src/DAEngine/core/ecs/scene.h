@@ -31,6 +31,18 @@ namespace da::core {
 			return nullptr;
 		}
 
+		template <typename T>
+		size_t findComponentIndex(const CGuid& guid) const {
+			for (size_t i = 0; i < m_components.size(); i += sizeof(T)) {
+				T* c = (T*)&m_components[i];
+				if (c->getId() == guid) {
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
 #ifdef DA_DEBUG
 		void* findComponent(const CGuid& guid) const {
 			for (size_t i = 0; i < m_count; i ++) {
@@ -52,17 +64,34 @@ namespace da::core {
 
 		template <typename T>
 		bool removeComponent(const CGuid& guid) {
-			T* component = findComponent<T>(guid);
+			size_t index = findComponentIndex<T>(guid);
 
-			if (!component) return false;
+			if (index == -1) return false;
+
+			T* component = (T*)m_components[index];
 			component->~T();
-			m_components.erase(component, component + sizeof(T));
+			m_components.erase(m_components.begin()+index, m_components.begin() + index + sizeof(T));
+			m_count--;
+			return true;
+		}
+
+		template <typename T>
+		bool removeComponentIndex(size_t index) {
+			if (index == -1) return false;
+
+			T* component = (T*)&m_components[index];
+			component->~T();
+			m_components.erase(m_components.begin() + index, m_components.begin() + index + sizeof(T));
 			m_count--;
 			return true;
 		}
 
 		const void* getComponentAtIndex(size_t index) const {
 			return &m_components.at(index * m_size);
+		}
+
+		const void* getComponentAtIndexUnscaled(size_t index) const {
+			return &m_components.at(index);
 		}
 		
 		template <typename T>
@@ -92,6 +121,7 @@ namespace da::core {
 	class CScene {
 	public:
 		CScene(const CGuid& guid);
+		~CScene();
 		const CGuid& getId() const;
 
 		void initialize();
@@ -107,7 +137,18 @@ namespace da::core {
 
 		template <typename T>
 		bool destroyComponent(const CGuid& guid) {
-			return m_components[T::getTypeHash()].removeComponent(guid);
+			FComponentContainer& container = m_components[T::getTypeHash()];
+			size_t index = container.findComponentIndex<T>(guid);
+
+			if (index == -1) {
+				return false;
+			}
+
+			if (m_initialized) {
+				m_componentLifeCycle[T::getTypeHash()].shutdown((void*)container.getComponentAtIndexUnscaled(index));
+			}
+
+			return container.removeComponentIndex<T>(index);
 		}
 
 		template <typename T>
@@ -147,6 +188,7 @@ namespace da::core {
 		std::unordered_map<CHashString, FComponentContainer> m_components;
 		CGuid m_guid;
 		static std::unordered_map<CHashString, FECSLifeCycle> m_componentLifeCycle;
+		bool m_initialized = false;
 	};
 
 }

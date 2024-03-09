@@ -18,13 +18,9 @@ namespace da::platform
 		m_width = width;
 		m_height = height;
 
-		m_pBloomShader = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom.sc");
-		m_pBloomShader->initialize();
-		m_pDownscaleShader= new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_downsample.sc");
-		m_pDownscaleShader->initialize();
-
-		m_pUpscaleShader = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_upsample.sc");
-		m_pUpscaleShader->initialize();
+		m_pBloomShader = da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom.sc");
+		m_pDownscaleShader= da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_downsample.sc");
+		m_pUpscaleShader = da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_upsample.sc");
 
 		// triangle used for blitting
 		constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
@@ -47,14 +43,10 @@ namespace da::platform
 
 	void CBgfxBloomShader::shutdown()
 	{
-		m_pBloomShader->shutdown();
-		delete m_pBloomShader;
 
-		m_pDownscaleShader->shutdown();
-		delete m_pDownscaleShader;
-
-		m_pUpscaleShader->shutdown();
-		delete m_pUpscaleShader;
+		da::graphics::CMaterialFactory::remove(m_pBloomShader);
+		da::graphics::CMaterialFactory::remove(m_pDownscaleShader);
+		da::graphics::CMaterialFactory::remove(m_pUpscaleShader);
 
 		BGFXTRYDESTROY(m_frameBuffer);
 		BGFXTRYDESTROY(m_blitTriangleBuffer);

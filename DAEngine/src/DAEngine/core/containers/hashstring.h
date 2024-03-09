@@ -66,6 +66,10 @@ namespace da::core::containers
 				m_hash = generateHash(str, size);
 			}
 
+			inline constexpr CBasicHashString(uint32_t lhs, uint32_t rhs) {
+				m_hash ^= rhs + 0x9e3779b9 + (lhs << 6) + (lhs >> 2);
+			}
+
 			inline constexpr CBasicHashString(const uint32_t hash) : m_hash(hash) {
 
 			}
@@ -89,7 +93,6 @@ namespace da::core::containers
 #endif
 
 			}
-
 
 			inline bool operator ==(const CBasicHashString& rhs) const {
 				return rhs.m_hash == m_hash;

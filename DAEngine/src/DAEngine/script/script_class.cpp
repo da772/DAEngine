@@ -19,11 +19,6 @@ namespace da::script
 
 	}
 
-	CScriptClass::CScriptClass()
-	{
-
-	}
-
 	void CScriptClass::setup(const da::core::CGuid& parent, const da::core::CGuid& guid)
 	{
 		m_state = CScriptEngine::loadScript(m_path.c_str());

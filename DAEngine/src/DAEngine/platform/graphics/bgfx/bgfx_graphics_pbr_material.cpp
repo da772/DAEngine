@@ -28,11 +28,6 @@ namespace da::platform {
 		
 	}
 
-	void CBgfxPbrMaterial::update(int frame)
-	{
-		
-	}
-
 	void CBgfxPbrMaterial::shutdown()
 	{
 		delete m_albedo;

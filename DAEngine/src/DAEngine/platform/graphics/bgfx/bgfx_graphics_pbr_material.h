@@ -14,17 +14,14 @@ namespace da::platform::bgfx {
 
 namespace da::platform {
 
-	struct CBgfxMaterial;
-
-	class CBgfxPbrMaterial : public CBgfxGraphicsMaterial
+	class CBgfxPbrMaterial 
 	{
 	public:
 
 		CBgfxPbrMaterial(const std::string& albedo = "", const std::string& normal = "", const std::string& roughness = "", const std::string& emissive = "");
 
-		virtual void initialize() override;
-		virtual void update(int frame) override;
-		virtual void shutdown() override;
+		virtual void initialize();
+		virtual void shutdown();
 
 		inline const da::graphics::FMaterialData& getMaterial() const { return m_materialData; }
 	private:

@@ -18,6 +18,7 @@ namespace da::core {
 
 	public:
 		CRigidBodyComponent(da::physics::IPhysicsRigidBody* rigidBody, CEntity& parent);
+		~CRigidBodyComponent();
 
 		void onInitialize();
 		void onShutdown();

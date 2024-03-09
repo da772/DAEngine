@@ -97,9 +97,9 @@ float calculateShadow(Sampler _sampler, float _currentDepth, vec3 _shadowCoord, 
     return 1.0-shadow;
 }
 
-float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal)
+float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal, vec3 v_normal)
 {
-	float shadowMapBias = .002;//mix(0.0025, 0.0, v_lightNormal);
+	float shadowMapBias = mix(0.0, 0.005, v_lightNormal);
 
 	vec4 fragPosViewSpace = mul(v_view, vec4(fragPosWorldSpace, 1.0));
 	float depthValue = abs(fragPosViewSpace.z);
@@ -140,7 +140,7 @@ float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal)
 	float visibility = 1.0;
 
 	const float biasModifier = 0.5f;
-	shadowMapBias *= (1.0 - (1 / ((u_cascadePlaneDistances[layer].x) * biasModifier)));
+	//shadowMapBias *= (1.0 - (1 / ((u_cascadePlaneDistances[layer].x) * biasModifier)));
 
 #if 0
 	if (selection0)

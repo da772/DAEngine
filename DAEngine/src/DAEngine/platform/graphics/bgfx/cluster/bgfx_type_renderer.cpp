@@ -45,11 +45,9 @@ namespace da::platform {
         const PosVertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
         m_blitTriangleBuffer = bgfx::createVertexBuffer(bgfx::copy(&vertices, sizeof(vertices)), PosVertex::layout);
 
-        m_pBlipProgram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_tonemap.sc", "shaders/cluster/fs_tonemap.sc");
-        m_pBlipProgram->initialize();
+        m_pBlipProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_tonemap.sc", "shaders/cluster/fs_tonemap.sc");
 
-        m_pDepthprogram = new da::platform::CBgfxGraphicsMaterial("shaders/cluster/vs_depth.sc", "shaders/cluster/fs_depth.sc");
-        m_pDepthprogram->initialize();
+        m_pDepthprogram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_depth.sc", "shaders/cluster/fs_depth.sc");
 
         m_pbr.initialize();
         m_pbr.generateAlbedoLUT();
@@ -126,13 +124,8 @@ namespace da::platform {
         BGFXDESTROY(m_debugSamplerUniform);
 #endif
 
-        m_pBlipProgram->shutdown();
-        delete m_pBlipProgram;
-        m_pBlipProgram = nullptr;
-
-		m_pDepthprogram->shutdown();
-		delete m_pDepthprogram;
-        m_pDepthprogram = nullptr;
+        da::graphics::CMaterialFactory::remove(m_pBlipProgram);
+        da::graphics::CMaterialFactory::remove(m_pDepthprogram);
 
         if (bgfx::isValid(m_frameBuffer))
             bgfx::destroy(m_frameBuffer);

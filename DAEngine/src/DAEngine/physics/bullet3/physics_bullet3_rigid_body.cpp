@@ -87,6 +87,11 @@ namespace da::physics
 		CBullet3Physics* physics = dynamic_cast<CBullet3Physics*>(CPhysics::getPhysicsType());
 		ASSERT(physics);
 		physics->getDynamicsWorld()->removeRigidBody(m_rigidBody);
+		ASSERT(m_rigidBody->getMotionState());
+		delete m_rigidBody->getMotionState();
+		ASSERT(m_rigidBody->getCollisionShape());
+		delete m_rigidBody->getCollisionShape();
+		ASSERT(m_rigidBody);
 		delete m_rigidBody;
 	}
 

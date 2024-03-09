@@ -104,11 +104,9 @@ namespace da::platform
 	void CBgfxProcSky::initialize(int verticalCount, int horizontalCount, CBgfxSunController& sun) 
 	{
 		m_sun = &sun;
-		m_skyProgram = new CBgfxGraphicsMaterial("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky.sc");
-		m_skyProgramFix = new CBgfxGraphicsMaterial("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky_color_banding_fix.sc");
+		m_skyProgram =    da::graphics::CMaterialFactory::create("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky.sc");
+		m_skyProgramFix = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky_color_banding_fix.sc");
 
-		m_skyProgram->initialize();
-		m_skyProgramFix->initialize();
 		FScreenPosVertex::init();
 		m_sunLuminanceXYZ.SetMap(sunLuminanceXYZTable);
 		m_skyLuminanceXYZ.SetMap(skyLuminanceXYZTable);
@@ -173,11 +171,8 @@ namespace da::platform
 
 	void CBgfxProcSky::shutdown()
 	{
-		m_skyProgram->shutdown();
-		m_skyProgramFix->shutdown();
-
-		delete m_skyProgram;
-		delete m_skyProgramFix;
+		da::graphics::CMaterialFactory::remove(m_skyProgram);
+		da::graphics::CMaterialFactory::remove(m_skyProgramFix);
 
 		BGFXTRYDESTROY(m_vbh);
 		BGFXTRYDESTROY(m_ibh);

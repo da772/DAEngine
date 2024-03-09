@@ -2,9 +2,13 @@
 
 #include <bgfx/bgfx.h>
 
+namespace da::graphics
+{
+	class CMaterial;
+}
+
 namespace da::platform
 {
-	class CBgfxGraphicsMaterial;
 
 	class CDynamicValueController
 	{
@@ -114,8 +118,8 @@ namespace da::platform
 		glm::vec3 m_sunColor = { 1.f,1.f,1.f };
 		CDynamicValueController m_sunLuminanceXYZ;
 		CDynamicValueController m_skyLuminanceXYZ;
-		CBgfxGraphicsMaterial* m_skyProgram = nullptr;
-		CBgfxGraphicsMaterial* m_skyProgramFix = nullptr;
+		da::graphics::CMaterial* m_skyProgram = nullptr;
+		da::graphics::CMaterial* m_skyProgramFix = nullptr;
 		::bgfx::VertexBufferHandle m_vbh = BGFX_INVALID_HANDLE;
 		::bgfx::IndexBufferHandle m_ibh = BGFX_INVALID_HANDLE;
 		::bgfx::UniformHandle u_skyLuminanceXYZ = BGFX_INVALID_HANDLE, u_skyLuminance = BGFX_INVALID_HANDLE, 

@@ -44,17 +44,17 @@ namespace da::core {
 	{
 		if (ImGui::CollapsingHeader("Components")) {
 			ImGui::Indent();
-			for (const std::pair<CHashString, CGuid> component : m_components)
+			for (const std::pair<CHashString, FComponentInfo>& component : m_components)
 			{
 				char compNameBuffer[1024];
-				sprintf_s(compNameBuffer, sizeof(compNameBuffer), "%s (%s)", component.first.c_str(), component.second.c_str());
+				sprintf_s(compNameBuffer, sizeof(compNameBuffer), "%s (%s)", component.first.c_str(), component.second.Guid.c_str());
 
 				const FComponentContainer& container = m_scene->getComponents(component.first);
 				const FECSLifeCycle& lifeCycle = m_scene->getComponentLifeCycle(component.first);
 
 				if (ImGui::CollapsingHeader(compNameBuffer, !lifeCycle.debugRender ? ImGuiTreeNodeFlags_Leaf : 0)) {
 					ImGui::Indent();
-					if (void* ptr = container.findComponent(component.second))
+					if (void* ptr = container.findComponent(component.second.Guid))
 					{
 						
 						if (lifeCycle.debugRender) lifeCycle.debugRender(ptr);
@@ -66,6 +66,16 @@ namespace da::core {
 			ImGui::Unindent();
 		}
 	}
+
+	CEntity::~CEntity()
+	{
+		for (const std::pair<CHashString, FComponentInfo>& kv : m_components) {
+			kv.second.Delete();
+		}
+
+		m_components = {};
+	}
+
 #endif
 
 }

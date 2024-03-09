@@ -11,6 +11,11 @@ namespace da::core
 {
 	class CScene;
 
+	struct FComponentInfo {
+		CGuid Guid;
+		std::function<void()> Delete;
+	};
+
 	template<typename T>
 	struct FComponentRef {
 		FComponentRef(const CGuid& guid, CScene* scene) : m_guid(guid), m_scene(scene){
@@ -40,6 +45,7 @@ namespace da::core
 	public:
 		CEntity(const CGuid& guid, CScene* scene);
 		CEntity(CScene* scene);
+		~CEntity();
 
 	public:
 		const CGuid& getId() const;
@@ -52,9 +58,9 @@ namespace da::core
 		FComponentRef<T> addComponent(Args&&... args)
 		{
 			if (T* comp = m_scene->createComponent<T>(std::forward<Args>(args)..., *this)) {
-
-				m_components[T::getTypeHash()] = comp->getId();
-				return FComponentRef<T>(comp->getId(), m_scene);
+				CGuid guid = comp->getId();
+				m_components[T::getTypeHash()] = { guid, [this, guid] { this->removeComponentInternal<T>(guid); } };
+				return FComponentRef<T>(guid, m_scene);
 			}
 
 			return FComponentRef<T>();
@@ -68,7 +74,7 @@ namespace da::core
 				return FComponentRef<T>();
 			}
 
-			if (T* c = m_scene->getComponent<T>(it->second)) {
+			if (T* c = m_scene->getComponent<T>(it->second.Guid)) {
 				return FComponentRef<T>(c->getId(), m_scene);
 			}
 
@@ -77,15 +83,16 @@ namespace da::core
 
 		template <typename T>
 		bool removeComponent(const CGuid& guid) {
-			bool removed = m_scene->destroyComponent<T>(guid);
+			bool removed = removeComponentInternal<T>(guid);
 
 			if (removed) {
-				m_components.erase(m_components.find(T::getId()));
+				m_components.erase(m_components.find(T::getTypeHash()));
 			}
 
 			return removed;
 
 		}
+
 		template <typename T>
 		bool removeComponent(const FComponentRef<T>& c) {
 			bool removed = m_scene->destroyComponent<T>(c->getId());
@@ -101,9 +108,15 @@ namespace da::core
 #ifdef DA_DEBUG
 		void debugRender();
 #endif
+	private:
+		template <typename T>
+		bool removeComponentInternal(const CGuid& guid) {
+			return m_scene->destroyComponent<T>(guid);
+		}
+
 
 	private:
-		std::unordered_map<CHashString, CGuid> m_components;
+		std::unordered_map<CHashString, FComponentInfo> m_components;
 		CGuid m_guid;
 		CScene* m_scene;
 		da::maths::CTransform m_transform;
