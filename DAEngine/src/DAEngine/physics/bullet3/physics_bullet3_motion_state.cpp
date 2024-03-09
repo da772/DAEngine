@@ -2,8 +2,11 @@
 #include "physics_bullet3_motion_state.h"
 
 #include "bullet3_physics.h"
-#include <glm/gtx/matrix_decompose.hpp>
 #include "DAEngine/core/ecs/entity.h"
+#include <core/ecs/rigid_body_component.h>
+#include <core/events/event_handler.h>
+#include <glm/gtx/matrix_decompose.hpp>
+#include "DAEngine/physics/physics_rigid_body.h"
 
 namespace da::physics
 {
@@ -40,8 +43,11 @@ namespace da::physics
 
 	CBullet3EntityMotionState::CBullet3EntityMotionState(da::core::CEntity* entity) : CPhysicsEntityMotionState(entity)
 	{
+		ASSERT(m_entity);
 		m_motionState = this;
 		m_finalTransform = entity->getTransform().matrix();
+		onTransform(m_finalTransform, m_finalTransform);
+		m_entity->getTransform().addOnTransform(BIND_EVENT_FN_2(CBullet3EntityMotionState, onTransform));
 	}
 
 	void CBullet3EntityMotionState::getWorldTransform(btTransform& worldTrans) const
@@ -53,13 +59,38 @@ namespace da::physics
 	{
 		glm::mat4 transform;
 		worldTrans.getOpenGLMatrix(glm::value_ptr(transform));
+		m_localChange = true;
 		m_entity->getTransform().setTransform(transform);
 		m_finalTransform = transform;
 	}
 
+	void CBullet3EntityMotionState::onTransform(const glm::mat4& oldTransform, const glm::mat4& newTransform)
+	{
+		if (m_localChange)
+		{
+			m_localChange = false;
+			return;
+		}
+
+		btTransform transform;
+		transform.setFromOpenGLMatrix(glm::value_ptr(newTransform));
+		m_motionState->setWorldTransform(transform);
+		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->getComponent<da::core::CRigidBodyComponent>();
+
+		if (!rb.isValid())
+		{
+			return;
+		}
+
+		rb->getPhysicsBody()->setTransform(newTransform);
+	}
+
 	CBullet3EntityMotionState::~CBullet3EntityMotionState()
 	{
-
+		ASSERT(m_entity);
+		m_entity->getTransform().removeOnTransform(BIND_EVENT_FN_2(CBullet3EntityMotionState, onTransform));
 	}
+
+	
 
 }

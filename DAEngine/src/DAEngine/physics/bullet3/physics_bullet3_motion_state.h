@@ -30,8 +30,12 @@ namespace da::physics
 
 		void getWorldTransform(btTransform& worldTrans) const override;
 		void setWorldTransform(const btTransform& worldTrans) override;
+
+	private:
+		void onTransform(const glm::mat4& oldTransform, const glm::mat4& newTransform);
 		
 	private:
 		glm::mat4 m_finalTransform;
+		bool m_localChange = false;
 	};
 }

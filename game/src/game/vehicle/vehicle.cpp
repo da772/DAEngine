@@ -93,10 +93,11 @@ void CVehicle::update(float dt)
 
 
 	da::core::CCamera* cam = da::core::CCamera::getCamera();
-
-	cam->setPosition(entityPos + (m_entity->getTransform().forward() * -4.5f) + glm::vec3(0.f,0.f,3.5f));
+	glm::vec3 pos = glm::mix(cam->position(), entityPos + (m_entity->getTransform().forward() * -4.5f) + glm::vec3(0.f, 0.f, 3.5f), 15.f * dt);
+	cam->setPosition(pos);
 	glm::vec3 rot = glm::eulerAngles(m_entity->getTransform().rotation());
-	cam->setRotation(glm::vec3(-30.f, 0.f, glm::degrees(rot.z)));
+	glm::quat quatRot = glm::slerp(cam->rotation(), glm::quat(glm::radians(glm::vec3(-20.f, 0.f, glm::degrees(rot.z)))), 15.f * dt);
+	cam->setRotation(quatRot);
 }
 
 void CVehicle::shutdown()

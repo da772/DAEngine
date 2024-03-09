@@ -29,6 +29,7 @@ namespace da::physics
 		btRigidBody::btRigidBodyConstructionInfo info(mass, motionState->getMotionState(), b3shape->getShape(), b3Intertia);
 		m_rigidBody = new btRigidBody(info);
 		physics->getDynamicsWorld()->addRigidBody(m_rigidBody);
+		m_rigidBody->forceActivationState(DISABLE_DEACTIVATION);
 	}
 
 	glm::mat4 CBullet3RigidBody::getTransform() const
@@ -165,7 +166,7 @@ namespace da::physics
 		ASSERT(physics);
 		CBullet3Shape* shape = dynamic_cast<CBullet3Shape*>(m_shape);
 		ASSERT(shape);
-		
+
 		physics->getDynamicsWorld()->debugDrawObject(m_rigidBody->getWorldTransform(), shape->getShape(), { 1.f, 0.f,0.f });
 	}
 

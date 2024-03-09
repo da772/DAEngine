@@ -42,19 +42,7 @@ namespace da::core {
 
 		if (m_debugRender)
 		{
-			switch (m_rigidBody->getShape()->getType()) {
-				case da::physics::EPhysicsShapeType::TriangleMesh:
-				{
-					if (da::physics::CPhysicsShapeTriangleMesh* shape = dynamic_cast<da::physics::CPhysicsShapeTriangleMesh*>(m_rigidBody->getShape()))
-					{
-						da::graphics::CDebugRender::drawMesh(m_parent.getTransform().position(), m_parent.getTransform().rotation(), m_parent.getTransform().scale(), shape->getMesh(), { 1.f,0.f,0.f,1.f }, true, false);
-					}
-					break;
-				}
-				default:
-					m_rigidBody->debugDraw();
-					break;
-			}
+			m_rigidBody->debugDraw();
 		}
 
 	}

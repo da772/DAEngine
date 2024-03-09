@@ -232,19 +232,35 @@ void CGame::onInitialize()
 	e2->getTransform().setRotation({ 0,0,0 });
 
 	c = e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx");
-	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 100.f, 100.f, .01f }), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
+	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({100.f,100.f,0.1f}), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
 
 	e2->getTransform().setScale({ 100,100,1.f });
 	e2->setTag(HASHSTR("plane"));
 	//c = e2->addComponent<da::core::CSmeshComponent>("assets/terrain/terrain1.fbx");
 	//e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(c->getStaticMesh()), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
 	
-
-	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleA.jpg"));
-	c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg"));
-	c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg"));
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/debugTexture.jpeg"));
+	//c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg"));
+	//c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg"));
 	c->getStaticMesh()->getMaterial(0).uvScale = { 11.f,11.f };
-	c->getStaticMesh()->getMaterial(0).doubleSided = true;
+	c->getStaticMesh()->getMaterial(0).doubleSided = false;
+
+	e2 = da::core::CSceneManager::getScene()->createEntity();
+
+	e2->getTransform().setPosition({ 0,30,-3 });
+	e2->getTransform().setRotation({ 15,0,0 });
+
+	c = e2->addComponent<da::core::CSmeshComponent>("assets/cube.fbx");
+	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 5.f,10.f,5.f }), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
+
+	e2->getTransform().setScale({ 5,10,5.f });
+	e2->setTag(HASHSTR("ramp1"));
+
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/debugTexture.jpeg"));
+	//c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg"));
+	//c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg"));
+	c->getStaticMesh()->getMaterial(0).uvScale = { 11.f,11.f };
+	c->getStaticMesh()->getMaterial(0).doubleSided = false;
 
 	m_character = new CCharacter();
 	m_character->initialize();

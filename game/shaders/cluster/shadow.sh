@@ -99,7 +99,7 @@ float calculateShadow(Sampler _sampler, float _currentDepth, vec3 _shadowCoord, 
 
 float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal)
 {
-	float shadowMapBias = mix(0.003, 0.0, v_lightNormal);
+	float shadowMapBias = .002;//mix(0.0025, 0.0, v_lightNormal);
 
 	vec4 fragPosViewSpace = mul(v_view, vec4(fragPosWorldSpace, 1.0));
 	float depthValue = abs(fragPosViewSpace.z);

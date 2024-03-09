@@ -78,6 +78,26 @@ namespace da::core {
 		return m_animation;
 	}
 
+	glm::mat4 CSkeletalMeshComponent::getTransform()
+	{
+		if (m_parent.getTransform().isDirty()) {
+			m_finalTransform = m_parent.getTransform().matrix() * m_transform;
+		}
+
+		return m_finalTransform;
+	}
+
+	void CSkeletalMeshComponent::setTransform(const glm::mat4& transform)
+	{
+		m_transform = transform;
+		m_finalTransform = m_parent.getTransform().matrix() * m_transform;
+	}
+
+	void CSkeletalMeshComponent::onTransform(const glm::mat4& oldT, const glm::mat4& newT)
+	{
+		m_finalTransform = newT * m_transform;
+	}
+
 #ifdef DA_DEBUG
 	void CSkeletalMeshComponent::onDebugRender()
 	{
@@ -173,27 +193,6 @@ namespace da::core {
 			ImGui::Unindent();
 		}
 	}
-
-	glm::mat4 CSkeletalMeshComponent::getTransform()
-	{
-		if (m_parent.getTransform().isDirty()) {
-			m_finalTransform = m_parent.getTransform().matrix() * m_transform;
-		}
-
-		return m_finalTransform;
-	}
-
-	void CSkeletalMeshComponent::setTransform(const glm::mat4& transform)
-	{
-		m_transform = transform;
-		m_finalTransform = m_parent.getTransform().matrix() * m_transform;
-	}
-
-	void CSkeletalMeshComponent::onTransform(const glm::mat4& oldT, const glm::mat4& newT)
-	{
-		m_finalTransform = newT * m_transform;
-	}
-
 #endif
 
 }

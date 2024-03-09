@@ -43,12 +43,9 @@ namespace da::physics
 			if (body && body->getMotionState())
 			{
 				if (da::core::CEntity* e = (da::core::CEntity*)body->getUserPointer()) {
-					//if (e->getTransform().isDirty()) {
-						//btTransform trans;
-						//body->setActivationState(ACTIVE_TAG);
-						//trans.setFromOpenGLMatrix(glm::value_ptr(e->getTransform().matrix()));
-						//body->setWorldTransform(trans);
-					//}
+					if (e->getTransform().isDirty()) {
+						e->getTransform().matrix();
+					}
 				}
 			}
 
@@ -57,25 +54,6 @@ namespace da::physics
 		m_dynamicsWorld->stepSimulation(dt, 10, 1.f / 60.f);
 		//m_collisionWorld->debugDrawWorld();
 		//m_dynamicsWorld->debugDrawWorld();
-
-		//print positions of all objects
-		for (int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
-		{
-			btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
-			btRigidBody* body = btRigidBody::upcast(obj);
-
-			if (body && body->getMotionState())
-			{
-				btTransform trans;
-				body->getMotionState()->getWorldTransform(trans);
-				glm::mat4 transform;
-				trans.getOpenGLMatrix(glm::value_ptr(transform));
-
-				if (da::core::CEntity* e = (da::core::CEntity*)body->getUserPointer()) {
-					//e->getTransform().setTransform(transform);
-				}
-			}
-		}
 	}
 
 	void CBullet3Physics::shutdown()

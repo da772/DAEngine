@@ -43,8 +43,6 @@ namespace da::physics
 		delete m_vehicle;
 		m_vehicle = nullptr;
 
-		ASSERT(m_raycaster);
-		delete m_raycaster;
 		m_raycaster = nullptr;
 	}
 
