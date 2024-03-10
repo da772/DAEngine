@@ -1,10 +1,11 @@
 #pragma once
+#include <DAEngine/core/core.h>
 #include "DAEngine/core/containers.h"
 #include <stdint.h>
 #include <string>
 #include <algorithm>
 
-#if defined(DA_DEBUG) || defined(DA_REVIEW)
+#ifdef DA_REVIEW
 #define HASHSTR(x) { x, CBasicHashString::generateHash(x) }
 #else
 #define HASHSTR(x) CBasicHashString(CBasicHashString::generateHash(x))	

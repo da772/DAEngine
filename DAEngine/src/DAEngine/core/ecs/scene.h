@@ -12,7 +12,7 @@ namespace da::core {
 			m_components.insert(m_components.end(), sizeof(T), 0);
 			char* ptr = &m_components[m_count * sizeof(T)];
 			new ((T*)ptr)T (std::forward<Args>(args)...);
-#if DA_DEBUG || DA_RELEASE
+#ifdef DA_REVIEW
 			LOG_ASSERT(((T*)ptr)->getId().isValid(), ELogChannel::Core, "Creating component with invalid id");
 #endif
 			m_count++;
@@ -43,7 +43,7 @@ namespace da::core {
 			return -1;
 		}
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void* findComponent(const CGuid& guid) const {
 			for (size_t i = 0; i < m_count; i ++) {
 				for (size_t j = 0; j < m_size; j++) {
@@ -113,7 +113,7 @@ namespace da::core {
 		void (*init)(void*);
 		void (*update)(void*, float);
 		void (*shutdown)(void*);
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void (*debugRender)(void*) = nullptr;
 #endif
 	};

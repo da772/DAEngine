@@ -22,7 +22,7 @@ namespace da::platform
 
 	private:
 		::bgfx::FrameBufferHandle createFrameBuffer(bool hdr, size_t width = 0, size_t height = 0);
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void onDebugRender();
 #endif
 
@@ -43,7 +43,7 @@ namespace da::platform
 		uint8_t m_bloomAmount = 5;
 		size_t m_width, m_height;
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		bool m_debug = false;
 #endif
 	};

@@ -31,7 +31,7 @@ namespace da::platform
 
 		glm::vec4 m_param1 = {0.3f, 0.15f, 0.015f, 0.025 };
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void renderDebug();
 		bool m_debug = false;
 #endif

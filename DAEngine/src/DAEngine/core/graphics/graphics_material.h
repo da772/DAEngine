@@ -39,12 +39,12 @@ namespace da::graphics
 
 		static void remove(CMaterial* material);
 
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 		static void reloadShaders();
 #endif
 
 	private:
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 		static bool m_debug;
 #endif
 

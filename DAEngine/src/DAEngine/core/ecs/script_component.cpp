@@ -3,13 +3,13 @@
 #include "daengine/script/script_engine.h"
 #include <lua/lua.h>
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include <imgui.h>
 #endif
 
 namespace da::core {
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	COMPONENT_CPP_DEBUG(CScriptComponent)
 #else
 	COMPONENT_CPP(CScriptComponent)
@@ -47,7 +47,7 @@ namespace da::core {
 		m_scriptClass.classInitialize();
     }
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	void CScriptComponent::onDebugRender() {
 
 		ImGui::Text("Script: %s", m_script.c_str());

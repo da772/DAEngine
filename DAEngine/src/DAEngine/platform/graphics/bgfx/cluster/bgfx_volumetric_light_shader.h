@@ -21,7 +21,7 @@ namespace da::platform
 	private:
 		::bgfx::FrameBufferHandle createFrameBuffer(bool hdr);
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void renderDebug();
 #endif
 
@@ -36,7 +36,7 @@ namespace da::platform
 		glm::vec4 m_params1 = {0.f,0.f, 1.f,100.f};
 		glm::vec4 m_params2 = { .75f,.5f,1.f,0.01f };
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		bool m_debug = false;
 #endif
 

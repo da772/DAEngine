@@ -2,7 +2,7 @@
 
 #include "scene_manager.h"
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include <imgui.h>
 #include "entity.h"
 #include "debug/debug_menu_bar.h"
@@ -14,14 +14,14 @@
 namespace da::core {
 
 	CScene* CSceneManager::s_scene;
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	bool CSceneManager::s_showDebug = false;
 	bool CSceneManager::s_showCameraDebug = false;
 #endif
 
 	void CSceneManager::initialize()
 	{
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"), &s_showDebug, renderDebug);
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Camera"), &s_showCameraDebug, renderCameraDebug);
 #endif
@@ -36,7 +36,7 @@ namespace da::core {
 	{
 		s_scene = scene;
 	}
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	void CSceneManager::renderDebug()
 	{
 		if (CScene* scene = getScene()) {
@@ -127,7 +127,7 @@ namespace da::core {
 
 	void CSceneManager::shutdown()
 	{
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"));
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Camera"));
 #endif

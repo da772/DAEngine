@@ -11,7 +11,7 @@
 
 #include "physics/physics.h"
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include "debug/debug.h"
 #include "debug/debug_menu_bar.h"
 #endif
@@ -32,7 +32,7 @@ namespace da
 		m_initialized = true;
 #ifndef DA_TEST
 		script::CScriptEngine::initialize();
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebug::initialize();
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("App"), HASHSTR("Reset"), &m_reset, [&] { reset();});
 #endif
@@ -57,7 +57,7 @@ namespace da
 			for (IModule* m : m_modules) {
 				m->update();
 			}
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 			da::debug::CDebug::update(timeStep);
 #endif
 			onUpdate(timeStep);
@@ -101,7 +101,7 @@ namespace da
 		da::physics::CPhysics::shutdown();
 #ifndef DA_TEST
 		script::CScriptEngine::shutdown();
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("App"), HASHSTR("Reset"));
 		da::debug::CDebug::shutdown();
 #endif

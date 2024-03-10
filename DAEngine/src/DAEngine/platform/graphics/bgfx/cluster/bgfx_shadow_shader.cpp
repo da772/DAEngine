@@ -95,7 +95,7 @@ namespace da::platform {
 						, m_shadowMapSize
 						, false
 						, 1
-						, bgfx::TextureFormat::D16
+						, bgfx::TextureFormat::D32F
 						, BGFX_TEXTURE_RT | BGFX_SAMPLER_COMPARE_LEQUAL
 						),
 				};
@@ -121,7 +121,7 @@ namespace da::platform {
 						, m_shadowMapSize
 						, false
 						, 1
-						, bgfx::TextureFormat::D16
+						, bgfx::TextureFormat::D32F
 						, BGFX_TEXTURE_RT_WRITE_ONLY
 						),
 				};

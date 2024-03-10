@@ -11,7 +11,7 @@
 #include <bgfx/bgfx.h>
 
 namespace da::core {
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	COMPONENT_CPP_NO_UPDATE_DEBUG(CSkeletalMeshComponent);
 #else
 	COMPONENT_CPP_NO_UPDATE(CSkeletalMeshComponent);
@@ -98,7 +98,7 @@ namespace da::core {
 		m_finalTransform = newT * m_transform;
 	}
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	void CSkeletalMeshComponent::onDebugRender()
 	{
 		if (ImGui::CollapsingHeader("Anim")) {

@@ -14,7 +14,7 @@ namespace da::graphics
 namespace da::core
 {
 	class CSkeletalMeshComponent {
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		COMPONENT_H_NO_UPDATE_DEBUG(CSkeletalMeshComponent);
 #else
 		COMPONENT_H_NO_UPDATE(CSkeletalMeshComponent);
@@ -34,7 +34,7 @@ namespace da::core
 		da::graphics::CSkeletalMesh* getSkeletalMesh() const;
 		da::graphics::CSkeletalAnimation* getSkeletalAnimation() const;
 		da::graphics::CSkeletalAnimator* getSkeletalAnimator() const;
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void onDebugRender();
 #endif
 

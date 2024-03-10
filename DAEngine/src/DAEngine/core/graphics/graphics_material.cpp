@@ -6,7 +6,7 @@
 #include "DAEngine/platform/graphics/bgfx/bgfx_graphics_material.h"
 #endif
 
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 #include "DAEngine/debug/debug_menu_bar.h"
 #include <Imgui.h>
 #endif
@@ -16,7 +16,7 @@ namespace da::graphics
 {
 	std::unordered_map<CHashString, FMaterialInfo> CMaterialFactory::ms_materials;
 
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 	bool CMaterialFactory::m_debug;
 #endif
 
@@ -39,7 +39,7 @@ namespace da::graphics
 		mat->m_hash = combinedHash;
 		ms_materials[combinedHash] = { mat, 1 };
 
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 		if (ms_materials.size() == 1) {
 			da::debug::CDebugMenuBar::register_debug(HASHSTR("Shaders"), HASHSTR("Reload Shaders"), &m_debug, reloadShaders);
 		}
@@ -86,14 +86,14 @@ namespace da::graphics
 
 		ms_materials.erase(it);
 
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 		if (ms_materials.empty()) {
 			da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Shaders"), HASHSTR("Reload"));
 		}
 #endif
 	}
 
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 	void CMaterialFactory::reloadShaders()
 	{
 		for (const std::pair<CHashString, FMaterialInfo>& kv : ms_materials) {

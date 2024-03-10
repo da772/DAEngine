@@ -5,7 +5,7 @@
 #include <platform/graphics/bgfx/bgfx_util.h>
 #include "bgfx_type_renderer.h"
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include "DAEngine/debug/debug_menu_bar.h"
 #include <imgui.h>
 #endif
@@ -26,7 +26,7 @@ namespace da::platform
 		const PosVertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
 		m_blitTriangleBuffer = ::bgfx::createVertexBuffer(::bgfx::copy(&vertices, sizeof(vertices)), PosVertex::layout);
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Volumetric Lighting"), &m_debug, [this] {renderDebug(); });
 #endif
 
@@ -65,7 +65,7 @@ namespace da::platform
 
 
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Volumetric Lighting"));
 #endif
 	}
@@ -102,7 +102,7 @@ namespace da::platform
 		return m_frameBuffer;
 	}
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	void CBgfxVolumetricLightShader::renderDebug()
 	{
 		if (ImGui::Begin("Volumetric Lighting", &m_debug))

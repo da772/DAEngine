@@ -1,5 +1,5 @@
 #include "dapch.h"
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include "debug.h"
 #include "debug_menu_bar.h"
 #include "debug_stats_window.h"

@@ -41,7 +41,7 @@ namespace da::platform {
 		virtual void submitPipeline(da::graphics::CGraphicsPipeline* pipeline);
 	private:
 		void windowResize(const da::core::events::CEvent& event);
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		static void renderDebugTitle();
 		static bool s_showDebugTitle;
 #endif

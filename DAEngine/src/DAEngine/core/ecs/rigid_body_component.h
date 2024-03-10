@@ -10,7 +10,7 @@ namespace da::core {
 
 	class CRigidBodyComponent
 	{
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		COMPONENT_H_NO_UPDATE_DEBUG(CRigidBodyComponent)
 #else
 		COMPONENT_H_NO_UPDATE(CRigidBodyComponent)
@@ -23,12 +23,12 @@ namespace da::core {
 		void onInitialize();
 		void onShutdown();
 		da::physics::IPhysicsRigidBody* getPhysicsBody() const;
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void onDebugRender();
 #endif
 
 	private:
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		bool m_debugRender = true;
 #endif
 

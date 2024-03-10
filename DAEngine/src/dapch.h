@@ -17,5 +17,6 @@
 #ifndef DA_DEBUG
 #define NDEBUG
 #endif
+#include "DAEngine/core/core.h"
 #include "DAEngine/core/containers.h"
 #include "DAEngine/logger.h"

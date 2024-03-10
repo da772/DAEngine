@@ -8,7 +8,7 @@
 #include <glm/ext/quaternion_float.hpp>
 #include <glm/ext/quaternion_trigonometric.hpp>
 #include <bx/math.h>
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include "DAEngine/debug/debug_menu_bar.h"
 #include <imgui.h>
 #endif
@@ -155,7 +155,7 @@ namespace da::platform
 
 		m_sun->Update();
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Sky"), &m_debug, [this] {renderDebug(); });
 #endif
 	}
@@ -183,7 +183,7 @@ namespace da::platform
 		BGFXTRYDESTROY(u_perezCoeff);
 		BGFXTRYDESTROY(u_sunLuminance);
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Sky"));
 #endif
 	}
@@ -239,7 +239,7 @@ namespace da::platform
 		return rgb;
 	}
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	void CBgfxProcSky::renderDebug()
 	{
 		if (ImGui::Begin("Sky debug", &m_debug))

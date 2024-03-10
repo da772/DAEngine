@@ -27,7 +27,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include <DAEngine/debug/debug_menu_bar.h>
 #endif
 #include <DAEngine/core/ecs/skeletal_mesh_component.h>
@@ -95,7 +95,7 @@ void CGame::windowEvent(const da::core::events::CEvent& e)
 void CGame::onInitialize()
 {
 	createModules();
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"), &m_showScriptDebug, [&] {renderScriptDebug(true, &m_showScriptDebug); });
 	da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts (Hard)"), &m_showScriptDebugHard, [&] {renderScriptDebug(false, &m_showScriptDebugHard); });
 #endif
@@ -119,30 +119,11 @@ void CGame::onInitialize()
 
 	e2->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
 	e1->getTransform().setPosition({ 0,0,25.5f });
-	da::core::FComponentRef<da::core::CSmeshComponent> c = e1->addComponent<da::core::CSmeshComponent>("assets/sniper/Sniper.fbx");
-	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Variation04/Sniper_04_Albedo.png"));
-	c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Normal.png"));
-	c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Variation04/Sniper_05_Metallic.png"));
-	c->getStaticMesh()->getMaterial(0).setEmissiveTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Emission.png"));
-	c->getStaticMesh()->getMaterial(0).emissiveFactor = { 1.f,1.f,1.f };
-	c->getStaticMesh()->getMaterial(0).setOcclusionTexture(da::graphics::CTexture2DFactory::Create("assets/sniper/Textures/Shared/Sniper_Occlusion.png"));
-
-	e3 = da::core::CSceneManager::getScene()->createEntity();
-	c = e3->addComponent<da::core::CSmeshComponent>("assets/rifle/Rifle.fbx");
-	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Albedo.png"));
-	c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Normal.png"));
-	c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Metallic.png"));
-	c->getStaticMesh()->getMaterial(0).setEmissiveTexture(da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Emission.png"));
-	c->getStaticMesh()->getMaterial(0).emissiveFactor = { 1.f,1.f,1.f };
-	c->getStaticMesh()->getMaterial(0).setOcclusionTexture(da::graphics::CTexture2DFactory::Create("assets/rifle/Textures/Occlusion.png"));
-
-	e3->setTag(HASHSTR("Rifle"));
-	e3->getTransform().setPosition({ 0,-5.f,25.f });
-	e3->getTransform().setRotation({ 0,0.f,90.f });
+	
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
-
+	/*
 	e5 = da::core::CSceneManager::getScene()->createEntity();
-	c = e5->addComponent<da::core::CSmeshComponent>("assets/blade_LOTR/blade_LOTR.fbx");
+	da::core::FComponentRef<da::core::CSmeshComponent> c = e5->addComponent<da::core::CSmeshComponent>("assets/blade_LOTR/blade_LOTR.fbx");
 	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_BaseColor.png"));
 	c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_Normal_OpenGL.png"));
 	c->getStaticMesh()->getMaterial(0).setOcclusionTexture(da::graphics::CTexture2DFactory::Create("assets/blade_LOTR/blade_LOTR_phong4_AmbientOcclusion_Mixed.png"));
@@ -153,6 +134,7 @@ void CGame::onInitialize()
 	e5->getTransform().setScale({ 1.f,1.f,1.f });
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
+	
 	e6 = da::core::CSceneManager::getScene()->createEntity();
 	c = e6->addComponent<da::core::CSmeshComponent>("assets/hat/hat.fbx");
 	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/hat/Hat_albedo.jpg"));
@@ -165,10 +147,11 @@ void CGame::onInitialize()
 	e6->getTransform().setPosition({ 0,0,0 });
 	e6->getTransform().setRotation({ 45.f,0.f,180.f });
 	e6->getTransform().setScale({ .1f,.1f,.1f });
+	*/
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 	e7 = da::core::CSceneManager::getScene()->createEntity();
-	c = e7->addComponent<da::core::CSmeshComponent>("assets/cube.fbx");	
+	da::core::FComponentRef<da::core::CSmeshComponent> c = e7->addComponent<da::core::CSmeshComponent>("assets/cube.fbx");
 	e7->getTransform().setPosition({3.f,0.f, 2.f});
 	e7->addComponent<da::core::CRigidBodyComponent>(
 		da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({1.f,1.f,1.f})
@@ -328,7 +311,7 @@ void CGame::onUpdate(float dt)
 		e5->getTransform().setRotation(rotation);
 	}
 
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 	component->getSkeletalAnimator()->debugRenderJoints(component->getTransform());
 	//da::graphics::CDebugRender::getInstance()->drawLine({ 0.f, 0.f, -10.f }, { 0.f,0.f, 10.f }, 1.f, { 1.f,0.f,0.f,1.f });
 #endif
@@ -362,7 +345,7 @@ void CGame::onUpdate(float dt)
 	da::core::CCamera::getCamera()->setPosition(cPos+cOffset);
 	//da::core::CCamera::getCamera()->lookAt(cPos + e4->getTransform().up()*.25f);
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	if (ImGui::Begin("Hit?")) {
 		if (data.bHit) {
 			for (int i = 0; i < data.vHits.size(); i++) {
@@ -394,7 +377,7 @@ void CGame::onShutdown()
 
 	m_vehicle->shutdown();
 	delete m_vehicle;
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"));
 #endif
 	da::CLogger::LogDebug(da::ELogChannel::Application, "App End");

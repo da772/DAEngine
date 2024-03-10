@@ -8,7 +8,7 @@
 #include <bgfx/bgfx.h>
 
 namespace da::core {
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	COMPONENT_CPP_NO_UPDATE_DEBUG(CSmeshComponent);
 #else
 	COMPONENT_CPP_NO_UPDATE(CSmeshComponent);
@@ -39,7 +39,7 @@ namespace da::core {
 		return m_staticMesh;
 	}
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	void CSmeshComponent::onDebugRender()
 	{
 		char buffer[4096];

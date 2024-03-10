@@ -1,7 +1,7 @@
 #include "dapch.h"
 #include "debug_stats_window.h"
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 
 #include <imgui.h>
 #include "debug_menu_bar.h"

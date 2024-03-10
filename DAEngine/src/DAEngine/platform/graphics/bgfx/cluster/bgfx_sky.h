@@ -109,7 +109,7 @@ namespace da::platform
 		void computePerezCoeff(float _turbidity, float* _outPerezCoeff);
 		glm::vec3 xyzToRgb(const glm::vec3& xyz) const;
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void renderDebug();
 #endif
 
@@ -126,7 +126,7 @@ namespace da::platform
 			u_sunDirection = BGFX_INVALID_HANDLE, u_parameters = BGFX_INVALID_HANDLE, u_perezCoeff = BGFX_INVALID_HANDLE , u_sunLuminance = BGFX_INVALID_HANDLE;
 		CBgfxSunController* m_sun;
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		bool m_debug = false;
 #endif
 	};

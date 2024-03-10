@@ -39,7 +39,7 @@ namespace da::core {
 		m_tag = tag;
 	}
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	void CEntity::debugRender()
 	{
 		if (ImGui::CollapsingHeader("Components")) {
@@ -66,6 +66,7 @@ namespace da::core {
 			ImGui::Unindent();
 		}
 	}
+#endif
 
 	CEntity::~CEntity()
 	{
@@ -75,7 +76,5 @@ namespace da::core {
 
 		m_components = {};
 	}
-
-#endif
 
 }

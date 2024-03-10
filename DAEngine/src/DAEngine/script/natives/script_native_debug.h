@@ -1,5 +1,5 @@
 #pragma once
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 
 extern "C" {
 	typedef struct lua_State lua_State;

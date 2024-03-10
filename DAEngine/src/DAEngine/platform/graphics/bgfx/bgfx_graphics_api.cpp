@@ -9,7 +9,7 @@
 #include "cluster/bgfx_type_renderer.h"
 #include "cluster/bgfx_clustered_renderer.h"
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include <imgui.h>
 #include "DAEngine/debug/debug_stats_window.h"
 #include "DAEngine/debug/debug_menu_bar.h"
@@ -21,7 +21,7 @@ namespace da::platform {
 
 
 	ERenderApis CbgfxGraphicsApi::s_renderer = ERenderApis::NOOP;
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	bool CbgfxGraphicsApi::s_showDebugTitle = true;
 #endif
 
@@ -189,14 +189,20 @@ namespace da::platform {
 		init.resolution.height = data.Height;
 		init.resolution.reset = data.RefreshRate;
 		// Issues with allocator, MACOSX Release
-		#if DA_DEBUG
+		#ifdef DA_DEBUG
 		//init.allocator = (bx::AllocatorI*)m_allocator;
 		#endif
-		#ifdef DA_DEBUG
+		#ifdef DA_REVIEW
 		if (da::core::CArgHandler::contains("debugGpu"))
 		{
 			((FDACallbacks*)m_callbacks)->m_trace = true;
 			init.callback = (::bgfx::CallbackI*)m_callbacks;
+		}
+		else {
+#ifndef DA_DEBUG
+			init.profile = false;
+			init.debug = false;
+#endif
 		}
 		
 		#endif
@@ -211,8 +217,10 @@ namespace da::platform {
 
 		m_nativeWindow->getEventHandler().registerCallback(da::core::events::EEventType::WindowResize, BIND_EVENT_FN(CbgfxGraphicsApi, windowResize));
 
+		uint32_t debug = BGFX_DEBUG_PROFILER;
+
 		// Enable debug text.
-		::bgfx::setDebug(BGFX_DEBUG_TEXT | BGFX_DEBUG_PROFILER);// | BGFX_DEBUG_STATS);
+		::bgfx::setDebug(debug);// | BGFX_DEBUG_STATS);
 		::bgfx::reset(data.Width, data.Height, BGFX_RESET_MSAA_X8);
 		::bgfx::setViewClear(0
 			, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
@@ -228,7 +236,7 @@ namespace da::platform {
 		m_renderer->initialize();
 		m_renderer->reset(data.Width, data.Height);
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Info"), &s_showDebugTitle, renderDebugTitle);
 #endif
 
@@ -247,7 +255,7 @@ namespace da::platform {
 		
 		::bgfx::touch(0);
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		const ::bgfx::Stats* stats = ::bgfx::getStats();
 		da::debug::CDebugStatsWindow::s_gpuTime = ((stats->gpuTimeEnd - stats->gpuTimeBegin)/ 1000.0);
 		da::debug::CDebugStatsWindow::s_cpuTime = ((stats->cpuTimeEnd - stats->cpuTimeBegin) / 1000.0);
@@ -266,11 +274,11 @@ namespace da::platform {
 
 	void CbgfxGraphicsApi::shutdown()
 	{
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Info"));
 #endif
 		m_renderer->shutdown();
-#ifdef DA_DEBUG || DA_RELEASE
+#ifdef DA_DEBUG
 		bgfx::setGraphicsDebuggerPresent(true);
 #endif
 		::bgfx::shutdown();
@@ -309,7 +317,7 @@ namespace da::platform {
 		return s_bgfxRenderers[(uint8_t)api];
 	}
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	void CbgfxGraphicsApi::renderDebugTitle()
 	{
 		const float wSize = 115.f;

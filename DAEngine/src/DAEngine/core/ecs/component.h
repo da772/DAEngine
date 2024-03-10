@@ -10,7 +10,7 @@ inline void shutdown() { onShutdown(); }; inline CEntity& getParent() const { re
 inline const CGuid& getId() const {return m_guid;}; protected: CGuid m_guid; CEntity& m_parent; public: inline void initialize() { onInitialize(); }; \
 inline void shutdown() { onShutdown(); }; inline CEntity& getParent() const { return m_parent;};
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #define COMPONENT_H_DEBUG(x) COMPONENT_H_INTERNAL(x) public: inline void debugRender() { onDebugRender(); }
 #define COMPONENT_H_NO_UPDATE_DEBUG(x) COMPONENT_H_INTERNAL_NO_UPDATE(x) public: inline void debugRender() { onDebugRender(); }
 #endif
@@ -20,7 +20,7 @@ inline void shutdown() { onShutdown(); }; inline CEntity& getParent() const { re
 
 #define COMPONENT_REGISTER(x) void x::registerComponent() { CScene::registerComponentLifeCycle<x>({ register_init, register_update, register_shutdown }); }
 #define COMPONENT_REGISTER_NO_UPDATE(x) void x::registerComponent() { CScene::registerComponentLifeCycle<x>({ register_init, nullptr, register_shutdown }); }
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #define COMPONENT_REGISTER_DEBUG(x) void x::registerComponent() { CScene::registerComponentLifeCycle<x>({ register_init, register_update, register_shutdown, register_debug_render }); }
 #define COMPONENT_REGISTER_NO_UPDATE_DEBUG(x) void x::registerComponent() { CScene::registerComponentLifeCycle<x>({ register_init, nullptr, register_shutdown, register_debug_render }); }
 #endif
@@ -30,7 +30,7 @@ inline void shutdown() { onShutdown(); }; inline CEntity& getParent() const { re
 
 #define COMPONENT_CPP(x) COMPONENT_CPP_INTERNAL(x) COMPONENT_REGISTER(x)
 #define COMPONENT_CPP_NO_UPDATE(x) COMPONENT_CPP_INTERNAL_NO_UPDATE(x) COMPONENT_REGISTER_NO_UPDATE(x)
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #define COMPONENT_CPP_DEBUG(x) COMPONENT_CPP_INTERNAL(x)  static void register_debug_render(void* p) { ((x*)p)->debugRender();}  COMPONENT_REGISTER_DEBUG(x) 
 #define COMPONENT_CPP_NO_UPDATE_DEBUG(x) COMPONENT_CPP_INTERNAL_NO_UPDATE(x)  static void register_debug_render(void* p) { ((x*)p)->debugRender();}  COMPONENT_REGISTER_NO_UPDATE_DEBUG(x) 
 #endif

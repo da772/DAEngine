@@ -6,8 +6,12 @@
 #include "skeletal_mesh_component.h"
 #include "core/graphics/skeletal_animator.h"
 
+#ifdef DA_REVIEW
+#include <Imgui.h>
+#endif
+
 namespace da::core {
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	COMPONENT_CPP_NO_UPDATE_DEBUG(CRigidBodyComponent)
 #else
 	COMPONENT_CPP_NO_UPDATE(CRigidBodyComponent)
@@ -33,7 +37,7 @@ namespace da::core {
 		return m_rigidBody;
 	}
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	void CRigidBodyComponent::onDebugRender()
 	{
 		ImGui::Text("Debug Render: ");
@@ -46,6 +50,7 @@ namespace da::core {
 		}
 
 	}
+#endif
 
 	CRigidBodyComponent::~CRigidBodyComponent()
 	{
@@ -53,5 +58,4 @@ namespace da::core {
 		delete m_rigidBody;
 	}
 
-#endif
 }

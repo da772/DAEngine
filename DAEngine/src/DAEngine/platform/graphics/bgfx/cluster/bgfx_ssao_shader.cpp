@@ -6,7 +6,7 @@
 #include "bgfx_samplers.h"
 #include <glm/gtc/type_ptr.hpp>
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include "DAEngine/debug/debug_menu_bar.h"
 #include <imgui.h>
 #endif
@@ -29,7 +29,7 @@ namespace da::platform
 		m_uniformParamHandle = bgfx::createUniform("u_param1", bgfx::UniformType::Vec4);
 		m_ssaoUniformHandle = bgfx::createUniform("s_ssao", bgfx::UniformType::Sampler);
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("SSAO"), &m_debug, [this] { renderDebug(); });
 #endif
 	}
@@ -74,7 +74,7 @@ namespace da::platform
 		BGFXTRYDESTROY(m_uniformHandle);
 		BGFXTRYDESTROY(m_uniformParamHandle);
 		BGFXTRYDESTROY(m_ssaoUniformHandle);
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("SSAO"));
 #endif
 	}
@@ -119,7 +119,7 @@ namespace da::platform
 	}
 
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 
 	void CBgfxSSAOShader::renderDebug()
 	{

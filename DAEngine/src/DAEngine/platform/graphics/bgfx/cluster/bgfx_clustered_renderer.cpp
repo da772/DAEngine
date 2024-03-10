@@ -17,7 +17,7 @@
 #include <bx/bx.h>
 #include <bx/math.h>
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include "DAEngine/platform/imgui/bgfx/bgfx_imgui.h"
 #include "debug/debug_menu_bar.h"
 #include "debug/debug_stats_window.h"
@@ -72,7 +72,7 @@ namespace da::platform {
 
 
         m_ssao.initialize();
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
         m_debugRenderer.initialize();
         da::graphics::CDebugRender::setInstance(&m_debugRenderer);
 #endif
@@ -82,7 +82,7 @@ namespace da::platform {
         m_bloom.initialize(m_width, m_height);
         m_volumetricLight.initialize();
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"), &m_lightDebugVis, [&] { renderLightDebug(); });
 #endif
@@ -93,7 +93,7 @@ namespace da::platform {
         enum : ::bgfx::ViewId
         {
             vDepth = 0,
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
             vDebug,
 #endif
             vSSAO,
@@ -107,7 +107,7 @@ namespace da::platform {
             vBloomBlur,
         };
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
         {
             if (da::core::CTime::getFrameCount() % 100 == 0) {
                 da::debug::CDebugStatsWindow::s_viewTimes = {};
@@ -368,7 +368,7 @@ namespace da::platform {
             CBgfxClusterShader::CLUSTERS_Y / CBgfxClusterShader::CLUSTERS_Y_THREADS,
             CBgfxClusterShader::CLUSTERS_Z / CBgfxClusterShader::CLUSTERS_Z_THREADS);
         // lighting
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
         ::bgfx::ProgramHandle program = { (m_clusterDebugVis ? m_pDebugVisProgram->getHandle() : m_pLightingProgram->getHandle()) };
 #else
         ::bgfx::ProgramHandle program =  { m_pLightingProgram->getHandle() };
@@ -483,7 +483,7 @@ namespace da::platform {
         m_pClusterBuildingComputeProgram = m_pResetCounterComputeProgram = m_pLightCullingComputeProgram = m_pLightingProgram =
             m_pDebugVisProgram = nullptr;
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
         da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"));
         da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"));
 #endif
@@ -547,13 +547,13 @@ namespace da::platform {
 		m_ssao.reset(width, height);
         m_bloom.onReset(width, height);
         m_volumetricLight.onReset(width, height);
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
         m_debugRenderer.onReset(width, height);
 #endif
 	}
 
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
     void CBgfxClusteredRenderer::renderLightDebug()
     {
         if (ImGui::Begin("Light Debug", &m_lightDebugVis)) {

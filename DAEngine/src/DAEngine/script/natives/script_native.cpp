@@ -11,7 +11,7 @@ namespace da::script
 	{
 		imgui::registerNatives(L);
 		core::registerNatives(L);
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		debug::registerNatives(L);
 #endif
 	}

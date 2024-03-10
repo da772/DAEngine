@@ -26,7 +26,7 @@ namespace da::platform
     private:
         void generateLights(uint32_t count);
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
         void renderLightDebug();
 #endif
     private:
@@ -45,7 +45,7 @@ namespace da::platform
         CBgfxShadowShader m_shadow;
         CBgfxSSAOShader m_ssao;
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
         bool m_clusterDebugVis = false;
         bool m_lightDebugVis = false;
 #endif

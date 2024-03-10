@@ -14,7 +14,7 @@ namespace da::core
 	
 
 	class CSmeshComponent {
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		COMPONENT_H_NO_UPDATE_DEBUG(CSmeshComponent);
 #else
 		COMPONENT_H_NO_UPDATE(CSmeshComponent);
@@ -27,7 +27,7 @@ namespace da::core
 		void onInitialize();
 		void onShutdown();
 		da::graphics::CStaticMesh* getStaticMesh() const;
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void onDebugRender();
 #endif
 

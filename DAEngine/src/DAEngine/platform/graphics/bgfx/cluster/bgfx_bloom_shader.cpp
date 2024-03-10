@@ -5,7 +5,7 @@
 #include "bgfx_type_renderer.h"
 #include "bgfx_samplers.h">
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include "daengine/debug/debug_menu_bar.h"
 #include <imgui.h>
 #endif
@@ -36,7 +36,7 @@ namespace da::platform
 		}
 		m_frameBuffer = createFrameBuffer(true);
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Bloom"), &m_debug, [this] { onDebugRender(); });
 #endif
 	}
@@ -59,7 +59,7 @@ namespace da::platform
 		}
 		
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Bloom"));
 #endif
 
@@ -207,7 +207,7 @@ namespace da::platform
 	
 	}
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 	void CBgfxBloomShader::onDebugRender()
 	{
 		if (ImGui::Begin("Bloom", &m_debug)) {

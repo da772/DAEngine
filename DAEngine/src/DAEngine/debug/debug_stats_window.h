@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 
 namespace da::debug {
 

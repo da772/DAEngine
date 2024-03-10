@@ -7,7 +7,7 @@
 #include "DAEngine/core/arg_handler.h"
 #include <backends/imgui_impl_glfw.cpp>
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include "debug/debug_menu_bar.h"
 #endif
 
@@ -33,7 +33,7 @@ namespace da::platform {
 
 		m_enableDemo = da::core::CArgHandler::contains(HASHSTR("imguidemo"));
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ImGuiDemo"), &m_enableDemo, [&] {ImGui::ShowDemoWindow(&m_enableDemo); });
 #endif
 	}
@@ -43,7 +43,7 @@ namespace da::platform {
 		ImGui_ImplGlfw_NewFrame();
 		imguiBeginFrame((uint32_t)m_mx, (uint32_t)m_my, m_mb, 0, m_window->getWindowData().Width, m_window->getWindowData().Height, 0);
 		
-#ifndef DA_DEBUG
+#ifndef DA_REVIEW
 		if (m_enableDemo) ImGui::ShowDemoWindow(&m_enableDemo);
 #endif
 	}
@@ -55,7 +55,7 @@ namespace da::platform {
 
 	void CImGuiBgfxApi::onShutdown()
 	{
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ImGuiDemo"));
 #endif
 		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));

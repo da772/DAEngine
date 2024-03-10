@@ -3,7 +3,7 @@
 #include "scene.h"
 #include "daengine/core/maths/transform.h"
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include <imgui.h>
 #endif
 
@@ -105,7 +105,7 @@ namespace da::core
 			return removed;
 		}
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void debugRender();
 #endif
 	private:

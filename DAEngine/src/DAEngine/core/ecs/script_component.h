@@ -7,7 +7,7 @@ namespace da::core {
 
 	class CScriptComponent {
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		COMPONENT_H_DEBUG(CScriptComponent)
 #else
 		COMPONENT_H(CScriptComponent)
@@ -22,7 +22,7 @@ namespace da::core {
         
         void reload(bool soft);
 
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 		void onDebugRender();
 #endif
 

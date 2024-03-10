@@ -1,5 +1,5 @@
 #include "dapch.h"
-#ifdef DA_DEBUG
+#ifdef DA_REVIEW
 #include "script_native_debug.h"
 
 #include <imgui.h>

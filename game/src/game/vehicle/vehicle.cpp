@@ -11,6 +11,7 @@
 #include <DAEngine/core/graphics/camera.h>
 #include <DAEngine/physics/physics_vehicle.h>
 #include <DAEngine/core/input/input.h>
+#include <DAEngine/core/graphics/graphics_smesh.h>
 
 void CVehicle::initialize()
 {
