@@ -13,6 +13,7 @@ namespace da::physics
 		void initialize() override;
 		void update(float dt) override;
 		void shutdown() override;
+		void reset() override;
 
 		inline btDiscreteDynamicsWorld* getDynamicsWorld() const { return m_dynamicsWorld; }
 

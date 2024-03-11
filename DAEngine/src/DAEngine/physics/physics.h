@@ -37,6 +37,7 @@ namespace da::physics
 		virtual void update(float dt) = 0;
 		virtual void shutdown() = 0;
 
+		virtual void reset() = 0;
 		virtual void rayCast(FRayData& ray) = 0;
 
 	};

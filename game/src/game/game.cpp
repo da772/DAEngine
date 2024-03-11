@@ -151,14 +151,15 @@ void CGame::onInitialize()
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 	e7 = da::core::CSceneManager::getScene()->createEntity();
-	da::core::FComponentRef<da::core::CSmeshComponent> c = e7->addComponent<da::core::CSmeshComponent>("assets/cube.fbx");
-	e7->getTransform().setPosition({3.f,0.f, 2.f});
+	da::core::FComponentRef<da::core::CSmeshComponent> c = e7->addComponent<da::core::CSmeshComponent>("assets/sphere.fbx");
+	e7->getTransform().setPosition({0.f,38.f, 5.f});
 	e7->addComponent<da::core::CRigidBodyComponent>(
-		da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({1.f,1.f,1.f})
+		da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeSphere::create(1.f)
 			, da::physics::CPhysicsEntityMotionState::create(e7)
 			, 1.f
 			, { 0.f,0.f,0.f }));
 	//e7->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeSphere::create(1.f), da::physics::CPhysicsDefaultMotionState::create(e7->getTransform().matrix()), 1.f, { 0.f,0.f,0.f }));
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/debugTexture.jpeg"));
 	c->getStaticMesh()->getMaterial(0).roughnessFactor = 0.f;
 	c->getStaticMesh()->getMaterial(0).metallicFactor = .5f;
 	e7->setTag(HASHSTR("cube"));
@@ -190,7 +191,7 @@ void CGame::onInitialize()
 		//cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
 
 		e4->getTransform().setPosition({ 0,5 + (i * -5.f), 5.f });
-		e4->getTransform().setRotation({0.f,0.f,180.f});
+		e4->getTransform().setRotation({ 0.f,0.f,180.f });
 		
 
 		glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.15f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(90.f, 0.f, 0.f))));

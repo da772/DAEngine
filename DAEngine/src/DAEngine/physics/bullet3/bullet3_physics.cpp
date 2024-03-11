@@ -19,6 +19,7 @@ namespace da::physics
 		m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
 		m_overlappingPairCache = new btDbvtBroadphase();
 		m_solver = new btSequentialImpulseConstraintSolver();
+		m_solver->setRandSeed(123);
 
 		m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_overlappingPairCache, m_solver, m_collisionConfiguration);
 
@@ -143,6 +144,12 @@ namespace da::physics
 			ray.vHits.push_back(std::move(hitData));
 
 		}
+	}
+
+	void CBullet3Physics::reset()
+	{
+		ASSERT(m_solver);
+		m_solver->reset();
 	}
 
 }

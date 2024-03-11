@@ -29,7 +29,7 @@ namespace da::physics
 		btRigidBody::btRigidBodyConstructionInfo info(mass, motionState->getMotionState(), b3shape->getShape(), b3Intertia);
 		m_rigidBody = new btRigidBody(info);
 		physics->getDynamicsWorld()->addRigidBody(m_rigidBody);
-		m_rigidBody->forceActivationState(DISABLE_DEACTIVATION);
+		//m_rigidBody->forceActivationState(DISABLE_DEACTIVATION);
 	}
 
 	glm::mat4 CBullet3RigidBody::getTransform() const
