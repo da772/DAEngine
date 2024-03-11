@@ -13,9 +13,11 @@ namespace da::physics
 		CBullet3Vehicle(FVehicleTuning& tuning, IPhysicsRigidBody* rigidBody);
 		~CBullet3Vehicle();
 
-		void setSteeringValue(float value, size_t wheelIndex);
-		void applyEngineForce(float value, size_t wheelIndex);
-		void applyBrake(float value, size_t wheelIndex);
+		virtual void setSteeringValue(float value, size_t wheelIndex) override;
+		virtual void applyEngineForce(float value, size_t wheelIndex) override;
+		virtual void applyBrake(float value, size_t wheelIndex) override;
+
+		virtual FWheelTransformInfo getWheelTransform(size_t wheelIndex) override;
 
 	private:
 		void addWheels();

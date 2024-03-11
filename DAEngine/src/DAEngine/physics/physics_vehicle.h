@@ -1,6 +1,5 @@
 #pragma once
 
-
 namespace da::physics
 {
 	class CVehicleTuning;
@@ -16,6 +15,13 @@ namespace da::physics
 		float MaxSuspensionForce = 6000.f;
 	};
 
+	struct FWheelTransformInfo
+	{
+		glm::vec3 Position;
+		glm::quat Rotation;
+		glm::mat4 Transform;
+	};
+
 	class IVehicle
 	{
 	public:
@@ -25,6 +31,7 @@ namespace da::physics
 		virtual void setSteeringValue(float value, size_t wheelIndex) = 0;
 		virtual void applyEngineForce(float value, size_t wheelIndex) = 0;
 		virtual void applyBrake(float value, size_t wheelIndex) = 0;
+		virtual FWheelTransformInfo getWheelTransform(size_t wheelIndex) = 0;
 	};
 
 	class VehicleFactory

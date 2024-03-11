@@ -22,7 +22,11 @@ public:
 	void shutdown();
 
 private:
+	void updateWheels(float dt);
+
+private:
 	da::core::CEntity* m_entity;
+	std::vector<da::core::CEntity*> m_wheels;
 	float m_acceleration = 0.f;
 	float m_steering = 0.f;
 	da::physics::IVehicle* m_vehicle;

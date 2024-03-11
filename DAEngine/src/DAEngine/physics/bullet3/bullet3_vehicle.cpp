@@ -62,13 +62,11 @@ namespace da::physics
 		//The axis which the wheel rotates arround
 		btVector3 wheelAxleCS(1, 0, 0);
 
-		btScalar suspensionRestLength(0.15);
-		btScalar wheelWidth(0.1);
-		btScalar wheelRadius(0.25);
+		btScalar suspensionRestLength(0.075f);
+		btScalar wheelWidth(0.15f);
+		btScalar wheelRadius(0.20f);
 
-		btVector3 extends = { .65f,  1.25f, -.2f };
-
-		btVector3 wheelConnectionPoint = { .65f,  1.25f, -.2f };
+		btVector3 wheelConnectionPoint = { 0.8f,  1.468f, -0.3701f};
 
 		// FR
 		m_vehicle->addWheel(wheelConnectionPoint, wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, true);
@@ -77,10 +75,10 @@ namespace da::physics
 		m_vehicle->addWheel(wheelConnectionPoint * btVector3(-1, 1, 1), wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, true);
 
 		// BR
-		m_vehicle->addWheel(wheelConnectionPoint * btVector3(1, -1, 1), wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, true);
+		m_vehicle->addWheel(wheelConnectionPoint * btVector3(1, -1, 1), wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, false);
 
 		// BL
-		m_vehicle->addWheel(wheelConnectionPoint * btVector3(-1, -1, 1), wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, true);
+		m_vehicle->addWheel(wheelConnectionPoint * btVector3(-1, -1, 1), wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, false);
 
 		for (int i = 0; i < m_vehicle->getNumWheels(); i++)
 		{
@@ -116,6 +114,25 @@ namespace da::physics
 		ASSERT(m_vehicle->getNumWheels() > wheelIndex);
 
 		m_vehicle->setBrake(value, wheelIndex);
+	}
+
+	FWheelTransformInfo CBullet3Vehicle::getWheelTransform(size_t wheelIndex)
+	{
+		ASSERT(m_vehicle);
+		ASSERT(m_vehicle->getNumWheels() > wheelIndex);
+
+		const btTransform btTrans = m_vehicle->getWheelTransformWS(wheelIndex);
+
+		glm::mat4 trans;
+		btTrans.getOpenGLMatrix(glm::value_ptr(trans));
+
+		glm::vec3 scale, translation, skew;
+		glm::vec4 perspective;
+		glm::quat orientation;
+
+		glm::decompose(trans, scale, orientation, translation, skew, perspective);
+
+		return {translation, orientation, trans};
 	}
 
 }

@@ -48,12 +48,7 @@ export class CameraComponent extends NativeComponent implements Component {
         {
             Camera.Move(Camera.GetRight().mul(this.camSpeed).mul(dt));
         }
-
-        if (Input.KeyPressed(Inputs.KEY_SPACE)) // Space
-        {
-            Camera.Move(Camera.GetUp().mul(this.camSpeed).mul(dt));
-        }
-
+        
         if (Input.KeyPressed(Inputs.KEY_E)) // E
         {
             Camera.Move(Camera.GetUp().neg().mul(this.camSpeed).mul(dt));

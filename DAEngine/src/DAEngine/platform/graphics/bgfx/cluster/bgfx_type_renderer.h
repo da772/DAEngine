@@ -97,7 +97,7 @@ namespace da::platform
     protected:
         static constexpr ::bgfx::ViewId MAX_VIEW = 199; // imgui in bigg uses view 200
 
-        void setViewProjection(::bgfx::ViewId view);
+        void setViewProjection(::bgfx::ViewId view, bool rightHanded = true);
         void setViewProjection(::bgfx::ViewId view, const glm::mat4& mat,float fov, float zNear, float zFar, float aspectRatio = 1.0);
         void setNormalMatrix(const glm::mat4& modelMat);
 

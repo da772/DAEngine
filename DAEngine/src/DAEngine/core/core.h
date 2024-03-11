@@ -7,7 +7,7 @@
 
 // Extra defines go here (acts as config)
 #if !defined(DA_FINAL)
-#define ASSERT(x) CCore::_assert(x, __FILE__, __LINE__); assert(x);
+#define ASSERT(x) da::CCore::_assert(x, __FILE__, __LINE__); assert(x);
 #else
 #define ASSERT(...)
 #endif

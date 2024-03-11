@@ -159,9 +159,9 @@ void CGame::onInitialize()
 			, 1.f
 			, { 0.f,0.f,0.f }));
 	//e7->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeSphere::create(1.f), da::physics::CPhysicsDefaultMotionState::create(e7->getTransform().matrix()), 1.f, { 0.f,0.f,0.f }));
-	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/debugTexture.jpeg"));
-	c->getStaticMesh()->getMaterial(0).roughnessFactor = 0.f;
-	c->getStaticMesh()->getMaterial(0).metallicFactor = .5f;
+	//c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/debugTexture.jpeg"));
+	//c->getStaticMesh()->getMaterial(0).roughnessFactor = 0.f;
+	//c->getStaticMesh()->getMaterial(0).metallicFactor = .5f;
 	e7->setTag(HASHSTR("cube"));
 
 	da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/SwordSlash.fbx", false);
@@ -223,11 +223,11 @@ void CGame::onInitialize()
 	//c = e2->addComponent<da::core::CSmeshComponent>("assets/terrain/terrain1.fbx");
 	//e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(c->getStaticMesh()), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
 	
-	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/debugTexture.jpeg"));
-	//c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg"));
-	//c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg"));
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/tex_debug_grid_01.png"));
 	c->getStaticMesh()->getMaterial(0).uvScale = { 11.f,11.f };
 	c->getStaticMesh()->getMaterial(0).doubleSided = false;
+	c->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
+	c->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
 
 	e2 = da::core::CSceneManager::getScene()->createEntity();
 

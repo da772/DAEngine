@@ -63,7 +63,7 @@ namespace da::platform {
         m_pDebugVisProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
 
         m_pointLights.init();
-        //generateLights(100);
+        generateLights(100);
         m_pointLights.update();
 
         m_shadow.initialize();
@@ -323,9 +323,9 @@ namespace da::platform {
         m_clusters.setUniforms(m_width, m_height);
 
         // cluster building needs u_invProj to transform screen coordinates to eye space
-        setViewProjection(vClusterBuilding);
+        setViewProjection(vClusterBuilding, false);
         // light culling needs u_view to transform lights to eye space
-        setViewProjection(vLightCulling);
+        setViewProjection(vLightCulling, false);
         setViewProjection(vLighting);
 
         // cluster building

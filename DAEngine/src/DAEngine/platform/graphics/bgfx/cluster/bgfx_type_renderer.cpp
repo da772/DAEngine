@@ -172,7 +172,7 @@ namespace da::platform {
             (caps->formats[bgfx::TextureFormat::RGBA16F] & BGFX_CAPS_FORMAT_TEXTURE_FRAMEBUFFER) != 0;
     }
 
-    void CBgfxTypeRenderer::setViewProjection(bgfx::ViewId view)
+    void CBgfxTypeRenderer::setViewProjection(bgfx::ViewId view, bool rightHanded)
     {
         // view matrix
         da::core::CCamera* cam = da::core::CCamera::getCamera();
@@ -181,7 +181,7 @@ namespace da::platform {
         glm::vec3 _at = cam->position() + cam->forward();
         bx::Vec3 at(_at.x, _at.y, _at.z);
         bx::Vec3 up(0.f, 0.f, cam->up().z);
-        bx::mtxLookAt(glm::value_ptr(m_viewMat), pos, at, up, bx::Handedness::Right);
+        bx::mtxLookAt(glm::value_ptr(m_viewMat), pos, at, up, rightHanded ? ::bx::Handedness::Right : ::bx::Handedness::Left);
         // projection matrix
         bx::mtxProj(glm::value_ptr(m_projMat),
             da::core::CCamera::getCamera()->fov,
@@ -189,7 +189,7 @@ namespace da::platform {
             da::core::CCamera::getCamera()->zNear,
             da::core::CCamera::getCamera()->zFar,
             bgfx::getCaps()->homogeneousDepth,
-            bx::Handedness::Right);
+            rightHanded ? ::bx::Handedness::Right : ::bx::Handedness::Left);
         bgfx::setViewTransform(view, glm::value_ptr(m_viewMat), glm::value_ptr(m_projMat));
     }
 

@@ -123,7 +123,7 @@ vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
 
     vec3 radianceOut = vec3_splat(0.0);
 
-    uint cluster = getClusterIndex(gl_FragCoord);
+    uint cluster = getClusterIndex(vec4(u_viewRect.z-gl_FragCoord.x, gl_FragCoord.yzw));
     LightGrid grid = getLightGrid(cluster);
     for(uint i = 0; i < grid.pointLights; i++)
     {
