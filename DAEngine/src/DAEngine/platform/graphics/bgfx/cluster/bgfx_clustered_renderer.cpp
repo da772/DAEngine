@@ -63,7 +63,7 @@ namespace da::platform {
         m_pDebugVisProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
 
         m_pointLights.init();
-        generateLights(100);
+        //generateLights(100);
         m_pointLights.update();
 
         m_shadow.initialize();
@@ -224,7 +224,7 @@ namespace da::platform {
 
         glm::mat4 lightMtx[SHADOW_MAP_SIZE];
 
-        glm::vec4 cascades[4] = { {5.f, 0.1f,0.f,0.f}, {10.f,5.f,0.f, 0.f}, {50.f,10.f,0.f,0.f} };
+        glm::vec4 cascades[4] = { {10.f, 1.f,0.f,0.f}, {30.f,10.f,0.f, 0.f}, {100.f,30.f,0.f,0.f} };
 
         for (size_t i = 0; i < m_shadow.getShadowMapsCount(); i++) {
 

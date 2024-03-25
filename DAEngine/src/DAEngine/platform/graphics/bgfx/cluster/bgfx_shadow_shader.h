@@ -56,7 +56,7 @@ namespace da::platform {
 		da::graphics::CMaterial* m_material;
 		da::graphics::CMaterial* m_skmaterial;
 		core::CCamera m_camera;
-		uint32_t m_shadowMapSize = 2048;
+		uint32_t m_shadowMapSize = 4096;
 		bool m_useShadowSampler = true;
 	};
 }
