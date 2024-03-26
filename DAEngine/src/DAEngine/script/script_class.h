@@ -21,7 +21,6 @@ namespace da::script
 		std::string m_path, m_classType, m_objName;
 		int m_baseRef = 0, m_classRef = 0, m_funcRef = 0, m_objRef = 0;
 		int m_initRef = 0, m_updateRef = 0, m_shutdownRef = 0;
-		int m_getIdRef = 0, m_setIdRef = 0, m_setEntityRef = 0, m_getEntityRef = 0;
 
 		void* m_state = nullptr;
 

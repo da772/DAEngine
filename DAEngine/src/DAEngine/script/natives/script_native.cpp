@@ -7,10 +7,10 @@
 
 namespace da::script
 {
-	void registerNatives(lua_State* L)
+	void registerNatives(lua_State* L, void* stateView)
 	{
 		imgui::registerNatives(L);
-		core::registerNatives(L);
+		core::registerNatives(L, stateView);
 #ifdef DA_REVIEW
 		debug::registerNatives(L);
 #endif

@@ -5,12 +5,20 @@
 #include <chrono>
 #include <algorithm>
 #include "natives/script_native.h"
+#include "types/script_types.h"
+
 
 extern "C" {
 #include <lua/lua.h>
 #include <lua/lualib.h>
 #include <lua/lauxlib.h>
 }
+
+#ifdef DA_PLATFORM_WINDOWS
+#define SOL_EXCEPTIONS_SAFE_PROPAGATION 1
+#define SOL_LUAJIT 1
+#endif
+#include <sol/sol.hpp>
 
 namespace da::script
 {
@@ -84,6 +92,49 @@ namespace da::script
 		return 0;
 	}
 
+	struct FTestSubType {
+		int var1 = 5;
+		int var2 = 10;
+	};
+
+	struct FTestType {
+		int var1 = 0;
+		std::string var2 = {};
+		FTestSubType var3 = {};
+	};
+
+	void my_panic(sol::optional<std::string> maybe_msg) {
+		std::cerr << "Lua is in a panic state and will now abort() the application" << std::endl;
+		if (maybe_msg) {
+			const std::string& msg = maybe_msg.value();
+			std::cerr << "\terror message: " << msg << std::endl;
+		}
+		// When this function exits, Lua will exhibit default behavior and abort()
+	}
+
+	int my_exception_handler(lua_State* L, sol::optional<const std::exception&> maybe_exception, sol::string_view description) {
+		// L is the lua state, which you can wrap in a state_view if necessary
+		// maybe_exception will contain exception, if it exists
+		// description will either be the what() of the exception or a description saying that we hit the general-case catch(...)
+		std::cout << "An exception occurred in a function, here's what it says ";
+		if (maybe_exception) {
+			std::cout << "(straight from the exception): ";
+			const std::exception& ex = *maybe_exception;
+			std::cout << ex.what() << std::endl;
+		}
+		else {
+			std::cout << "(from the description parameter): ";
+			std::cout.write(description.data(), static_cast<std::streamsize>(description.size()));
+			std::cout << std::endl;
+		}
+
+		// you must push 1 element onto the stack to be
+		// transported through as the error object in Lua
+		// note that Lua -- and 99.5% of all Lua users and libraries -- expects a string
+		// so we push a single string (in our case, the description of the error)
+		return sol::stack::push(L, description);
+	}
+
 	void CScriptEngine::initialize()
 	{
 		if (s_instance) return;
@@ -97,8 +148,14 @@ namespace da::script
 		lua_pushstring(s_instance->m_state, LUA_JITLIBNAME);
 		lua_call(s_instance->m_state, 1, 0);
 #endif
+		s_instance->m_stateView = new sol::state_view(s_instance->m_state);
+		s_instance->m_stateView->set_panic(sol::c_call<decltype(&my_panic), &my_panic>);
+		s_instance->m_stateView->open_libraries(sol::lib::base, sol::lib::debug);
+		s_instance->m_stateView->set_exception_handler(&my_exception_handler);
+		da::script::CScriptTypes::registerTypes();
 		registerFunctions();
-		registerNatives(s_instance->m_state);
+
+		registerNatives(s_instance->m_state, s_instance->m_stateView);
 	}
 
 	void CScriptEngine::registerFunctions()
@@ -192,8 +249,6 @@ namespace da::script
 		return s_instance->m_state;
 	}
 
-
-
 	void CScriptEngine::unloadScript(const CHashString& hash)
 	{
 		const auto& it = s_scriptMap.find(hash.hash());
@@ -207,8 +262,31 @@ namespace da::script
 		if (!s_instance) return;
 
 		lua_close(s_instance->m_state);
+		s_instance->clearAll();
 		s_instance = nullptr;
 	}
 
+	lua_State* CScriptEngine::getState()
+	{
+		ASSERT(s_instance);
+		return s_instance->m_state;
+	}
 
-}
+	sol::state_view* CScriptEngine::getStateView()
+	{
+		return s_instance->m_stateView;
+	}
+
+	std::string CScriptEngine::getCallstack(lua_State* L)
+	{
+		sol::state_view lua(L);
+		sol::function traceFunc = lua["debug"]["traceback"];
+		
+		sol::function_result traceResult = traceFunc();
+
+		std::string trace = traceResult.get<std::string>();
+
+		return trace;
+	}
+
+	}

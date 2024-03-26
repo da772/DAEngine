@@ -6,5 +6,5 @@ extern "C" {
 
 namespace da::script
 {
-	void registerNatives(lua_State* L);
+	void registerNatives(lua_State* L, void* stateView);
 }

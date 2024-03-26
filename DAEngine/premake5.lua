@@ -19,6 +19,7 @@ IncludeDir["bgfx"] = "%{wks.location}/DAEngine/thirdparty/bgfx/"
 IncludeDir["luajit"] = "%{wks.location}/DAEngine/thirdparty/luajit/include"
 IncludeDir["lua51"] = "%{wks.location}/DAEngine/thirdparty/lua51/include"
 IncludeDir["bullet3"] = "%{wks.location}/DAEngine/thirdparty/bullet3/include"
+IncludeDir["sol2"] = "%{wks.location}/DAEngine/thirdparty/sol2/include"
 
 group "ThirdParty"
 if os.host() == "macosx" then
@@ -79,7 +80,7 @@ project "DAEngine"
 	files 
 	{
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
 	}
 	else
 	files 
@@ -113,7 +114,8 @@ project "DAEngine"
 		"%{IncludeDir.bgfx}/include",
 		"%{IncludeDir.bgfx}",
 		"%{IncludeDir.lua51}",
-		"%{IncludeDir.bullet3}"
+		"%{IncludeDir.bullet3}",
+		"%{IncludeDir.sol2}"
 	}
 	
 	libdirs
@@ -237,7 +239,9 @@ project "DAEngine"
 		{
 			"%{IncludeDir.GLFW}",
 			"%{IncludeDir.Vulkan}/include",
-			"%{IncludeDir.ImGui}"
+			"%{IncludeDir.ImGui}",
+			"%{IncludeDir.luajit}",
+			"%{IncludeDir.lua51}/lua",
 		}
 		end
 

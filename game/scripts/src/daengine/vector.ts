@@ -10,6 +10,10 @@ export class Vector3
         this.z = z;
     }
 
+    static fromNative(v : Vector3) : Vector3{
+        return new Vector3(v.x,v.y, v.z);
+    }
+
     equals(other : Vector3) : boolean {
         return other.x == this.x && other.y == this.y && other.z == this.z;
     }
@@ -42,19 +46,23 @@ export class Vector2
         this.y = y;
     }
 
+    static fromNative(v : Vector2) : Vector2{
+        return new Vector2(v.x,v.y);
+    }
+
     equals(other : Vector2) : boolean {
         return other.x == this.x && other.y == this.y;
     }
 
-    neg() : Vector3
+    neg() : Vector2
     {
-        return new Vector3(-this.x, -this.y);
+        return new Vector2(-this.x, -this.y);
     }
 
-    mul(v : Vector3) : Vector3;
-    mul(x : number) : Vector3;
+    mul(v : Vector2) : Vector2;
+    mul(x : number) : Vector2;
 
-    mul(v : Vector3 | number) : Vector3
+    mul(v : Vector2 | number) : Vector2
     {
         if (typeof v == 'number') {
             return new Vector3(this.x * v, this.y * v);

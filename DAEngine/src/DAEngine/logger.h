@@ -81,7 +81,7 @@ inline static void x(const ELogChannel& channel, const std::string& message, Arg
 		template <typename ...Args>
 		inline static void log(ELogType type, ELogChannel channel, const std::string& message, Args ... args)
 		{
-			char buffer[5096];
+			char buffer[20384];
 			
 #ifdef DA_COLORED_OUT
 			const std::string msg = "%s[%llu] %s: [%s] " + message + "\n%s";

@@ -7,9 +7,14 @@ extern "C" {
 	typedef struct lua_State lua_State;
 }
 
+namespace sol {
+	class state_view;
+}
+
+#define LOG_SASSERT(cond, L, msg, ...) LOG_ASSERT(cond, ELogChannel::Script, "%s - Printing Script callstack: %s", msg, ##__VA_ARGS__, CScriptEngine::getCallstack(L).c_str())
+
 namespace da::script
 {
-
 	class CScriptEngine {
 
 	public:
@@ -20,7 +25,10 @@ namespace da::script
 		static bool hasScript(const CHashString& hash);
 		static void unloadScript(const CHashString& hash);
         static void clearAll();
+		static lua_State* getState();
+		static sol::state_view* getStateView();
 
+		static std::string getCallstack(lua_State* L);
 
 	private:
 		static void registerFunctions();
@@ -28,6 +36,7 @@ namespace da::script
 
 	private:
 		lua_State* m_state;
+		sol::state_view* m_stateView;
 
 
 	private:

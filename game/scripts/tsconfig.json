@@ -9,6 +9,7 @@
       "outDir": "./build",
     },
     "tstl": {
-      "luaTarget": "JIT"
+      "luaTarget": "JIT",
+      "sourceMapTraceback": true
     },
   }

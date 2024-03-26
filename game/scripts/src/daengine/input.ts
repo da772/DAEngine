@@ -6,10 +6,9 @@ export namespace Input {
     } 
 
     export function CursorPos() : Vector2 {
-        let [x,y] = native_input_cursor_pos();
-        return new Vector2(x,y);
+        return Vector2.fromNative(native_input_cursor_pos());
     } 
 }
 
 declare function native_input_key_pressed(key : number) : boolean;
-declare function native_input_cursor_pos() : [number, number];
+declare function native_input_cursor_pos() : Vector2;

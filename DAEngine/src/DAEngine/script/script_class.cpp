@@ -9,9 +9,21 @@ extern "C" {
 #include <lua/lauxlib.h>
 }
 
+#ifdef DA_PLATFORM_WINDOWS
+#define SOL_LUAJIT 1
+#endif
+#include <sol/sol.hpp>
 
 namespace da::script
 {
+
+	int getRef(lua_State* L, sol::object obj)
+	{
+		sol::reference ref(L, obj);
+		int res = ref.registry_index();
+		ref.abandon();
+		return res;
+	}
 
 	CScriptClass::CScriptClass(const std::string& path, const std::string& classType, const std::string& objName) 
 		: m_path(path), m_objName(objName), m_classType(classType)
@@ -21,145 +33,53 @@ namespace da::script
 
 	void CScriptClass::setup(const da::core::CGuid& parent, const da::core::CGuid& guid)
 	{
-		m_state = CScriptEngine::loadScript(m_path.c_str());
+		m_state = CScriptEngine::getState();
+		ASSERT(m_state);
 		lua_State* L = (lua_State*)m_state;
+		int ref = CScriptEngine::getScript(m_path.c_str(), false);
+		ASSERT(ref);
+		sol::reference funcRef(L,(sol::ref_index)ref);		
+		ASSERT(funcRef.get_type() == sol::type::function);
 
-		int i = lua_gettop(L);
+		sol::function func(funcRef);
+		sol::function_result result = func();
 
-		if (lua_istable(L, -1)) {
-
-			m_baseRef = luaL_ref(L, LUA_REGISTRYINDEX);
-
-			lua_rawgeti(L, LUA_REGISTRYINDEX, m_baseRef);
-			i = lua_gettop(L);
-
-			// Get Class Type
-			lua_pushstring(L, m_classType.c_str());
-			lua_gettable(L, -2);
-			int type = lua_type(L, -1);
-			m_classRef = luaL_ref(L, LUA_REGISTRYINDEX);
-			lua_rawgeti(L, LUA_REGISTRYINDEX, m_classRef);
-
-			// Get Class Functions
-			lua_pushstring(L, "prototype");
-			lua_gettable(L, -2);
-			type = lua_type(L, -1);
-			m_funcRef = luaL_ref(L, LUA_REGISTRYINDEX);
-
-			// Get Object
-            if (m_objRef == 0) {
-                lua_rawgeti(L, LUA_REGISTRYINDEX, m_baseRef);
-                lua_pushstring(L, m_objName.c_str());
-                lua_gettable(L, -2);
-                type = lua_type(L, -1);
-                m_objRef = luaL_ref(L, LUA_REGISTRYINDEX);
-            }
-
-			// Init func
-			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
-			lua_pushstring(L, "initialize");
-			lua_gettable(L, -2);
-			type = lua_type(L, -1);
-			m_initRef = luaL_ref(L, LUA_REGISTRYINDEX);
-
-			// Update func
-			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
-			lua_pushstring(L, "update");
-			lua_gettable(L, -2);
-			type = lua_type(L, -1);
-			m_updateRef = luaL_ref(L, LUA_REGISTRYINDEX);
-
-			// Shutdown func
-			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
-			lua_pushstring(L, "shutdown");
-			lua_gettable(L, -2);
-			type = lua_type(L, -1);
-			m_shutdownRef = luaL_ref(L, LUA_REGISTRYINDEX);
-
-			// set Id 
-			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
-			lua_pushstring(L, "__native_set_id__");
-			lua_gettable(L, -2);
-			type = lua_type(L, -1);
-			m_setIdRef = luaL_ref(L, LUA_REGISTRYINDEX);
-
-			// get Id
-			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
-			lua_pushstring(L, "__native_get_id__");
-			lua_gettable(L, -2);
-			type = lua_type(L, -1);
-			m_getIdRef = luaL_ref(L, LUA_REGISTRYINDEX);
-
-			// set entity
-			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
-			lua_pushstring(L, "__native_set_entity__");
-			lua_gettable(L, -2);
-			type = lua_type(L, -1);
-			m_setEntityRef = luaL_ref(L, LUA_REGISTRYINDEX);
-			
-			// set entity
-			lua_rawgeti(L, LUA_REGISTRYINDEX, m_funcRef);
-			lua_pushstring(L, "__native_get_entity__");
-			lua_gettable(L, -2);
-			type = lua_type(L, -1);
-			m_getEntityRef = luaL_ref(L, LUA_REGISTRYINDEX);
-		
-			{
-				// Set id
-				lua_rawgeti(L, LUA_REGISTRYINDEX, m_setEntityRef);
-				lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
-				uint64_t d1, d2;
-
-				memcpy(&d1, &parent.data()[0], sizeof(uint64_t));
-				memcpy(&d2, &parent.data()[sizeof(uint64_t)], sizeof(uint64_t));
-
-				lua_pushinteger(L, d1);
-				lua_pushinteger(L, d2);
-				lua_pcall(L, 3, 0, 0);
-			}
-
-			{
-				// get Id
-				lua_rawgeti(L, LUA_REGISTRYINDEX, m_getEntityRef);
-				lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
-				lua_pcall(L, 1, 2, 0);
-
-				type = lua_type(L, -1);
-
-				uint64_t d1 = lua_tointeger(L, -2);
-				uint64_t d2 = lua_tointeger(L, -1);
-			}
-
-			{
-				// Set id
-				lua_rawgeti(L, LUA_REGISTRYINDEX, m_setIdRef);
-				lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
-				uint64_t d1, d2;
-
-				memcpy(&d1, &guid.data()[0], sizeof(uint64_t));
-				memcpy(&d2, &guid.data()[sizeof(uint64_t)], sizeof(uint64_t));
-
-				lua_pushinteger(L, d1);
-				lua_pushinteger(L, d2);
-				lua_pcall(L, 3, 0, 0);
-			}
-
-			{
-				// get Id
-				lua_rawgeti(L, LUA_REGISTRYINDEX, m_getIdRef);
-				lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
-				lua_pcall(L, 1, 2, 0);
-
-				type = lua_type(L, -1);
-
-				uint64_t d1 = lua_tointeger(L, -2);
-				uint64_t d2 = lua_tointeger(L, -1);
-			}
-
-
-			lua_pop(L, lua_gettop(L));
+		if (!result.valid()) {
+			sol::error err = result;
+			LOG_ASSERT(false, ELogChannel::Script, "Failed to instantiate script: %s, err:  %s", m_path, err.what());
 		}
 
+		LOG_ASSERT( (result.get_type() == sol::type::table), ELogChannel::Script, "%s did not return table type", m_classType);
+
+		sol::table base = result.get<sol::table>();
+
+		sol::reference baseRef(L, base);
+		m_baseRef = getRef(L, base);
+
+		sol::table classType = base[m_classType.c_str()];
+		m_classRef = getRef(L, classType);
+
+		sol::table protoType = classType["prototype"];
+		m_funcRef = getRef(L, protoType);
+
+		if (m_objRef == 0) {
+			sol::table obj = base[m_objName.c_str()];
+			m_objRef = getRef(L, obj);
+		}
+		
+		sol::function initialize = protoType["initialize"];
+		m_initRef = getRef(L, initialize);
+
+		sol::function update = protoType["update"];
+		m_updateRef = getRef(L, update);
+
+		sol::function shutdown = protoType["shutdown"];
+		m_shutdownRef = getRef(L, shutdown);
+
+		sol::table guidIndex = base[m_objName.c_str()]["Id"];
+		sol::table entityIndex = base[m_objName.c_str()]["Entity"]["Id"];
+		guidIndex.set("Index", guid.c_str());
+		entityIndex.set("Index", parent.c_str());
 	}
 
 	void CScriptClass::cleanup(bool keepObj)
@@ -174,11 +94,6 @@ namespace da::script
 		luaL_unref(L, LUA_REGISTRYINDEX, m_initRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, m_updateRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, m_shutdownRef);
-
-		luaL_unref(L, LUA_REGISTRYINDEX, m_getIdRef);
-		luaL_unref(L, LUA_REGISTRYINDEX, m_setIdRef);
-		luaL_unref(L, LUA_REGISTRYINDEX, m_setEntityRef);
-		luaL_unref(L, LUA_REGISTRYINDEX, m_getEntityRef);
 
 		luaL_unref(L, LUA_REGISTRYINDEX, m_classRef);
         
@@ -201,12 +116,15 @@ namespace da::script
 	{
 		if (!m_state) return;
 		lua_State* L = (lua_State*)m_state;
+		sol::state_view lua(L);
 
-		lua_rawgeti(L, LUA_REGISTRYINDEX, m_updateRef);
-		lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
-		lua_pushnumber(L, dt);
-		lua_pcall(L, 2, 0, 0);
-		lua_pop(L, lua_gettop(L));
+		sol::protected_function func(lua, (sol::ref_index)m_updateRef);	
+		sol::protected_function_result res = func(sol::object(L, (sol::ref_index)m_objRef), dt);
+	
+		if (!res.valid()) {
+			sol::error err = res;
+			LOG_ASSERT(res.valid(), ELogChannel::Script, "Script Failed: %s with Err: %s", m_path, err.what())
+		}
 	}
 
 	void CScriptClass::classShutdown()
