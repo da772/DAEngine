@@ -51,6 +51,8 @@ float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal, vec3 v
 	bool selection2 = depthValue < u_csmFarDistances.z;
 	bool selection3 = depthValue < u_csmFarDistances.w;
 
+	
+
 	vec4 v_texcoord1 = mul(u_shadowMapMtx0, vec4(fragPosWorldSpace, 1.0));
 	vec4 v_texcoord2 = mul(u_shadowMapMtx1, vec4(fragPosWorldSpace, 1.0));
 	vec4 v_texcoord3 = mul(u_shadowMapMtx2, vec4(fragPosWorldSpace, 1.0));
@@ -71,14 +73,15 @@ float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal, vec3 v
 	//selection2 = selection2 && all(lessThan(texcoord3, vec2_splat(0.95))) && all(greaterThan(texcoord3, vec2_splat(0.05)));
 	//selection3 = selection3 && all(lessThan(texcoord4, vec2_splat(0.95))) && all(greaterThan(texcoord4, vec2_splat(0.05)));
 
-	float bias = u_shadowMapBias;
+	float bias = max(.05 * v_lightNormal, u_shadowMapBias);;
+
+	const float biasModifier = 0.5;
 
 	if (selection0)
 	{
 		vec4 shadowcoord = v_texcoord1;
 		float coverage = texcoordInRange(shadowcoord.xy/shadowcoord.w) * 0.4;
-		bias = bias * depthValue / u_csmFarDistances.x;
-		bias = mix(bias, .005, v_lightNormal);
+		bias *= biasModifier;
 		colorCoverage = vec3(-coverage, coverage, -coverage);
 		visibility = computeVisibility(s_shadowMap0
 						, shadowcoord
@@ -93,8 +96,7 @@ float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal, vec3 v
 	else if (selection1)
 	{
 		vec4 shadowcoord = v_texcoord2;
-		bias = (bias*.75) * depthValue / u_csmFarDistances.y;
-		bias = mix(bias, .005, v_lightNormal);
+		bias *= biasModifier;
 		float coverage = texcoordInRange(shadowcoord.xy/shadowcoord.w) * 0.4;
 		colorCoverage = vec3(coverage, coverage, -coverage);
 		visibility = computeVisibility(s_shadowMap1
@@ -110,8 +112,7 @@ float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal, vec3 v
 	else if (selection2)
 	{
 		vec4 shadowcoord = v_texcoord3;
-		bias = (bias*.425) * depthValue / u_csmFarDistances.z;
-		bias = mix(bias, .005, v_lightNormal);
+		bias *= biasModifier;
 		float coverage = texcoordInRange(shadowcoord.xy/shadowcoord.w) * 0.4;
 		colorCoverage = vec3(-coverage, -coverage, coverage);
 		visibility = computeVisibility(s_shadowMap2
@@ -127,8 +128,7 @@ float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal, vec3 v
 	else if(selection3)//selection3
 	{
 		vec4 shadowcoord = v_texcoord4;
-		bias = (bias*.425) * depthValue / u_csmFarDistances.w;
-		bias = mix(bias, .005, v_lightNormal);
+		bias *= biasModifier;
 		float coverage = texcoordInRange(shadowcoord.xy/shadowcoord.w) * 0.4;
 		colorCoverage = vec3(coverage, -coverage, -coverage);
 		visibility = computeVisibility(s_shadowMap3
