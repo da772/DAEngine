@@ -215,15 +215,15 @@ void CGame::onInitialize()
 	e2->getTransform().setPosition({ 0,0,0 });
 	e2->getTransform().setRotation({ 0,0,0 });
 
-	c = e2->addComponent<da::core::CSmeshComponent>("assets/plane.fbx");
+	c = e2->addComponent<da::core::CSmeshComponent>("assets/floor.fbx");
 	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({100.f,100.f,0.1f}), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
 
-	e2->getTransform().setScale({ 100,100,1.f });
+	//e2->getTransform().setScale({ 100,100,1.f });
 	e2->setTag(HASHSTR("plane"));
 	//c = e2->addComponent<da::core::CSmeshComponent>("assets/terrain/terrain1.fbx");
 	//e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(c->getStaticMesh()), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
 	
-	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/tex_debug_grid_01.png"));
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/tex_debug_grid_02.png"));
 	c->getStaticMesh()->getMaterial(0).uvScale = { 11.f,11.f };
 	c->getStaticMesh()->getMaterial(0).doubleSided = false;
 	c->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;

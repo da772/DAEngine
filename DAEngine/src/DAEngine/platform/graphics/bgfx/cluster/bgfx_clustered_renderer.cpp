@@ -81,6 +81,7 @@ namespace da::platform {
 
         m_bloom.initialize(m_width, m_height);
         m_volumetricLight.initialize();
+        m_csm.initialize();
 
 #ifdef DA_REVIEW
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
@@ -99,12 +100,12 @@ namespace da::platform {
             vSSAO,
             vSSAOBlur,
             vShadow,
-            vClusterBuilding = vShadow + SHADOW_MAP_SIZE,
+            vClusterBuilding = vShadow + 5,
             vLightCulling,
             vLighting,
             vVolumetricLight,
             vBloom,
-            vBloomBlur,
+            vBloomBlur
         };
 
 #ifdef DA_REVIEW
@@ -222,103 +223,36 @@ namespace da::platform {
         m_ssao.renderSSAO(m_width, m_height, vSSAO, m_depthBuffer);
         m_ssao.renderBlur(m_width, m_height, vSSAOBlur);
 
-        glm::mat4 lightMtx[SHADOW_MAP_SIZE];
-
-        glm::vec4 cascades[4] = { {10.f, 1.f,0.f,0.f}, {30.f,10.f,0.f, 0.f}, {100.f,30.f,0.f,0.f} };
-
-        for (size_t i = 0; i < m_shadow.getShadowMapsCount(); i++) {
-
-            if (!::bgfx::isValid(m_shadow.getShadowMaps().ShadowMaps[i].FrameBuffer))
-                m_shadow.createFrameBuffers();
-
-            std::string name = std::string("Shadow Pass: ") + std::to_string(i);
-            ::bgfx::setViewName(vShadow + i, name.c_str());
-            ::bgfx::setViewRect(vShadow + i, 0, 0, m_shadow.getShadowMapSize(), m_shadow.getShadowMapSize());
-            ::bgfx::setViewFrameBuffer(vShadow + i, m_shadow.getShadowMaps().ShadowMaps[i].FrameBuffer);
-            ::bgfx::setViewClear(vShadow + i
-                , BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
-                , 0x303030ff, 1.0f, 0
-            );
-
-            glm::mat4 lightProj, lightView;
-            float nearPlane = cascades[i].y;
-            float farPlane = cascades[i].x;
-            
-
-            //bx::mtxProj(glm::value_ptr(lightProj), 75.f, (float)m_width / (float)m_height, nearPlane, farPlane, ::bgfx::getCaps()->homogeneousDepth);
-            bx::mtxOrtho(glm::value_ptr(lightProj), -farPlane, farPlane, -farPlane, farPlane, nearPlane, farPlane, 0, ::bgfx::getCaps()->homogeneousDepth, bx::Handedness::Right);
-            lightView = m_shadow.getCamera().matrix();
-            std::pair<glm::mat4, glm::mat4> p = m_shadow.getLightSpaceProjMatrix(nearPlane, farPlane, i, lightView);;
-            lightProj = p.first;
-            lightView = p.second;
-
-
-			const ::bgfx::Caps* caps = ::bgfx::getCaps();
-			const float sy = caps->originBottomLeft ? 0.5f : -0.5f;
-			const float sz = caps->homogeneousDepth ? 0.5f : 1.0f;
-			const float tz = caps->homogeneousDepth ? 0.5f : 0.0f;
-			const float mtxCrop[16] =
-			{
-				0.5f, 0.0f, 0.0f, 0.0f,
-				0.0f,   sy, 0.0f, 0.0f,
-				0.0f, 0.0f, sz,   0.0f,
-				0.5f, 0.5f, tz,   1.0f,
-			};
-
-			float mtxTmp[16];
-			bx::mtxMul(mtxTmp, glm::value_ptr(lightProj), mtxCrop);
-			bx::mtxMul(glm::value_ptr(lightMtx[i]), glm::value_ptr(lightView), mtxTmp);
-
-            ::bgfx::setViewTransform(vShadow + i, glm::value_ptr(lightView), glm::value_ptr(lightProj));
-
-			for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
-				da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
-                const glm::mat4& model = meshComponent->getTransform();
-
-				for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
-					da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
-
-					if (!mesh->getCastShadows()) continue;
-					if (mesh->getHidden()) continue;
-
-					::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
-					::bgfx::setTransform(glm::value_ptr(model));
-					::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-					::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-					::bgfx::setState((m_shadow.useShadowSampler() ? 0 : BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A)
-						| BGFX_STATE_WRITE_Z
-						| BGFX_STATE_DEPTH_TEST_LESS
-						| BGFX_STATE_CULL_CCW
-						| BGFX_STATE_MSAA);
-					::bgfx::submit(vShadow + i, { m_shadow.getSKMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-				}
-			}
+        m_csm.setRenderFunc([](uint8_t view, da::graphics::CMaterial* mat, da::platform::RenderState renderState) {
+            da::core::CScene* scene = da::core::CSceneManager::getScene();
+			const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
+			const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
 
 			// Shadow map pass
 			for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
 				da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
-                glm::mat4 model = meshComponent->getParent().getTransform().matrix();
-                for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
-                    const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
-                    ASSERT(mesh);
+				glm::mat4 model = meshComponent->getParent().getTransform().matrix();
+				for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
+					const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+					ASSERT(mesh);
 
-                    if (!mesh->getCastShadows()) continue;
-                    if (mesh->getHidden()) continue;
+					if (!mesh->getCastShadows()) continue;
+					if (mesh->getHidden()) continue;
 
-                    ::bgfx::setTransform(glm::value_ptr(model));
-                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                    ::bgfx::setState((m_shadow.useShadowSampler() ? 0 : BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A)
-                        | BGFX_STATE_WRITE_Z
-                        | BGFX_STATE_DEPTH_TEST_LESS
-                        | BGFX_STATE_CULL_CCW
-                        | BGFX_STATE_MSAA);
-                    ::bgfx::submit(vShadow + i, { m_shadow.getMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-                }
+					::bgfx::setTransform(glm::value_ptr(model));
+					::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+					::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+					::bgfx::setState(renderState.m_state);
+					::bgfx::submit(view, { mat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+				}
 			}
 
-           
-        }
+        });
+
+        m_csm.update(vShadow, m_shadow.getLightDir());
+
+        glm::mat4 lightMtx[SHADOW_MAP_SIZE];
+        glm::vec4 cascades[4] = { {10.f, 1.f,0.f,0.f}, {30.f,10.f,0.f, 0.f}, {100.f,30.f,0.f,0.f} };
 
         m_clusters.setUniforms(m_width, m_height);
 
@@ -399,10 +333,9 @@ namespace da::platform {
                 ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
                 m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
                 uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
-                ::bgfx::setUniform(m_shadow.getCascadeLevelUniform(), cascades, 3);
-                for (size_t s = 0; s < m_shadow.getShadowMapsCount(); s++) {
-                    ::bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + s, m_shadow.getShadowMaps().ShadowMaps[s].Uniform, m_shadow.getShadowMaps().ShadowMaps[s].Texture);
-                }
+               
+                m_csm.submitUniforms();
+               
                 m_ssao.bindSSAO();
 
                 //BGFX_STATE_PT_LINES

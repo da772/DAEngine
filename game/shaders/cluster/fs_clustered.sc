@@ -2,6 +2,9 @@ $input v_worldpos, v_normal, v_tangent, v_texcoord0
 
 #define READ_MATERIAL
 #define INCLUDE_PASS
+#define SM_LINEAR 1
+#define SM_PCF 1
+#define SM_CSM 1
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>

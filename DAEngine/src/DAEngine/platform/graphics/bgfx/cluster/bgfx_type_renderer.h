@@ -12,6 +12,7 @@
 #include "bgfx_bloom_shader.h"
 #include "bgfx_volumetric_light_shader.h"
 #include <platform/graphics/bgfx/bgfx_debug_renderer.h>
+#include "bgfx_shadow_csm.h"
 
 namespace da::core {
     class CCamera;
@@ -120,6 +121,7 @@ namespace da::platform
         CBgfxSunController m_sun;
         CBgfxBloomShader m_bloom;
         CBgfxVolumetricLightShader m_volumetricLight;
+        CBgfxShadowCsm m_csm;
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
         CBgfxDebugRenderer m_debugRenderer;
 #endif

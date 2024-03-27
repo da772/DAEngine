@@ -2,200 +2,146 @@
  * Copyright 2013-2014 Dario Manesku. All rights reserved.
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
-
 #include "../common.sh"
 #include "samplers.sh"
 
-#if SHADOW_PACKED_DEPTH
-SAMPLER2DARRAY(s_shadowMap0, SAMPLER_SHADOW_MAP_NEAR);
-SAMPLER2DARRAY(s_shadowMap1, SAMPLER_SHADOW_MAP_MED);
-SAMPLER2DARRAY(s_shadowMap2, SAMPLER_SHADOW_MAP_FAR);
-#	define Sampler sampler2D
-#else
-SAMPLER2DSHADOW(s_shadowMap0, SAMPLER_SHADOW_MAP_NEAR);
-SAMPLER2DSHADOW(s_shadowMap1, SAMPLER_SHADOW_MAP_MED);
-SAMPLER2DSHADOW(s_shadowMap2, SAMPLER_SHADOW_MAP_FAR);
-#	define Sampler sampler2DShadow
-#endif // SHADOW_PACKED_DEPTH
+#include "./csm/fs_shadowmaps_color_lighting.sh"
 
-#define CASCADE_COUNT 3
+#define u_ambientPass    u_params0.x
+#define u_lightingPass   u_params0.y
 
-uniform mat4 u_sunLightMtx[CASCADE_COUNT];
-uniform vec4 u_cascadePlaneDistances[CASCADE_COUNT];
+#define u_shadowMapBias   u_params1.x
+#define u_shadowMapParam0 u_params1.z
+#define u_shadowMapParam1 u_params1.w
 
-vec2 lit(vec3 _ld, vec3 _n, vec3 _vd, float _exp)
-{
-	//diff
-	float ndotl = dot(_n, _ld);
+#define u_shadowMapShowCoverage u_params2.y
+#define u_shadowMapTexelSize    u_params2.z
 
-	//spec
-	vec3 r = 2.0*ndotl*_n - _ld; //reflect(_ld, _n);
-	float rdotv = dot(r, _vd);
-	float spec = step(0.0, ndotl) * pow(max(0.0, rdotv), _exp) * (2.0 + _exp)/8.0;
+#define u_spotDirection   u_lightSpotDirectionInner.xyz
+#define u_spotInner       u_lightSpotDirectionInner.w
+#define u_lightAttnParams u_lightAttenuationSpotOuter.xyz
+#define u_spotOuter       u_lightAttenuationSpotOuter.w
 
-	return max(vec2(ndotl, spec), 0.0);
-}
+// Pcf
+#define u_shadowMapPcfMode     u_shadowMapParam0
+#define u_shadowMapNoiseAmount u_shadowMapParam1
 
-float hardShadow(Sampler _sampler, vec3 texCoord, float _bias)
-{
-#if SHADOW_PACKED_DEPTH
-	return step(texCoord.z-_bias, unpackRgbaToFloat(texture2D(_sampler, texCoord.xy) ) );
-#else
-	return shadow2D(_sampler, vec3(texCoord.xy, texCoord.z-_bias) );
-#endif // SHADOW_PACKED_DEPTH
-}
+// Vsm
+#define u_shadowMapMinVariance     u_shadowMapParam0
+#define u_shadowMapDepthMultiplier u_shadowMapParam1
 
-float PCF(Sampler _sampler, vec3 _shadowCoord, float _bias, vec2 _texelSize)
-{
-	bool outside = any(greaterThan(_shadowCoord.xy, vec2_splat(1.0))) || any(lessThan   (_shadowCoord.xy, vec2_splat(0.0)));
+// Esm
+#define u_shadowMapHardness        u_shadowMapParam0
+#define u_shadowMapDepthMultiplier u_shadowMapParam1
 
-	if (outside)
-	{
-		return 1.0;
-	}
+#define u_shadowMapOffset u_params1.y
 
-	float result = 0.0;
-	vec2 offset = _texelSize;
-
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-1.5, -1.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-1.5, -0.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-1.5,  0.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-1.5,  1.5) * offset, 0.0), _bias);
-
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-0.5, -1.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-0.5, -0.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-0.5,  0.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(-0.5,  1.5) * offset, 0.0), _bias);
-
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(0.5, -1.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(0.5, -0.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(0.5,  0.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(0.5,  1.5) * offset, 0.0), _bias);
-
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(1.5, -1.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(1.5, -0.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(1.5,  0.5) * offset, 0.0), _bias);
-	result += hardShadow(_sampler, _shadowCoord + vec3(vec2(1.5,  1.5) * offset, 0.0), _bias);
-
-	return result / 16.0;
-}
-
-float calculateShadow(Sampler _sampler, float _currentDepth, vec3 _shadowCoord, float _bias, vec2 _texelSize)
-{
-    // PCF
-    float shadow = 0.0;
-    for(int x = -1; x <= 1; ++x)
-    {
-        for(int y = -1; y <= 1; ++y)
-        {
-            float pcfDepth = shadow2D(_sampler, vec3(_shadowCoord.xy + vec2(x, y) * _texelSize, _shadowCoord.z-_bias));
-            shadow += (_currentDepth - _bias) > pcfDepth ? 1.0 : 0.0;        
-        }    
-    }
-    shadow /= 9.0;
-        
-    return 1.0-shadow;
-}
+uniform mat4 u_shadowMapMtx0;
+uniform mat4 u_shadowMapMtx1;
+uniform mat4 u_shadowMapMtx2;
+uniform mat4 u_shadowMapMtx3;
 
 float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal, vec3 v_normal)
 {
-	float shadowMapBias = mix(0.0, 0.005, v_lightNormal);
-
 	vec4 fragPosViewSpace = mul(v_view, vec4(fragPosWorldSpace, 1.0));
 	float depthValue = abs(fragPosViewSpace.z);
 
- 	int layer = -1;
-    for (int i = 0; i < CASCADE_COUNT-1; ++i)
-    {
-        if (depthValue < u_cascadePlaneDistances[i].x)
-        {
-            layer = i;
-            break;
-        }
-    }
-    if (layer == -1)
-    {
-        layer = 2;
-    }
+	bool selection0 = depthValue < u_csmFarDistances.x;
+	bool selection1 = depthValue < u_csmFarDistances.y;
+	bool selection2 = depthValue < u_csmFarDistances.z;
+	bool selection3 = depthValue < u_csmFarDistances.w;
 
-	vec4 fragPosLightSpace = mul(u_sunLightMtx[layer], vec4(fragPosWorldSpace, 1.0));
+	vec4 v_texcoord1 = mul(u_shadowMapMtx0, vec4(fragPosWorldSpace, 1.0));
+	vec4 v_texcoord2 = mul(u_shadowMapMtx1, vec4(fragPosWorldSpace, 1.0));
+	vec4 v_texcoord3 = mul(u_shadowMapMtx2, vec4(fragPosWorldSpace, 1.0));
+	vec4 v_texcoord4 = mul(u_shadowMapMtx3, vec4(fragPosWorldSpace, 1.0));
 
-	vec2 texelSize = vec2_splat(1.0/4096.0);
-	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    // transform to [0,1] range
-    //projCoords = projCoords * 0.5 + 0.5;
-
-	float currentDepth = projCoords.z;
-
-	// keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
-    if (currentDepth > 1.0)
-    {
-        return 1.0;
-    }
-	
-	bool selection0 = layer == 0;
-	bool selection1 = layer == 1;
-	bool selection2 = layer == 2;
-
+	vec3 colorCoverage;
 	float visibility = 1.0;
 
-	const float biasModifier = 0.5f;
-	//shadowMapBias *= (1.0 - (1 / ((u_cascadePlaneDistances[layer].x) * biasModifier)));
+	vec2 texelSize = vec2_splat(u_shadowMapTexelSize);
 
-#if 0
-	if (selection0)
-	{
-		return vec3(1.0,0.0,0.0);
-	} 
-	else if (selection1)
-	{
-		return vec3(0.0,1.0,0.0);
-	}
-	else if (selection2)
-	{
-		return vec3(0.0,0.0,1.0);
-	}
-#endif
+	vec2 texcoord1 = v_texcoord1.xy/v_texcoord1.w;
+	vec2 texcoord2 = v_texcoord2.xy/v_texcoord2.w;
+	vec2 texcoord3 = v_texcoord3.xy/v_texcoord3.w;
+	vec2 texcoord4 = v_texcoord4.xy/v_texcoord4.w;
+
+	//selection0 = selection0 && all(lessThan(texcoord1, vec2_splat(0.95))) && all(greaterThan(texcoord1, vec2_splat(0.05)));
+	//selection1 = selection1 && all(lessThan(texcoord2, vec2_splat(0.95))) && all(greaterThan(texcoord2, vec2_splat(0.05)));
+	//selection2 = selection2 && all(lessThan(texcoord3, vec2_splat(0.95))) && all(greaterThan(texcoord3, vec2_splat(0.05)));
+	//selection3 = selection3 && all(lessThan(texcoord4, vec2_splat(0.95))) && all(greaterThan(texcoord4, vec2_splat(0.05)));
+
+	float bias = u_shadowMapBias;
 
 	if (selection0)
 	{
-		visibility = calculateShadow(s_shadowMap0, currentDepth, projCoords, shadowMapBias, texelSize);
-	} 
+		vec4 shadowcoord = v_texcoord1;
+		float coverage = texcoordInRange(shadowcoord.xy/shadowcoord.w) * 0.4;
+		bias = bias * depthValue / u_csmFarDistances.x;
+		bias = mix(bias, .005, v_lightNormal);
+		colorCoverage = vec3(-coverage, coverage, -coverage);
+		visibility = computeVisibility(s_shadowMap0
+						, shadowcoord
+						, bias
+						, u_smSamplingParams
+						, texelSize
+						, u_shadowMapDepthMultiplier
+						, u_shadowMapMinVariance
+						, u_shadowMapHardness
+						);
+	}
 	else if (selection1)
 	{
-		visibility = calculateShadow(s_shadowMap1, currentDepth, projCoords, shadowMapBias, texelSize);
+		vec4 shadowcoord = v_texcoord2;
+		bias = (bias*.75) * depthValue / u_csmFarDistances.y;
+		bias = mix(bias, .005, v_lightNormal);
+		float coverage = texcoordInRange(shadowcoord.xy/shadowcoord.w) * 0.4;
+		colorCoverage = vec3(coverage, coverage, -coverage);
+		visibility = computeVisibility(s_shadowMap1
+						, shadowcoord
+						, bias
+						, u_smSamplingParams
+						, texelSize/2.0
+						, u_shadowMapDepthMultiplier
+						, u_shadowMapMinVariance
+						, u_shadowMapHardness
+						);
 	}
 	else if (selection2)
 	{
-		visibility = calculateShadow(s_shadowMap2, currentDepth, projCoords, shadowMapBias, texelSize);
+		vec4 shadowcoord = v_texcoord3;
+		bias = (bias*.425) * depthValue / u_csmFarDistances.z;
+		bias = mix(bias, .005, v_lightNormal);
+		float coverage = texcoordInRange(shadowcoord.xy/shadowcoord.w) * 0.4;
+		colorCoverage = vec3(-coverage, -coverage, coverage);
+		visibility = computeVisibility(s_shadowMap2
+						, shadowcoord
+						, bias
+						, u_smSamplingParams
+						, texelSize/3.0
+						, u_shadowMapDepthMultiplier
+						, u_shadowMapMinVariance
+						, u_shadowMapHardness
+						);
+	}
+	else if(selection3)//selection3
+	{
+		vec4 shadowcoord = v_texcoord4;
+		bias = (bias*.425) * depthValue / u_csmFarDistances.w;
+		bias = mix(bias, .005, v_lightNormal);
+		float coverage = texcoordInRange(shadowcoord.xy/shadowcoord.w) * 0.4;
+		colorCoverage = vec3(coverage, -coverage, -coverage);
+		visibility = computeVisibility(s_shadowMap3
+						, shadowcoord
+						, bias
+						, u_smSamplingParams
+						, texelSize/4.0
+						, u_shadowMapDepthMultiplier
+						, u_shadowMapMinVariance
+						, u_shadowMapHardness
+						);
 	}
 
+ 	
 	return visibility;
-	
 }
-
-
-#if 0
-void main()
-{
-	float shadowMapBias = 0.005;
-	vec3 color = vec3_splat(1.0);
-
-	vec3 v  = v_view;
-	vec3 vd = -normalize(v);
-	vec3 n  = v_normal;
-	vec3 l  = u_lightPos.xyz;
-	vec3 ld = -normalize(l);
-
-	vec2 lc = lit(ld, n, vd, 1.0);
-
-	vec2 texelSize = vec2_splat(1.0/512.0);
-	float visibility = PCF(s_shadowMap, v_shadowcoord, shadowMapBias, texelSize);
-
-	vec3 ambient = 0.1 * color;
-	vec3 brdf = (lc.x + lc.y) * color * visibility;
-
-	vec3 final = toGamma(abs(ambient + brdf) );
-	gl_FragColor = vec4(final, 1.0);
-}
-#endif
