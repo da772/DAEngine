@@ -73,15 +73,15 @@ float shadowPass(vec3 fragPosWorldSpace, mat4 v_view, vec4 v_lightNormal, vec3 v
 	//selection2 = selection2 && all(lessThan(texcoord3, vec2_splat(0.95))) && all(greaterThan(texcoord3, vec2_splat(0.05)));
 	//selection3 = selection3 && all(lessThan(texcoord4, vec2_splat(0.95))) && all(greaterThan(texcoord4, vec2_splat(0.05)));
 
-	float bias = max(.05 * v_lightNormal, u_shadowMapBias);;
+	float bias = mix(u_shadowMapBias, .005, v_lightNormal);//max(.05 * v_lightNormal, u_shadowMapBias);;
 
-	const float biasModifier = 0.5;
+	const float biasModifier = 1;//0.5;
 
 	if (selection0)
 	{
 		vec4 shadowcoord = v_texcoord1;
 		float coverage = texcoordInRange(shadowcoord.xy/shadowcoord.w) * 0.4;
-		bias *= biasModifier;
+		//bias *= biasModifier;
 		colorCoverage = vec3(-coverage, coverage, -coverage);
 		visibility = computeVisibility(s_shadowMap0
 						, shadowcoord

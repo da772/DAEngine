@@ -17,14 +17,14 @@ namespace da::platform {
 #define RENDERVIEW_SHADOWMAP_2_ID 2 + viewId
 #define RENDERVIEW_SHADOWMAP_3_ID 3 + viewId
 #define RENDERVIEW_SHADOWMAP_4_ID 4 + viewId
-#define RENDERVIEW_VBLUR_0_ID     35
-#define RENDERVIEW_HBLUR_0_ID     36
-#define RENDERVIEW_VBLUR_1_ID     37
-#define RENDERVIEW_HBLUR_1_ID     38
-#define RENDERVIEW_VBLUR_2_ID     39
-#define RENDERVIEW_HBLUR_2_ID     40
-#define RENDERVIEW_VBLUR_3_ID     41
-#define RENDERVIEW_HBLUR_3_ID     42
+#define RENDERVIEW_VBLUR_0_ID     5 + viewId
+#define RENDERVIEW_HBLUR_0_ID     6	+ viewId
+#define RENDERVIEW_VBLUR_1_ID     7	+ viewId
+#define RENDERVIEW_HBLUR_1_ID     8	+ viewId
+#define RENDERVIEW_VBLUR_2_ID     9	+ viewId
+#define RENDERVIEW_HBLUR_2_ID     10 + viewId
+#define RENDERVIEW_VBLUR_3_ID     11 + viewId
+#define RENDERVIEW_HBLUR_3_ID     12 + viewId
 #define RENDERVIEW_DRAWSCENE_0_ID 43
 #define RENDERVIEW_DRAWSCENE_1_ID 44
 #define RENDERVIEW_DRAWDEPTH_0_ID 45
@@ -530,7 +530,7 @@ namespace da::platform {
 						, 1.0f, 1.0f, 20.0f, 1.0f          // m_depthValuePow
 						, .10f, 1.0f, 10.0f, 1.0f          // m_near
 						, 175.0f, 100.0f, 2000.0f, 50.0f   // m_far
-						, 0.003f, 0.0f, 0.01f, 0.00001f   // m_bias
+						, 0.0015f, 0.0f, 0.01f, 0.00001f   // m_bias
 						, 0.001f, 0.0f, 0.04f, 0.00001f    // m_normalOffset
 						, 0.7f, 0.0f, 1.0f, 0.01f          // m_customParam0
 						, 200.0f, 1.0f, 400.0f, 1.0f       // m_customParam1
@@ -547,14 +547,14 @@ namespace da::platform {
 						, 1.0f, 1.0f, 20.0f, 1.0f          // m_depthValuePow
 						, 0.10f, 1.0f, 99.0f, 1.0f          // m_near
 						, 175.0f, 100.0f, 2000.0f, 50.0f   // m_far
-						, 0.003f, 0.0f, 0.01f, 0.00001f   // m_bias
+						, 0.0015f, 0.0f, 0.01f, 0.00001f   // m_bias
 						, 0.001f, 0.0f, 0.04f, 0.00001f    // m_normalOffset
 						, 0.7f, 0.0f, 1.0f, 0.01f          // m_customParam0
 						, 200.0f, 1.0f, 400.0f, 1.0f       // m_customParam1
 						, 2.0f, 0.0f, 8.0f, 1.0f           // m_xNum
 						, 2.0f, 0.0f, 8.0f, 1.0f           // m_yNum
-						, 0.3f, 0.0f, 3.0f, 0.01f          // m_xOffset
-						, 0.3f, 0.0f, 3.0f, 0.01f          // m_yOffset
+						, 1.441f, 0.0f, 3.0f, 0.01f          // m_xOffset
+						, 1.322f, 0.0f, 3.0f, 0.01f          // m_yOffset
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::PCF] //m_progDraw
@@ -1146,13 +1146,21 @@ namespace da::platform {
 				bgfx::setViewRect(RENDERVIEW_SHADOWMAP_4_ID, 0, 0, m_currentShadowMapSize, m_currentShadowMapSize);
 				bgfx::setViewName(RENDERVIEW_SHADOWMAP_4_ID, "ShadowMap 4");
 				bgfx::setViewRect(RENDERVIEW_VBLUR_0_ID, 0, 0, m_currentShadowMapSize, m_currentShadowMapSize);
+				bgfx::setViewName(RENDERVIEW_VBLUR_0_ID, "RENDERVIEW_VBLUR 1");
 				bgfx::setViewRect(RENDERVIEW_HBLUR_0_ID, 0, 0, m_currentShadowMapSize, m_currentShadowMapSize);
+				bgfx::setViewName(RENDERVIEW_HBLUR_0_ID, "RENDERVIEW_HBLUR 1");
 				bgfx::setViewRect(RENDERVIEW_VBLUR_1_ID, 0, 0, m_currentShadowMapSize, m_currentShadowMapSize);
+				bgfx::setViewName(RENDERVIEW_VBLUR_1_ID, "RENDERVIEW_VBLUR 2");
 				bgfx::setViewRect(RENDERVIEW_HBLUR_1_ID, 0, 0, m_currentShadowMapSize, m_currentShadowMapSize);
+				bgfx::setViewName(RENDERVIEW_HBLUR_1_ID, "RENDERVIEW_HBLUR 2");
 				bgfx::setViewRect(RENDERVIEW_VBLUR_2_ID, 0, 0, m_currentShadowMapSize, m_currentShadowMapSize);
+				bgfx::setViewName(RENDERVIEW_VBLUR_2_ID, "RENDERVIEW_VBLUR 3");
 				bgfx::setViewRect(RENDERVIEW_HBLUR_2_ID, 0, 0, m_currentShadowMapSize, m_currentShadowMapSize);
+				bgfx::setViewName(RENDERVIEW_HBLUR_2_ID, "RENDERVIEW_HBLUR 3");
 				bgfx::setViewRect(RENDERVIEW_VBLUR_3_ID, 0, 0, m_currentShadowMapSize, m_currentShadowMapSize);
+				bgfx::setViewName(RENDERVIEW_VBLUR_3_ID, "RENDERVIEW_VBLUR 4");
 				bgfx::setViewRect(RENDERVIEW_HBLUR_3_ID, 0, 0, m_currentShadowMapSize, m_currentShadowMapSize);
+				bgfx::setViewName(RENDERVIEW_HBLUR_3_ID, "RENDERVIEW_HBLUR 4");
 				bgfx::setViewRect(RENDERVIEW_DRAWSCENE_0_ID, 0, 0, m_viewState.m_width, m_viewState.m_height);
 				bgfx::setViewRect(RENDERVIEW_DRAWSCENE_1_ID, 0, 0, m_viewState.m_width, m_viewState.m_height);
 				bgfx::setViewRect(RENDERVIEW_DRAWDEPTH_0_ID, depthRectX + (0 * depthRectWidth), depthRectY, depthRectWidth, depthRectHeight);
@@ -1274,17 +1282,17 @@ namespace da::platform {
 				{
 					for (uint8_t ii = 1, jj = 2; ii < m_settings.m_numSplits; ++ii, jj += 2)
 					{
-						const uint8_t viewId = RENDERVIEW_VBLUR_0_ID + jj;
+						const uint8_t renderViewId = RENDERVIEW_VBLUR_0_ID + jj;
 
 						bgfx::setTexture(4, m_shadowMap[0], bgfx::getTexture(m_rtShadowMap[ii]));
 						bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
 						screenSpaceQuad(s_originBottomLeft);
-						bgfx::submit(viewId, { m_programs.m_vBlur[depthType]->getHandle() });
+						bgfx::submit(renderViewId, { m_programs.m_vBlur[depthType]->getHandle() });
 
 						bgfx::setTexture(4, m_shadowMap[0], bgfx::getTexture(s_rtBlur));
 						bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
 						screenSpaceQuad(s_originBottomLeft);
-						bgfx::submit(viewId + 1, { m_programs.m_hBlur[depthType]->getHandle()});
+						bgfx::submit(renderViewId + 1, { m_programs.m_hBlur[depthType]->getHandle()});
 					}
 				}
 			}

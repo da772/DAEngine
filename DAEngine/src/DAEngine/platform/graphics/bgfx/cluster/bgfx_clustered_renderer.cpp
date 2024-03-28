@@ -100,7 +100,7 @@ namespace da::platform {
             vSSAO,
             vSSAOBlur,
             vShadow,
-            vClusterBuilding = vShadow + 5,
+            vClusterBuilding = vShadow + 13,
             vLightCulling,
             vLighting,
             vVolumetricLight,
