@@ -45,4 +45,7 @@ void main()
 
 	OUT0 = vec4(color, 1.0);
 	OUT1 = vec4(sun, sun, sun, 1.0);
+	discard;
+	OUT2 = vec4(0.0,0.0,0.0,0.0);
+	OUT3 = vec4(0.0,0.0,0.0,0.0);
 }

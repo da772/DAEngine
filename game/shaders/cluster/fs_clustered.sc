@@ -12,6 +12,7 @@ $input v_worldpos, v_normal, v_tangent, v_texcoord0
 #include "lights.sh"
 #include "samplers.sh"
 #include "shadow.sh"
+#include "pbr.sh"
 
 uniform vec4 u_camPos;
 
@@ -26,4 +27,6 @@ void main()
     // Output
     OUT0 = vec4(radianceOut, 1.0);
     OUT1 = vec4(0.0,0.0,0.0,1.0);
+    OUT2 = v_worldpos;
+    OUT3 = vec4(1.0,0.0, 0.0,0.0);
 }

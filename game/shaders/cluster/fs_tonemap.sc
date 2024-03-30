@@ -20,6 +20,8 @@ SAMPLER2D(s_texColor, 0);
 SAMPLER2D(s_texBloom, 1);
 SAMPLER2D(s_texVolLight, 2);
 SAMPLER2D(s_debugSamplerUniform, 3);
+SAMPLER2D(s_texSpec, 4);
+SAMPLER2D(s_texRefl, 5);
 
 void main()
 {
@@ -59,6 +61,7 @@ void main()
     vec4 bloomColor = vec4(texture2D(s_texBloom, texcoord).rgb, 0.0);
     vec4 volLightColor = vec4(texture2D(s_texVolLight, texcoord).rgb, 0.0);
     vec4 debugColor = texture2D(s_debugSamplerUniform, texcoord);
-
-    gl_FragColor = result + bloomColor + volLightColor + debugColor;
+    float spec =  bgfxTexture2D(s_texSpec, texcoord).r;
+    vec4 reflColor = spec* texture2D(s_texRefl, texcoord);
+    gl_FragColor = result + bloomColor + volLightColor + reflColor + debugColor;
 }

@@ -34,7 +34,7 @@ void main()
     gl_FragColor = vec4(0.0,0.0,0.0,0.0);
     if (apply_radial_blur)
     {
-        gl_FragColor = vec4(radial_blur(coefficients, s_texture, texcoord, s_ssLightPos.xy), 1.0);
+        gl_FragColor = vec4(radial_blur(coefficients, s_texture, texcoord, vec2(s_ssLightPos.x, s_ssLightPos.y)), 1.0);
     }
     else
     {

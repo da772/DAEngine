@@ -1461,7 +1461,7 @@ namespace da::platform {
 		u_params0 = bgfx::createUniform("u_params0", bgfx::UniformType::Vec4);
 		u_params1 = bgfx::createUniform("u_params1", bgfx::UniformType::Vec4);
 		u_params2 = bgfx::createUniform("u_params2", bgfx::UniformType::Vec4);
-		u_color = bgfx::createUniform("u_color", bgfx::UniformType::Vec4);
+		
 		u_smSamplingParams = bgfx::createUniform("u_smSamplingParams", bgfx::UniformType::Vec4);
 		u_csmFarDistances = bgfx::createUniform("u_csmFarDistances", bgfx::UniformType::Vec4);
 		u_lightMtx = bgfx::createUniform("u_lightMtx", bgfx::UniformType::Mat4);
@@ -1513,7 +1513,6 @@ namespace da::platform {
 
 		bgfx::setUniform(u_params0, m_params0);
 		bgfx::setUniform(u_lightMtx, m_lightMtxPtr);
-		bgfx::setUniform(u_color, m_colorPtr);
 	}
 
 	void CBgfxShadowCsm::FUniforms::destroy()
@@ -1521,7 +1520,6 @@ namespace da::platform {
 		bgfx::destroy(u_params0);
 		bgfx::destroy(u_params1);
 		bgfx::destroy(u_params2);
-		bgfx::destroy(u_color);
 		bgfx::destroy(u_smSamplingParams);
 		bgfx::destroy(u_csmFarDistances);
 

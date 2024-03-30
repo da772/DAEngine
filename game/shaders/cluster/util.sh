@@ -6,12 +6,18 @@
 #if BGFX_SHADER_LANGUAGE_GLSL
 layout(location = 0) out vec4 outColor;
 layout(location = 1) out vec4 outLightOcclusion;
+layout(location = 2) out vec4 outPositions;
+layout(location = 3) out vec4 outSpecular;
 
 #define OUT0 outColor
 #define OUT1 outLightOcclusion
+#define OUT2 outPositions
+#define OUT3 outSpecular
 #else
 #define OUT0 gl_FragData[0]
 #define OUT1 gl_FragData[1]
+#define OUT2 gl_FragData[2]
+#define OUT3 gl_FragData[3]
 #endif
 
 // from screen coordinates (gl_FragCoord) to eye space

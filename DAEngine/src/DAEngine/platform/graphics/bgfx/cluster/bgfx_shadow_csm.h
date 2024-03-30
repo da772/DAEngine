@@ -341,7 +341,6 @@ namespace da::platform {
 			::bgfx::UniformHandle u_params0;
 			::bgfx::UniformHandle u_params1;
 			::bgfx::UniformHandle u_params2;
-			::bgfx::UniformHandle u_color;
 			::bgfx::UniformHandle u_smSamplingParams;
 			::bgfx::UniformHandle u_csmFarDistances;
 

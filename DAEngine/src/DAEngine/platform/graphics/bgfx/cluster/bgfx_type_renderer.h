@@ -13,6 +13,7 @@
 #include "bgfx_volumetric_light_shader.h"
 #include <platform/graphics/bgfx/bgfx_debug_renderer.h>
 #include "bgfx_shadow_csm.h"
+#include "bgfx_ssr.h"
 
 namespace da::core {
     class CCamera;
@@ -122,6 +123,7 @@ namespace da::platform
         CBgfxBloomShader m_bloom;
         CBgfxVolumetricLightShader m_volumetricLight;
         CBgfxShadowCsm m_csm;
+        CBgfxSsr m_ssr;
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
         CBgfxDebugRenderer m_debugRenderer;
 #endif
@@ -142,6 +144,8 @@ namespace da::platform
         ::bgfx::UniformHandle m_blitSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_bloomSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_volLightSampler = BGFX_INVALID_HANDLE;
+        ::bgfx::UniformHandle m_reflSampler = BGFX_INVALID_HANDLE;
+        ::bgfx::UniformHandle m_specSampler = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_camPosUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_normalMatrixUniform = BGFX_INVALID_HANDLE;
 #if defined(DA_DEBUG) || defined(DA_RELEASE)

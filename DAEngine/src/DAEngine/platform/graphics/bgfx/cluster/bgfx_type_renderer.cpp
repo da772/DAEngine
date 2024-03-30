@@ -30,7 +30,9 @@ namespace da::platform {
 
         m_blitSampler = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
         m_bloomSampler = bgfx::createUniform("s_texBloom", bgfx::UniformType::Sampler);
-        m_volLightSampler = bgfx::createUniform("m_volLightSampler", bgfx::UniformType::Sampler);
+        m_volLightSampler = bgfx::createUniform("s_texVolLight", bgfx::UniformType::Sampler);
+        m_specSampler = bgfx::createUniform("s_texSpec", bgfx::UniformType::Sampler);
+        m_reflSampler = bgfx::createUniform("s_texRefl", bgfx::UniformType::Sampler);
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
         m_debugSamplerUniform = bgfx::createUniform("s_debugSamplerUniform", bgfx::UniformType::Sampler);
 #endif
@@ -245,6 +247,12 @@ namespace da::platform {
         bgfx::TextureHandle debugTexture = bgfx::getTexture(m_debugRenderer.getFrameBuffer(), 0);
 		bgfx::setTexture(3, m_debugSamplerUniform, debugTexture);
 #endif
+        bgfx::TextureHandle specTexture = bgfx::getTexture(m_frameBuffer, 3);
+        bgfx::setTexture(4, m_specSampler, specTexture);
+
+		bgfx::TextureHandle reflTexture = bgfx::getTexture(m_ssr.getFrameBuffer(), 0);
+		bgfx::setTexture(5, m_reflSampler, reflTexture);
+        
         float exposureVec[4] = { da::core::CCamera::getCamera()->exposure };
         bgfx::setUniform(m_exposureVecUniform, exposureVec);
         float tonemappingModeVec[4] = { (float)m_tonemappingMode };
@@ -279,7 +287,7 @@ namespace da::platform {
 
     bgfx::FrameBufferHandle CBgfxTypeRenderer::createFrameBuffer(bool hdr, bool depth)
     {
-        bgfx::TextureHandle textures[3];
+        bgfx::TextureHandle textures[5];
         uint8_t attachments = 0;
 
         const uint64_t samplerFlags = BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT |
@@ -294,6 +302,15 @@ namespace da::platform {
         // occlusion map
 		textures[attachments++] =
 			bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, format, samplerFlags);
+
+		// position map
+		textures[attachments++] =
+			bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, format, samplerFlags);
+
+		// specular map
+		textures[attachments++] =
+			bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, format, samplerFlags);
+
 
         if (depth)
         {

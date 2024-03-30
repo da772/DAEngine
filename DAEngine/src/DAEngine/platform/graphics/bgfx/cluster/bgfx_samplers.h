@@ -36,5 +36,10 @@ namespace da::platform {
         static const uint8_t SAMPLER_SHADOW_MAP_MED = 13;
         static const uint8_t SAMPLER_SHADOW_MAP_FAR = 14;
         static const uint8_t SAMPLER_SHADOW_MAP_VFAR = 15;
+
+        static const uint8_t SAMPLER_COLOR = 0;
+        static const uint8_t SAMPLER_DEPTH = 1;
+        static const uint8_t SAMPLER_POSITIONS = 2;
+
     };
 }

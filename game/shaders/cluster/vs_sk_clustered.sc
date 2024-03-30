@@ -15,7 +15,7 @@ void main()
     boneTransform += u_bones[a_indices.z] *  a_weight.z;
     boneTransform += u_bones[a_indices.w] *  a_weight.w;
     
-    v_worldpos = mul(u_model[0], mul(boneTransform, vec4(a_position, 1.0))).xyz;
+    v_worldpos = mul(u_model[0], mul(boneTransform, vec4(a_position, 1.0)));
     v_normal = mul(u_normalMatrix, mul(boneTransform, a_normal));
     v_tangent = mul(u_model[0], mul(boneTransform, vec4(a_tangent, 0.0))).xyz;
     v_texcoord0 = a_texcoord0;

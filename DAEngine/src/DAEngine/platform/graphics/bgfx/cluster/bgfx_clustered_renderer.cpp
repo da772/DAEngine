@@ -76,6 +76,7 @@ namespace da::platform {
 		m_ambientLight.irradiance = { .25f, .25f, .25f };
 
         m_bloom.initialize(m_width, m_height);
+        m_ssr.initialize(m_width, m_height);
         m_volumetricLight.initialize();
         m_csm.initialize();
 
@@ -100,8 +101,9 @@ namespace da::platform {
             vLightCulling,
             vLighting,
             vVolumetricLight,
+            vSSR,
             vBloom,
-            vBloomBlur
+            vBloomBlur,
         };
 
 #ifdef DA_REVIEW
@@ -122,6 +124,7 @@ namespace da::platform {
                     case vLightCulling: da::debug::CDebugStatsWindow::s_viewTimes["vLightCulling"] = time; break;
                     case vLighting: da::debug::CDebugStatsWindow::s_viewTimes["vLighting"] = time; break;
                     case vVolumetricLight: da::debug::CDebugStatsWindow::s_viewTimes["vVolumetricLight"] = time; break;
+                    case vSSR: da::debug::CDebugStatsWindow::s_viewTimes["vSSR"] = time; break;
                     case vBloom: da::debug::CDebugStatsWindow::s_viewTimes["vBloom"] = time; break;
                     case vBloomBlur: da::debug::CDebugStatsWindow::s_viewTimes["vBloomBlur"] += time; break;
                     }
@@ -157,7 +160,7 @@ namespace da::platform {
         ::bgfx::setViewRect(vLightCulling, 0, 0, m_width, m_height);
 
         ::bgfx::setViewName(vLighting, "Clustered lighting pass");
-        ::bgfx::setViewClear(vLighting, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, m_clearColor, 1.0f, 0);
+        ::bgfx::setViewClear(vLighting, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x00000000, 1.0f, 0);
         ::bgfx::setViewRect(vLighting, 0, 0, m_width, m_height);
         ::bgfx::setViewFrameBuffer(vLighting, m_frameBuffer);
         ::bgfx::touch(vLighting);
@@ -271,7 +274,9 @@ namespace da::platform {
         setViewProjection(vClusterBuilding, false);
         // light culling needs u_view to transform lights to eye space
         setViewProjection(vLightCulling, false);
+        setViewProjection(vSSR);
         setViewProjection(vLighting);
+        
 
         // cluster building
 
@@ -380,12 +385,14 @@ namespace da::platform {
 			}
 		}
         
-
+        m_ssr.renderSSR(vSSR, m_frameBuffer, m_depthBuffer, m_frameBuffer);
         ::bgfx::TextureHandle tex = ::bgfx::getTexture(m_frameBuffer, 0);
         m_bloom.render(vBloom, tex, m_width, m_height);
         m_bloom.renderBlur(vBloomBlur, m_width, m_height);
 
         m_volumetricLight.render(vVolumetricLight, m_width, m_height, ::bgfx::getTexture(m_frameBuffer, 1), m_sun.getScreenSpacePos(m_viewMat, m_projMat));
+
+        
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
         m_debugRenderer.renderXRay(vDebug);
@@ -405,6 +412,7 @@ namespace da::platform {
         m_bloom.shutdown();
         m_volumetricLight.shutdown();
         m_csm.shutdown();
+        m_ssr.shutdown();
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
         m_debugRenderer.shutdown();
 #endif
@@ -483,6 +491,7 @@ namespace da::platform {
 		m_ssao.reset(width, height);
         m_bloom.onReset(width, height);
         m_volumetricLight.onReset(width, height);
+        m_ssr.reset(width, height);
 #ifdef DA_REVIEW
         m_debugRenderer.onReset(width, height);
 #endif
