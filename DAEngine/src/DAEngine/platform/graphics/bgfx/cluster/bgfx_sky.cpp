@@ -266,6 +266,11 @@ namespace da::platform
 			if (ImGui::DragFloat("###skyTime", &skyTime, .1f, 0.f, 24.f)) {
 				m_sun->setTime(skyTime);
 			}
+
+			ImGui::Text("Month");
+			if (ImGui::DragInt("###skyMonth", (int*)&m_sun->m_month, 1.0f, 0, 11)) {
+				m_sun->Update();
+			}
 		}
 
 		ImGui::End();

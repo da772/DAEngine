@@ -42,7 +42,6 @@ namespace da::platform
         CBgfxAmbientLight m_ambientLight;
         CBgfxPointLightList m_pointLights;
         CBgfxClusterShader m_clusters;
-        CBgfxShadowShader m_shadow;
         CBgfxSSAOShader m_ssao;
 
 #ifdef DA_REVIEW

@@ -66,10 +66,6 @@ namespace da::platform {
         //generateLights(100);
         m_pointLights.update();
 
-        m_shadow.initialize();
-        m_shadow.getCamera().setPosition({ 0.f, 15, 15.f });
-        m_shadow.getCamera().setRotation({ -50.f, 0.f, 180.f });
-
 
         m_ssao.initialize();
 #ifdef DA_REVIEW
@@ -147,8 +143,6 @@ namespace da::platform {
 		const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
 		const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
 
-        m_shadow.getLightDir() = m_sun.m_sunDir;
-
 		::bgfx::setViewName(vDepth, "Depth pass");
 		::bgfx::setViewClear(vDepth, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xFFFFFF00, 1.0f, 0);
 		::bgfx::setViewRect(vDepth, 0, 0, m_width, m_height);
@@ -216,40 +210,57 @@ namespace da::platform {
 					BGFX_STATE_WRITE_Z
 					| BGFX_STATE_DEPTH_TEST_LESS
 					| BGFX_STATE_CULL_CCW);
-				::bgfx::submit(vDepth, { m_shadow.getSKMaterial()->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+				::bgfx::submit(vDepth, { m_pDepthprogramSk->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
 			}
 		}
 
         m_ssao.renderSSAO(m_width, m_height, vSSAO, m_depthBuffer);
         m_ssao.renderBlur(m_width, m_height, vSSAOBlur);
 
-        m_csm.setRenderFunc([](uint8_t view, da::graphics::CMaterial* mat, da::platform::RenderState renderState) {
+        m_csm.setRenderFunc([this](uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState) {
             da::core::CScene* scene = da::core::CSceneManager::getScene();
 			const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
 			const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
 
 			// Shadow map pass
-			for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
-				da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
-				glm::mat4 model = meshComponent->getParent().getTransform().matrix();
-				for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
-					const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
-					ASSERT(mesh);
+            for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
+                da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
+                glm::mat4 model = meshComponent->getParent().getTransform().matrix();
+                for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
+                    const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+                    ASSERT(mesh);
 
-					if (!mesh->getCastShadows()) continue;
-					if (mesh->getHidden()) continue;
+                    if (!mesh->getCastShadows()) continue;
+                    if (mesh->getHidden()) continue;
 
+                    ::bgfx::setTransform(glm::value_ptr(model));
+                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                    ::bgfx::setState(renderState.m_state);
+                    ::bgfx::submit(view, { mat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                }
+            }
+
+			for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
+
+				da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
+				const glm::mat4& model = meshComponent->getTransform();
+
+				for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
+					da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+
+					::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
 					::bgfx::setTransform(glm::value_ptr(model));
 					::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
 					::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
 					::bgfx::setState(renderState.m_state);
-					::bgfx::submit(view, { mat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+					::bgfx::submit(view, { skMat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
 				}
 			}
 
         });
 
-        m_csm.update(vShadow, m_shadow.getLightDir());
+        m_csm.update(vShadow, m_sun.m_sunDir, m_width, m_height);
 
         glm::mat4 lightMtx[SHADOW_MAP_SIZE];
         glm::vec4 cascades[4] = { {10.f, 1.f,0.f,0.f}, {30.f,10.f,0.f, 0.f}, {100.f,30.f,0.f,0.f} };
@@ -293,7 +304,7 @@ namespace da::platform {
         // this used to happen during cluster building when it was still run every frame
         ::bgfx::dispatch(vLightCulling, { m_pResetCounterComputeProgram->getHandle() }, 1, 1, 1);
 
-        m_lights.bindLights(m_shadow.getLightDir(), { 0.f,0.f,0.f }, m_ambientLight, m_pointLights);
+        m_lights.bindLights(m_sun.m_sunDir, { 0.f,0.f,0.f }, m_ambientLight, m_pointLights);
         m_clusters.bindBuffers(false);
 
         ::bgfx::dispatch(vLightCulling,
@@ -311,8 +322,7 @@ namespace da::platform {
 		uint64_t state = BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK;
 
 		m_pbr.bindAlbedoLUT();
-        glm::vec3 rotRadians = glm::vec3(glm::radians(m_shadow.getCamera().rotation().x), glm::radians(m_shadow.getCamera().rotation().y), glm::radians(m_shadow.getCamera().rotation().z));
-        m_lights.bindLights(m_shadow.getLightDir(),m_sky.getSunLuminance(), m_ambientLight, m_pointLights);
+        m_lights.bindLights(m_sun.m_sunDir,m_sky.getSunLuminance(), m_ambientLight, m_pointLights);
 		m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
 		m_sky.render(vLighting, state);
@@ -331,11 +341,8 @@ namespace da::platform {
                 setNormalMatrix(model);
                 ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
                 ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
                 uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
-               
                 m_csm.submitUniforms();
-               
                 m_ssao.bindSSAO();
 
                 //BGFX_STATE_PT_LINES
@@ -362,12 +369,8 @@ namespace da::platform {
                 ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
 
                
-                ::bgfx::setUniform(m_shadow.getCascadeLevelUniform(), cascades, 3);
-                m_pbr.bindLightPos(m_shadow.getCamera().position(), lightMtx);
-                uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
-                for (size_t s = 0; s < m_shadow.getShadowMapsCount(); s++) {
-                    ::bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + s, m_shadow.getShadowMaps().ShadowMaps[s].Uniform, m_shadow.getShadowMaps().ShadowMaps[s].Texture);
-                }
+				uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
+                m_csm.submitUniforms();
                 m_ssao.bindSSAO();
 
                 //BGFX_STATE_PT_LINES
@@ -397,11 +400,11 @@ namespace da::platform {
     {
 
         m_clusters.shutdown();
-        m_shadow.shutdown();
         m_pointLights.shutdown();
         m_ssao.shutdown();
         m_bloom.shutdown();
         m_volumetricLight.shutdown();
+        m_csm.shutdown();
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
         m_debugRenderer.shutdown();
 #endif

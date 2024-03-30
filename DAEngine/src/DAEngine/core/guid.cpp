@@ -81,12 +81,19 @@ namespace da::core {
 		return m_uuid;
 	}
 
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
 	const char* CGuid::c_str() const
 	{
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
 		return &m_debugName[0];
-	}
+#else
+		return (const char*)&m_uuid;
 #endif
+	}
+
+	void CGuid::c_str(char* out) const
+	{
+		genString(out);
+	}
 
 	bool CGuid::operator==(const CGuid& rhs) const
 	{
@@ -124,6 +131,72 @@ namespace da::core {
 #endif
 
 		return guid;
+	}
+
+	void CGuid::genString(guid_str out) const
+	{
+		int index = 0;
+
+		char buffer[4];
+
+		for (unsigned char i = 0; i < 8; i += 2) {
+#ifdef DA_PLATFORM_WINDOWS
+			sprintf_s(&buffer[0], sizeof(buffer), "%02x", m_uuid[index++]);
+#else
+			snprintf(&buffer[0], sizeof(buffer), "%02x", m_uuid[index++]);
+#endif
+
+			memcpy(&out[i], &buffer[0], sizeof(char) * 2);
+
+		}
+
+
+		out[8] = '-';
+
+		for (unsigned char i = 9; i < 13; i += 2) {
+#ifdef DA_PLATFORM_WINDOWS
+			sprintf_s(&buffer[0], 4, "%02x", m_uuid[index++]);
+#else
+			snprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
+#endif
+			memcpy(&out[i], &buffer[0], sizeof(char) * 2);
+		}
+
+		out[13] = '-';
+
+
+		for (unsigned char i = 14; i < 18; i += 2) {
+#ifdef DA_PLATFORM_WINDOWS
+			sprintf_s(&buffer[0], 4, "%02x", m_uuid[index++]);
+#else
+			snprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
+#endif
+			memcpy(&out[i], &buffer[0], sizeof(char) * 2);
+		}
+
+		out[18] = '-';
+
+		for (unsigned char i = 19; i < 23; i += 2) {
+#ifdef DA_PLATFORM_WINDOWS
+			sprintf_s(&buffer[0], 4, "%02x", m_uuid[index++]);
+#else
+			snprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
+#endif
+			memcpy(&out[i], &buffer[0], sizeof(char) * 2);
+		}
+
+		out[23] = '-';
+
+		for (unsigned char i = 24; i < 36; i += 2) {
+#ifdef DA_PLATFORM_WINDOWS
+			sprintf_s(&buffer[0], 4, "%02x", m_uuid[index++]);
+#else
+			snprintf(&buffer[0], 4, "%02x", m_uuid[index++]);
+#endif
+			memcpy(&out[i], &buffer[0], sizeof(char) * 2);
+		}
+
+		out[36] = 0;
 	}
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)

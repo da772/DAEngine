@@ -9,6 +9,10 @@
 #include <core/graphics/camera.h>
 #include "bgfx_samplers.h"
 
+#ifdef DA_REVIEW
+#include "debug/debug_menu_bar.h"
+#endif
+
 namespace da::platform {
 
 
@@ -25,12 +29,6 @@ namespace da::platform {
 #define RENDERVIEW_HBLUR_2_ID     10 + viewId
 #define RENDERVIEW_VBLUR_3_ID     11 + viewId
 #define RENDERVIEW_HBLUR_3_ID     12 + viewId
-#define RENDERVIEW_DRAWSCENE_0_ID 43
-#define RENDERVIEW_DRAWSCENE_1_ID 44
-#define RENDERVIEW_DRAWDEPTH_0_ID 45
-#define RENDERVIEW_DRAWDEPTH_1_ID 46
-#define RENDERVIEW_DRAWDEPTH_2_ID 47
-#define RENDERVIEW_DRAWDEPTH_3_ID 48
 
 	static const float s_texcoord = 5.0f;
 
@@ -472,10 +470,7 @@ namespace da::platform {
 
 	void CBgfxShadowCsm::initialize()
 	{
-
-		m_width = 1280;
-		m_height = 720;
-		m_viewState = ViewState(uint16_t(m_width), uint16_t(m_height));
+		m_viewState = ViewState(uint16_t(0), uint16_t(0));
 		m_clearValues = ClearValues(0x00000000, 1.0f, 0);
 
 
@@ -518,6 +513,10 @@ namespace da::platform {
 		);
 		m_uniforms.submitConstUniforms();
 
+#ifdef DA_REVIEW
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Shadows"), &m_showDebug, []() {});
+#endif
+
 		// Settings.
 		ShadowMapSettings smSettings[LightType::Count][DepthImpl::Count][SmImpl::Count] =
 		{
@@ -540,6 +539,7 @@ namespace da::platform {
 						, 0.3f, 0.0f, 1.0f, 0.01f          // m_yOffset
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
+						, m_programs.m_packDepthSk[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::Hard] //m_progDraw
 					},
 					{ //SmImpl::PCF
@@ -557,6 +557,7 @@ namespace da::platform {
 						, 1.322f, 0.0f, 3.0f, 0.01f          // m_yOffset
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
+						, m_programs.m_packDepthSk[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::PCF] //m_progDraw
 					},
 					{ //SmImpl::VSM
@@ -574,6 +575,7 @@ namespace da::platform {
 						, 0.2f, 0.0f, 1.0f, 0.01f          // m_yOffset
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::InvZ][PackDepth::VSM] //m_progPack
+						, m_programs.m_packDepthSk[DepthImpl::InvZ][PackDepth::VSM] //m_progPackSk
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::VSM] //m_progDraw
 					},
 					{ //SmImpl::ESM
@@ -591,6 +593,7 @@ namespace da::platform {
 						, 0.2f, 0.0f, 1.0f, 0.01f          // m_yOffset
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
+						, m_programs.m_packDepthSk[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::ESM] //m_progDraw
 					}
 
@@ -612,6 +615,7 @@ namespace da::platform {
 						, 0.2f, 0.0f, 1.0f, 0.01f          // m_yOffset
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::Linear][PackDepth::RGBA] //m_progPack
+						, m_programs.m_packDepthSk[DepthImpl::Linear][PackDepth::RGBA] //m_progPack
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::Hard] //m_progDraw
 					},
 					{ //SmImpl::PCF
@@ -629,6 +633,7 @@ namespace da::platform {
 						, 1.0f, 0.0f, 3.0f, 0.01f          // m_yOffset
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::Linear][PackDepth::RGBA] //m_progPack
+						, m_programs.m_packDepthSk[DepthImpl::Linear][PackDepth::RGBA] //m_progPack
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::PCF] //m_progDraw
 					},
 					{ //SmImpl::VSM
@@ -646,6 +651,7 @@ namespace da::platform {
 						, 0.2f, 0.0f, 1.0f, 0.01f          // m_yOffset
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::Linear][PackDepth::VSM] //m_progPack
+						, m_programs.m_packDepthSk[DepthImpl::Linear][PackDepth::VSM] //m_progPack
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::VSM] //m_progDraw
 					},
 					{ //SmImpl::ESM
@@ -663,6 +669,7 @@ namespace da::platform {
 						, 0.2f, 0.0f, 1.0f, 0.01f          // m_yOffset
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::Linear][PackDepth::RGBA] //m_progPack
+						, m_programs.m_packDepthSk[DepthImpl::Linear][PackDepth::RGBA] //m_progPack
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::ESM] //m_progDraw
 					}
 
@@ -710,11 +717,10 @@ namespace da::platform {
 		m_timeAccumulatorScene = 0.0f;
 	}
 
-	void CBgfxShadowCsm::update(uint8_t viewId, glm::vec3& lightDir)
+	void CBgfxShadowCsm::update(uint8_t viewId, glm::vec3& lightDir, uint16_t width, uint16_t height)
 	{
-
-			m_viewState.m_width = uint16_t(m_width);
-			m_viewState.m_height = uint16_t(m_height);
+			m_viewState.m_width = width;
+			m_viewState.m_height = height;
 
 			const bgfx::Caps* caps = bgfx::getCaps();
 
@@ -740,152 +746,158 @@ namespace da::platform {
 
 			m_uniforms.submitConstUniforms();
 
-			ImGui::SetNextWindowPos(
-				ImVec2(m_viewState.m_width - m_viewState.m_width / 5.0f - 10.0f, 10.0f)
-				, ImGuiCond_FirstUseEver
-			);
-			ImGui::SetNextWindowSize(
-				ImVec2(m_viewState.m_width / 5.0f, m_viewState.m_height - 20.0f)
-				, ImGuiCond_FirstUseEver
-			);
-			ImGui::Begin("Settings"
-				, NULL
-				, 0
-			);
-
-#define IMGUI_FLOAT_SLIDER(_name, _val) \
-	ImGui::SliderFloat(_name            \
-			, &_val                     \
-			, *( ((float*)&_val)+1)     \
-			, *( ((float*)&_val)+2)     \
-			)
-
-#define IMGUI_RADIO_BUTTON(_name, _var, _val)     \
-	if (ImGui::RadioButton(_name, _var == _val) ) \
-	{                                             \
-		_var = _val;                              \
-	}
-
-			ImGui::Checkbox("Update lights", &m_settings.m_updateLights);
-			ImGui::Checkbox("Update scene", &m_settings.m_updateScene);
-
-			ImGui::Separator();
-			ImGui::Text("Shadow map depth:");
-			IMGUI_RADIO_BUTTON("InvZ", m_settings.m_depthImpl, DepthImpl::InvZ);
-			IMGUI_RADIO_BUTTON("Linear", m_settings.m_depthImpl, DepthImpl::Linear);
-
 			ShadowMapSettings* currentSmSettings = &m_smSettings[m_settings.m_lightType][m_settings.m_depthImpl][m_settings.m_smImpl];
 
-			ImGui::Separator();
-			ImGui::Checkbox("Draw depth buffer", &m_settings.m_drawDepthBuffer);
-			if (m_settings.m_drawDepthBuffer)
+#ifdef DA_REVIEW
+			if (m_showDebug) 
 			{
-				IMGUI_FLOAT_SLIDER("Depth value pow", currentSmSettings->m_depthValuePow);
-			}
 
-			ImGui::Separator();
-			ImGui::Text("Shadow Map implementation");
-			IMGUI_RADIO_BUTTON("Hard", m_settings.m_smImpl, SmImpl::Hard);
-			IMGUI_RADIO_BUTTON("PCF", m_settings.m_smImpl, SmImpl::PCF);
-			IMGUI_RADIO_BUTTON("VSM", m_settings.m_smImpl, SmImpl::VSM);
-			IMGUI_RADIO_BUTTON("ESM", m_settings.m_smImpl, SmImpl::ESM);
-			currentSmSettings = &m_smSettings[m_settings.m_lightType][m_settings.m_depthImpl][m_settings.m_smImpl];
+				ImGui::SetNextWindowPos(
+					ImVec2(m_viewState.m_width - m_viewState.m_width / 5.0f - 10.0f, 10.0f)
+					, ImGuiCond_FirstUseEver
+				);
+				ImGui::SetNextWindowSize(
+					ImVec2(m_viewState.m_width / 5.0f, m_viewState.m_height - 20.0f)
+					, ImGuiCond_FirstUseEver
+				);
+				ImGui::Begin("Settings"
+					, &m_showDebug
+					, 0
+				);
 
-			ImGui::Separator();
-			IMGUI_FLOAT_SLIDER("Bias", currentSmSettings->m_bias);
-			IMGUI_FLOAT_SLIDER("Normal offset", currentSmSettings->m_normalOffset);
-			ImGui::Separator();
-			if (LightType::DirectionalLight != m_settings.m_lightType)
-			{
-				IMGUI_FLOAT_SLIDER("Near plane", currentSmSettings->m_near);
-			}
-			IMGUI_FLOAT_SLIDER("Far plane", currentSmSettings->m_far);
+				#define IMGUI_FLOAT_SLIDER(_name, _val) \
+				ImGui::SliderFloat(_name            \
+						, &_val                     \
+						, *( ((float*)&_val)+1)     \
+						, *( ((float*)&_val)+2)     \
+						)
 
-			ImGui::Separator();
-			switch (m_settings.m_smImpl)
-			{
-			case SmImpl::Hard:
-				//ImGui::Text("Hard");
-				break;
-
-			case SmImpl::PCF:
-				ImGui::Text("PCF");
-				IMGUI_FLOAT_SLIDER("X Offset", currentSmSettings->m_xOffset);
-				IMGUI_FLOAT_SLIDER("Y Offset", currentSmSettings->m_yOffset);
-				break;
-
-			case SmImpl::VSM:
-				ImGui::Text("VSM");
-				IMGUI_FLOAT_SLIDER("Min variance", currentSmSettings->m_customParam0);
-				IMGUI_FLOAT_SLIDER("Depth multiplier", currentSmSettings->m_customParam1);
-				ImGui::Checkbox("Blur shadow map", &currentSmSettings->m_doBlur);
-				if (currentSmSettings->m_doBlur)
-				{
-					IMGUI_FLOAT_SLIDER("Blur X Offset", currentSmSettings->m_xOffset);
-					IMGUI_FLOAT_SLIDER("Blur Y Offset", currentSmSettings->m_yOffset);
+				#define IMGUI_RADIO_BUTTON(_name, _var, _val)     \
+				if (ImGui::RadioButton(_name, _var == _val) ) \
+				{                                             \
+					_var = _val;                              \
 				}
-				break;
 
-			case SmImpl::ESM:
-				ImGui::Text("ESM");
-				IMGUI_FLOAT_SLIDER("ESM Hardness", currentSmSettings->m_customParam0);
-				IMGUI_FLOAT_SLIDER("Depth multiplier", currentSmSettings->m_customParam1);
-				ImGui::Checkbox("Blur shadow map", &currentSmSettings->m_doBlur);
-				if (currentSmSettings->m_doBlur)
+				ImGui::Checkbox("Update lights", &m_settings.m_updateLights);
+				ImGui::Checkbox("Update scene", &m_settings.m_updateScene);
+
+				ImGui::Separator();
+				ImGui::Text("Shadow map depth:");
+				IMGUI_RADIO_BUTTON("InvZ", m_settings.m_depthImpl, DepthImpl::InvZ);
+				IMGUI_RADIO_BUTTON("Linear", m_settings.m_depthImpl, DepthImpl::Linear);
+
+				ImGui::Separator();
+				ImGui::Checkbox("Draw depth buffer", &m_settings.m_drawDepthBuffer);
+				if (m_settings.m_drawDepthBuffer)
 				{
-					IMGUI_FLOAT_SLIDER("Blur X Offset", currentSmSettings->m_xOffset);
-					IMGUI_FLOAT_SLIDER("Blur Y Offset", currentSmSettings->m_yOffset);
+					IMGUI_FLOAT_SLIDER("Depth value pow", currentSmSettings->m_depthValuePow);
 				}
-				break;
 
-			default:
-				break;
-			};
+				ImGui::Separator();
+				ImGui::Text("Shadow Map implementation");
+				IMGUI_RADIO_BUTTON("Hard", m_settings.m_smImpl, SmImpl::Hard);
+				IMGUI_RADIO_BUTTON("PCF", m_settings.m_smImpl, SmImpl::PCF);
+				IMGUI_RADIO_BUTTON("VSM", m_settings.m_smImpl, SmImpl::VSM);
+				IMGUI_RADIO_BUTTON("ESM", m_settings.m_smImpl, SmImpl::ESM);
+				
 
-			ImGui::End();
+				ImGui::Separator();
+				IMGUI_FLOAT_SLIDER("Bias", currentSmSettings->m_bias);
+				IMGUI_FLOAT_SLIDER("Normal offset", currentSmSettings->m_normalOffset);
+				ImGui::Separator();
+				if (LightType::DirectionalLight != m_settings.m_lightType)
+				{
+					IMGUI_FLOAT_SLIDER("Near plane", currentSmSettings->m_near);
+				}
+				IMGUI_FLOAT_SLIDER("Far plane", currentSmSettings->m_far);
+
+				ImGui::Separator();
+				switch (m_settings.m_smImpl)
+				{
+				case SmImpl::Hard:
+					//ImGui::Text("Hard");
+					break;
+
+				case SmImpl::PCF:
+					ImGui::Text("PCF");
+					IMGUI_FLOAT_SLIDER("X Offset", currentSmSettings->m_xOffset);
+					IMGUI_FLOAT_SLIDER("Y Offset", currentSmSettings->m_yOffset);
+					break;
+
+				case SmImpl::VSM:
+					ImGui::Text("VSM");
+					IMGUI_FLOAT_SLIDER("Min variance", currentSmSettings->m_customParam0);
+					IMGUI_FLOAT_SLIDER("Depth multiplier", currentSmSettings->m_customParam1);
+					ImGui::Checkbox("Blur shadow map", &currentSmSettings->m_doBlur);
+					if (currentSmSettings->m_doBlur)
+					{
+						IMGUI_FLOAT_SLIDER("Blur X Offset", currentSmSettings->m_xOffset);
+						IMGUI_FLOAT_SLIDER("Blur Y Offset", currentSmSettings->m_yOffset);
+					}
+					break;
+
+				case SmImpl::ESM:
+					ImGui::Text("ESM");
+					IMGUI_FLOAT_SLIDER("ESM Hardness", currentSmSettings->m_customParam0);
+					IMGUI_FLOAT_SLIDER("Depth multiplier", currentSmSettings->m_customParam1);
+					ImGui::Checkbox("Blur shadow map", &currentSmSettings->m_doBlur);
+					if (currentSmSettings->m_doBlur)
+					{
+						IMGUI_FLOAT_SLIDER("Blur X Offset", currentSmSettings->m_xOffset);
+						IMGUI_FLOAT_SLIDER("Blur Y Offset", currentSmSettings->m_yOffset);
+					}
+					break;
+
+				default:
+					break;
+				};
+
+				ImGui::End();
 #undef IMGUI_RADIO_BUTTON
 
-			ImGui::SetNextWindowPos(
-				ImVec2(10.0f, 260.0f)
-				, ImGuiCond_FirstUseEver
-			);
-			ImGui::SetNextWindowSize(
-				ImVec2(m_viewState.m_width / 5.0f, 350.0f)
-				, ImGuiCond_FirstUseEver
-			);
-			ImGui::Begin("Light"
-				, NULL
-				, 0
-			);
-			ImGui::PushItemWidth(185.0f);
+				ImGui::SetNextWindowPos(
+					ImVec2(10.0f, 260.0f)
+					, ImGuiCond_FirstUseEver
+				);
+				ImGui::SetNextWindowSize(
+					ImVec2(m_viewState.m_width / 5.0f, 350.0f)
+					, ImGuiCond_FirstUseEver
+				);
+				ImGui::Begin("Light"
+					, &m_showDebug
+					, 0
+				);
+				ImGui::PushItemWidth(185.0f);
 
-			bool bLtChanged = false;
-			if (ImGui::RadioButton("Directional light", m_settings.m_lightType == LightType::DirectionalLight))
-			{
-				m_settings.m_lightType = LightType::DirectionalLight; bLtChanged = true;
-			}
+				bool bLtChanged = false;
+				if (ImGui::RadioButton("Directional light", m_settings.m_lightType == LightType::DirectionalLight))
+				{
+					m_settings.m_lightType = LightType::DirectionalLight; bLtChanged = true;
+				}
 
-			ImGui::Separator();
-			ImGui::Checkbox("Show shadow map coverage.", &m_settings.m_showSmCoverage);
+				ImGui::Separator();
+				ImGui::Checkbox("Show shadow map coverage.", &m_settings.m_showSmCoverage);
 
-			ImGui::Separator();
-			ImGui::Text("Shadow map resolution: %ux%u", m_currentShadowMapSize, m_currentShadowMapSize);
-			ImGui::SliderFloat("##SizePwrTwo", &currentSmSettings->m_sizePwrTwo,
-				currentSmSettings->m_sizePwrTwoMin,
-				currentSmSettings->m_sizePwrTwoMax, "%.0f");
+				ImGui::Separator();
+				ImGui::Text("Shadow map resolution: %ux%u", m_currentShadowMapSize, m_currentShadowMapSize);
+				ImGui::SliderFloat("##SizePwrTwo", &currentSmSettings->m_sizePwrTwo,
+					currentSmSettings->m_sizePwrTwoMin,
+					currentSmSettings->m_sizePwrTwoMax, "%.0f");
 
-			ImGui::Separator();
-			if (LightType::DirectionalLight == m_settings.m_lightType)
-			{
-				ImGui::Text("Directional light");
-				ImGui::Checkbox("Stabilize cascades", &m_settings.m_stabilize);
-				ImGui::SliderInt("Cascade splits", &m_settings.m_numSplits, 1, 4);
-				ImGui::SliderFloat("Cascade distribution", &m_settings.m_splitDistribution, 0.0f, 1.0f);
-			}
+				ImGui::Separator();
+				if (LightType::DirectionalLight == m_settings.m_lightType)
+				{
+					ImGui::Text("Directional light");
+					ImGui::Checkbox("Stabilize cascades", &m_settings.m_stabilize);
+					ImGui::SliderInt("Cascade splits", &m_settings.m_numSplits, 1, 4);
+					ImGui::SliderFloat("Cascade distribution", &m_settings.m_splitDistribution, 0.0f, 1.0f);
+				}
 
-			ImGui::End();
+				ImGui::End();
 
 #undef IMGUI_FLOAT_SLIDER
+			}
+#endif
 
 			// Update uniforms.
 			m_uniforms.m_shadowMapBias = currentSmSettings->m_bias;
@@ -937,7 +949,7 @@ namespace da::platform {
 
 			// Update render target size.
 			uint16_t shadowMapSize = 1 << uint32_t(currentSmSettings->m_sizePwrTwo);
-			if (bLtChanged || m_currentShadowMapSize != shadowMapSize)
+			if (m_currentShadowMapSize != shadowMapSize)
 			{
 				m_currentShadowMapSize = shadowMapSize;
 				m_uniforms.m_shadowMapTexelSize = 1.0f / currentShadowMapSizef;
@@ -1049,7 +1061,7 @@ namespace da::platform {
 						, -1.0f
 						, 1.0f
 						, -1.0f
-						, min.z + -splitSlices[ff] * .5f
+						, min.z + -splitSlices[ff] * (ii == 0 ? 1.25f : .5f)
 						, max.z
 						, 0.0f
 						, caps->homogeneousDepth
@@ -1091,23 +1103,13 @@ namespace da::platform {
 				}
 			}
 
-			// Reset render targets.
-			const bgfx::FrameBufferHandle invalidRt = BGFX_INVALID_HANDLE;
-			for (uint8_t ii = 0; ii < RENDERVIEW_DRAWDEPTH_3_ID + 1; ++ii)
-			{
-				//bgfx::setViewFrameBuffer(ii, invalidRt);
-				//bgfx::setViewRect(ii, 0, 0, m_viewState.m_width, m_viewState.m_height);
-			}
-
+		
+			
 			// Determine on-screen rectangle size where depth buffer will be drawn.
 			uint16_t depthRectHeight = uint16_t(float(m_viewState.m_height) / 2.5f);
 			uint16_t depthRectWidth = depthRectHeight;
 			uint16_t depthRectX = 0;
 			uint16_t depthRectY = m_viewState.m_height - depthRectHeight;
-
-			// Setup views and render targets.
-			//bgfx::setViewRect(0, 0, 0, m_viewState.m_width, m_viewState.m_height);
-			//bgfx::setViewTransform(0, m_viewState.m_view, m_viewState.m_proj);
 
 			// LightType::DirectionalLight == settings.m_lightType
 			{
@@ -1124,13 +1126,7 @@ namespace da::platform {
 				 * RENDERVIEW_HBLUR_2_ID - Horizontal blur for third  split.
 				 * RENDERVIEW_VBLUR_3_ID - Vertical   blur for fourth split.
 				 * RENDERVIEW_HBLUR_3_ID - Horizontal blur for fourth split.
-				 * RENDERVIEW_DRAWSCENE_0_ID - Draw scene.
-				 * RENDERVIEW_DRAWSCENE_1_ID - Draw floor bottom.
-				 * RENDERVIEW_DRAWDEPTH_0_ID - Draw depth buffer for first  split.
-				 * RENDERVIEW_DRAWDEPTH_1_ID - Draw depth buffer for second split.
-				 * RENDERVIEW_DRAWDEPTH_2_ID - Draw depth buffer for third  split.
-				 * RENDERVIEW_DRAWDEPTH_3_ID - Draw depth buffer for fourth split.
-				 */
+				**/
 
 				depthRectHeight = m_viewState.m_height / 3;
 				depthRectWidth = depthRectHeight;
@@ -1161,12 +1157,6 @@ namespace da::platform {
 				bgfx::setViewName(RENDERVIEW_VBLUR_3_ID, "RENDERVIEW_VBLUR 4");
 				bgfx::setViewRect(RENDERVIEW_HBLUR_3_ID, 0, 0, m_currentShadowMapSize, m_currentShadowMapSize);
 				bgfx::setViewName(RENDERVIEW_HBLUR_3_ID, "RENDERVIEW_HBLUR 4");
-				bgfx::setViewRect(RENDERVIEW_DRAWSCENE_0_ID, 0, 0, m_viewState.m_width, m_viewState.m_height);
-				bgfx::setViewRect(RENDERVIEW_DRAWSCENE_1_ID, 0, 0, m_viewState.m_width, m_viewState.m_height);
-				bgfx::setViewRect(RENDERVIEW_DRAWDEPTH_0_ID, depthRectX + (0 * depthRectWidth), depthRectY, depthRectWidth, depthRectHeight);
-				bgfx::setViewRect(RENDERVIEW_DRAWDEPTH_1_ID, depthRectX + (1 * depthRectWidth), depthRectY, depthRectWidth, depthRectHeight);
-				bgfx::setViewRect(RENDERVIEW_DRAWDEPTH_2_ID, depthRectX + (2 * depthRectWidth), depthRectY, depthRectWidth, depthRectHeight);
-				bgfx::setViewRect(RENDERVIEW_DRAWDEPTH_3_ID, depthRectX + (3 * depthRectWidth), depthRectY, depthRectWidth, depthRectHeight);
 
 				bgfx::setViewTransform(RENDERVIEW_SHADOWMAP_1_ID, lightView[0], lightProj[0]);
 				bgfx::setViewTransform(RENDERVIEW_SHADOWMAP_2_ID, lightView[0], lightProj[1]);
@@ -1180,12 +1170,6 @@ namespace da::platform {
 				bgfx::setViewTransform(RENDERVIEW_HBLUR_2_ID, screenView, screenProj);
 				bgfx::setViewTransform(RENDERVIEW_VBLUR_3_ID, screenView, screenProj);
 				bgfx::setViewTransform(RENDERVIEW_HBLUR_3_ID, screenView, screenProj);
-				bgfx::setViewTransform(RENDERVIEW_DRAWSCENE_0_ID, m_viewState.m_view, m_viewState.m_proj);
-				bgfx::setViewTransform(RENDERVIEW_DRAWSCENE_1_ID, m_viewState.m_view, m_viewState.m_proj);
-				bgfx::setViewTransform(RENDERVIEW_DRAWDEPTH_0_ID, screenView, screenProj);
-				bgfx::setViewTransform(RENDERVIEW_DRAWDEPTH_1_ID, screenView, screenProj);
-				bgfx::setViewTransform(RENDERVIEW_DRAWDEPTH_2_ID, screenView, screenProj);
-				bgfx::setViewTransform(RENDERVIEW_DRAWDEPTH_3_ID, screenView, screenProj);
 
 				bgfx::setViewFrameBuffer(RENDERVIEW_SHADOWMAP_1_ID, m_rtShadowMap[0]);
 				bgfx::setViewFrameBuffer(RENDERVIEW_SHADOWMAP_2_ID, m_rtShadowMap[1]);
@@ -1257,7 +1241,7 @@ namespace da::platform {
 
 					uint8_t renderStateIndex = RenderState::ShadowMap_PackDepth;
 
-					m_renderFunc(shadowViewId, currentSmSettings->m_progPack, s_renderStates[renderStateIndex]);
+					m_renderFunc(shadowViewId, currentSmSettings->m_progPack, currentSmSettings->m_progPackSk, s_renderStates[renderStateIndex]);
 				}
 			}
 
@@ -1325,26 +1309,6 @@ namespace da::platform {
 					}
 				}
 			}
-
-			// Draw depth rect.
-			if (m_settings.m_drawDepthBuffer)
-			{
-				bgfx::setTexture(4, m_shadowMap[0], bgfx::getTexture(m_rtShadowMap[0]));
-				bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
-				screenSpaceQuad(s_originBottomLeft);
-				bgfx::submit(RENDERVIEW_DRAWDEPTH_0_ID, { m_programs.m_drawDepth[depthType]->getHandle() });
-
-				if (LightType::DirectionalLight == m_settings.m_lightType)
-				{
-					for (uint8_t ii = 1; ii < m_settings.m_numSplits; ++ii)
-					{
-						bgfx::setTexture(4, m_shadowMap[0], bgfx::getTexture(m_rtShadowMap[ii]));
-						bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
-						screenSpaceQuad(s_originBottomLeft);
-						bgfx::submit(RENDERVIEW_DRAWDEPTH_0_ID + ii, { m_programs.m_drawDepth[depthType]->getHandle()});
-					}
-				}
-			}
 	}
 
 	void CBgfxShadowCsm::shutdown()
@@ -1364,18 +1328,23 @@ namespace da::platform {
 		bgfx::destroy(m_shadowMap[0]);
 
 		m_uniforms.destroy();
+
+#ifdef DA_REVIEW
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Shadows"));
+#endif
+
 	}
 
-	void CBgfxShadowCsm::setRenderFunc(const std::function<void(uint8_t, da::graphics::CMaterial*, RenderState)>& func)
+	void CBgfxShadowCsm::setRenderFunc(const std::function<void(uint8_t, da::graphics::CMaterial*, da::graphics::CMaterial*, RenderState)>& func)
 	{
 		m_renderFunc = func;
 	}
 
 	void CBgfxShadowCsm::submitUniforms()
 	{
-		m_uniforms.submitConstUniforms();
+		//m_uniforms.submitConstUniforms();
 		m_uniforms.submitPerDrawUniforms();
-		m_uniforms.submitPerFrameUniforms();
+		//m_uniforms.submitPerFrameUniforms();
 
 		for (uint8_t ii = 0; ii < ShadowMapRenderTargets::Count; ++ii)
 		{
@@ -1386,57 +1355,43 @@ namespace da::platform {
 	void CBgfxShadowCsm::FPrograms::init()
 	{
 		// Misc.
-		m_black = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_color.sc", "shaders/cluster/csm/fs_shadowMaps_color_black.sc");
-		m_texture = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_texture.sc", "shaders/cluster/csm/fs_shadowMaps_texture.sc");
-		m_colorTexture = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_color_texture.sc", "shaders/cluster/csm/fs_shadowMaps_color_texture.sc");
+		m_black = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_color.sc", "shaders/csm/fs_shadowMaps_color_black.sc");
+		m_texture = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_texture.sc", "shaders/csm/fs_shadowMaps_texture.sc");
+		m_colorTexture = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_color_texture.sc", "shaders/csm/fs_shadowMaps_color_texture.sc");
 
 		// Blur.
-		m_vBlur[PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_vblur.sc", "shaders/cluster/csm/fs_shadowMaps_vblur.sc");
-		m_hBlur[PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_hblur.sc", "shaders/cluster/csm/fs_shadowMaps_hblur.sc");
-		m_vBlur[PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_vblur.sc", "shaders/cluster/csm/fs_shadowMaps_vblur_vsm.sc");
-		m_hBlur[PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_hblur.sc", "shaders/cluster/csm/fs_shadowMaps_hblur_vsm.sc");
+		m_vBlur[PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_vblur.sc", "shaders/csm/fs_shadowMaps_vblur.sc");
+		m_hBlur[PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_hblur.sc", "shaders/csm/fs_shadowMaps_hblur.sc");
+		m_vBlur[PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_vblur.sc", "shaders/csm/fs_shadowMaps_vblur_vsm.sc");
+		m_hBlur[PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_hblur.sc", "shaders/csm/fs_shadowMaps_hblur_vsm.sc");
 
 		// Draw depth.
-		m_drawDepth[PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_unpackdepth.sc", "shaders/cluster/csm/fs_shadowMaps_unpackdepth.sc");
-		m_drawDepth[PackDepth::VSM] =  da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_unpackdepth.sc", "shaders/cluster/csm/fs_shadowMaps_unpackdepth_vsm.sc");
+		m_drawDepth[PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_unpackdepth.sc", "shaders/csm/fs_shadowMaps_unpackdepth.sc");
+		m_drawDepth[PackDepth::VSM] =  da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_unpackdepth.sc", "shaders/csm/fs_shadowMaps_unpackdepth_vsm.sc");
 
 		// Pack depth.
-		m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_packdepth.sc", "shaders/cluster/csm/fs_shadowMaps_packdepth.sc");
-		m_packDepth[DepthImpl::InvZ][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_packdepth.sc", "shaders/cluster/csm/fs_shadowMaps_packdepth_vsm.sc");
+		m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth.sc");
+		m_packDepth[DepthImpl::InvZ][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm.sc");
 
-		m_packDepth[DepthImpl::Linear][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/cluster/csm/fs_shadowMaps_packdepth_linear.sc");
-		m_packDepth[DepthImpl::Linear][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/cluster/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
+		m_packDepthSk[DepthImpl::InvZ][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_sk_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth.sc");
+		m_packDepthSk[DepthImpl::InvZ][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_sk_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm.sc");
 
-		m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::Hard] =   da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_color_lighting_csm.sc", "shaders/cluster/csm/fs_shadowMaps_color_lighting_hard_csm.sc");
-		m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::PCF] =    da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_color_lighting_csm.sc", "shaders/cluster/csm/fs_shadowMaps_color_lighting_pcf_csm.sc");
-		m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::VSM] =    da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_color_lighting_csm.sc", "shaders/cluster/csm/fs_shadowMaps_color_lighting_vsm_csm.sc");
-		m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::ESM] =    da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_color_lighting_csm.sc", "shaders/cluster/csm/fs_shadowMaps_color_lighting_esm_csm.sc");
-		m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::Hard] = da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_color_lighting_linear_csm.sc", "shaders/cluster/csm/fs_shadowMaps_color_lighting_hard_linear_csm.sc");
-		m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::PCF] =  da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_color_lighting_linear_csm.sc", "shaders/cluster/csm/fs_shadowMaps_color_lighting_pcf_linear_csm.sc");
-		m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::VSM] =  da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_color_lighting_linear_csm.sc", "shaders/cluster/csm/fs_shadowMaps_color_lighting_vsm_linear_csm.sc");
-		m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::ESM] =  da::graphics::CMaterialFactory::create("shaders/cluster/csm/vs_shadowMaps_color_lighting_linear_csm.sc", "shaders/cluster/csm/fs_shadowMaps_color_lighting_esm_linear_csm.sc");
+		m_packDepth[DepthImpl::Linear][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
+		m_packDepth[DepthImpl::Linear][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
+
+		m_packDepthSk[DepthImpl::Linear][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
+		m_packDepthSk[DepthImpl::Linear][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
 	}
 
 	void CBgfxShadowCsm::FPrograms::destroy()
 	{
-		// Color lighting.
-		for (uint8_t ii = 0; ii < SmType::Count; ++ii)
-		{
-			for (uint8_t jj = 0; jj < DepthImpl::Count; ++jj)
-			{
-				for (uint8_t kk = 0; kk < SmImpl::Count; ++kk)
-				{
-					da::graphics::CMaterialFactory::remove(m_colorLighting[ii][jj][kk]);
-				}
-			}
-		}
-
 		// Pack depth.
 		for (uint8_t ii = 0; ii < DepthImpl::Count; ++ii)
 		{
 			for (uint8_t jj = 0; jj < PackDepth::Count; ++jj)
 			{
 				da::graphics::CMaterialFactory::remove(m_packDepth[ii][jj]);
+				da::graphics::CMaterialFactory::remove(m_packDepthSk[ii][jj]);
 			}
 		}
 

@@ -203,6 +203,7 @@ namespace da::platform {
 		IMGUI_FLOAT_PARAM(m_yOffset);
 		bool m_doBlur;
 		da::graphics::CMaterial* m_progPack;
+		da::graphics::CMaterial* m_progPackSk;
 		da::graphics::CMaterial* m_progDraw;
 #undef IMGUI_FLOAT_PARAM
 	};
@@ -230,10 +231,10 @@ namespace da::platform {
 	class CBgfxShadowCsm {
 	public:
 		void initialize();
-		void update(uint8_t viewId, glm::vec3& lightDir);
+		void update(uint8_t viewId, glm::vec3& lightDir, uint16_t width, uint16_t height);
 		void shutdown();
 		
-		void setRenderFunc(const std::function<void(uint8_t, da::graphics::CMaterial*, RenderState)>& func);
+		void setRenderFunc(const std::function<void(uint8_t, da::graphics::CMaterial*, da::graphics::CMaterial*, RenderState)>& func);
 		void submitUniforms();
 
 	private:
@@ -250,6 +251,7 @@ namespace da::platform {
 			da::graphics::CMaterial* m_hBlur[PackDepth::Count];
 			da::graphics::CMaterial* m_drawDepth[PackDepth::Count];
 			da::graphics::CMaterial* m_packDepth[DepthImpl::Count][PackDepth::Count];
+			da::graphics::CMaterial* m_packDepthSk[DepthImpl::Count][PackDepth::Count];
 			da::graphics::CMaterial* m_colorLighting[SmType::Count][DepthImpl::Count][SmImpl::Count];
 		};
 
@@ -356,8 +358,6 @@ namespace da::platform {
 			::bgfx::UniformHandle u_lightMtx;
 		};
 	private:
-		uint32_t m_width;
-		uint32_t m_height;
 
 		ViewState m_viewState;
 		ClearValues m_clearValues;
@@ -378,13 +378,16 @@ namespace da::platform {
 
 		float m_timeAccumulatorLight;
 		float m_timeAccumulatorScene;
+#ifdef DA_REVIEW
+		bool m_showDebug = false;
+#endif
 
 		FUniforms m_uniforms;
 		FPrograms m_programs;
 
 		static RenderState s_renderStates[RenderState::Count];
 
-		std::function<void(uint8_t, da::graphics::CMaterial*, RenderState)> m_renderFunc;
+		std::function<void(uint8_t, da::graphics::CMaterial*, da::graphics::CMaterial*, RenderState)> m_renderFunc;
 	};
 
 }

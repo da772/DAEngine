@@ -78,8 +78,13 @@ namespace da::script
 
 		sol::table guidIndex = base[m_objName.c_str()]["Id"];
 		sol::table entityIndex = base[m_objName.c_str()]["Entity"]["Id"];
-		guidIndex.set("Index", guid.c_str());
-		entityIndex.set("Index", parent.c_str());
+
+		da::core::guid_str compGuid, entityGuid;
+		guid.c_str(compGuid);
+		parent.c_str(entityGuid);
+
+		guidIndex.set("Index", compGuid);
+		entityIndex.set("Index", entityGuid);
 	}
 
 	void CScriptClass::cleanup(bool keepObj)

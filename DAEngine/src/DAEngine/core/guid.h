@@ -4,6 +4,7 @@
 namespace da::core {
 
 	using uint128_t = unsigned char[16];
+	using guid_str = char[37];
 
 	class CGuid {
 
@@ -16,7 +17,10 @@ namespace da::core {
 		const unsigned char* const data() const;
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 		const char* c_str() const;
+#else
+		const char* c_str() const;
 #endif
+		void c_str(char* out) const;
 		bool isValid() const;
 
 		bool operator==(const CGuid& rhs) const;
@@ -34,14 +38,16 @@ namespace da::core {
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 		void genString();
 #endif
+		void genString(guid_str out) const;
 
 	private:
 		static unsigned int sm_seed;
 
 	private:
 		uint128_t m_uuid;
+		char __padding = 0;
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
-		char m_debugName[37];
+		guid_str m_debugName;
 #endif
 
 	};
