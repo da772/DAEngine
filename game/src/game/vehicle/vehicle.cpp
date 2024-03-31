@@ -13,8 +13,13 @@
 #include <DAEngine/core/input/input.h>
 #include <DAEngine/core/graphics/graphics_smesh.h>
 
-void CVehicle::initialize()
-{
+#ifdef DA_REVIEW
+#include <imgui.h>
+#endif
+
+void CVehicle::initialize(da::modules::CWindowModule* window) {
+	m_window = window;
+
 	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
 		m_entity = scene->createEntity();
 
@@ -23,6 +28,7 @@ void CVehicle::initialize()
 		cc->getStaticMesh()->getMaterial(0).metallicFactor = .150f;
 		cc->getStaticMesh()->getMaterial(0).roughnessFactor = .0f;
 		cc->getStaticMesh()->getMaterial(0).setEmissiveTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/Tex_Veh_Pearl_02_Cream_Emissive.png"));
+		cc->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/Tex_Veh_Pearl_01_Red_Albedo.png"));
 		cc->getStaticMesh()->getMaterial(0).emissiveFactor = {1000.f,1.f,1.f};
 		//m_entity->getTransform().setScale({ 2.f, 1.f, .55f });
 		m_entity->getTransform().setPosition({ 0.f,0.f,1.f });
@@ -44,58 +50,52 @@ void CVehicle::initialize()
 			m_wheels.push_back(wheel);
 		}
 		
+		m_window->getEventHandler().registerCallback(EEventType::InputKeyboard, BIND_EVENT_FN(CVehicle, onKeyboardInput));
+
+		m_vehicle->applyBrake(10.f, 2);
+		m_vehicle->applyBrake(10.f, 3);
 	}
 }
 
 void CVehicle::update(float dt)
 {
 	da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->getComponent<da::core::CRigidBodyComponent>();
+	da::core::CCamera* cam = da::core::CCamera::getCamera();
 	const glm::vec3 entityPos = m_entity->getTransform().position();
 	updateWheels(dt);
 
-	// up
-	if (da::core::CInput::inputPressed(265)) {
-		m_vehicle->applyEngineForce(1000.f, 2);
-		m_vehicle->applyEngineForce(1000.f, 3);
-	}
-	// down 
-	else if (da::core::CInput::inputPressed(264)) {
-		m_vehicle->applyEngineForce(-500.f, 2);
-		m_vehicle->applyEngineForce(-500.f, 3);
-	}
-	else if (da::core::CInput::inputPressed(32))
+	m_vehicle->applyEngineForce(m_enginePower, 0);
+	m_vehicle->applyEngineForce(m_enginePower, 1);
+	m_vehicle->setSteeringValue(m_steerAmt, 0);
+	m_vehicle->setSteeringValue(m_steerAmt, 1);
+	m_vehicle->applyBrake(m_brakePower, 2);
+	m_vehicle->applyBrake(m_brakePower, 3);
+
+	// ImGui
 	{
-		m_vehicle->applyBrake(500.f, 2);
-		m_vehicle->applyBrake(500.f, 3);
-	}
-	else {
-		m_vehicle->applyEngineForce(0.f, 2);
-		m_vehicle->applyEngineForce(0.f, 3);
-		m_vehicle->applyBrake(10.f, 2);
-		m_vehicle->applyBrake(10.f, 3);
+		float len = glm::abs(glm::length(rb->getPhysicsBody()->getLinearVelocity()));
+		float mph = len * 2.237;
+		ImGui::SetNextWindowSize({ 80.f,15 });
+
+		glm::vec3 pos = cam->matrix() * glm::vec4(entityPos, 1.0f);
+
+		ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.f,0.f,0.f,0.f });
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, { 0.f,0.f,0.f,0.f });
+		ImGui::SetNextWindowPos({m_window->getWindow()->getWindowData().Width/2.f - 40.f, m_window->getWindow()->getWindowData().Height/2.f +300.f});
+		if (ImGui::Begin("###mph", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+			auto windowWidth = ImGui::GetWindowSize().x;
+			auto windowHeight = ImGui::GetWindowSize().y;
+			auto textWidth = ImGui::CalcTextSize("00 mph").x;
+
+			ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
+			ImGui::SetCursorPosY(ImGui::GetFontSize() * .25f);
+			ImGui::LabelText("###mph", "%d mph", (int)mph);
+		}
+		ImGui::PopStyleColor(2);
+
+		ImGui::End();
 	}
 
-	
-	// Left
-	if (da::core::CInput::inputPressed(263)) {
-		m_vehicle->setSteeringValue(.45f, 0);
-		m_vehicle->setSteeringValue(.45f, 1);
-	}
-	// right
-	else if (da::core::CInput::inputPressed(262)) {
-		m_vehicle->setSteeringValue(-.45f, 0);
-		m_vehicle->setSteeringValue(-.45f, 1);
-	}
-	else {
-		m_vehicle->setSteeringValue(0, 0);
-		m_vehicle->setSteeringValue(0, 1);
-	}
-
-	// C
-	if (da::core::CInput::inputPressed(67))
-	{
-		m_controlCamera = !m_controlCamera;
-	}
 
 	if (!m_controlCamera)
 	{
@@ -103,7 +103,7 @@ void CVehicle::update(float dt)
 	}
 
 
-	da::core::CCamera* cam = da::core::CCamera::getCamera();
+	
 	glm::vec3 pos = glm::mix(cam->position(), entityPos + (m_entity->getTransform().forward() * -5.5f) + glm::vec3(0.f, 0.f, 3.5f), 15.f * dt);
 	cam->setPosition(pos);
 	glm::vec3 rot = glm::eulerAngles(m_entity->getTransform().rotation());
@@ -121,6 +121,8 @@ void CVehicle::shutdown()
 	}
 
 	m_wheels = {};
+
+	m_window->getEventHandler().unregisterCallback(EEventType::InputKeyboard, BIND_EVENT_FN(CVehicle, onKeyboardInput));
 }
 
 void CVehicle::updateWheels(float dt)
@@ -137,4 +139,72 @@ void CVehicle::updateWheels(float dt)
 		m_wheels[i]->getTransform().setPosition({ wheelTransform.Position.x, wheelTransform.Position.y, pos.z });
 		m_wheels[i]->getTransform().setRotation(wheelTransform.Rotation);
 	}
+}
+
+void CVehicle::onKeyboardInput(const da::core::CEvent& e)
+{
+	const da::core::CInputKeyboardEvent& kb = *(da::core::CInputKeyboardEvent*)&e;
+
+	int button = kb.getBtn();
+
+	da::core::EInputType type = kb.getType();
+
+	static float boost = 1.0;
+
+	switch (button)
+	{
+	// UP
+	case 265:
+	{
+		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? 3000.f* boost : 0.f;
+		m_enginePower = amt;
+		break;
+	}
+	// Down
+	case 264:
+	{
+		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? -1500.f : 0.f;
+		m_enginePower = amt;
+		break;
+	}
+	// left
+	case 263:
+	{
+		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? .45f : 0.f;
+		m_steerAmt = amt;
+		break;
+	}
+	// right
+	case 262:
+	{
+		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? -.45f : 0.f;
+		m_steerAmt = amt;
+		break;
+	}
+	// space
+	case 32:
+	{
+		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? 1000.f : 10.f;
+		m_brakePower = amt;
+		break;
+	}
+	// C
+	case 67:
+	{
+		if (type != da::core::EInputType::RELEASED) break;
+		m_controlCamera = !m_controlCamera;
+		break;
+	}
+	// lShift
+	case 340:
+	{
+		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? 2.f : .5f;
+		m_enginePower *= 2.f;
+		break;
+	}
+	default:
+		break;
+	}
+
+
 }

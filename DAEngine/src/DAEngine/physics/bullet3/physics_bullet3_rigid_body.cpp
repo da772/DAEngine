@@ -107,7 +107,7 @@ namespace da::physics
 		m_rigidBody->setLinearVelocity({impulse.x, impulse.y, impulse.z});
 	}
 
-	const glm::vec3& CBullet3RigidBody::getLinearVelocity() const
+	const glm::vec3 CBullet3RigidBody::getLinearVelocity() const
 	{
 		ASSERT(m_rigidBody);
 		btVector3 velocity = m_rigidBody->getLinearVelocity();
@@ -120,7 +120,7 @@ namespace da::physics
 		m_rigidBody->setAngularVelocity({ impulse.x, impulse.y, impulse.z });
 	}
 
-	const glm::vec3& CBullet3RigidBody::getAngularVelocity() const
+	const glm::vec3 CBullet3RigidBody::getAngularVelocity() const
 	{
 		ASSERT(m_rigidBody);
 		btVector3 velocity = m_rigidBody->getAngularVelocity();

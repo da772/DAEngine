@@ -164,70 +164,32 @@ void CGame::onInitialize()
 	//c->getStaticMesh()->getMaterial(0).metallicFactor = .5f;
 	e7->setTag(HASHSTR("cube"));
 
-	da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/SwordSlash.fbx", false);
-	mesh->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/mannequin/alpha_body_mat.png"));
-	mesh->getMaterial(0).setNormalTexture(nullptr);
-	mesh->getMaterial(0).metallicFactor = .1500f;
-	mesh->getMaterial(0).roughnessFactor = 0.f;
-	mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
-	m_swordSlashAnimation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordSlash.fbx", mesh);
-	da::graphics::CSkeletalAnimator* animator = new da::graphics::CSkeletalAnimator(m_swordSlashAnimation);
-
-	da::graphics::CSkeletalAnimation* animation = m_swordSlashAnimation;
-
-	for (int i = 1; i < 2; i++) {
-		break;
-		if (i == 1) {
-			m_runAnimation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
-			animation = m_runAnimation;
-			animator = new da::graphics::CSkeletalAnimator(animation);
-		}
-
-		e4 = da::core::CSceneManager::getScene()->createEntity();
-		e4->setTag(HASHSTR("Mannequin"));
-		da::core::FComponentRef<da::core::CSkeletalMeshComponent> cc = e4->addComponent<da::core::CSkeletalMeshComponent>(mesh, animation, animator);
-		e4->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
-		
-		//cc->getSkeletalMesh()->getMaterial(0).baseColorFactor = { 0.0f,0.0f,0.8f,1.f };
-
-		e4->getTransform().setPosition({ 0,5 + (i * -5.f), 5.f });
-		e4->getTransform().setRotation({ 0.f,0.f,180.f });
-		
-
-		glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.15f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(90.f, 0.f, 0.f))));
-
-		cc->setTransform(offset);
-
-		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = e4->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCapsule::create(.3f, 1.7f)
-				, da::physics::CPhysicsEntityMotionState::create(e4)
-				, 1.f
-				, { 0.f,0.f,0.f }));
-
-
-		rb->getPhysicsBody()->setAngularFactor({ 0.f,0.f,0.f });
-		//e4->getTransform().setPosition({ i*3.f,5.f+(1.5f*i),-.1f});
-		//e4->getTransform().setRotation({ 90.f,180.f,0.f });
-	}
-
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 	e2->getTransform().setPosition({ 0,0,0 });
 	e2->getTransform().setRotation({ 0,0,0 });
 
-	c = e2->addComponent<da::core::CSmeshComponent>("assets/floor.fbx");
-	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({100.f,100.f,0.1f}), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
-
-	//e2->getTransform().setScale({ 100,100,1.f });
+	c = e2->addComponent<da::core::CSmeshComponent>("assets/prop/level/testbed.fbx");
+	e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({165.f,165.f,0.001f}), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
+	c->getStaticMesh()->castShadows(false);
+	e2->getTransform().setScale({ 1.f,1.f,1.f });
 	e2->setTag(HASHSTR("plane"));
 	//c = e2->addComponent<da::core::CSmeshComponent>("assets/terrain/terrain1.fbx");
 	//e2->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(c->getStaticMesh()), da::physics::CPhysicsDefaultMotionState::create(e2->getTransform().matrix()), 0.f, { 0.f,0.f,0.f }));
 	
-	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/tex_debug_grid_02.png"));
-	c->getStaticMesh()->getMaterial(0).uvScale = { 11.f,11.f };
+	
 	c->getStaticMesh()->getMaterial(0).doubleSided = false;
 	c->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 	c->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
+
+	c->getStaticMesh()->getMaterial(1).doubleSided = false;
+	c->getStaticMesh()->getMaterial(1).metallicFactor = 0.0;
+	c->getStaticMesh()->getMaterial(1).roughnessFactor = 1.0;
+
+	c->getStaticMesh()->getMaterial(2).uvScale = { 10.f,10.f };
+	c->getStaticMesh()->getMaterial(2).doubleSided = false;
+	c->getStaticMesh()->getMaterial(2).metallicFactor = 0.0;
+	c->getStaticMesh()->getMaterial(2).roughnessFactor = 1.0;
 
 	e2 = da::core::CSceneManager::getScene()->createEntity();
 
@@ -240,7 +202,7 @@ void CGame::onInitialize()
 	e2->getTransform().setScale({ 5,10,5.f });
 	e2->setTag(HASHSTR("ramp1"));
 
-	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/debugTexture.jpeg"));
+	c->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/tex_debug_grid_01.png"));
 	//c->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleN.jpg"));
 	//c->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/marble/MarbleR.jpg"));
 	c->getStaticMesh()->getMaterial(0).uvScale = { 11.f,11.f };
@@ -250,7 +212,17 @@ void CGame::onInitialize()
 	m_character->initialize();
 
 	m_vehicle = new CVehicle();
-	m_vehicle->initialize();
+	m_vehicle->initialize(m_window);
+
+	e2 = da::core::CSceneManager::getScene()->createEntity();
+
+	e2->getTransform().setPosition({ 4,0,0 });
+	e2->getTransform().setRotation({ 0,0,0 });
+
+	c = e2->addComponent<da::core::CSmeshComponent>("assets/transform.fbx");
+
+	//e2->getTransform().setScale({ 100,100,1.f });
+	e2->setTag(HASHSTR("transform"));
 
 	return;
 

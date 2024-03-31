@@ -19,14 +19,14 @@ void CCharacter::initialize()
 	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
 		m_entity = scene->createEntity();
 
-		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/mannequin/SwordSlash.fbx", false);
-		mesh->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/mannequin/alpha_body_mat.png"));
-		mesh->getMaterial(0).setNormalTexture(nullptr);
-		mesh->getMaterial(0).metallicFactor = .1500f;
-		mesh->getMaterial(0).roughnessFactor = 0.f;
-		mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
+		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/skeletons/mannequin/SwordRun.fbx", false);
+		mesh->getMaterial(0).baseColorFactor = { .45f,0.45f,0.45f,1.f };
+		mesh->getMaterial(1).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/skeletons/mannequin/alpha_body_mat.png"));
+		mesh->getMaterial(1).setNormalTexture(nullptr);
+		mesh->getMaterial(1).metallicFactor = .1500f;
+		mesh->getMaterial(1).roughnessFactor = 0.f;
 		//da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordSlash.fbx", mesh);
-		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/mannequin/SwordRun.fbx", mesh);
+		da::graphics::CSkeletalAnimation* animation = new da::graphics::CSkeletalAnimation("assets/skeletons/mannequin/SwordRun.fbx", mesh);
 		da::graphics::CSkeletalAnimator* animator = new da::graphics::CSkeletalAnimator(animation);
 		
 		da::core::FComponentRef<da::core::CSkeletalMeshComponent> cc = m_entity->addComponent<da::core::CSkeletalMeshComponent>(mesh, animation, animator);
@@ -37,7 +37,7 @@ void CCharacter::initialize()
 		m_entity->getTransform().setPosition({ 0,5, 5.f });
 		m_entity->setTag(HASHSTR("Character"));
 
-		glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.15f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(90.f, 0.f, 180.f))));
+		glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.15f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.f, 0.f, 180.f))));
 
 		cc->setTransform(offset);
 

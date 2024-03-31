@@ -14,15 +14,21 @@ namespace da::physics
 	class IVehicle;
 }
 
+namespace da::modules
+{
+	class CWindowModule;
+}
+
 class CVehicle
 {
 public:
-	void initialize();
+	void initialize(da::modules::CWindowModule* window);
 	void update(float dt);
 	void shutdown();
 
 private:
 	void updateWheels(float dt);
+	void onKeyboardInput(const da::core::CEvent& e);
 
 private:
 	da::core::CEntity* m_entity;
@@ -31,5 +37,10 @@ private:
 	float m_steering = 0.f;
 	da::physics::IVehicle* m_vehicle;
 	bool m_controlCamera = true;
+	da::modules::CWindowModule* m_window;
+
+	float m_enginePower = 0.f;
+	float m_brakePower = 0.f;
+	float m_steerAmt = 0.f;
 
 };

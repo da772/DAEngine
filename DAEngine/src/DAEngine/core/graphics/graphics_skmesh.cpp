@@ -46,107 +46,122 @@ namespace da::graphics
 
 		std::queue<aiNode*> q;
 		q.push(pScene->mRootNode);
+		size_t count = 0;
+		while (!q.empty()) {
 
-		for (size_t i = 0; i < pScene->mNumMeshes; i++)
-		{
-			std::vector<FSkeletalVertexBase> vertices;
-			std::vector<uint32_t> indices;
-			FSkeletalMesh mesh = {};
+			aiNode* node = q.front();
+			q.pop();
 
-			for (size_t v = 0; v < pScene->mMeshes[i]->mNumVertices; v++) {
-				FSkeletalVertexBase vertex{};
-				glm::vec3 pos = transformMat * glm::vec4(pScene->mMeshes[i]->mVertices[v].x, pScene->mMeshes[i]->mVertices[v].y, pScene->mMeshes[i]->mVertices[v].z, 1.f);
-				vertex.Pos = {
-					pos.x,
-					pos.y,
-					pos.z
-				};
+			for (size_t i = 0; i < node->mNumMeshes; i++)
+			{
+				std::vector<FSkeletalVertexBase> vertices;
+				std::vector<uint32_t> indices;
+				FSkeletalMesh skMesh = {};
 
-				if (pScene->mMeshes[i]->HasTextureCoords(0))
-				{
-					vertex.TexCoord = {
-						pScene->mMeshes[i]->mTextureCoords[0][v].x,
-						pScene->mMeshes[i]->mTextureCoords[0][v].y
+				aiMesh* mesh = pScene->mMeshes[node->mMeshes[i]];
+
+				//glm::mat4 parentTransform = node->mParent ? AssimpGLMHelpers::ConvertMatrixToGLMFormat(node->mParent->mTransformation) : glm::mat4(1.f);
+				glm::mat4 transform = glm::mat4(1.0f);// parentTransform* AssimpGLMHelpers::ConvertMatrixToGLMFormat(node->mTransformation);
+
+				for (size_t v = 0; v < mesh->mNumVertices; v++) {
+
+					FSkeletalVertexBase vertex{};
+					glm::vec3 pos = transform * glm::vec4(mesh->mVertices[v].x, mesh->mVertices[v].y, mesh->mVertices[v].z, 1.f);
+					vertex.Pos = {
+						pos.x,
+						pos.y,
+						pos.z
 					};
-				}
 
-				if (pScene->mMeshes[i]->HasNormals())
-				{
-					glm::vec3 normals = glm::normalize(transformMat * glm::vec4(pScene->mMeshes[i]->mNormals[v].x, pScene->mMeshes[i]->mNormals[v].y, pScene->mMeshes[i]->mNormals[v].z, 1.f));
-					if (inverseNormals) {
-						normals *= -1.f;
+					if (mesh->HasTextureCoords(0))
+					{
+						vertex.TexCoord = {
+							mesh->mTextureCoords[0][v].x,
+							mesh->mTextureCoords[0][v].y
+						};
 					}
-					vertex.Normal = {
-						normals.x,
-						normals.y,
-						normals.z
-					};
-				}
 
-				if (pScene->mMeshes[i]->HasTangentsAndBitangents())
-				{
-					glm::vec3 tangents = glm::normalize(transformMat * glm::vec4(pScene->mMeshes[i]->mTangents[v].x, pScene->mMeshes[i]->mTangents[v].y, pScene->mMeshes[i]->mTangents[v].z, 1.f));
-					if (inverseNormals) {
-						tangents *= -1.f;
+					if (mesh->HasNormals())
+					{
+						glm::vec3 normals = glm::vec3(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z);// glm::normalize(transform * glm::vec4(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z, 1.f));
+						if (inverseNormals) {
+							normals *= -1.f;
+						}
+						vertex.Normal = {
+							normals.x,
+							normals.y,
+							normals.z
+						};
 					}
-					vertex.Tangent = {
-						tangents.x,
-						tangents.y,
-						tangents.z,
-					};
+
+					if (mesh->HasTangentsAndBitangents())
+					{
+						glm::vec3 tangents = glm::vec3(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z);// glm::normalize(transform * glm::vec4(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z, 1.f));
+						if (inverseNormals) {
+							tangents *= -1.f;
+						}
+						vertex.Tangent = {
+							tangents.x,
+							tangents.y,
+							tangents.z,
+						};
+					}
+
+					for (int z = 0; z < MAX_BONE_INFLUENCE; z++)
+					{
+						vertex.m_BoneIDs[z] = -1;
+						vertex.m_Weights[z] = 0.0f;
+					}
+
+					vertices.push_back(vertex);
 				}
 
-				for (int z = 0; z < MAX_BONE_INFLUENCE; z++)
-				{
-					vertex.m_BoneIDs[z] = -1;
-					vertex.m_Weights[z] = 0.0f;
+				for (size_t j = 0; j < mesh->mNumFaces; j++) {
+					for (size_t m = 0; m < mesh->mFaces[j].mNumIndices; m++) {
+						indices.push_back(mesh->mFaces[j].mIndices[m]);
+					}
 				}
 
-				vertices.push_back(vertex);
+				for (size_t b = 0; b < mesh->mNumBones; b++) {
+					int boneId = -1;
+					CHashString name = CHashString(mesh->mBones[b]->mName.C_Str(), mesh->mBones[b]->mName.length);
+
+					const std::unordered_map<CHashString, FBoneInfo>::iterator& it = skMesh.BoneMap.find(name);
+
+					if (it != skMesh.BoneMap.end()) {
+						boneId = it->second.id;
+					}
+					else {
+						boneId = skMesh.BoneCounter++;
+						FBoneInfo boneInfo;
+						boneInfo.id = boneId;
+						boneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(mesh->mBones[b]->mOffsetMatrix);
+						skMesh.BoneMap[name] = std::move(boneInfo);
+					}
+
+					uint32_t numWeights = mesh->mBones[b]->mNumWeights;
+					aiVertexWeight* weights = mesh->mBones[b]->mWeights;
+
+					for (uint32_t w = 0; w < numWeights; w++) {
+						int vertexId = weights[w].mVertexId;
+						float weight = weights[w].mWeight;
+
+						setVertexBoneData(vertices[vertexId], boneId, weight);
+					}
+
+
+				}
+
+				skMesh.Vertices = std::move(vertices);
+				skMesh.Indices = std::move(indices);
+				skMesh.MaterialIndex = mesh->mMaterialIndex;
+
+				m_meshes.push_back(skMesh);
+
 			}
-
-			for (size_t j = 0; j < pScene->mMeshes[i]->mNumFaces; j++) {
-				for (size_t m = 0; m < pScene->mMeshes[i]->mFaces[j].mNumIndices; m++) {
-					indices.push_back(pScene->mMeshes[i]->mFaces[j].mIndices[m]);
-				}
-
+			for (size_t i = 0; i < node->mNumChildren; i++) {
+				q.push(node->mChildren[i]);
 			}
-
-			for (size_t b = 0; b < pScene->mMeshes[i]->mNumBones; b++) {
-				int boneId = -1;
-				CHashString name = CHashString(pScene->mMeshes[i]->mBones[b]->mName.C_Str(), pScene->mMeshes[i]->mBones[b]->mName.length);
-
-				const std::unordered_map<CHashString, FBoneInfo>::iterator& it = mesh.BoneMap.find(name);
-
-				if (it != mesh.BoneMap.end()) {
-					boneId = it->second.id;
-				}
-				else {
-					boneId = mesh.BoneCounter++;
-					FBoneInfo boneInfo;
-					boneInfo.id = boneId;
-					boneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(pScene->mMeshes[i]->mBones[b]->mOffsetMatrix);
-					mesh.BoneMap[name] = std::move(boneInfo);
-				}
-
-				uint32_t numWeights = pScene->mMeshes[i]->mBones[b]->mNumWeights;
-				aiVertexWeight* weights = pScene->mMeshes[i]->mBones[b]->mWeights;
-
-				for (uint32_t w = 0; w < numWeights; w++) {
-					int vertexId = weights[w].mVertexId;
-					float weight = weights[w].mWeight;
-
-					setVertexBoneData(vertices[vertexId], boneId, weight);
-				}
-
-
-			}
-
-			mesh.Vertices = std::move(vertices);
-			mesh.Indices = std::move(indices);
-			mesh.MaterialIndex = pScene->mMeshes[i]->mMaterialIndex;
-
-			m_meshes.push_back(mesh);
 		}
 
 		m_materials = {};

@@ -38,7 +38,7 @@ namespace da::platform {
 
         glm::vec4 sunLightDirection(glm::normalize(sunLightDir), 0.0f);
         bgfx::setUniform(m_sunLightDirectionUniform, glm::value_ptr(sunLightDirection));
-        glm::vec4 sunLightRadiance(glm::normalize(sunLightRad), 1.0f);
+        glm::vec4 sunLightRadiance(glm::max(glm::vec3(.0001), glm::normalize(sunLightRad)), 1.0f);
         bgfx::setUniform(m_sunLightRadianceUniform, glm::value_ptr(sunLightRadiance));
 
         glm::vec4 ambientLightIrradiance(ambientLight.irradiance, 1.0f);

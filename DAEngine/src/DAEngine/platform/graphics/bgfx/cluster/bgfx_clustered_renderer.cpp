@@ -261,10 +261,6 @@ namespace da::platform {
         });
 
         m_csm.update(vShadow, m_sun.m_sunDir, m_width, m_height);
-
-        glm::mat4 lightMtx[SHADOW_MAP_SIZE];
-        glm::vec4 cascades[4] = { {10.f, 1.f,0.f,0.f}, {30.f,10.f,0.f, 0.f}, {100.f,30.f,0.f,0.f} };
-
         m_clusters.setUniforms(m_width, m_height);
 
         // cluster building needs u_invProj to transform screen coordinates to eye space
