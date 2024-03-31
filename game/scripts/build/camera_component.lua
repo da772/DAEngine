@@ -41,16 +41,16 @@ function CameraComponent.prototype.update(self, dt)
     end
 end
 function CameraComponent.prototype.cameraInput(self, dt)
-    if Input:KeyPressed(Inputs.KEY_W) then
+    if Input:KeyPressed(Inputs.KEY_UP) then
         Camera:Move(Camera:GetForward():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(Inputs.KEY_S) then
+    if Input:KeyPressed(Inputs.KEY_DOWN) then
         Camera:Move(Camera:GetForward():neg():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(Inputs.KEY_A) then
+    if Input:KeyPressed(Inputs.KEY_LEFT) then
         Camera:Move(Camera:GetRight():neg():mul(self.camSpeed):mul(dt))
     end
-    if Input:KeyPressed(Inputs.KEY_D) then
+    if Input:KeyPressed(Inputs.KEY_RIGHT) then
         Camera:Move(Camera:GetRight():mul(self.camSpeed):mul(dt))
     end
     if Input:KeyPressed(Inputs.KEY_E) then

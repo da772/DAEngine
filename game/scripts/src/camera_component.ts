@@ -29,22 +29,22 @@ export class CameraComponent extends NativeComponent implements Component {
 
 
     cameraInput(dt : number) : void {
-        if (Input.KeyPressed(Inputs.KEY_W)) // W
+        if (Input.KeyPressed(Inputs.KEY_UP)) // W
         {
             Camera.Move(Camera.GetForward().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_S)) // S
+        if (Input.KeyPressed(Inputs.KEY_DOWN)) // S
         {
             Camera.Move(Camera.GetForward().neg().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_A)) // A
+        if (Input.KeyPressed(Inputs.KEY_LEFT)) // A
         {
             Camera.Move(Camera.GetRight().neg().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_D)) // D
+        if (Input.KeyPressed(Inputs.KEY_RIGHT)) // D
         {
             Camera.Move(Camera.GetRight().mul(this.camSpeed).mul(dt));
         }

@@ -29,6 +29,7 @@ public:
 private:
 	void updateWheels(float dt);
 	void onKeyboardInput(const da::core::CEvent& e);
+	void setBrakeLights(bool on);
 
 private:
 	da::core::CEntity* m_entity;
@@ -42,5 +43,8 @@ private:
 	float m_enginePower = 0.f;
 	float m_brakePower = 0.f;
 	float m_steerAmt = 0.f;
+
+	uint32_t m_brakeLightL = 0, m_brakeLightR = 0;
+	uint32_t m_headLightL = 0, m_headLightR = 0;
 
 };

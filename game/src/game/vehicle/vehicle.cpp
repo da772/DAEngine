@@ -34,6 +34,11 @@ void CVehicle::initialize(da::modules::CWindowModule* window) {
 		m_entity->getTransform().setPosition({ 0.f,0.f,1.f });
 		m_entity->setTag("Vehicle");
 
+		da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->addComponent<da::core::CPointLightComponent>();
+		m_headLightR = lights->addLight({ 0.f,0.f,0.f }, glm::vec3(1.f,0.86f,.5f) * 50.f, 15.f);
+		m_headLightL  = lights->addLight({ 0.f,0.f,0.f }, glm::vec3(1.f,0.86f,.5f) * 50.f, 15.f);
+		setBrakeLights(true);
+
 		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->addComponent<da::core::CRigidBodyComponent>(
 			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeConvexHull::create(cc->getStaticMesh())
 				, da::physics::CPhysicsEntityMotionState::create(m_entity)
@@ -60,8 +65,10 @@ void CVehicle::initialize(da::modules::CWindowModule* window) {
 void CVehicle::update(float dt)
 {
 	da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->getComponent<da::core::CRigidBodyComponent>();
+	da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->getComponent<da::core::CPointLightComponent>();
 	da::core::CCamera* cam = da::core::CCamera::getCamera();
 	const glm::vec3 entityPos = m_entity->getTransform().position();
+	const glm::mat4 entityT = glm::toMat4(m_entity->getTransform().rotation());
 	updateWheels(dt);
 
 	m_vehicle->applyEngineForce(m_enginePower, 0);
@@ -71,10 +78,23 @@ void CVehicle::update(float dt)
 	m_vehicle->applyBrake(m_brakePower, 2);
 	m_vehicle->applyBrake(m_brakePower, 3);
 
+	lights->updateLight(m_headLightR, entityPos + glm::vec3(entityT * glm::vec4(0.948619f, 3.70286f, -0.011385f, 1.f)));
+	lights->updateLight(m_headLightL, entityPos + glm::vec3(entityT * glm::vec4(-0.948619f, 3.70286f, -0.011385f, 1.f)));
+
+	if (m_brakeLightR && m_brakeLightL) {
+		lights->updateLight(m_brakeLightR, entityPos + glm::vec3(entityT * glm::vec4(0.895837f, -2.3808f, 0.110954f, 1.f)));
+		lights->updateLight(m_brakeLightL, entityPos + glm::vec3(entityT * glm::vec4(-0.8925837f, -2.3808f, 0.110954f, 1.f)));
+	}
+
+	float len = glm::abs(glm::length(rb->getPhysicsBody()->getLinearVelocity()));
+	float mph = len * 2.237;
+
+	const float fov = 73.7397953f;
+
+	cam->fov = glm::min(glm::mix(fov, 90.f, mph / 165.f), 90.f);
+
 	// ImGui
 	{
-		float len = glm::abs(glm::length(rb->getPhysicsBody()->getLinearVelocity()));
-		float mph = len * 2.237;
 		ImGui::SetNextWindowSize({ 80.f,15 });
 
 		glm::vec3 pos = cam->matrix() * glm::vec4(entityPos, 1.0f);
@@ -153,39 +173,43 @@ void CVehicle::onKeyboardInput(const da::core::CEvent& e)
 
 	switch (button)
 	{
-	// UP
-	case 265:
+	// W
+	case 87:
 	{
 		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? 3000.f* boost : 0.f;
 		m_enginePower = amt;
 		break;
 	}
-	// Down
-	case 264:
+	// S
+	case 83:
 	{
-		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? -1500.f : 0.f;
+		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? -2000.f : 0.f;
 		m_enginePower = amt;
+		//setBrakeLights(type != da::core::EInputType::RELEASED);
 		break;
 	}
-	// left
-	case 263:
+	// A
+	case 65:
 	{
 		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? .45f : 0.f;
-		m_steerAmt = amt;
+		m_steerAmt += amt;
+		if (m_steerAmt > amt) m_steerAmt = amt;
 		break;
 	}
-	// right
-	case 262:
+	// D
+	case 68:
 	{
 		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? -.45f : 0.f;
-		m_steerAmt = amt;
+		m_steerAmt += amt;
+		if (m_steerAmt < amt) m_steerAmt = amt;
 		break;
 	}
 	// space
 	case 32:
 	{
-		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? 1000.f : 10.f;
+		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? 750.f : 20.f;
 		m_brakePower = amt;
+		//setBrakeLights(type != da::core::EInputType::RELEASED);
 		break;
 	}
 	// C
@@ -207,4 +231,19 @@ void CVehicle::onKeyboardInput(const da::core::CEvent& e)
 	}
 
 
+}
+
+void CVehicle::setBrakeLights(bool on)
+{
+	da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->getComponent<da::core::CPointLightComponent>();
+	if (on && !m_brakeLightL && !m_brakeLightR) {
+		m_brakeLightL = lights->addLight({ 0.f,0.f,0.f }, { 2.f,0.f,0.f }, 2.f);
+		m_brakeLightR = lights->addLight({ 0.f,0.f,0.f }, { 2.f,0.f,0.f }, 2.f);
+		return;
+	}
+	
+	lights->removeLight(m_brakeLightL);
+	lights->removeLight(m_brakeLightR);
+	m_brakeLightL = 0;
+	m_brakeLightR = 0;
 }

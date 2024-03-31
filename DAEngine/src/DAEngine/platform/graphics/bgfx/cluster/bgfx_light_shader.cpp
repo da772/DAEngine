@@ -33,7 +33,7 @@ namespace da::platform {
     {
         // a 32-bit IEEE 754 float can represent all integers up to 2^24 (~16.7 million) correctly
         // should be enough for this use case (comparison in for loop)
-        float lightCountVec[4] = { (float)pointLights.getLights().size() };
+        float lightCountVec[4] = { (float)da::graphics::CLightManager::getLights().size() };
         bgfx::setUniform(m_lightCountVecUniform, lightCountVec);
 
         glm::vec4 sunLightDirection(glm::normalize(sunLightDir), 0.0f);

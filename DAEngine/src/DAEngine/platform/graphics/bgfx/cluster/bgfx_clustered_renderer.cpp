@@ -63,8 +63,8 @@ namespace da::platform {
         m_pDebugVisProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
 
         m_pointLights.init();
-        //generateLights(100);
-        m_pointLights.update();
+        m_pointLights.update(da::graphics::CLightManager::getLights());
+        da::graphics::CLightManager::registerOnLightEvent(BIND_EVENT_FN_2(CBgfxClusteredRenderer, onLightEvent));
 
 
         m_ssao.initialize();
@@ -405,6 +405,8 @@ namespace da::platform {
         m_debugRenderer.shutdown();
 #endif
 
+        da::graphics::CLightManager::unregisterOnLightEvent(BIND_EVENT_FN_2(CBgfxClusteredRenderer, onLightEvent));
+
         da::graphics::CMaterialFactory::remove(m_pClusterBuildingComputeProgram);
 		da::graphics::CMaterialFactory::remove(m_pResetCounterComputeProgram);
 		da::graphics::CMaterialFactory::remove(m_pLightCullingComputeProgram);
@@ -419,59 +421,6 @@ namespace da::platform {
         da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"));
         da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"));
 #endif
-    }
-
-    void CBgfxClusteredRenderer::generateLights(uint32_t count)
-    {
-        // TODO? normalize power
-
-        auto& lights = m_pointLights.getLights();
-
-        size_t keep = lights.size();
-        if (count < keep)
-            keep = count;
-
-        lights.resize(count*count);
-
-        glm::vec3 scale = glm::vec3(100.f, 100.f, 1.f) * 0.75f;
-
-        constexpr float POWER_MIN = 20.0f;
-        constexpr float POWER_MAX = 100.0f;
-
-        int countHalf = count / 2;
-        float distScale = 3.f;
-
-        int index = 0;
-        for (int y = -countHalf; y <= countHalf; y+=2) {
-            for (int x = -countHalf; x <= countHalf; x+=2) {
-                std::string str1 = std::string(std::to_string(x) + ":" + std::to_string(y).c_str());
-                CHashString hsh1(str1.c_str());
-                glm::vec3 col = { ((hsh1.hash() & 0x00ff0000u) >> 16), ((hsh1.hash() & 0x0000ff00u) >> 8) * .75f, (hsh1.hash() & 0x000000ffu) * .5f};
-                lights[index++] = { {x* distScale ,y* distScale ,1.f}, glm::vec3(5.f) * col };
-            }
-        }
-
-        lights.resize(index+1);
-
-        return;
-
-        std::random_device rd;
-        std::seed_seq seed = { rd() };
-        std::mt19937 mt(seed);
-        std::uniform_real_distribution<float> dist(0.0f, 2.0f);
-
-        for (size_t i = keep; i < count; i++)
-        {
-            glm::vec3 position = { 0,0,0 };
-            position += glm::vec3(dist(mt), dist(mt), dist(mt)) * scale - (scale * 0.5f);
-            position.y = 1.f;
-
-
-            glm::vec3 color = glm::vec3(1.f, 1.f, 1.f);
-            glm::vec3 power = color * (dist(mt) * (POWER_MAX - POWER_MIN) + POWER_MIN);
-            lights[i] = { position, power };
-            LOG_DEBUG(da::ELogChannel::Graphics, "Light created: %f %f %f, Power: %f, %f, %f", position.x, position.y, position.z, power.x, power.y, power.z);
-        }
     }
 
 	void CBgfxClusteredRenderer::onReset(size_t width, size_t height)
@@ -502,5 +451,11 @@ namespace da::platform {
         }
         ImGui::End();
     }
+
+	void CBgfxClusteredRenderer::onLightEvent(const da::graphics::FPointLightData& data, bool added)
+	{
+        m_pointLights.update(da::graphics::CLightManager::getLights());
+	}
+
 #endif
 }
