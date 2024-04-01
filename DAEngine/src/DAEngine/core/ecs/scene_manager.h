@@ -23,6 +23,7 @@ namespace da::core
 		static bool s_showDebug;
 		static bool s_showCameraDebug;
 #endif
+		static bool s_initialized;
 
 	};
 

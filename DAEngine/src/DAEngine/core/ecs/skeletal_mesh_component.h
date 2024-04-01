@@ -2,14 +2,8 @@
 
 #include "component.h"
 #include "daengine/asset/asset.h"
-
-
-namespace da::graphics
-{
-	class CSkeletalMesh;
-	class CSkeletalAnimation;
-	class CSkeletalAnimator;
-}
+#include "core/graphics/skeletal_animation.h"
+#include "core/graphics/skeletal_animator.h"
 
 namespace da::core
 {

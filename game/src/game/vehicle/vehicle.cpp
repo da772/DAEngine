@@ -1,4 +1,6 @@
 #include "vehicle.h"
+#include <DAEngine/physics.h>
+#include <DAEngine/components.h>
 #include <DAEngine/physics/physics_shape.h>
 #include <DAEngine/physics/physics_motion_state.h>
 #include <DAEngine/core/graphics/factory/factory_graphics_texture2d.h>
@@ -24,13 +26,11 @@ void CVehicle::initialize(da::modules::CWindowModule* window) {
 		m_entity = scene->createEntity();
 
 		da::core::FComponentRef<da::core::CSmeshComponent> cc = m_entity->addComponent<da::core::CSmeshComponent>("assets/prop/veh/prop_veh_sports_01a.fbx", false);
-		//cc->getStaticMesh()->getMaterial(0).baseColorFactor = { 1.f,0.f,0.f,1.f };
 		cc->getStaticMesh()->getMaterial(0).metallicFactor = .150f;
 		cc->getStaticMesh()->getMaterial(0).roughnessFactor = .0f;
 		cc->getStaticMesh()->getMaterial(0).setEmissiveTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/Tex_Veh_Pearl_02_Cream_Emissive.png"));
 		cc->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/Tex_Veh_Pearl_01_Red_Albedo.png"));
 		cc->getStaticMesh()->getMaterial(0).emissiveFactor = {1000.f,1.f,1.f};
-		//m_entity->getTransform().setScale({ 2.f, 1.f, .55f });
 		m_entity->getTransform().setPosition({ 0.f,0.f,1.f });
 		m_entity->setTag("Vehicle");
 
@@ -39,11 +39,14 @@ void CVehicle::initialize(da::modules::CWindowModule* window) {
 		m_headLightL  = lights->addLight({ 0.f,0.f,0.f }, glm::vec3(1.f,0.86f,.5f) * 50.f, 15.f);
 		setBrakeLights(true);
 
+		da::graphics::CStaticMesh* collisionMesh = new da::graphics::CStaticMesh("assets/prop/veh/prop_collision_veh_sports_01a.fbx", false);
 		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeConvexHull::create(cc->getStaticMesh())
+			da::physics::IPhysicsRigidBody::create(da::physics::IPhysicsShape::createMeshConvexHull(collisionMesh)
 				, da::physics::CPhysicsEntityMotionState::create(m_entity)
 				, 1200.f
 				, { 0.f,0.f,0.f }));
+
+		delete collisionMesh;
 
 		da::physics::FVehicleTuning tuning;
 
@@ -52,6 +55,9 @@ void CVehicle::initialize(da::modules::CWindowModule* window) {
 		for (size_t i = 0; i < 4; i++) {
 			da::core::CEntity* wheel = scene->createEntity();
 			da::core::FComponentRef<da::core::CSmeshComponent> mesh = wheel->addComponent<da::core::CSmeshComponent>("assets/prop/veh/prop_veh_sports_wheel_01a.fbx", false);
+#ifdef DA_REVIEW
+			wheel->setTag(CHashString((std::string("Wheel") + std::to_string(i)).c_str()));
+#endif
 			m_wheels.push_back(wheel);
 		}
 		

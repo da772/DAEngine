@@ -32,7 +32,7 @@ export class MyComponent extends NativeComponent implements Component {
         }
     }
 
-    debugUpdate(this : MyComponent)
+    debugUpdate()
     {
         if (ImGui.Begin("Hello World!")) {
             ImGui.LabelText(`employee is sick ${this.e.empName} is sick: ${this.e.empCode}`);
@@ -49,7 +49,7 @@ export class MyComponent extends NativeComponent implements Component {
     }
         
     shutdown(): void {
-        print("shut down");
+        print("hello world shut down");
         Debug.UnregisterDebugMenu("MyComponent");
     }
     

@@ -1,5 +1,5 @@
 export namespace Debug {
-    export function RegisterDebugMenu(id : string, object : any, func : () => void) : void {
+    export function RegisterDebugMenu(id : string, object : any, func : (this) => void) : void {
         native_debug_register_debug_menu("Script", id, object, func);
     } 
     export function UnregisterDebugMenu(id : string) : void {
@@ -7,5 +7,5 @@ export namespace Debug {
     }
 }
 
-declare function native_debug_register_debug_menu(group: string, id : string, object: any, func : () => void) : void;
+declare function native_debug_register_debug_menu(group: string, id : string, object: any, func : (this) => void) : void;
 declare function native_debug_unregister_debug_menu(group: string, id : string) : void;

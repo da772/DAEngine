@@ -210,6 +210,11 @@ namespace da::script::core
 		return da::core::CInput::inputPressed(key);
 	}
 
+	static bool lua_mouse_pressed(sol::this_state state, sol::object _, int key)
+	{
+		return da::core::CInput::mouseInputPressed(key);
+	}
+
 	static sol::table lua_input_cursor_pos(sol::this_state state)
 	{
 		double x = da::core::CInput::getCursorX();
@@ -239,6 +244,7 @@ namespace da::script::core
 
 		// input
 		lua->set_function("native_input_key_pressed", lua_input_pressed);
+		lua->set_function("native_input_mouse_pressed", lua_mouse_pressed);
 		lua->set_function("native_input_cursor_pos", lua_input_cursor_pos);
 
 		// Physics

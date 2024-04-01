@@ -23,15 +23,15 @@ namespace da::physics
 		delete m_shape;
 	}
 
-	CBullet3TriangleMesh::CBullet3TriangleMesh(da::graphics::CStaticMesh* mesh) : CBullet3Shape(), CPhysicsShapeTriangleMesh(mesh)
+	CBullet3TriangleMesh::CBullet3TriangleMesh(da::graphics::CStaticMesh* mesh, uint32_t index) : CBullet3Shape(), CPhysicsShapeTriangleMesh(mesh, index)
 	{
 		m_mesh = mesh;
-		const da::graphics::FMesh& m = mesh->getMeshes()[0];
+		const da::graphics::FMesh& m = mesh->getMeshes()[index];
 		m_vertexArray = new btTriangleIndexVertexArray
 		(
 			m.Indices.size()/3,
 			(int*)m.Indices.data(),
-			sizeof(uint32_t),
+			sizeof(uint32_t)*3,
 			m.Vertices.size(),
 			(btScalar*)m.Vertices.data(),
 			sizeof(da::graphics::FVertexBase)
@@ -64,10 +64,10 @@ namespace da::physics
 		return m_mesh;
 	}
 
-	CBullet3ConvexHullShape::CBullet3ConvexHullShape(da::graphics::CStaticMesh* mesh) : CPhysicsShapeConvexHull(mesh)
+	CBullet3ConvexHullShape::CBullet3ConvexHullShape(da::graphics::CStaticMesh* mesh, uint32_t index) : CPhysicsShapeConvexHull(mesh, index)
 	{
 		m_mesh = mesh;
-		const da::graphics::FMesh& m = mesh->getMeshes()[0];
+		const da::graphics::FMesh& m = mesh->getMeshes()[index];
 
 		btConvexHullShape* convexHull = new btConvexHullShape(0, 0, sizeof(btVector3));
 
@@ -82,6 +82,29 @@ namespace da::physics
 	}
 
 	CBullet3ConvexHullShape::~CBullet3ConvexHullShape()
+	{
+	}
+
+	CBullet3CompoundShape::CBullet3CompoundShape(const std::vector<IPhysicsShape*>& shapes, const std::vector<glm::mat4>& transforms) : CPhysicsShapeCompound(shapes, transforms)
+	{
+		btCompoundShape* compoundShape = new btCompoundShape();
+		for (size_t i = 0; i < shapes.size(); i++) {
+			if (const CBullet3Shape* shape = dynamic_cast<const CBullet3Shape*>(shapes[i])) {
+				btTransform transform = btTransform::getIdentity();
+				if (i < transforms.size()) {
+					transform.setFromOpenGLMatrix(glm::value_ptr(transforms[i]));
+				}
+				
+				compoundShape->addChildShape(transform, shape->getShape());
+			}
+			
+		}
+		
+		m_shape = compoundShape;
+		m_shapes = shapes;
+	}
+
+	CBullet3CompoundShape::~CBullet3CompoundShape()
 	{
 	}
 

@@ -13,14 +13,16 @@
 #include <glm/gtx/quaternion.hpp>
 #include "assimp_conversion_helpers.h"
 #endif
+#include <asset/asset.h>
 
 namespace da::graphics
 {
 
 	CSkeletalAnimation::CSkeletalAnimation(const std::string& animationPath, CSkeletalMesh* model)
 	{
+		CAsset asset(animationPath);
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(animationPath,
+		const aiScene* scene = importer.ReadFileFromMemory(asset.data(), asset.size(),
 			  aiProcess_Triangulate
 			| aiProcess_GenSmoothNormals
 			| aiProcess_CalcTangentSpace

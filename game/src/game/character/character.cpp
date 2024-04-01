@@ -1,18 +1,10 @@
 #include "character.h"
-#include <DAEngine.h>
-#include <DAEngine/physics/physics_shape.h>
-#include <DAEngine/physics/physics_motion_state.h>
-#include <DAEngine/core/graphics/factory/factory_graphics_texture2d.h>
-#include <daengine/core/graphics/graphics_skmesh.h>
+#include <DAEngine/core.h>
+#include <DAEngine/components.h>
+#include <DAEngine/physics.h>
+#include <DAEngine/graphics.h>
 
 #include <DAEngine\platform\graphics\bgfx\bgfx_skeletal_mesh.h>
-#include <DAEngine\core\graphics\skeletal_animation.h>
-#include <DAEngine\core\graphics\skeletal_animator.h>
-
-#include <DAEngine/physics/physics.h>
-#include <DAEngine/physics/physics_shape.h>
-#include <DAEngine/physics/physics_rigid_body.h>
-#include <DAEngine/core/ecs/rigid_body_component.h>
 
 void CCharacter::initialize()
 {

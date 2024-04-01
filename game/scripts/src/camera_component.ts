@@ -1,3 +1,4 @@
+
 import { Component, NativeComponent } from "./daengine/component";
 import { Input } from "./daengine/input";
 import { Camera } from "./daengine/camera";
@@ -5,6 +6,7 @@ import { Vector2, Vector3 } from "./daengine/vector";
 import { Inputs } from "./daengine/input_enum";
 import { Debug } from "./daengine/debug";
 import { ImGui } from "./daengine/imgui";
+
 
 export class CameraComponent extends NativeComponent implements Component {
 
@@ -20,7 +22,7 @@ export class CameraComponent extends NativeComponent implements Component {
         this.cameraInput(dt);
         
         let pos : Vector2 = Input.CursorPos();
-        
+
         if (!pos.equals(this.cursorPos))
         {
             this.cursorPos = pos;
@@ -31,6 +33,7 @@ export class CameraComponent extends NativeComponent implements Component {
     cameraInput(dt : number) : void {
         if (Input.KeyPressed(Inputs.KEY_UP)) // W
         {
+            _break();
             Camera.Move(Camera.GetForward().mul(this.camSpeed).mul(dt));
         }
 
@@ -59,7 +62,7 @@ export class CameraComponent extends NativeComponent implements Component {
             Camera.Move(Camera.GetUp().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_F)) // F
+        if (Input.MousePressed(Inputs.MOUSE_BUTTON_2)) // F
         {
             let pos : Vector2 = Input.CursorPos();
             if (this.cursorPos.x >= 0.0 && this.cursorPos.y >= 0.0)
@@ -69,7 +72,7 @@ export class CameraComponent extends NativeComponent implements Component {
         }
     }
 
-    debugUpdate(this : CameraComponent)
+    debugUpdate()
     {
         if (ImGui.Begin("Camera Component")) {
             ImGui.LabelText("Camera Speed");
@@ -82,7 +85,7 @@ export class CameraComponent extends NativeComponent implements Component {
 
 
     shutdown(): void {
-        print("camera component");
+        print("camera component shutdown");
         Debug.UnregisterDebugMenu("CameraComponent");
     }
     

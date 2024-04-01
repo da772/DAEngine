@@ -39,7 +39,10 @@ namespace da::physics
 
 	CBullet3Vehicle::~CBullet3Vehicle()
 	{
+		CBullet3Physics* physics = dynamic_cast<CBullet3Physics*>(CPhysics::getPhysicsType());
+		ASSERT(physics);
 		ASSERT(m_vehicle);
+		physics->getDynamicsWorld()->removeVehicle(m_vehicle);
 		delete m_vehicle;
 		m_vehicle = nullptr;
 

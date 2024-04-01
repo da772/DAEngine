@@ -4,8 +4,7 @@
 #include "core/graphics/graphics_smesh.h"
 #include "platform/graphics/bgfx/bgfx_graphics_material.h"
 #include "platform/graphics/bgfx/bgfx_skeletal_mesh.h"
-#include <core/graphics/skeletal_animation.h>
-#include <core/graphics/skeletal_animator.h>
+
 
 #include <bx/bx.h>
 #include <bgfx/bgfx.h>

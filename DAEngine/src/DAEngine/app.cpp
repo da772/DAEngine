@@ -38,6 +38,7 @@ namespace da
 #endif
 #endif
 
+		core::CSceneManager::initialize();
 		da::physics::CPhysics::initialize();
 		for (IModule* m : m_modules) {
 			m->initialize();
@@ -99,6 +100,7 @@ namespace da
 		}
 		m_modules = {};
 		da::physics::CPhysics::shutdown();
+		core::CSceneManager::shutdown();
 #ifndef DA_TEST
 		script::CScriptEngine::shutdown();
 #ifdef DA_REVIEW
@@ -136,7 +138,6 @@ namespace da
 				args += "\n";
 		}
 		LOG_INFO(ELogChannel::Core, args, argc);
-		core::CSceneManager::initialize();
 		core::CComponents::registerComponents();
 	}
 
@@ -144,7 +145,6 @@ namespace da
 	{
 		core::CArgHandler::shutdown();
 		CLogger::shutdown();
-		core::CSceneManager::shutdown();
 		core::CWorkerPool::shutdown();
 	}
 

@@ -131,8 +131,12 @@ namespace da::core {
 		template <typename T, typename... Args>
 		T* createComponent(Args&&... args) {
 			const CHashString& typeHash = T::getTypeHash();
+			T* component = m_components[typeHash].createComponent<T>(std::forward<Args>(args)...);
+			if (m_initialized) {
+				m_componentLifeCycle[T::getTypeHash()].init((void*)component);
+			}
 
-			return m_components[typeHash].createComponent<T>(std::forward<Args>(args)...);
+			return component;
 		}
 
 		template <typename T>
@@ -165,6 +169,12 @@ namespace da::core {
 			m_componentLifeCycle[T::getTypeHash()] = lifeCycle;
 		}
         
+		template <typename T>
+		bool hasComponents() {
+			const CHashString& typeHash = T::getTypeHash();
+			return m_components.find(typeHash) != m_components.end();
+		}
+
         template <typename T>
         const FComponentContainer& getComponents() {
             const CHashString& typeHash = T::getTypeHash();

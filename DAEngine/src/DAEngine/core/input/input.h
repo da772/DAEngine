@@ -16,6 +16,8 @@ namespace da::core {
 	{
 		class CWindow* Window;
 		float XPos, YPos;
+		float XScroll, YScroll;
+		std::vector<int> Inputs;
 		std::function<void(const events::CEvent&)> Func;
 	};
 
@@ -23,6 +25,7 @@ namespace da::core {
 	{
 	public:
 		static bool inputPressed(int input);
+		static bool mouseInputPressed(int input);
 		static double getCursorX();
 		static double getCursorY();
 		static void registerWindow(class CWindow* window);
@@ -30,10 +33,10 @@ namespace da::core {
 
 	private:
 		static void handleKeyInput(class CWindow* window, const events::CEvent& e);
-		static void handleMouseMove(class CWindow* window, const events::CEvent& e);
+		static void handleMouseInput(class CWindow* window, const events::CEvent& e);
 		static void registerKeyboardInput(CWindow* window);
-		static void registerMouseMove(CWindow* window);
-		static void unregisterMouseMove(CWindow* window);
+		static void registerMouseInput(CWindow* window);
+		static void unregisterMouseInput(CWindow* window);
 		static void unregisterKeyboardInput(CWindow* window);
 
 	private:

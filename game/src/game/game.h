@@ -1,26 +1,9 @@
 #pragma once
 
 #include <daengine.h>
-#include "vehicle/vehicle.h"
+#include <daengine/core.h>
+#include "levels/level_selector.h"
 
-namespace da
-{
-	namespace modules {
-		class CGraphicsModule;
-		class CWindowModule;
-	}
-
-	namespace graphics
-	{
-		class CMaterial;
-		class CSkeletalAnimation;
-	}
-
-	namespace core
-	{
-		class CEntity;
-	}
-}
 
 class CCharacter;
 
@@ -46,18 +29,12 @@ protected:
 	virtual void onUpdate(float dt) override;
 
 private:
+	CLevelSelector* m_levelSelector;
 	da::modules::CGraphicsModule* m_graphicsModule;
 	da::modules::CGraphicsModule* m_graphicsModule2;
-	da::graphics::CMaterial* m_boltMat = 0;
-	da::graphics::CMaterial* m_cubeMat = 0;
-	da::graphics::CMaterial* m_cubeMat2 = 0;
 	da::modules::CWindowModule* m_window = 0;
-	da::core::CEntity* e1, * e2, * e3, * e4, * e5, * e6, *e7;
+	
 	bool m_showScriptDebug = false;
 	bool m_showScriptDebugHard = false;
-	da::graphics::CSkeletalAnimation* m_swordSlashAnimation;
-	da::graphics::CSkeletalAnimation* m_runAnimation;
-	CCharacter* m_character;
-	CVehicle* m_vehicle;
 
 };

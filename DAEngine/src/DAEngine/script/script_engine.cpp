@@ -45,7 +45,7 @@ namespace da::script
 		//std::string filePath = "scripts/" + std::string(path) + ".lua";
 
 		//LOG_INFO(ELogChannel::Script, "Attempting to require script: %s", filePath.c_str());
-
+		
 		int ref = CScriptEngine::getScript(buffer, true);
 		lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
 		//lua_call(L, 0, 1);
@@ -92,6 +92,18 @@ namespace da::script
 		return 0;
 	}
 
+	extern "C" int lua_break(lua_State * L)
+	{
+		sol::state_view lua = sol::state_view(L);
+		auto result = lua.script(
+			"if os.getenv('LOCAL_LUA_DEBUGGER_VSCODE') == '1' then \
+			require('lldebugger').start() \
+			end\
+			");
+		return 0;
+	}
+
+
 	struct FTestSubType {
 		int var1 = 5;
 		int var2 = 10;
@@ -135,6 +147,8 @@ namespace da::script
 		return sol::stack::push(L, description);
 	}
 
+	static sol::function s_debugger;
+
 	void CScriptEngine::initialize()
 	{
 		if (s_instance) return;
@@ -150,11 +164,11 @@ namespace da::script
 #endif
 		s_instance->m_stateView = new sol::state_view(s_instance->m_state);
 		s_instance->m_stateView->set_panic(sol::c_call<decltype(&my_panic), &my_panic>);
-		s_instance->m_stateView->open_libraries(sol::lib::base, sol::lib::debug);
+		s_instance->m_stateView->open_libraries(sol::lib::base, sol::lib::debug, sol::lib::package, sol::lib::jit, sol::lib::os);
 		s_instance->m_stateView->set_exception_handler(&my_exception_handler);
+
 		da::script::CScriptTypes::registerTypes();
 		registerFunctions();
-
 		registerNatives(s_instance->m_state, s_instance->m_stateView);
 	}
 
@@ -162,6 +176,7 @@ namespace da::script
 	{
 		lua_register(s_instance->m_state, "require", lua_requires);
 		lua_register(s_instance->m_state, "print", lua_print);
+		lua_register(s_instance->m_state, "_break", lua_break);
 	}
 
 	bool CScriptEngine::hasScript(const CHashString& hash)

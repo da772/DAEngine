@@ -1,6 +1,6 @@
 #pragma once
 
-#include <DAEngine.h>
+#include <DAEngine/core.h>
 
 
 namespace da::core
@@ -10,7 +10,7 @@ namespace da::core
 
 namespace da::physics
 {
-	class FHitData;
+	struct FHitData;
 	class IVehicle;
 }
 
