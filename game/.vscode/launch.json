@@ -1,0 +1,36 @@
+{
+    "configurations": [
+      {
+        "type": "lua-local",
+        "request": "launch",
+        "name": "TS Debugger Debug",
+        "program": {
+          "command": "bin\\Debug-windows-x86_64\\game\\game.exe",
+          "communication": "stdio",
+        },
+        "pullBreakpointsSupport" : true,
+        "args": [
+          "${workspaceFolder}"
+        ],
+        "scriptFiles": ["**/*.lua"],
+        "scriptRoots" : ["."],
+        "verbose": true
+      },
+      {
+        "type": "lua-local",
+        "request": "launch",
+        "name": "TS Debugger Release",
+        "program": {
+          "command": "bin\\Release-windows-x86_64\\game\\game.exe",
+          "communication": "stdio",
+        },
+        "pullBreakpointsSupport" : true,
+        "args": [
+          "${workspaceFolder}"
+        ],
+        "scriptFiles": ["**/*.lua"],
+        "scriptRoots" : ["."],
+        "verbose": true
+      }
+    ]
+  }

@@ -1,11 +1,12 @@
 
-import { Component, NativeComponent } from "./daengine/component";
-import { Input } from "./daengine/input";
 import { Camera } from "./daengine/camera";
-import { Vector2, Vector3 } from "./daengine/vector";
-import { Inputs } from "./daengine/input_enum";
+import { Component, NativeComponent } from "./daengine/component";
 import { Debug } from "./daengine/debug";
 import { ImGui } from "./daengine/imgui";
+import { Input } from "./daengine/input";
+import { Inputs } from "./daengine/input_enum";
+import { Timer } from "./daengine/timer";
+import { Vector2 } from "./daengine/vector";
 
 
 export class CameraComponent extends NativeComponent implements Component {
@@ -14,9 +15,16 @@ export class CameraComponent extends NativeComponent implements Component {
     camSpeed : number = 5;
     velSpeed : number = 5000;
 
+    testFuncAsync = async () => {
+        print("waiting for timer")
+        await Timer.runAsync(5000);
+        print("Timer compelte!");
+    }
+
     initialize(): void {
         print("camera component init");
         Debug.RegisterDebugMenu("CameraComponent", this, CameraComponent.prototype.debugUpdate);
+        this.testFuncAsync();
     }
     update(dt: number): void {
         this.cameraInput(dt);
@@ -33,7 +41,6 @@ export class CameraComponent extends NativeComponent implements Component {
     cameraInput(dt : number) : void {
         if (Input.KeyPressed(Inputs.KEY_UP)) // W
         {
-            _break();
             Camera.Move(Camera.GetForward().mul(this.camSpeed).mul(dt));
         }
 

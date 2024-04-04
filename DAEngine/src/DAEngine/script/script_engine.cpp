@@ -122,6 +122,7 @@ namespace da::script
 			std::cerr << "\terror message: " << msg << std::endl;
 		}
 		// When this function exits, Lua will exhibit default behavior and abort()
+		
 	}
 
 	int my_exception_handler(lua_State* L, sol::optional<const std::exception&> maybe_exception, sol::string_view description) {
@@ -140,6 +141,8 @@ namespace da::script
 			std::cout << std::endl;
 		}
 
+		LOG_SASSERT(false, L, "lua exception: %s", description.data());
+
 		// you must push 1 element onto the stack to be
 		// transported through as the error object in Lua
 		// note that Lua -- and 99.5% of all Lua users and libraries -- expects a string
@@ -155,21 +158,36 @@ namespace da::script
 		s_instance = new CScriptEngine();
 
 		s_instance->m_state = lua_open();
-		luaL_openlibs(s_instance->m_state);
-
+		
 #ifdef DA_PLATFORM_WINDOWS
 		lua_pushcfunction(s_instance->m_state, luaopen_jit);
 		lua_pushstring(s_instance->m_state, LUA_JITLIBNAME);
 		lua_call(s_instance->m_state, 1, 0);
 #endif
+
 		s_instance->m_stateView = new sol::state_view(s_instance->m_state);
 		s_instance->m_stateView->set_panic(sol::c_call<decltype(&my_panic), &my_panic>);
-		s_instance->m_stateView->open_libraries(sol::lib::base, sol::lib::debug, sol::lib::package, sol::lib::jit, sol::lib::os);
+		s_instance->m_stateView->open_libraries(sol::lib::base, sol::lib::table, sol::lib::os, sol::lib::string, sol::lib::jit, sol::lib::io, sol::lib::package, sol::lib::math
+#ifdef DA_REVIEW
+			, sol::lib::debug
+#endif
+		);
+		
 		s_instance->m_stateView->set_exception_handler(&my_exception_handler);
+
 
 		da::script::CScriptTypes::registerTypes();
 		registerFunctions();
 		registerNatives(s_instance->m_state, s_instance->m_stateView);
+
+#ifdef DA_REVIEW
+		s_instance->m_stateView->script(
+			"if os.getenv('LOCAL_LUA_DEBUGGER_VSCODE') == '1' then \
+			require('lldebugger').start() \
+			require('lldebugger').pullBreakpoints(); \
+			end\
+			");
+#endif
 	}
 
 	void CScriptEngine::registerFunctions()
@@ -299,9 +317,20 @@ namespace da::script
 		
 		sol::function_result traceResult = traceFunc();
 
-		std::string trace = traceResult.get<std::string>();
+		if (traceResult.valid())
+			return traceResult.get<std::string>();
 
-		return trace;
+		return "";
 	}
+#ifdef DA_REVIEW
+	void CScriptEngine::update()
+	{
+		s_instance->m_stateView->script(
+			"if os.getenv('LOCAL_LUA_DEBUGGER_VSCODE') == '1' then \
+			require('lldebugger').pullBreakpoints(); \
+			end\
+			");
+	}
+#endif
 
-	}
+}

@@ -173,9 +173,9 @@ namespace da::script
 		}
 
 #ifdef DA_REVIEW
-		if (!res.get<bool>()) {
+		if (res.get_type() == sol::type::boolean && res.get<bool>() == false) {
 			sol::error err = res;
-			LOG_ASSERT(res.valid(), ELogChannel::Script, "Script Failed: %s with Err: %s", m_path, err.what())
+			LOG_ERROR(ELogChannel::Script, "Script Failed: %s with Err: %s", m_path, err.what());
 		}
 #endif
 	}

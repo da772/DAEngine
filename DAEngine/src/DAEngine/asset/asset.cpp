@@ -83,6 +83,7 @@ namespace da
 
 	std::string CAsset::getRelativePath(const std::string& str)
 	{
+		return str;
 		std::string root = da::core::CArgHandler::getRootPath();
 		int index = root.find_last_of('/');
 		if (index == -1) {

@@ -2,8 +2,10 @@ local ____lualib = require("lualib_bundle")
 local __TS__Class = ____lualib.__TS__Class
 local __TS__ClassExtends = ____lualib.__TS__ClassExtends
 local __TS__New = ____lualib.__TS__New
+local __TS__AsyncAwaiter = ____lualib.__TS__AsyncAwaiter
+local __TS__Await = ____lualib.__TS__Await
 local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
-__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["8"] = 2,["9"] = 2,["10"] = 3,["11"] = 3,["12"] = 4,["13"] = 4,["14"] = 5,["15"] = 5,["16"] = 6,["17"] = 6,["18"] = 7,["19"] = 7,["20"] = 8,["21"] = 8,["22"] = 11,["23"] = 11,["24"] = 11,["25"] = 11,["27"] = 11,["28"] = 13,["29"] = 14,["30"] = 15,["31"] = 11,["32"] = 17,["33"] = 18,["34"] = 19,["35"] = 17,["36"] = 21,["37"] = 22,["38"] = 24,["39"] = 26,["40"] = 28,["42"] = 21,["43"] = 33,["44"] = 34,["45"] = 36,["46"] = 37,["48"] = 40,["49"] = 42,["51"] = 45,["52"] = 47,["54"] = 50,["55"] = 52,["57"] = 55,["58"] = 57,["60"] = 60,["61"] = 62,["63"] = 65,["64"] = 67,["65"] = 68,["66"] = 70,["69"] = 33,["70"] = 75,["71"] = 77,["72"] = 78,["73"] = 79,["74"] = 80,["76"] = 83,["77"] = 75,["78"] = 87,["79"] = 88,["80"] = 89,["81"] = 87,["82"] = 94});
+__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["10"] = 2,["11"] = 2,["12"] = 3,["13"] = 3,["14"] = 4,["15"] = 4,["16"] = 5,["17"] = 5,["18"] = 6,["19"] = 6,["20"] = 7,["21"] = 7,["22"] = 8,["23"] = 8,["24"] = 9,["25"] = 9,["26"] = 12,["27"] = 12,["28"] = 12,["29"] = 12,["31"] = 12,["32"] = 14,["33"] = 15,["34"] = 16,["35"] = 18,["37"] = 19,["38"] = 20,["39"] = 21,["41"] = 18,["42"] = 12,["43"] = 24,["44"] = 25,["45"] = 26,["46"] = 27,["47"] = 24,["48"] = 29,["49"] = 30,["50"] = 32,["51"] = 34,["52"] = 36,["54"] = 29,["55"] = 41,["56"] = 42,["57"] = 44,["59"] = 47,["60"] = 49,["62"] = 52,["63"] = 54,["65"] = 57,["66"] = 59,["68"] = 62,["69"] = 64,["71"] = 67,["72"] = 69,["74"] = 72,["75"] = 74,["76"] = 75,["77"] = 77,["80"] = 41,["81"] = 82,["82"] = 84,["83"] = 85,["84"] = 86,["85"] = 87,["87"] = 90,["88"] = 82,["89"] = 94,["90"] = 95,["91"] = 96,["92"] = 94,["93"] = 101});
 local ____exports = {}
 local ____component = require("daengine.component")
 local NativeComponent = ____component.NativeComponent
@@ -19,6 +21,8 @@ local ____debug = require("daengine.debug")
 local Debug = ____debug.Debug
 local ____imgui = require("daengine.imgui")
 local ImGui = ____imgui.ImGui
+local ____timer = require("daengine.timer")
+local Timer = ____timer.Timer
 ____exports.CameraComponent = __TS__Class()
 local CameraComponent = ____exports.CameraComponent
 CameraComponent.name = "CameraComponent"
@@ -28,10 +32,18 @@ function CameraComponent.prototype.____constructor(self, ...)
     self.cursorPos = __TS__New(Vector2)
     self.camSpeed = 5
     self.velSpeed = 5000
+    self.testFuncAsync = function()
+        return __TS__AsyncAwaiter(function(____awaiter_resolve)
+            print("waiting for timer")
+            __TS__Await(Timer:runAsync(5000))
+            print("Timer compelte!")
+        end)
+    end
 end
 function CameraComponent.prototype.initialize(self)
     print("camera component init")
     Debug:RegisterDebugMenu("CameraComponent", self, ____exports.CameraComponent.prototype.debugUpdate)
+    self:testFuncAsync()
 end
 function CameraComponent.prototype.update(self, dt)
     self:cameraInput(dt)
@@ -42,7 +54,6 @@ function CameraComponent.prototype.update(self, dt)
 end
 function CameraComponent.prototype.cameraInput(self, dt)
     if Input:KeyPressed(Inputs.KEY_UP) then
-        _break()
         Camera:Move(Camera:GetForward():mul(self.camSpeed):mul(dt))
     end
     if Input:KeyPressed(Inputs.KEY_DOWN) then

@@ -872,6 +872,30 @@ do
     else
         inputFile = io.stdin
     end
+    local pullFileEnv = "LOCAL_LUA_DEBUGGER_PULL_FILE"
+    local pullFilePath = os.getenv(pullFileEnv)
+    local lastPullSeek = 0
+    local pullFile
+    if pullFilePath and (#pullFilePath > 0) then
+        local file, err = io.open(pullFilePath, "r+")
+        if not file then
+            luaError(
+                ((("Failed to open pull file \"" .. pullFilePath) .. "\": ") .. tostring(err)) .. "\n"
+            )
+        end
+        pullFile = file
+        pullFile:setvbuf("no")
+        local fileSize, errorSeek = pullFile:seek("end")
+        if not fileSize then
+            luaError(
+                ((("Failed to read pull file \"" .. pullFilePath) .. "\": ") .. tostring(errorSeek)) .. "\n"
+            )
+        else
+            lastPullSeek = fileSize
+        end
+    else
+        pullFile = nil
+    end
     local skipNextBreak = false
     local hookStack = {}
     local threadIds = setmetatable({}, {__mode = "k"})
@@ -1242,6 +1266,7 @@ do
     local breakAtDepth = -1
     local breakInThread
     local updateHook
+    local isDebugHookDisabled = true
     local ignorePatterns
     local inDebugBreak = false
     local function debugBreak(activeThread, stackOffset, activeLine)
@@ -1389,10 +1414,13 @@ do
                     if (file ~= nil) and (line ~= nil) then
                         local condition = inp:match("^break%s+[a-z]+%s+.-:%d+%s+(.+)")
                         Breakpoint.add(file, line, condition)
-                        breakpoint = luaAssert(
-                            Breakpoint.get(file, line)
-                        )
-                        Send.breakpoints({breakpoint})
+                        local bp = Breakpoint.get(file, line)
+                        if bp ~= nil then
+                            breakpoint = luaAssert(bp)
+                            Send.breakpoints({breakpoint})
+                        else
+                            Send.error("Bad breakpoint")
+                        end
                     else
                         Send.error("Bad breakpoint")
                     end
@@ -1550,6 +1578,9 @@ do
     local stepUnmappedLinesEnv = "LOCAL_LUA_DEBUGGER_STEP_UNMAPPED_LINES"
     local skipUnmappedLines = os.getenv(stepUnmappedLinesEnv) ~= "1"
     local function debugHook(event, line)
+        if isDebugHookDisabled then
+            return
+        end
         if breakAtDepth >= 0 then
             local activeThread = getActiveThread()
             local stepBreak
@@ -1781,7 +1812,7 @@ do
             skipNextBreak = false
         elseif hookStack[#hookStack] == "global" then
             local info = debug.getinfo(2, "S")
-            if info and (info.what ~= "C") then
+            if info and (info.what == "C") then
                 local thread = (isThread(threadOrMessage) and threadOrMessage) or getActiveThread()
                 Send.debugBreak(
                     trace,
@@ -1817,7 +1848,8 @@ do
         end
     end
     updateHook = function()
-        if (breakAtDepth < 0) and (Breakpoint.getCount() == 0) then
+        isDebugHookDisabled = (breakAtDepth < 0) and (Breakpoint.getCount() == 0)
+        if isDebugHookDisabled and ((_G.jit == nil) or (pullFile == nil)) then
             debug.sethook()
             for thread in pairs(threadIds) do
                 if isThread(thread) and (coroutine.status(thread) ~= "dead") then
@@ -1841,6 +1873,7 @@ do
         coroutine.create = luaCoroutineCreate
         coroutine.wrap = luaCoroutineWrap
         coroutine.resume = luaCoroutineResume
+        isDebugHookDisabled = true
         debug.sethook()
         for thread in pairs(threadIds) do
             if isThread(thread) and (coroutine.status(thread) ~= "dead") then
@@ -1877,6 +1910,15 @@ do
     function Debugger.triggerBreak()
         breakAtDepth = math.huge
         updateHook()
+    end
+    function Debugger.pullBreakpoints()
+        if pullFile then
+            local newPullSeek = pullFile:seek("end")
+            if newPullSeek > lastPullSeek then
+                lastPullSeek = newPullSeek
+                Debugger.triggerBreak()
+            end
+        end
     end
     function Debugger.debugGlobal(breakImmediately)
         Debugger.pushHook("global")
@@ -1936,6 +1978,9 @@ function ____exports.finish()
 end
 function ____exports.stop()
     Debugger.clearHook()
+end
+function ____exports.pullBreakpoints()
+    Debugger.pullBreakpoints()
 end
 function ____exports.runFile(filePath, breakImmediately, arg)
     if type(filePath) ~= "string" then

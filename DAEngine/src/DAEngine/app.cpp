@@ -60,6 +60,7 @@ namespace da
 			}
 #ifdef DA_REVIEW
 			da::debug::CDebug::update(timeStep);
+			da::script::CScriptEngine::update();
 #endif
 			onUpdate(timeStep);
 			if (core::CScene* scene = core::CSceneManager::getScene()) {

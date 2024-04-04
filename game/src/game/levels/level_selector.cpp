@@ -31,8 +31,20 @@ void CLevelSelector::update(float dt)
 {
 #ifdef DA_REVIEW
 	if (m_level == INVALID_LEVEL_ID) {
-		ImGui::SetNextWindowSize({ 600, 300 });
-		ImGui::SetNextWindowPos({ m_window.getWindow()->getWindowData().Width / 2.f - 300.f, m_window.getWindow()->getWindowData().Height / 2.f - 150.f });
+		const float width = m_window.getWindow()->getWindowData().Width;
+		const float height = m_window.getWindow()->getWindowData().Height;
+		const float windowWidth = 300.f;
+		const float windowHeight = 350.f;
+		ImGui::SetNextWindowSize({ width*1.2f, height*1.2f});
+		ImGui::SetNextWindowPos({ width / 2.f - width * 1.2f / 2.f, height / 2.f - height * 1.2f / 2.f });
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, { 0.02f,.15f,.15f,1.f });
+		ImGui::Begin("bg", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
+		ImGui::End();
+		ImGui::PopStyleColor();
+
+
+		ImGui::SetNextWindowSize({ windowWidth, windowHeight });
+		ImGui::SetNextWindowPos({ width / 2.f - windowWidth/2.f, height / 2.f - windowHeight/2.f});
 		if (ImGui::Begin("Level Selector", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize)) {
 			{
 				const char* title = "Level Selector";

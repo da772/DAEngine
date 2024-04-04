@@ -43,7 +43,8 @@ namespace da::script
 	static void getFunc(sol::object o, void* out, std::vector<FScriptType> solTypes, CHashString typeName)
 	{
 		T obj;
-		LOG_SASSERT((o.get_type() != sol::type::lua_nil), o.lua_state(), "Type is nil when converting to type: %s", typeName.c_str());
+		sol::type oType = o.get_type();
+		LOG_SASSERT((oType != sol::type::lua_nil), o.lua_state(), "Type is nil when converting to type: %s", typeName.c_str());
 		for (size_t i = 0; i < solTypes.size(); i++) {
 			FScriptType type = solTypes[i];
 

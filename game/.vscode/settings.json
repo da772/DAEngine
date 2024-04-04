@@ -3,7 +3,7 @@
         "commands": [
             {
                 "match": "\\.sc$",
-                "cmd": "@echo | call GenerateShaders_Windows.bat"
+                "cmd": "@echo | call ./shaders/GenerateShaders_Windows.bat"
             }
         ]
     }

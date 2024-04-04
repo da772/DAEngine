@@ -11,7 +11,7 @@ namespace sol {
 	class state_view;
 }
 
-#define LOG_SASSERT(cond, L, msg, ...) LOG_ASSERT(cond, ELogChannel::Script, "%s - Printing Script callstack: %s", msg, ##__VA_ARGS__, CScriptEngine::getCallstack(L).c_str())
+#define LOG_SASSERT(cond, L, msg, ...) LOG_ASSERT(cond, ELogChannel::Script, "%s - Printing Script callstack: %s", msg, ##__VA_ARGS__, !cond ? CScriptEngine::getCallstack(L).c_str() : "")
 
 namespace da::script
 {
@@ -19,6 +19,9 @@ namespace da::script
 
 	public:
 		static void initialize();
+#ifdef DA_REVIEW
+		static void update();
+#endif
 		static void shutdown();
 		static void* loadScript(const char* path);
 		static int getScript(const char* path, bool cacheResult);

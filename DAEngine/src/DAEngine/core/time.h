@@ -2,6 +2,12 @@
 
 namespace da::core
 {
+	struct FTimerDelegate {
+		size_t TimeMS;
+		size_t StartTime;
+		std::function<void()> Callback;
+	};
+
 	class CTime
 	{
 	public:
@@ -12,6 +18,8 @@ namespace da::core
 		static double getTimeStep();
 		static uint64_t getFps();
 		static uint64_t getFrameCount();
+		static void addTimerCallback(size_t ms, const std::function<void()>& callback);
+
 
 	private:
 		static uint64_t ms_frameCount;
@@ -20,5 +28,6 @@ namespace da::core
 		static double ms_timeStep;
 		static double ms_timer;
 		static uint64_t ms_totalFrameCount;
+		static std::vector<FTimerDelegate> ms_timers;
 	};
 }
