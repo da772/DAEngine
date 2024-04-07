@@ -57,10 +57,9 @@ void CLevelSelector::update(float dt)
 			ImGui::BeginChild("LevelSelectorChild", { 0.f,0.f }, false);
 
 			for (size_t i = 0; i < m_levels.size(); i++) {
-				ILevel* level = m_levels[0];
+				ILevel* level = m_levels[i];
 				ImVec2 size = { 250.f, 30.f };
 				ImGui::SetCursorPosX(ImGui::GetWindowSize().x / 2.f - size.x / 2.f);
-				//ImGui::SetCursorPosY(ImGui::GetWindowPos().y / 2.f - size.y / 2.f);
 				std::string buttonId = std::string(level->getName().c_str()) + std::string("###levelSelector:") + std::to_string(i);
 				if (ImGui::Button(buttonId.c_str(), size)) {
 					startLevel(i);

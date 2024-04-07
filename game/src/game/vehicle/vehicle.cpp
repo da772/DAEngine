@@ -35,8 +35,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window) {
 		m_entity->setTag("Vehicle");
 
 		da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->addComponent<da::core::CPointLightComponent>();
-		m_headLightR = lights->addLight({ 0.f,0.f,0.f }, glm::vec3(1.f,0.86f,.5f) * 50.f, 15.f);
-		m_headLightL  = lights->addLight({ 0.f,0.f,0.f }, glm::vec3(1.f,0.86f,.5f) * 50.f, 15.f);
+		setHeadLights(true);
 		setBrakeLights(true);
 
 		da::graphics::CStaticMesh* collisionMesh = new da::graphics::CStaticMesh("assets/prop/veh/prop_collision_veh_sports_01a.fbx", false);
@@ -75,17 +74,13 @@ void CVehicle::update(float dt)
 	da::core::CCamera* cam = da::core::CCamera::getCamera();
 	const glm::vec3 entityPos = m_entity->getTransform().position();
 	const glm::mat4 entityT = glm::toMat4(m_entity->getTransform().rotation());
+	processInput(dt);
 	updateWheels(dt);
 
-	m_vehicle->applyEngineForce(m_enginePower, 0);
-	m_vehicle->applyEngineForce(m_enginePower, 1);
-	m_vehicle->setSteeringValue(m_steerAmt, 0);
-	m_vehicle->setSteeringValue(m_steerAmt, 1);
-	m_vehicle->applyBrake(m_brakePower, 2);
-	m_vehicle->applyBrake(m_brakePower, 3);
-
-	lights->updateLight(m_headLightR, entityPos + glm::vec3(entityT * glm::vec4(0.948619f, 3.70286f, -0.011385f, 1.f)));
-	lights->updateLight(m_headLightL, entityPos + glm::vec3(entityT * glm::vec4(-0.948619f, 3.70286f, -0.011385f, 1.f)));
+	if (m_headLightR && m_headLightL) {
+		lights->updateLight(m_headLightR, entityPos + glm::vec3(entityT * glm::vec4(0.948619f, 3.70286f, -0.011385f, 1.f)));
+		lights->updateLight(m_headLightL, entityPos + glm::vec3(entityT * glm::vec4(-0.948619f, 3.70286f, -0.011385f, 1.f)));
+	}
 
 	if (m_brakeLightR && m_brakeLightL) {
 		lights->updateLight(m_brakeLightR, entityPos + glm::vec3(entityT * glm::vec4(0.895837f, -2.3808f, 0.110954f, 1.f)));
@@ -114,8 +109,12 @@ void CVehicle::update(float dt)
 			auto textWidth = ImGui::CalcTextSize("00 mph").x;
 
 			ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
-			ImGui::SetCursorPosY(ImGui::GetFontSize() * .25f);
+			//ImGui::SetCursorPosY(ImGui::GetFontSize() * .25f);
 			ImGui::LabelText("###mph", "%d mph", (int)mph);
+			ImGui::SameLine();
+			ImGui::LabelText("###ep", "%.2f power", m_enginePower);
+			ImGui::SameLine();
+			ImGui::LabelText("###st", "%.2f steer", m_steer);
 		}
 		ImGui::PopStyleColor(2);
 
@@ -128,8 +127,6 @@ void CVehicle::update(float dt)
 		return;
 	}
 
-
-	
 	glm::vec3 pos = glm::mix(cam->position(), entityPos + (m_entity->getTransform().forward() * -5.5f) + glm::vec3(0.f, 0.f, 3.5f), 15.f * dt);
 	cam->setPosition(pos);
 	glm::vec3 rot = glm::eulerAngles(m_entity->getTransform().rotation());
@@ -156,14 +153,17 @@ void CVehicle::updateWheels(float dt)
 	ASSERT(m_vehicle);
 	for (size_t i = 0; i < m_wheels.size(); i++) {
 		ASSERT(m_wheels[i]);
+		
 		const da::maths::CTransform& transform = m_wheels[i]->getTransform();
-		const da::physics::FWheelTransformInfo wheelTransform = m_vehicle->getWheelTransform(i);
+		const da::physics::FWheelTransformInfo& wheelTransform = m_vehicle->getWheelTransform(i);
 
 		glm::vec3 pos = glm::mix(transform.position(), wheelTransform.Position, 15.f * dt);
-		glm::quat rot = glm::mix(transform.rotation(), wheelTransform.Rotation, 15.f * dt);
+		glm::quat rot = glm::slerp(transform.rotation(), wheelTransform.Rotation, 15.f * dt);
+		
+		glm::vec3 eulerAngle = glm::degrees(glm::eulerAngles(wheelTransform.Rotation));
 
 		m_wheels[i]->getTransform().setPosition({ wheelTransform.Position.x, wheelTransform.Position.y, pos.z });
-		m_wheels[i]->getTransform().setRotation(wheelTransform.Rotation);
+		m_wheels[i]->getTransform().setRotation(rot);
 	}
 }
 
@@ -179,45 +179,6 @@ void CVehicle::onKeyboardInput(const da::core::CEvent& e)
 
 	switch (button)
 	{
-	// W
-	case 87:
-	{
-		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? 3000.f* boost : 0.f;
-		m_enginePower = amt;
-		break;
-	}
-	// S
-	case 83:
-	{
-		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? -2000.f : 0.f;
-		m_enginePower = amt;
-		//setBrakeLights(type != da::core::EInputType::RELEASED);
-		break;
-	}
-	// A
-	case 65:
-	{
-		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? .45f : 0.f;
-		m_steerAmt += amt;
-		if (m_steerAmt > amt) m_steerAmt = amt;
-		break;
-	}
-	// D
-	case 68:
-	{
-		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? -.45f : 0.f;
-		m_steerAmt += amt;
-		if (m_steerAmt < amt) m_steerAmt = amt;
-		break;
-	}
-	// space
-	case 32:
-	{
-		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? 750.f : 20.f;
-		m_brakePower = amt;
-		//setBrakeLights(type != da::core::EInputType::RELEASED);
-		break;
-	}
 	// C
 	case 67:
 	{
@@ -225,17 +186,55 @@ void CVehicle::onKeyboardInput(const da::core::CEvent& e)
 		m_controlCamera = !m_controlCamera;
 		break;
 	}
-	// lShift
-	case 340:
+	// L
+	case 76:
 	{
-		float amt = type == da::core::EInputType::PRESSED || type == da::core::EInputType::REPEAT ? 2.f : .5f;
-		m_enginePower *= 2.f;
-		break;
+		if (type != da::core::EInputType::RELEASED) break;
+		setBrakeLights(!m_brakeLightL);
+		setHeadLights(!m_headLightL);
 	}
 	default:
 		break;
 	}
 
+
+}
+
+void CVehicle::processInput(float dt)
+{
+	bool w = da::core::CInput::inputPressed(87);
+	bool s = da::core::CInput::inputPressed(83);
+	// S,W
+	glm::vec2 throttle = { -da::core::CInput::inputPressed(83), da::core::CInput::inputPressed(87) };
+	// A,D
+	glm::vec2 direction = { da::core::CInput::inputPressed(65), -da::core::CInput::inputPressed(68) };
+	// Space
+	float handBreak = da::core::CInput::inputPressed(32);
+
+	float acceleration = throttle.x + throttle.y;
+	float steering = direction.x + direction.y;
+	
+	float enginePower = acceleration * m_engineMaxPower;
+	m_enginePower = std::clamp(m_enginePower + (enginePower - m_enginePower)*dt, m_engineMaxPower / -1.5f, m_engineMaxPower);
+
+	float steer = steering * m_maxSteer;
+	m_steer = std::clamp(m_steer + (steer-m_steer), -m_maxSteer, m_maxSteer);
+
+	float brakes = 0.f;
+
+	if (handBreak > 0.f) {
+		brakes = m_brakeMaxPower;
+	}
+	else if (!w && !s) {
+		brakes = m_idleBrake;
+	}
+
+	m_vehicle->applyEngineForce(m_enginePower, 0);
+	m_vehicle->applyEngineForce(m_enginePower, 1);
+	m_vehicle->setSteeringValue(m_steer, 0);
+	m_vehicle->setSteeringValue(m_steer, 1);
+	m_vehicle->applyBrake(brakes, 2);
+	m_vehicle->applyBrake(brakes, 3);
 
 }
 
@@ -252,4 +251,19 @@ void CVehicle::setBrakeLights(bool on)
 	lights->removeLight(m_brakeLightR);
 	m_brakeLightL = 0;
 	m_brakeLightR = 0;
+}
+
+void CVehicle::setHeadLights(bool on)
+{
+	da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->getComponent<da::core::CPointLightComponent>();
+	if (on && !m_headLightL && !m_headLightR) {
+		m_headLightR = lights->addLight({ 0.f,0.f,0.f }, glm::vec3(1.f, 0.86f, .5f) * 50.f, 15.f);
+		m_headLightL = lights->addLight({ 0.f,0.f,0.f }, glm::vec3(1.f, 0.86f, .5f) * 50.f, 15.f);
+		return;
+	}
+
+	lights->removeLight(m_headLightL);
+	lights->removeLight(m_headLightR);
+	m_headLightL = 0;
+	m_headLightR = 0;
 }
