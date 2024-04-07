@@ -7,6 +7,8 @@
 namespace da::debug
 {
 	std::unordered_map<CHashString, std::unordered_map<CHashString, std::pair<bool*, std::function<void()>>>> CDebugMenuBar::s_refs;
+	std::vector < std::pair<CHashString, CHashString>> CDebugMenuBar::s_dirty;
+	bool CDebugMenuBar::s_processing = false;
 
 	void CDebugMenuBar::initialize()
 	{
@@ -15,7 +17,7 @@ namespace da::debug
 
 	void CDebugMenuBar::update()
 	{
-
+		s_processing = true;
 		if (ImGui::BeginMainMenuBar()) {
 
 			for (const std::pair<CHashString, std::unordered_map<CHashString, std::pair<bool*, std::function<void()>>>>& map : s_refs)
@@ -41,11 +43,18 @@ namespace da::debug
 
 			ImGui::EndMainMenuBar();
 		}
+		s_processing = false;
+
+		for (size_t i = 0; i < s_dirty.size(); i++) {
+			unregister_debug(s_dirty[i].first, s_dirty[i].second);
+		}
+		s_dirty = {};
 	}
 
 	void CDebugMenuBar::shutdown()
 	{
 		s_refs = {};
+		s_dirty = {};
 	}
 
 	void CDebugMenuBar::register_debug(CHashString group, CHashString id, bool* b, std::function<void()> func)
@@ -55,15 +64,20 @@ namespace da::debug
 
 	void CDebugMenuBar::unregister_debug(CHashString group, CHashString id)
 	{
+
+		if (s_processing) {
+			s_dirty.push_back({ group, id });
+			return;
+		}
+
 		const auto& it1 = s_refs.find(group);
 
 		if (it1 == s_refs.end())
 		{
 			return;
 		}
-		
 
-		const std::unordered_map< CHashString, std::pair<bool*, std::function<void()>>>::iterator& it2 = it1->second.find(group);
+		const std::unordered_map< CHashString, std::pair<bool*, std::function<void()>>>::iterator& it2 = it1->second.find(id);
 
 		if (it2 == it1->second.end())
 		{

@@ -42,9 +42,10 @@ namespace da::core {
 
     void CScriptComponent::reload(bool soft) {
         
+		if (!soft) m_scriptClass.classShutdown();
         m_scriptClass.cleanup(soft);
         m_scriptClass.setup(m_parent.getId(), m_guid);
-		m_scriptClass.classInitialize();
+		if (!soft) m_scriptClass.classInitialize();
     }
 
 #ifdef DA_REVIEW

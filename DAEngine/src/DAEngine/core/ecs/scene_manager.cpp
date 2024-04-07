@@ -14,6 +14,7 @@
 namespace da::core {
 
 	CScene* CSceneManager::s_scene;
+	bool CSceneManager::s_initialized = false;
 #ifdef DA_REVIEW
 	bool CSceneManager::s_showDebug = false;
 	bool CSceneManager::s_showCameraDebug = false;
@@ -25,6 +26,7 @@ namespace da::core {
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"), &s_showDebug, renderDebug);
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Camera"), &s_showCameraDebug, renderCameraDebug);
 #endif
+		s_initialized = true;
 	}
 
 	CScene* CSceneManager::getScene()
@@ -34,7 +36,14 @@ namespace da::core {
 
 	void CSceneManager::setScene(CScene* scene)
 	{
+		if (s_scene) {
+			if (s_initialized) s_scene->shutdown();
+			delete s_scene;
+			s_scene = nullptr;
+		}
+
 		s_scene = scene;
+		if (s_initialized && s_scene) s_scene->initialize();
 	}
 #ifdef DA_REVIEW
 	void CSceneManager::renderDebug()
@@ -131,6 +140,12 @@ namespace da::core {
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"));
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Camera"));
 #endif
+		if (s_scene) {
+			if (s_initialized) s_scene->shutdown();
+			delete s_scene;
+		}
+
+		s_initialized = false;
 	}
 
 }

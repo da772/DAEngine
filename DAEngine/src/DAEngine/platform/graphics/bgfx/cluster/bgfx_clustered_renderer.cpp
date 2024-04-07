@@ -63,8 +63,8 @@ namespace da::platform {
         m_pDebugVisProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
 
         m_pointLights.init();
-        //generateLights(100);
-        m_pointLights.update();
+        m_pointLights.update(da::graphics::CLightManager::getLights());
+        da::graphics::CLightManager::registerOnLightEvent(BIND_EVENT_FN_2(CBgfxClusteredRenderer, onLightEvent));
 
 
         m_ssao.initialize();
@@ -104,6 +104,7 @@ namespace da::platform {
             vSSR,
             vBloom,
             vBloomBlur,
+            COUNT
         };
 
 #ifdef DA_REVIEW
@@ -143,8 +144,6 @@ namespace da::platform {
 #endif
 
 		da::core::CScene* scene = da::core::CSceneManager::getScene();
-		const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
-		const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
 
 		::bgfx::setViewName(vDepth, "Depth pass");
 		::bgfx::setViewClear(vDepth, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xFFFFFF00, 1.0f, 0);
@@ -179,95 +178,99 @@ namespace da::platform {
 #endif
 
         setViewProjection(vDepth);
+
+		const da::core::FComponentContainer* staticMeshcontainer = scene ? &scene->getComponents<da::core::CSmeshComponent>() : nullptr;
+		const da::core::FComponentContainer* skeletalMeshcontainer = scene ? &scene->getComponents<da::core::CSkeletalMeshComponent>() : nullptr;
         // Depth pass
-		for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
-			da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
-			glm::mat4 model = meshComponent->getParent().getTransform().matrix();
+        if (staticMeshcontainer) {
+            for (size_t x = 0; x < staticMeshcontainer->getCount(); x++) {
+                da::core::CSmeshComponent* meshComponent = staticMeshcontainer->getComponentAtIndex<da::core::CSmeshComponent>(x);
+                glm::mat4 model = meshComponent->getParent().getTransform().matrix();
 
-            for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
-                const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
-                ASSERT(mesh);
+                for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
+                    const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+                    ASSERT(mesh);
 
-                ::bgfx::setTransform(glm::value_ptr(model));
-                ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                ::bgfx::setState( BGFX_STATE_WRITE_Z
-					| BGFX_STATE_DEPTH_TEST_LESS
-					| BGFX_STATE_CULL_CCW);
-				::bgfx::submit(vDepth, { m_pDepthprogram->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-			}
-		}
+                    ::bgfx::setTransform(glm::value_ptr(model));
+                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                    ::bgfx::setState(BGFX_STATE_WRITE_Z
+                        | BGFX_STATE_DEPTH_TEST_LESS
+                        | BGFX_STATE_CULL_CCW);
+                    ::bgfx::submit(vDepth, { m_pDepthprogram->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                }
+            }
+        }
 
-		for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
-			da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
-            const glm::mat4& model = meshComponent->getTransform();
+        if (skeletalMeshcontainer) {
+            for (size_t x = 0; x < skeletalMeshcontainer->getCount(); x++) {
+                da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer->getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
+                const glm::mat4& model = meshComponent->getTransform();
 
-			for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
-				da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+                for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
+                    da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
 
-				::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
-				::bgfx::setTransform(glm::value_ptr(model));
-				::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-				::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-				::bgfx::setState(
-					BGFX_STATE_WRITE_Z
-					| BGFX_STATE_DEPTH_TEST_LESS
-					| BGFX_STATE_CULL_CCW);
-				::bgfx::submit(vDepth, { m_pDepthprogramSk->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-			}
-		}
+                    ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
+                    ::bgfx::setTransform(glm::value_ptr(model));
+                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                    ::bgfx::setState(
+                        BGFX_STATE_WRITE_Z
+                        | BGFX_STATE_DEPTH_TEST_LESS
+                        | BGFX_STATE_CULL_CCW);
+                    ::bgfx::submit(vDepth, { m_pDepthprogramSk->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                }
+            }
+        }
 
         m_ssao.renderSSAO(m_width, m_height, vSSAO, m_depthBuffer);
         m_ssao.renderBlur(m_width, m_height, vSSAOBlur);
 
         m_csm.setRenderFunc([this](uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState) {
-            da::core::CScene* scene = da::core::CSceneManager::getScene();
-			const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
-			const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
+            if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
 
-			// Shadow map pass
-            for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
-                da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
-                glm::mat4 model = meshComponent->getParent().getTransform().matrix();
-                for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
-                    const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
-                    ASSERT(mesh);
+                const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
+                const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
 
-                    if (!mesh->getCastShadows()) continue;
-                    if (mesh->getHidden()) continue;
+                // Shadow map pass
+                for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
+                    da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
+                    glm::mat4 model = meshComponent->getParent().getTransform().matrix();
+                    for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
+                        const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+                        ASSERT(mesh);
 
-                    ::bgfx::setTransform(glm::value_ptr(model));
-                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                    ::bgfx::setState(renderState.m_state);
-                    ::bgfx::submit(view, { mat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                        if (!mesh->getCastShadows()) continue;
+                        if (mesh->getHidden()) continue;
+
+                        ::bgfx::setTransform(glm::value_ptr(model));
+                        ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                        ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                        ::bgfx::setState(renderState.m_state);
+                        ::bgfx::submit(view, { mat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                    }
+                }
+
+                for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
+
+                    da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
+                    const glm::mat4& model = meshComponent->getTransform();
+
+                    for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
+                        da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+
+                        ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
+                        ::bgfx::setTransform(glm::value_ptr(model));
+                        ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                        ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                        ::bgfx::setState(renderState.m_state);
+                        ::bgfx::submit(view, { skMat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                    }
                 }
             }
-
-			for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
-
-				da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
-				const glm::mat4& model = meshComponent->getTransform();
-
-				for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
-					da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
-
-					::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
-					::bgfx::setTransform(glm::value_ptr(model));
-					::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-					::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-					::bgfx::setState(renderState.m_state);
-					::bgfx::submit(view, { skMat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-				}
-			}
-
         });
 
         m_csm.update(vShadow, m_sun.m_sunDir, m_width, m_height);
-
-        glm::mat4 lightMtx[SHADOW_MAP_SIZE];
-        glm::vec4 cascades[4] = { {10.f, 1.f,0.f,0.f}, {30.f,10.f,0.f, 0.f}, {100.f,30.f,0.f,0.f} };
-
         m_clusters.setUniforms(m_width, m_height);
 
         // cluster building needs u_invProj to transform screen coordinates to eye space
@@ -331,59 +334,61 @@ namespace da::platform {
 		m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
 		m_sky.render(vLighting, state);
+        if (staticMeshcontainer) {
+            // Render pass
+            for (size_t i = 0; i < staticMeshcontainer->getCount(); i++) {
+                da::core::CSmeshComponent* meshComponent = staticMeshcontainer->getComponentAtIndex<da::core::CSmeshComponent>(i);
+                const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
 
-        // Render pass
-        for (size_t i = 0; i < staticMeshcontainer.getCount(); i++) {
-            da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(i);
-            const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
-           
-            for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
-                da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+                for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
+                    da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
 
-                if (mesh->getHidden()) continue;
+                    if (mesh->getHidden()) continue;
 
-                ::bgfx::setTransform(glm::value_ptr(model));
-                setNormalMatrix(model);
-                ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
-                m_csm.submitUniforms();
-                m_ssao.bindSSAO();
+                    ::bgfx::setTransform(glm::value_ptr(model));
+                    setNormalMatrix(model);
+                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                    uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
+                    m_csm.submitUniforms();
+                    m_ssao.bindSSAO();
 
-                //BGFX_STATE_PT_LINES
-                ::bgfx::setState(state | materialState);
-                // preserve buffer bindings between submit calls
-                ::bgfx::submit(vLighting, program, 0, ~BGFX_DISCARD_BINDINGS);
+                    //BGFX_STATE_PT_LINES
+                    ::bgfx::setState(state | materialState);
+                    // preserve buffer bindings between submit calls
+                    ::bgfx::submit(vLighting, program, 0, ~BGFX_DISCARD_BINDINGS);
+                }
             }
         }
 
-        
-		for (size_t i = 0; i < skeletalMeshcontainer.getCount(); i++) {
-			da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(i);
-            const glm::mat4& model = meshComponent->getTransform();
+        if (skeletalMeshcontainer) {
+            for (size_t i = 0; i < skeletalMeshcontainer->getCount(); i++) {
+                da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer->getComponentAtIndex<da::core::CSkeletalMeshComponent>(i);
+                const glm::mat4& model = meshComponent->getTransform();
 
-            for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
-                da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+                for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
+                    da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
 
-                if (mesh->getHidden()) continue;
+                    if (mesh->getHidden()) continue;
 
-                ::bgfx::setTransform(glm::value_ptr(model));
-                setNormalMatrix(model);
-                ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
-                ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                    ::bgfx::setTransform(glm::value_ptr(model));
+                    setNormalMatrix(model);
+                    ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
+                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
 
-               
-				uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
-                m_csm.submitUniforms();
-                m_ssao.bindSSAO();
 
-                //BGFX_STATE_PT_LINES
-                ::bgfx::setState(state | materialState);
-                // preserve buffer bindings between submit calls
-                ::bgfx::submit(vLighting, {m_pLightingSkeletalProgram->getHandle()}, 0, ~BGFX_DISCARD_BINDINGS);
-			}
-		}
+                    uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
+                    m_csm.submitUniforms();
+                    m_ssao.bindSSAO();
+
+                    //BGFX_STATE_PT_LINES
+                    ::bgfx::setState(state | materialState);
+                    // preserve buffer bindings between submit calls
+                    ::bgfx::submit(vLighting, { m_pLightingSkeletalProgram->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                }
+            }
+        }
         
         m_ssr.renderSSR(vSSR, m_frameBuffer, m_depthBuffer, m_frameBuffer);
         ::bgfx::TextureHandle tex = ::bgfx::getTexture(m_frameBuffer, 0);
@@ -417,6 +422,8 @@ namespace da::platform {
         m_debugRenderer.shutdown();
 #endif
 
+        da::graphics::CLightManager::unregisterOnLightEvent(BIND_EVENT_FN_2(CBgfxClusteredRenderer, onLightEvent));
+
         da::graphics::CMaterialFactory::remove(m_pClusterBuildingComputeProgram);
 		da::graphics::CMaterialFactory::remove(m_pResetCounterComputeProgram);
 		da::graphics::CMaterialFactory::remove(m_pLightCullingComputeProgram);
@@ -431,59 +438,6 @@ namespace da::platform {
         da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"));
         da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"));
 #endif
-    }
-
-    void CBgfxClusteredRenderer::generateLights(uint32_t count)
-    {
-        // TODO? normalize power
-
-        auto& lights = m_pointLights.getLights();
-
-        size_t keep = lights.size();
-        if (count < keep)
-            keep = count;
-
-        lights.resize(count*count);
-
-        glm::vec3 scale = glm::vec3(100.f, 100.f, 1.f) * 0.75f;
-
-        constexpr float POWER_MIN = 20.0f;
-        constexpr float POWER_MAX = 100.0f;
-
-        int countHalf = count / 2;
-        float distScale = 3.f;
-
-        int index = 0;
-        for (int y = -countHalf; y <= countHalf; y+=2) {
-            for (int x = -countHalf; x <= countHalf; x+=2) {
-                std::string str1 = std::string(std::to_string(x) + ":" + std::to_string(y).c_str());
-                CHashString hsh1(str1.c_str());
-                glm::vec3 col = { ((hsh1.hash() & 0x00ff0000u) >> 16), ((hsh1.hash() & 0x0000ff00u) >> 8) * .75f, (hsh1.hash() & 0x000000ffu) * .5f};
-                lights[index++] = { {x* distScale ,y* distScale ,1.f}, glm::vec3(5.f) * col };
-            }
-        }
-
-        lights.resize(index+1);
-
-        return;
-
-        std::random_device rd;
-        std::seed_seq seed = { rd() };
-        std::mt19937 mt(seed);
-        std::uniform_real_distribution<float> dist(0.0f, 2.0f);
-
-        for (size_t i = keep; i < count; i++)
-        {
-            glm::vec3 position = { 0,0,0 };
-            position += glm::vec3(dist(mt), dist(mt), dist(mt)) * scale - (scale * 0.5f);
-            position.y = 1.f;
-
-
-            glm::vec3 color = glm::vec3(1.f, 1.f, 1.f);
-            glm::vec3 power = color * (dist(mt) * (POWER_MAX - POWER_MIN) + POWER_MIN);
-            lights[i] = { position, power };
-            LOG_DEBUG(da::ELogChannel::Graphics, "Light created: %f %f %f, Power: %f, %f, %f", position.x, position.y, position.z, power.x, power.y, power.z);
-        }
     }
 
 	void CBgfxClusteredRenderer::onReset(size_t width, size_t height)
@@ -515,5 +469,11 @@ namespace da::platform {
         }
         ImGui::End();
     }
+
+	void CBgfxClusteredRenderer::onLightEvent(const da::graphics::FPointLightData& data, bool added)
+	{
+        m_pointLights.update(da::graphics::CLightManager::getLights());
+	}
+
 #endif
 }

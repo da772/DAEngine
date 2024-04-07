@@ -20,6 +20,7 @@ namespace da::core {
 		inline virtual void onUpdate() {};
 		inline virtual void onShutdown() {};
 		inline virtual void onLateUpdate() { };
+		virtual void setupStyle();
 
 	protected:
 		inline CImGuiApi(graphics::CGraphicsApi* graphicsApi) : m_graphicsApi(graphicsApi), m_window(m_graphicsApi->getWindow()) {};

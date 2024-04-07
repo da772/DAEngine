@@ -5,6 +5,7 @@
 #include "bgfx_light_list.h"
 #include "bgfx_shadow_shader.h"
 #include "bgfx_ssao_shader.h"
+#include <core/graphics/graphics_light_manager.h>
 
 namespace da::platform
 {
@@ -24,7 +25,7 @@ namespace da::platform
     protected:
         virtual void onReset(size_t width, size_t height) override;
     private:
-        void generateLights(uint32_t count);
+        void onLightEvent(const da::graphics::FPointLightData& light, bool added);
 
 #ifdef DA_REVIEW
         void renderLightDebug();

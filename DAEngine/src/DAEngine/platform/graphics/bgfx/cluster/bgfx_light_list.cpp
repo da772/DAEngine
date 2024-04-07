@@ -22,19 +22,18 @@ namespace da::platform {
         m_buffer = BGFX_INVALID_HANDLE;
     }
 
-    void CBgfxPointLightList::update()
+    void CBgfxPointLightList::update(const std::vector<da::graphics::FPointLightData>& lights)
     {
         size_t stride = PointLightVertex::layout.getStride();
-        const bgfx::Memory* mem = bgfx::alloc(uint32_t(stride * std::max(m_lights.size(), (size_t)1)));
+        const bgfx::Memory* mem = bgfx::alloc(uint32_t(stride * std::max(lights.size(), (size_t)1)));
 
-        for (size_t i = 0; i < m_lights.size(); i++)
+        for (size_t i = 0; i < lights.size(); i++)
         {
             PointLightVertex* light = (PointLightVertex*)(mem->data + (i * stride));
-            light->position = m_lights[i].position;
-            // intensity = flux per unit solid angle (steradian)
-            // there are 4*pi steradians in a sphere
-            light->intensity = m_lights[i].flux / (4.0f * glm::pi<float>());
-            light->radius = m_lights[i].calculateRadius();
+
+            light->position = lights[i].position;
+            light->intensity = lights[i].intensity;
+            light->radius = lights[i].radius;
         }
 
         bgfx::update(m_buffer, 0, mem);

@@ -45,7 +45,7 @@ namespace da::script
 		//std::string filePath = "scripts/" + std::string(path) + ".lua";
 
 		//LOG_INFO(ELogChannel::Script, "Attempting to require script: %s", filePath.c_str());
-
+		
 		int ref = CScriptEngine::getScript(buffer, true);
 		lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
 		//lua_call(L, 0, 1);
@@ -92,6 +92,18 @@ namespace da::script
 		return 0;
 	}
 
+	extern "C" int lua_break(lua_State * L)
+	{
+		sol::state_view lua = sol::state_view(L);
+		auto result = lua.script(
+			"if os.getenv('LOCAL_LUA_DEBUGGER_VSCODE') == '1' then \
+			require('lldebugger').start() \
+			end\
+			");
+		return 0;
+	}
+
+
 	struct FTestSubType {
 		int var1 = 5;
 		int var2 = 10;
@@ -110,6 +122,7 @@ namespace da::script
 			std::cerr << "\terror message: " << msg << std::endl;
 		}
 		// When this function exits, Lua will exhibit default behavior and abort()
+		
 	}
 
 	int my_exception_handler(lua_State* L, sol::optional<const std::exception&> maybe_exception, sol::string_view description) {
@@ -128,6 +141,8 @@ namespace da::script
 			std::cout << std::endl;
 		}
 
+		LOG_SASSERT(false, L, "lua exception: %s", description.data());
+
 		// you must push 1 element onto the stack to be
 		// transported through as the error object in Lua
 		// note that Lua -- and 99.5% of all Lua users and libraries -- expects a string
@@ -135,33 +150,51 @@ namespace da::script
 		return sol::stack::push(L, description);
 	}
 
+	static sol::function s_debugger;
+
 	void CScriptEngine::initialize()
 	{
 		if (s_instance) return;
 		s_instance = new CScriptEngine();
 
 		s_instance->m_state = lua_open();
-		luaL_openlibs(s_instance->m_state);
-
+		
 #ifdef DA_PLATFORM_WINDOWS
 		lua_pushcfunction(s_instance->m_state, luaopen_jit);
 		lua_pushstring(s_instance->m_state, LUA_JITLIBNAME);
 		lua_call(s_instance->m_state, 1, 0);
 #endif
+
 		s_instance->m_stateView = new sol::state_view(s_instance->m_state);
 		s_instance->m_stateView->set_panic(sol::c_call<decltype(&my_panic), &my_panic>);
-		s_instance->m_stateView->open_libraries(sol::lib::base, sol::lib::debug);
+		s_instance->m_stateView->open_libraries(sol::lib::base, sol::lib::table, sol::lib::os, sol::lib::string, sol::lib::jit, sol::lib::io, sol::lib::package, sol::lib::math
+#ifdef DA_REVIEW
+			, sol::lib::debug
+#endif
+		);
+		
 		s_instance->m_stateView->set_exception_handler(&my_exception_handler);
+
+
 		da::script::CScriptTypes::registerTypes();
 		registerFunctions();
-
 		registerNatives(s_instance->m_state, s_instance->m_stateView);
+
+#ifdef DA_REVIEW
+		s_instance->m_stateView->script(
+			"if os.getenv('LOCAL_LUA_DEBUGGER_VSCODE') == '1' then \
+			require('lldebugger').start() \
+			require('lldebugger').pullBreakpoints(); \
+			end\
+			");
+#endif
 	}
 
 	void CScriptEngine::registerFunctions()
 	{
 		lua_register(s_instance->m_state, "require", lua_requires);
 		lua_register(s_instance->m_state, "print", lua_print);
+		lua_register(s_instance->m_state, "_break", lua_break);
 	}
 
 	bool CScriptEngine::hasScript(const CHashString& hash)
@@ -284,9 +317,20 @@ namespace da::script
 		
 		sol::function_result traceResult = traceFunc();
 
-		std::string trace = traceResult.get<std::string>();
+		if (traceResult.valid())
+			return traceResult.get<std::string>();
 
-		return trace;
+		return "";
 	}
+#ifdef DA_REVIEW
+	void CScriptEngine::update()
+	{
+		s_instance->m_stateView->script(
+			"if os.getenv('LOCAL_LUA_DEBUGGER_VSCODE') == '1' then \
+			require('lldebugger').pullBreakpoints(); \
+			end\
+			");
+	}
+#endif
 
-	}
+}

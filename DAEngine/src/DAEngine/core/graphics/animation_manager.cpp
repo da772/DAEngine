@@ -16,9 +16,16 @@ namespace da::graphics
 		
 		//const da::core::FComponentContainer& skeletalMeshcontainer = da::core::CSceneManager::getScene()->getComponents<da::core::CSkeletalMeshComponent>();
 		
-		//da::core::CWorkerPool::addJob([deltaTime] {
+		if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
+
+			//da::core::CWorkerPool::addJob([deltaTime] {
 			CAnimationManager::s_mutex.lock();
-			
+			if (!da::core::CSceneManager::getScene()->hasComponents<da::core::CSkeletalMeshComponent>()) {
+				CAnimationManager::s_mutex.unlock();
+				return;
+			}
+
+
 			const da::core::FComponentContainer& skeletalMeshcontainer = da::core::CSceneManager::getScene()->getComponents<da::core::CSkeletalMeshComponent>();
 			for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
 				da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
@@ -34,6 +41,7 @@ namespace da::graphics
 			}
 
 			CAnimationManager::s_mutex.unlock();
+		}
 		//});
 		
 	}

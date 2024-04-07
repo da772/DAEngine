@@ -28,7 +28,7 @@ function MyComponent.prototype.____constructor(self, ...)
     self.e = __TS__New(Employee, 1, "Steve")
 end
 function MyComponent.prototype.initialize(self)
-    print(nil, "script init")
+    print("script init")
     Debug:RegisterDebugMenu("MyComponent", self, ____exports.MyComponent.prototype.debugUpdate)
 end
 function MyComponent.prototype.update(self, dt)
@@ -55,7 +55,7 @@ function MyComponent.prototype.debugUpdate(self)
     ImGui:End()
 end
 function MyComponent.prototype.shutdown(self)
-    print(nil, "shut down")
+    print("hello world shut down")
     Debug:UnregisterDebugMenu("MyComponent")
 end
 ____exports.component = __TS__New(____exports.MyComponent)

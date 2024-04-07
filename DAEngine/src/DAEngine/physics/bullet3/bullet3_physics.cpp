@@ -49,12 +49,9 @@ namespace da::physics
 					}
 				}
 			}
-
 		}
-
+		
 		m_dynamicsWorld->stepSimulation(dt, 10, 1.f / 60.f);
-		//m_collisionWorld->debugDrawWorld();
-		//m_dynamicsWorld->debugDrawWorld();
 	}
 
 	void CBullet3Physics::shutdown()

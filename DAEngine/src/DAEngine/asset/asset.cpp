@@ -3,11 +3,12 @@
 
 #include <iostream>
 #include <filesystem>
+#include <core/arg_handler.h>
 
 
 namespace da
 {
-	CAsset::CAsset(const std::string& path, EAssetFlags flags) : m_path(path), m_flags(flags)
+	CAsset::CAsset(const std::string& path, EAssetFlags flags) : m_path(getRelativePath(path)), m_flags(flags)
 	{
 		if (((uint8_t)m_flags & (uint8_t)EAssetFlags::Stream) == 0)
 		{
@@ -78,6 +79,22 @@ namespace da
 		m_size = ftell(f);
 		fseek(f, 0, SEEK_SET);
 		fclose(f);
+	}
+
+	std::string CAsset::getRelativePath(const std::string& str)
+	{
+		return str;
+		std::string root = da::core::CArgHandler::getRootPath();
+		int index = root.find_last_of('/');
+		if (index == -1) {
+			index = root.find_last_of('\\');
+			
+		}
+		if (index == -1) {
+			return str;
+		}
+
+		return root.substr(0, index+1) + str;
 	}
 
 }

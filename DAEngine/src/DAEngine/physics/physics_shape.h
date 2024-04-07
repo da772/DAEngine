@@ -15,13 +15,17 @@ namespace da::physics {
 		Sphere,
 		TriangleMesh,
 		Capsule,
-		ConvexHull
+		ConvexHull,
+		Compound
 	};
 
 	class IPhysicsShape
 	{
 	public:
 		virtual EPhysicsShapeType getType() const = 0;
+
+		static IPhysicsShape* createTriangleMesh(da::graphics::CStaticMesh* mesh);
+		static IPhysicsShape* createMeshConvexHull(da::graphics::CStaticMesh* mesh);
 
 	protected:
 		inline IPhysicsShape() {};
@@ -56,9 +60,9 @@ namespace da::physics {
 		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::TriangleMesh; }
 		inline virtual da::graphics::CStaticMesh* getMesh() const { return nullptr; }
 
-		static CPhysicsShapeTriangleMesh* create(da::graphics::CStaticMesh* mesh);
+		static CPhysicsShapeTriangleMesh* create(da::graphics::CStaticMesh* mesh, uint32_t index = 0);
 	protected:
-		inline CPhysicsShapeTriangleMesh(da::graphics::CStaticMesh* mesh) {};
+		inline CPhysicsShapeTriangleMesh(da::graphics::CStaticMesh* mesh, uint32_t index) {};
 		inline virtual ~CPhysicsShapeTriangleMesh() {};
 	};
 
@@ -68,9 +72,9 @@ namespace da::physics {
 		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::ConvexHull; }
 		inline virtual da::graphics::CStaticMesh* getMesh() const { return nullptr; }
 
-		static CPhysicsShapeConvexHull* create(da::graphics::CStaticMesh* mesh);
+		static CPhysicsShapeConvexHull* create(da::graphics::CStaticMesh* mesh, uint32_t index = 0);
 	protected:
-		inline CPhysicsShapeConvexHull(da::graphics::CStaticMesh* mesh) {};
+		inline CPhysicsShapeConvexHull(da::graphics::CStaticMesh* mesh, uint32_t index) {};
 		inline virtual ~CPhysicsShapeConvexHull() {};
 	};
 
@@ -84,5 +88,16 @@ namespace da::physics {
 	protected:
 		inline CPhysicsShapeCapsule(float radius, float height) {};
 		inline virtual ~CPhysicsShapeCapsule() {};
+	};
+
+	class CPhysicsShapeCompound : public IPhysicsShape
+	{
+	public:
+		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::Compound; }
+
+		static CPhysicsShapeCompound* create(const std::vector<IPhysicsShape*>& shapes, const std::vector<glm::mat4>& transforms);
+	protected:
+		inline CPhysicsShapeCompound(const std::vector<IPhysicsShape*>& shapes, const std::vector<glm::mat4>& transforms) {};
+		inline virtual ~CPhysicsShapeCompound() {};
 	};
 }

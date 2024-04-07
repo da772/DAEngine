@@ -1,0 +1,10 @@
+{
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "match": "\\.sc$",
+                "cmd": "@echo | call ./shaders/GenerateShaders_Windows.bat"
+            }
+        ]
+    }
+}

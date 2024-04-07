@@ -19,6 +19,7 @@ extern "C" {
 
 #include <sol/sol.hpp>
 #include <script/script_engine.h>
+#include <core/time.h>
 
 namespace da::script::core
 {
@@ -210,6 +211,11 @@ namespace da::script::core
 		return da::core::CInput::inputPressed(key);
 	}
 
+	static bool lua_mouse_pressed(sol::this_state state, sol::object _, int key)
+	{
+		return da::core::CInput::mouseInputPressed(key);
+	}
+
 	static sol::table lua_input_cursor_pos(sol::this_state state)
 	{
 		double x = da::core::CInput::getCursorX();
@@ -218,6 +224,56 @@ namespace da::script::core
 		FScriptVector2 scrVec({ x,y });
 		sol::state_view lua(state);
 		return CREATE_SCRIPT_TYPE(&lua, FScriptVector2, &scrVec);
+	}
+
+	static sol::table lua_timer_create(sol::this_state state, sol::object _, sol::object ms) {
+
+		uint64_t time = ms.as<uint64_t>();
+
+		int ref = CScriptEngine::getScript("scripts/build/daengine/promise.lua", false);
+
+		lua_State* L = da::script::CScriptEngine::getState();
+
+		sol::protected_function func(L, (sol::ref_index)ref);
+		sol::protected_function_result result = func();
+
+		ASSERT(result.valid());
+
+		sol::table funcStack = result.get<sol::table>();
+
+		sol::table promiseObj = funcStack["promise"].get<sol::table>();
+		sol::table promise = promiseObj["_promise"].get<sol::table>();
+
+		sol::function resolve = promiseObj["Resolve"];
+		int resolveRef = 0;
+		{
+			sol::reference reference(L, resolve);
+			resolveRef = reference.registry_index();
+			reference.abandon();
+		}
+
+		int promiseRef = 0;
+		{
+			sol::reference reference(L, promiseObj);
+			promiseRef = reference.registry_index();
+			reference.abandon();
+		}
+		
+		da::core::CTime::addTimerCallback(time, [resolveRef, promiseRef, ref, L]() {
+			sol::table promiseObj(L, (sol::ref_index)promiseRef);
+			sol::protected_function func(L, (sol::ref_index)resolveRef);
+			sol::protected_function_result result = func(promiseObj, true);
+			luaL_unref(L, LUA_REGISTRYINDEX, resolveRef);
+			luaL_unref(L, LUA_REGISTRYINDEX, promiseRef);
+			if (!result.valid()) {
+				sol::error err = result;
+				LOG_ERROR(ELogChannel::Script, "Failed to resolve promise %s", err.what());
+			}
+			luaL_unref(L, LUA_REGISTRYINDEX, ref);
+			
+		});
+
+		return promise;
 	}
 
 	void registerNatives(lua_State* L, void* stateView)
@@ -239,10 +295,14 @@ namespace da::script::core
 
 		// input
 		lua->set_function("native_input_key_pressed", lua_input_pressed);
+		lua->set_function("native_input_mouse_pressed", lua_mouse_pressed);
 		lua->set_function("native_input_cursor_pos", lua_input_cursor_pos);
 
 		// Physics
 		lua->set_function("native_entity_apply_velocity", lua_entity_apply_vel);
+
+		// Timer
+		lua->set_function("native_timer_create", lua_timer_create);
 	}
 
 }

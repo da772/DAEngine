@@ -30,8 +30,8 @@ namespace da::physics
 		virtual const glm::vec3& getLinearFactor() const override;
 		virtual const glm::vec3& getGravityFactor() const override;
 		virtual const glm::vec3& getAngularFactor() const override;
-		virtual const glm::vec3& getAngularVelocity() const override;
-		virtual const glm::vec3& getLinearVelocity() const override;
+		virtual const glm::vec3 getAngularVelocity() const override;
+		virtual const glm::vec3 getLinearVelocity() const override;
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 		virtual void debugDraw() override;

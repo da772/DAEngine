@@ -34,7 +34,7 @@ namespace da::physics
 	class CBullet3TriangleMesh : public CBullet3Shape, public  CPhysicsShapeTriangleMesh
 	{
 	public:
-		CBullet3TriangleMesh(da::graphics::CStaticMesh* mesh);
+		CBullet3TriangleMesh(da::graphics::CStaticMesh* mesh, uint32_t index);
 		virtual ~CBullet3TriangleMesh();
 		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::TriangleMesh; }
 		virtual da::graphics::CStaticMesh* getMesh() const override;
@@ -56,12 +56,24 @@ namespace da::physics
 	class CBullet3ConvexHullShape : public CBullet3Shape, public  CPhysicsShapeConvexHull
 	{
 	public:
-		CBullet3ConvexHullShape(da::graphics::CStaticMesh* mesh);
+		CBullet3ConvexHullShape(da::graphics::CStaticMesh* mesh, uint32_t index);
 		virtual ~CBullet3ConvexHullShape();
 		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::ConvexHull; }
 		virtual da::graphics::CStaticMesh* getMesh() const override;
 	private:
 		da::graphics::CStaticMesh* m_mesh;
 
+	};
+
+	class CBullet3CompoundShape : public CBullet3Shape, public CPhysicsShapeCompound
+	{
+	public:
+		CBullet3CompoundShape(const std::vector<IPhysicsShape*>& shapes, const std::vector<glm::mat4>& transforms);
+		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::Compound; }
+
+		virtual ~CBullet3CompoundShape();
+
+	private:
+		std::vector<IPhysicsShape*> m_shapes;
 	};
 }

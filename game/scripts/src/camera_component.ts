@@ -1,10 +1,13 @@
-import { Component, NativeComponent } from "./daengine/component";
-import { Input } from "./daengine/input";
+
 import { Camera } from "./daengine/camera";
-import { Vector2, Vector3 } from "./daengine/vector";
-import { Inputs } from "./daengine/input_enum";
+import { Component, NativeComponent } from "./daengine/component";
 import { Debug } from "./daengine/debug";
 import { ImGui } from "./daengine/imgui";
+import { Input } from "./daengine/input";
+import { Inputs } from "./daengine/input_enum";
+import { Timer } from "./daengine/timer";
+import { Vector2 } from "./daengine/vector";
+
 
 export class CameraComponent extends NativeComponent implements Component {
 
@@ -12,15 +15,22 @@ export class CameraComponent extends NativeComponent implements Component {
     camSpeed : number = 5;
     velSpeed : number = 5000;
 
+    testFuncAsync = async () => {
+        print("waiting for timer")
+        await Timer.runAsync(5000);
+        print("Timer compelte!");
+    }
+
     initialize(): void {
         print("camera component init");
         Debug.RegisterDebugMenu("CameraComponent", this, CameraComponent.prototype.debugUpdate);
+        this.testFuncAsync();
     }
     update(dt: number): void {
         this.cameraInput(dt);
         
         let pos : Vector2 = Input.CursorPos();
-        
+
         if (!pos.equals(this.cursorPos))
         {
             this.cursorPos = pos;
@@ -29,22 +39,22 @@ export class CameraComponent extends NativeComponent implements Component {
 
 
     cameraInput(dt : number) : void {
-        if (Input.KeyPressed(Inputs.KEY_W)) // W
+        if (Input.KeyPressed(Inputs.KEY_UP)) // W
         {
             Camera.Move(Camera.GetForward().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_S)) // S
+        if (Input.KeyPressed(Inputs.KEY_DOWN)) // S
         {
             Camera.Move(Camera.GetForward().neg().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_A)) // A
+        if (Input.KeyPressed(Inputs.KEY_LEFT)) // A
         {
             Camera.Move(Camera.GetRight().neg().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_D)) // D
+        if (Input.KeyPressed(Inputs.KEY_RIGHT)) // D
         {
             Camera.Move(Camera.GetRight().mul(this.camSpeed).mul(dt));
         }
@@ -59,7 +69,7 @@ export class CameraComponent extends NativeComponent implements Component {
             Camera.Move(Camera.GetUp().mul(this.camSpeed).mul(dt));
         }
 
-        if (Input.KeyPressed(Inputs.KEY_F)) // F
+        if (Input.MousePressed(Inputs.MOUSE_BUTTON_2)) // F
         {
             let pos : Vector2 = Input.CursorPos();
             if (this.cursorPos.x >= 0.0 && this.cursorPos.y >= 0.0)
@@ -69,7 +79,7 @@ export class CameraComponent extends NativeComponent implements Component {
         }
     }
 
-    debugUpdate(this : CameraComponent)
+    debugUpdate()
     {
         if (ImGui.Begin("Camera Component")) {
             ImGui.LabelText("Camera Speed");
@@ -82,7 +92,7 @@ export class CameraComponent extends NativeComponent implements Component {
 
 
     shutdown(): void {
-        print("camera component");
+        print("camera component shutdown");
         Debug.UnregisterDebugMenu("CameraComponent");
     }
     

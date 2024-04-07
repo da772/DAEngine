@@ -28,6 +28,9 @@ namespace da
 		void retrieveInfo();
 
 	private:
+		std::string getRelativePath(const std::string& str);
+
+	private:
 		std::string m_path;
 		std::vector<char> m_data;
 		size_t m_size = 0;

@@ -7,9 +7,12 @@
       "types": ["@typescript-to-lua/language-extensions"],
       "strict": false,
       "outDir": "./build",
+      "sourceMap": true,
     },
     "tstl": {
+      "luaLibImport": "require",
       "luaTarget": "JIT",
-      "sourceMapTraceback": true
+      "sourceMapTraceback": true,
+      "noResolvePaths": ["lldebugger"]
     },
   }

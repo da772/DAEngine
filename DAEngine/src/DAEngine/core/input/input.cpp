@@ -14,10 +14,10 @@ namespace da::core {
 		LOG_ASSERT(window, ELogChannel::Core, "Attempting to register NULL window");
 
 		registerKeyboardInput(window);
-		registerMouseMove(window);
+		registerMouseInput(window);
 	}
 
-	void CInput::registerMouseMove(CWindow* window) {
+	void CInput::registerMouseInput(CWindow* window) {
 
 		const auto& it = CInput::s_mouse.find(window);
 
@@ -31,11 +31,15 @@ namespace da::core {
 		data.Window = window;
 		data.XPos = 0.0;
 		data.YPos = 0.0;
+		data.XScroll = 0.0;
+		data.YScroll = 0.0;
 		data.Func = [window](const core::events::CEvent& e) {
-			handleMouseMove(window, e);
+			handleMouseInput(window, e);
 			};
 
 		window->getEventHandler().registerCallback(events::EEventType::InputCursorMove, data.Func);
+		window->getEventHandler().registerCallback(events::EEventType::InputMouseButton, data.Func);
+		window->getEventHandler().registerCallback(events::EEventType::InputMouseScroll, data.Func);
 		s_mouse[window] = std::move(data);
 	}
 
@@ -67,10 +71,10 @@ namespace da::core {
 		LOG_ASSERT(window, ELogChannel::Core, "Attempting to unregister NULL window");
 
 		unregisterKeyboardInput(window);
-		unregisterMouseMove(window);
+		unregisterMouseInput(window);
 	}
 
-	void CInput::unregisterMouseMove(CWindow* window)
+	void CInput::unregisterMouseInput(CWindow* window)
 	{
 		const auto& it = s_mouse.find(window);
 
@@ -81,6 +85,8 @@ namespace da::core {
 		}
 
 		it->second.Window->getEventHandler().unregisterCallback(events::EEventType::InputCursorMove, it->second.Func);
+		it->second.Window->getEventHandler().unregisterCallback(events::EEventType::InputMouseButton, it->second.Func);
+		it->second.Window->getEventHandler().unregisterCallback(events::EEventType::InputMouseScroll, it->second.Func);
 		s_mouse.erase(it);
 	}
 
@@ -125,6 +131,15 @@ namespace da::core {
 		return false;
 	}
 
+	bool CInput::mouseInputPressed(int input)
+	{
+		for (const std::pair<CWindow*, FWindowMouseData>& it : s_mouse) {
+			if (std::find(it.second.Inputs.begin(), it.second.Inputs.end(), input) != it.second.Inputs.end()) return true;
+		}
+
+		return false;
+	}
+
 	void CInput::handleKeyInput(class CWindow* window, const events::CEvent& e)
 	{
 		if (e.getCategory() != EEventCategory::Input) return;
@@ -157,20 +172,53 @@ namespace da::core {
 		data.Inputs.push_back(btn->getBtn());
 	}
 
-	void CInput::handleMouseMove(class CWindow* window, const events::CEvent& e)
+	void CInput::handleMouseInput(class CWindow* window, const events::CEvent& e)
 	{
 		if (e.getCategory() != EEventCategory::Input) return;
 
-		if (e.getType() != EEventType::InputCursorMove) {
+		if (e.getType() == EEventType::InputCursorMove) {
+			const CInputCursorMoveEvent* mouse = static_cast<const CInputCursorMoveEvent*>(&e);
+			FWindowMouseData& data = s_mouse[window];
+
+			data.XPos = mouse->getX();
+			data.YPos = mouse->getY();
 			return;
 		}
 
-		const CInputCursorMoveEvent* mouse = static_cast<const CInputCursorMoveEvent*>(&e);
-		FWindowMouseData& data = s_mouse[window];
+		if (e.getType() == EEventType::InputMouseButton) {
+			const CInputMouseButtonEvent* btn = static_cast<const CInputMouseButtonEvent*>(&e);
+			FWindowMouseData& data = s_mouse[window];
 
-		data.XPos = mouse->getX();
-		data.YPos = mouse->getY();
+			const auto& it = std::find(data.Inputs.begin(), data.Inputs.end(), btn->getBtn());
+
+			if (btn->getType() == da::core::EInputType::RELEASED)
+			{
+				if (it == data.Inputs.end())
+				{
+					return;
+				}
+
+				data.Inputs.erase(it);
+				return;
+			}
+
+			if (it != data.Inputs.end())
+			{
+				return;
+			}
+
+			data.Inputs.push_back(btn->getBtn());
+			return;
+		}
+
+		if (e.getType() == EEventType::InputMouseButton) {
+			const CInputScrollEvent* mouse = static_cast<const CInputScrollEvent*>(&e);
+			FWindowMouseData& data = s_mouse[window];
+
+			data.XScroll = mouse->getXOffset();
+			data.YScroll = mouse->getYOffset();
+			return;
+		}
 	}
-
 
 }

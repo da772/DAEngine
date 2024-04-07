@@ -11,6 +11,7 @@ namespace da::core
 	uint64_t CTime::ms_fps = 0;
 	uint64_t CTime::ms_totalFrameCount = 0;
 	double CTime::ms_timer = 0.0;
+	std::vector<da::core::FTimerDelegate> CTime::ms_timers;
 
 
 	uint64_t CTime::getEpochTimeNS()
@@ -55,7 +56,13 @@ namespace da::core
 			ms_timer = 0.0;
 		}
 		
-
+		for (int i = ms_timers.size()-1; i >= 0; --i) {
+			FTimerDelegate& timer = ms_timers[i];
+			if ((size_t)time - timer.StartTime >= timer.TimeMS) {
+				timer.Callback();
+				ms_timers.erase(ms_timers.begin() + i);
+			}
+		}
 
 		return ms_timeStep;
 	}
@@ -63,6 +70,12 @@ namespace da::core
 	uint64_t CTime::getFrameCount()
 	{
 		return ms_totalFrameCount;
+	}
+
+	void CTime::addTimerCallback(size_t ms, const std::function<void()>& callback)
+	{
+		FTimerDelegate timer = { ms, getEpochTimeMS(), callback };
+		ms_timers.push_back(timer);
 	}
 
 }

@@ -39,7 +39,10 @@ namespace da::physics
 
 	CBullet3Vehicle::~CBullet3Vehicle()
 	{
+		CBullet3Physics* physics = dynamic_cast<CBullet3Physics*>(CPhysics::getPhysicsType());
+		ASSERT(physics);
 		ASSERT(m_vehicle);
+		physics->getDynamicsWorld()->removeVehicle(m_vehicle);
 		delete m_vehicle;
 		m_vehicle = nullptr;
 
@@ -63,10 +66,10 @@ namespace da::physics
 		btVector3 wheelAxleCS(1, 0, 0);
 
 		btScalar suspensionRestLength(0.075f);
-		btScalar wheelWidth(0.15f);
-		btScalar wheelRadius(0.20f);
+		btScalar wheelWidth(0.265f);
+		btScalar wheelRadius(0.353f);
 
-		btVector3 wheelConnectionPoint = { 0.8f,  1.468f, -0.3701f};
+		btVector3 wheelConnectionPoint = { 0.8f,  1.468f, -0.37f};
 
 		// FR
 		m_vehicle->addWheel(wheelConnectionPoint, wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, true);
@@ -88,7 +91,7 @@ namespace da::physics
 			wheel.m_wheelsDampingRelaxation = btScalar(0.5) * 2 * btSqrt(wheel.m_suspensionStiffness);//1;
 			//Larger friction slips will result in better handling
 			wheel.m_frictionSlip = btScalar(1.2);
-			wheel.m_rollInfluence = 1;
+			wheel.m_rollInfluence = .5f;
 		}
 	}
 

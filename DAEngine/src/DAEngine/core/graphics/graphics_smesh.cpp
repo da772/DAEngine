@@ -12,6 +12,7 @@
 #include <glm/fwd.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #endif
+#include "assimp_conversion_helpers.h"
 
 
 namespace da::graphics
@@ -37,74 +38,90 @@ namespace da::graphics
 			| aiProcess_FlipWindingOrder
 			| aiProcess_FlipUVs
 		);
-		static glm::mat4 transformMat = glm::mat4(1.0f);// *glm::rotate(glm::mat4(1.0f), glm::radians(180.f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		m_meshes = {};
 		m_meshes.reserve(pScene->mNumMeshes);
 
 		std::queue<aiNode*> q;
 		q.push(pScene->mRootNode);
+		size_t count = 0;
+		while (!q.empty()) {
 
-		for (size_t i = 0; i < pScene->mNumMeshes; i++)
-		{
-			std::vector<FVertexBase> vertices;
-			std::vector<uint32_t> indices;
+			aiNode* node = q.front();
+			q.pop();
 
-			for (size_t v = 0; v < pScene->mMeshes[i]->mNumVertices; v++) {
-				FVertexBase vertex{};
-				glm::vec3 pos = transformMat * glm::vec4(pScene->mMeshes[i]->mVertices[v].x, pScene->mMeshes[i]->mVertices[v].y, pScene->mMeshes[i]->mVertices[v].z, 1.f);
-				vertex.Pos = {
-					pos.x,
-					pos.y,
-					pos.z
-				};
-			
-				if (pScene->mMeshes[i]->HasTextureCoords(0))
-				{
-					vertex.TexCoord = {
-						pScene->mMeshes[i]->mTextureCoords[0][v].x,
-						pScene->mMeshes[i]->mTextureCoords[0][v].y
+			for (size_t i = 0; i < node->mNumMeshes; i++)
+			{
+				std::vector<FVertexBase> vertices;
+				std::vector<uint32_t> indices;
+
+				aiMesh* mesh = pScene->mMeshes[node->mMeshes[i]];
+
+				glm::mat4 parentTransform = node->mParent ? AssimpGLMHelpers::ConvertMatrixToGLMFormat(node->mParent->mTransformation) : glm::mat4(1.f);
+				glm::mat4 transform = AssimpGLMHelpers::ConvertMatrixToGLMFormat(node->mTransformation) * parentTransform;
+
+				for (size_t v = 0; v < mesh->mNumVertices; v++) {
+
+					FVertexBase vertex{};
+					glm::vec3 pos = transform * glm::vec4(mesh->mVertices[v].x, mesh->mVertices[v].y, mesh->mVertices[v].z, 1.f);
+					vertex.Pos = {
+						pos.x,
+						pos.y,
+						pos.z
 					};
-				}
 
-				if (pScene->mMeshes[i]->HasNormals())
-				{
-					glm::vec3 normals = glm::normalize(transformMat * glm::vec4(pScene->mMeshes[i]->mNormals[v].x, pScene->mMeshes[i]->mNormals[v].y, pScene->mMeshes[i]->mNormals[v].z, 1.f));
-					if (inverseNormals) {
-						normals *= -1.f;
+					if (mesh->HasTextureCoords(0))
+					{
+						vertex.TexCoord = {
+							mesh->mTextureCoords[0][v].x,
+							mesh->mTextureCoords[0][v].y
+						};
 					}
-					vertex.Normal = {
-						normals.x,
-						normals.y,
-						normals.z
-					};
-				}
 
-				if (pScene->mMeshes[i]->HasTangentsAndBitangents())
-				{
-					glm::vec3 tangents = glm::normalize(transformMat * glm::vec4(pScene->mMeshes[i]->mTangents[v].x, pScene->mMeshes[i]->mTangents[v].y, pScene->mMeshes[i]->mTangents[v].z, 1.f));
-					if (inverseNormals) {
-						tangents *= -1.f;
+					if (mesh->HasNormals())
+					{
+						glm::vec3 normals = glm::vec3(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z);//glm ::normalize(transform * glm::vec4(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z, 1.f));
+						if (inverseNormals) {
+							normals *= -1.f;
+						}
+						vertex.Normal = {
+							normals.x,
+							normals.y,
+							normals.z
+						};
 					}
-					vertex.Tangent = {
-						tangents.x,
-						tangents.y,
-						tangents.z,
-					};
+
+					if (mesh->HasTangentsAndBitangents())
+					{
+						glm::vec3 tangents = glm::vec3(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z); //glm ::normalize(transform * glm::vec4(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z, 1.f));
+						if (inverseNormals) {
+							tangents *= -1.f;
+						}
+						vertex.Tangent = {
+							tangents.x,
+							tangents.y,
+							tangents.z,
+						};
+					}
+
+					vertices.push_back(vertex);
 				}
 
-				vertices.push_back(vertex);
-			}
+				for (size_t j = 0; j < mesh->mNumFaces; j++) {
+					for (size_t m = 0; m < mesh->mFaces[j].mNumIndices; m++) {
+						indices.push_back(mesh->mFaces[j].mIndices[m]);
+					}
 
-			for (size_t j = 0; j < pScene->mMeshes[i]->mNumFaces; j++) {
-				for (size_t m = 0; m < pScene->mMeshes[i]->mFaces[j].mNumIndices; m++) {
-					indices.push_back(pScene->mMeshes[i]->mFaces[j].mIndices[m]);
 				}
-				
+
+				m_meshes.push_back({ std::move(vertices), std::move(indices), mesh->mMaterialIndex });
+
 			}
-			
-			m_meshes.push_back({ std::move(vertices), std::move(indices), pScene->mMeshes[i]->mMaterialIndex });
+			for (size_t i = 0; i < node->mNumChildren; i++) {
+				q.push(node->mChildren[i]);
+			}
 		}
+
 
 		m_materials = {};
 		m_materials.reserve(pScene->mNumMaterials);

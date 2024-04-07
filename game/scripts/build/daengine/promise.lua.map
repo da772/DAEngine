@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/daengine/promise.ts"],"names":["this"],"mappings":";;;;;;;AAAA;MAAa;AAAb;AAMI;AACI,IAAAA,gBAAgB;QAAI;QAAW,eAAC,SAAS;AACrC,YAAAA,gBAAgB;AAChB,YAAAA,eAAe;QAFY;;AADnC;AAOA;AACI,WAAO,AAAAA;AADX;AAIA,yDAAQ;IACJ,AAAAA,KAAK,SAAS;AADlB;AAIA;IACI,AAAAA,KAAK;AADT;AAKO,sBAAU","file":"promise.lua","sourceRoot":""}

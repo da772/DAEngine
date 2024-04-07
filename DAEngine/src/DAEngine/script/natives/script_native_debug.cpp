@@ -20,6 +20,11 @@ struct FHashIdentifier {
 		return (Group == other.Group
 			&& Id == other.Id);
 	}
+
+	size_t hash() const {
+		return (Group.hash()
+			^ (Id.hash() << 1) >> 1);
+	}
 };
 
 template <>
@@ -31,12 +36,11 @@ struct std::hash<FHashIdentifier>
 		// second and third and combine them using XOR
 		// and bit shifting:
 
-		return (k.Group.hash()
-			^ (k.Id.hash() << 1) >> 1);
+		return k.hash();
 	}
 };
 
-static std::unordered_map<FHashIdentifier, std::function<void()>> s_debugMenu;
+static std::unordered_map<size_t, std::function<void()>> s_debugMenu;
 
 
 extern "C" static int lua_register_debug_menu(lua_State * L)
@@ -46,8 +50,9 @@ extern "C" static int lua_register_debug_menu(lua_State * L)
 
 	CHashString idHash = HASHSTR(id), groupHash = HASHSTR(group);
 
+	size_t hashId = FHashIdentifier(idHash, groupHash).hash();
 
-	if (s_debugMenu.find({ idHash, groupHash }) != s_debugMenu.end())
+	if (s_debugMenu.find(hashId) != s_debugMenu.end())
 	{
 		return 0;
 	}
@@ -65,7 +70,7 @@ extern "C" static int lua_register_debug_menu(lua_State * L)
 		lua_pcall(L, 1, 0, 0);
 	});
 
-	s_debugMenu[{groupHash, idHash}] = [L, funcRef, objRef, b] {
+	s_debugMenu[hashId] = [L, funcRef, objRef, b] {
 		delete b;
 		luaL_unref(L, LUA_REGISTRYINDEX, funcRef);
 		luaL_unref(L, LUA_REGISTRYINDEX, objRef);
@@ -82,17 +87,17 @@ extern "C" static int lua_unregister_debug_menu(lua_State * L)
 	
 	if (!id || !group) return 0;
 
-	CHashString hash = HASHSTR(id);
+	size_t hashId = FHashIdentifier(idHash, groupHash).hash();
 
-	const auto& it = s_debugMenu.find({idHash, groupHash});
+	const auto& it = s_debugMenu.find(hashId);
 
 	if (it == s_debugMenu.end())
 	{
 		return 0;
 	}
 
-	it->second();
 	da::debug::CDebugMenuBar::unregister_debug(groupHash, idHash);
+	s_debugMenu.erase(it);
 
 	return 0;
 }

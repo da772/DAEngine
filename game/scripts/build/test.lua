@@ -13,7 +13,7 @@ function TestComponent.prototype.____constructor(self)
     self.e = __TS__New(Employee, 1, "Steve")
 end
 function TestComponent.prototype.initialize(self)
-    print(nil, "script init")
+    print("script init")
 end
 function TestComponent.prototype.update(self, dt)
     local sum = 0
@@ -27,7 +27,7 @@ function TestComponent.prototype.update(self, dt)
     end
 end
 function TestComponent.prototype.shutdown(self)
-    print(nil, "shut down")
+    print("shut down")
 end
 ____exports.component = __TS__New(____exports.TestComponent)
 return ____exports

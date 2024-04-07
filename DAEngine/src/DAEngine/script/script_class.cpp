@@ -110,11 +110,37 @@ namespace da::script
 	{
 		if (!m_state) return;
 		lua_State* L = (lua_State*)m_state;
+		sol::state_view lua(L);
 
-		lua_rawgeti(L, LUA_REGISTRYINDEX, m_initRef);
-		lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
-		lua_pcall(L, 1, 0, 0);
-		lua_pop(L, lua_gettop(L));
+		sol::protected_function func(lua, (sol::ref_index)m_initRef);
+#ifdef DA_REVIEW
+		sol::protected_function protectedFunc = lua.safe_script(
+			"function eh(err) \
+				print(\"Error: \", err) \
+				print(debug.traceback()) \
+			end\
+			function callFunc(func, obj, dt) \
+				status, ret = xpcall(func, eh, obj)\
+				return status \
+			end\
+			return callFunc\
+			");
+		sol::protected_function_result res = protectedFunc(func, sol::object(L, (sol::ref_index)m_objRef));
+#else
+		sol::protected_function_result res = func(sol::object(L, (sol::ref_index)m_objRef));
+#endif
+
+		if (!res.valid()) {
+			sol::error err = res;
+			LOG_ASSERT(res.valid(), ELogChannel::Script, "Script Failed: %s with Err: %s", m_path, err.what())
+		}
+
+#ifdef DA_REVIEW
+		if (!res.get<bool>()) {
+			sol::error err = res;
+			LOG_ASSERT(res.valid(), ELogChannel::Script, "Script Failed: %s with Err: %s", m_path, err.what())
+		}
+#endif
 	}
 
 	void CScriptClass::classUpdate(float dt)
@@ -124,23 +150,71 @@ namespace da::script
 		sol::state_view lua(L);
 
 		sol::protected_function func(lua, (sol::ref_index)m_updateRef);	
+#ifdef DA_REVIEW
+		sol::protected_function protectedFunc = lua.safe_script(
+			"function eh(err) \
+				print(\"Error: \", err) \
+				print(debug.traceback()) \
+			end\
+			function callFunc(func, obj, dt) \
+				status, ret = xpcall(func, eh, obj, dt)\
+				return status \
+			end\
+			return callFunc\
+			");
+		sol::protected_function_result res = protectedFunc(func, sol::object(L, (sol::ref_index)m_objRef), dt);
+#else
 		sol::protected_function_result res = func(sol::object(L, (sol::ref_index)m_objRef), dt);
-	
+#endif
+
 		if (!res.valid()) {
 			sol::error err = res;
 			LOG_ASSERT(res.valid(), ELogChannel::Script, "Script Failed: %s with Err: %s", m_path, err.what())
 		}
+
+#ifdef DA_REVIEW
+		if (res.get_type() == sol::type::boolean && res.get<bool>() == false) {
+			sol::error err = res;
+			LOG_ERROR(ELogChannel::Script, "Script Failed: %s with Err: %s", m_path, err.what());
+		}
+#endif
 	}
 
 	void CScriptClass::classShutdown()
 	{
 		if (!m_state) return;
 		lua_State* L = (lua_State*)m_state;
+		sol::state_view lua(L);
 
-		lua_rawgeti(L, LUA_REGISTRYINDEX, m_shutdownRef);
-		lua_rawgeti(L, LUA_REGISTRYINDEX, m_objRef);
-		lua_pcall(L, 1, 0, 0);
-		lua_pop(L, lua_gettop(L));
+		sol::protected_function func(lua, (sol::ref_index)m_shutdownRef);
+#ifdef DA_REVIEW
+		sol::protected_function protectedFunc = lua.safe_script(
+			"function eh(err) \
+				print(\"Error: \", err) \
+				print(debug.traceback()) \
+			end\
+			function callFunc(func, obj, dt) \
+				status, ret = xpcall(func, eh, obj)\
+				return status \
+			end\
+			return callFunc\
+			");
+		sol::protected_function_result res = protectedFunc(func, sol::object(L, (sol::ref_index)m_objRef));
+#else
+		sol::protected_function_result res = func(sol::object(L, (sol::ref_index)m_objRef));
+#endif
+
+		if (!res.valid()) {
+			sol::error err = res;
+			LOG_ASSERT(res.valid(), ELogChannel::Script, "Script Failed: %s with Err: %s", m_path, err.what())
+		}
+
+#ifdef DA_REVIEW
+		if (!res.get<bool>()) {
+			sol::error err = res;
+			LOG_ASSERT(res.valid(), ELogChannel::Script, "Script Failed: %s with Err: %s", m_path, err.what())
+		}
+#endif
 	}
 
 }
