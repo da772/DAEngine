@@ -22,9 +22,10 @@ namespace da::modules
 class CVehicle
 {
 public:
-	void initialize(da::modules::CWindowModule* window);
+	void initialize(da::modules::CWindowModule* window, const glm::vec3& pos = {0.f,0.f,1.f}, bool proxy = false);
 	void update(float dt);
 	void shutdown();
+	da::core::CEntity* getEntity() const;
 
 private:
 	void updateWheels(float dt);
@@ -41,6 +42,8 @@ private:
 	da::physics::IVehicle* m_vehicle;
 	bool m_controlCamera = true;
 	da::modules::CWindowModule* m_window;
+
+	bool m_proxy;
 
 	float m_engineMaxPower = 3000.f;
 	float m_brakeMaxPower = 300.f;

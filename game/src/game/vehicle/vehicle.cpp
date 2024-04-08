@@ -14,13 +14,15 @@
 #include <DAEngine/physics/physics_vehicle.h>
 #include <DAEngine/core/input/input.h>
 #include <DAEngine/core/graphics/graphics_smesh.h>
+#include <glm/gtx/vector_angle.hpp> 
 
 #ifdef DA_REVIEW
 #include <imgui.h>
 #endif
 
-void CVehicle::initialize(da::modules::CWindowModule* window) {
+void CVehicle::initialize(da::modules::CWindowModule* window, const glm::vec3& pos, bool proxy) {
 	m_window = window;
+	m_proxy = proxy;
 
 	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
 		m_entity = scene->createEntity();
@@ -29,18 +31,24 @@ void CVehicle::initialize(da::modules::CWindowModule* window) {
 		cc->getStaticMesh()->getMaterial(0).metallicFactor = .150f;
 		cc->getStaticMesh()->getMaterial(0).roughnessFactor = .0f;
 		cc->getStaticMesh()->getMaterial(0).setEmissiveTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/Tex_Veh_Pearl_02_Cream_Emissive.png"));
-		cc->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/Tex_Veh_Pearl_01_Red_Albedo.png"));
+		if (!m_proxy) cc->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/Tex_Veh_Pearl_01_Red_Albedo.png"));
 		cc->getStaticMesh()->getMaterial(0).emissiveFactor = {1000.f,1.f,1.f};
-		m_entity->getTransform().setPosition({ 0.f,0.f,1.f });
+		m_entity->getTransform().setPosition(pos);
 		m_entity->setTag("Vehicle");
 
 		da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->addComponent<da::core::CPointLightComponent>();
 		setHeadLights(true);
 		setBrakeLights(true);
 
+		if (m_proxy)
+		{
+			return;
+		}
+
 		da::graphics::CStaticMesh* collisionMesh = new da::graphics::CStaticMesh("assets/prop/veh/prop_collision_veh_sports_01a.fbx", false);
 		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(da::physics::IPhysicsShape::createMeshConvexHull(collisionMesh)
+			//da::physics::IPhysicsRigidBody::create(da::physics::IPhysicsShape::createMeshConvexHull(collisionMesh)
+			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({1.f, 2.525f, .35f})
 				, da::physics::CPhysicsEntityMotionState::create(m_entity)
 				, 1200.f
 				, { 0.f,0.f,0.f }));
@@ -69,23 +77,32 @@ void CVehicle::initialize(da::modules::CWindowModule* window) {
 
 void CVehicle::update(float dt)
 {
-	da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->getComponent<da::core::CRigidBodyComponent>();
+
 	da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->getComponent<da::core::CPointLightComponent>();
 	da::core::CCamera* cam = da::core::CCamera::getCamera();
 	const glm::vec3 entityPos = m_entity->getTransform().position();
 	const glm::mat4 entityT = glm::toMat4(m_entity->getTransform().rotation());
-	processInput(dt);
-	updateWheels(dt);
 
 	if (m_headLightR && m_headLightL) {
-		lights->updateLight(m_headLightR, entityPos + glm::vec3(entityT * glm::vec4(0.948619f, 3.70286f, -0.011385f, 1.f)));
-		lights->updateLight(m_headLightL, entityPos + glm::vec3(entityT * glm::vec4(-0.948619f, 3.70286f, -0.011385f, 1.f)));
+		glm::vec3 rightPos = entityPos + glm::vec3(entityT * glm::vec4(0.948619f, 3.70286f, -0.011385f, 1.f));
+		lights->updateLight(m_headLightR, rightPos);
+		glm::vec3 leftPos = entityPos + glm::vec3(entityT * glm::vec4(-0.948619f, 3.70286f, -0.011385f, 1.f));
+		lights->updateLight(m_headLightL, leftPos);
 	}
 
 	if (m_brakeLightR && m_brakeLightL) {
 		lights->updateLight(m_brakeLightR, entityPos + glm::vec3(entityT * glm::vec4(0.895837f, -2.3808f, 0.110954f, 1.f)));
 		lights->updateLight(m_brakeLightL, entityPos + glm::vec3(entityT * glm::vec4(-0.8925837f, -2.3808f, 0.110954f, 1.f)));
 	}
+
+	if (m_proxy) {
+		return;
+	}
+
+	da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->getComponent<da::core::CRigidBodyComponent>();
+
+	updateWheels(dt);
+	processInput(dt);
 
 	float len = glm::abs(glm::length(rb->getPhysicsBody()->getLinearVelocity()));
 	float mph = len * 2.237;
@@ -129,8 +146,8 @@ void CVehicle::update(float dt)
 
 	glm::vec3 pos = glm::mix(cam->position(), entityPos + (m_entity->getTransform().forward() * -5.5f) + glm::vec3(0.f, 0.f, 3.5f), 15.f * dt);
 	cam->setPosition(pos);
-	glm::vec3 rot = glm::eulerAngles(m_entity->getTransform().rotation());
-	glm::quat quatRot = glm::slerp(cam->rotation(), glm::quat(glm::radians(glm::vec3(-20.f, 0.f, glm::degrees(rot.z)))), 15.f * dt);
+	glm::quat targetRot = m_entity->getTransform().rotation() * glm::angleAxis(-0.4490f, glm::vec3(1.f, 0.f, 0.f));
+	glm::quat quatRot = glm::slerp(cam->rotation(), targetRot, 15.f * dt);
 	cam->setRotation(quatRot);
 }
 
@@ -146,6 +163,11 @@ void CVehicle::shutdown()
 	m_wheels = {};
 
 	m_window->getEventHandler().unregisterCallback(EEventType::InputKeyboard, BIND_EVENT_FN(CVehicle, onKeyboardInput));
+}
+
+da::core::CEntity* CVehicle::getEntity() const
+{
+	return m_entity;
 }
 
 void CVehicle::updateWheels(float dt)

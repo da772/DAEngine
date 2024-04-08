@@ -10,6 +10,9 @@ namespace da::core
 	std::condition_variable CWorkerPool::ms_condition;
 	bool CWorkerPool::ms_terminateThreads = false;
 	std::mutex CWorkerPool::ms_PauseMutex;
+	std::vector<std::function<void()>> CWorkerPool::m_mainFuncs;
+	std::mutex CWorkerPool::ms_mainThreadMutex;
+
 
 	void CWorkerPool::addJob(std::function<void()> func)
 	{
@@ -89,6 +92,30 @@ namespace da::core
 	std::mutex& CWorkerPool::getPauseMutex()
 	{
 		return ms_PauseMutex;
+	}
+
+	void CWorkerPool::join()
+	{
+		for (std::thread& t : CWorkerPool::ms_threads) {
+			if (t.joinable()) {
+				t.join();
+			}
+		}
+	}
+
+	void CWorkerPool::addMainJob(std::function<void()> func)
+	{
+		std::lock_guard<std::mutex> guard(ms_mainThreadMutex);
+		m_mainFuncs.push_back(func);
+	}
+
+	void CWorkerPool::update()
+	{
+		std::lock_guard<std::mutex> guard(ms_mainThreadMutex);
+		for (const std::function<void()>& f : m_mainFuncs) {
+			f();
+		}
+		m_mainFuncs = {};
 	}
 
 

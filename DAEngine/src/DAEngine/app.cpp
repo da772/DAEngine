@@ -8,6 +8,7 @@
 #include "core/ecs/scene_manager.h"
 #include "core/threading/worker_pool.h"
 #include "core/time.h"
+#include "net/network_manager.h"
 
 #include "physics/physics.h"
 
@@ -37,7 +38,7 @@ namespace da
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("App"), HASHSTR("Reset"), &m_reset, [&] { reset();});
 #endif
 #endif
-
+		da::net::CNetworkManager::initialize();
 		core::CSceneManager::initialize();
 		da::physics::CPhysics::initialize();
 		for (IModule* m : m_modules) {
@@ -67,8 +68,8 @@ namespace da
 				scene->update(timeStep);
 			}
 
+			da::core::CWorkerPool::update();
 			da::physics::CPhysics::update(timeStep);
-
 			da::graphics::CAnimationManager::updateEnd();
 			for (IModule* m : m_modules) {
 				m->lateUpdate();
@@ -102,6 +103,7 @@ namespace da
 		m_modules = {};
 		da::physics::CPhysics::shutdown();
 		core::CSceneManager::shutdown();
+		da::net::CNetworkManager::shutdown();
 #ifndef DA_TEST
 		script::CScriptEngine::shutdown();
 #ifdef DA_REVIEW

@@ -36,7 +36,7 @@ namespace da::physics
 			(btScalar*)m.Vertices.data(),
 			sizeof(da::graphics::FVertexBase)
 		);
-		m_shape = new btBvhTriangleMeshShape(m_vertexArray, false);
+		m_shape = new btBvhTriangleMeshShape(m_vertexArray, true);
 	}
 
 	CBullet3TriangleMesh::~CBullet3TriangleMesh()

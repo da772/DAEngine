@@ -3,6 +3,8 @@
 //engine
 #include <daengine/physics.h>
 #include <daengine/graphics.h>
+#include <daengine/threading.h>
+#include <imgui.h>
 
 // game
 #include "game/vehicle/vehicle.h"
@@ -19,7 +21,7 @@ void CTestBed02Level::initialize()
 
 	// Vehicle
 	m_vehicle = new CVehicle();
-	m_vehicle->initialize(&m_window);
+	m_vehicle->initialize(&m_window, { -144.f, -80.f, -4.f });
 
 	// Test Bed
 	{
@@ -29,62 +31,132 @@ void CTestBed02Level::initialize()
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = false;
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
+		meshComponent->getStaticMesh()->getMaterial(0).baseColorFactor = { 128.f / 255.f,126.f / 255.f,120.f/255.f,1.f};
 		meshComponent->getStaticMesh()->getMaterial(1).doubleSided = false;
 		meshComponent->getStaticMesh()->getMaterial(1).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(1).roughnessFactor = 1.0;
-		meshComponent->getStaticMesh()->getMaterial(1).uvScale = { 11.0f, 11.f };
+		meshComponent->getStaticMesh()->getMaterial(1).baseColorFactor = { 184.f / 255.f, 68.f / 255.f, 6.f/255.f, 1.f };
+
 		meshComponent->getStaticMesh()->castShadows(false);
-		testBed->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(
-				da::physics::CPhysicsShapeCube::create({ 165.f,165.f,0.001f })
-				, da::physics::CPhysicsDefaultMotionState::create(testBed->getTransform().matrix())
-				, 0.f
-				, { 0.f,0.f,0.f }));
 		testBed->setTag(HASHSTR("TestBed"));
 	}
 
 	// Test Collision
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::graphics::CStaticMesh* collision = new da::graphics::CStaticMesh("assets/prop/level/testbed_collision.fbx");
+		da::graphics::CStaticMesh* collision = new da::graphics::CStaticMesh("assets/prop/level/testbed.fbx");
+
+		std::vector<da::physics::IPhysicsShape*> shapes;
+		std::vector<glm::mat4> shapestrans;
+
+		for (size_t i = 0; i < collision->getMeshes().size(); i++) {
+			shapes.push_back(da::physics::CPhysicsShapeTriangleMesh::create(collision, i));
+			shapestrans.push_back(glm::mat4(1.f));
+		}
+
 		testBed->addComponent<da::core::CRigidBodyComponent>(
 			da::physics::IPhysicsRigidBody::create(
-				da::physics::CPhysicsShapeTriangleMesh::create(collision)
+				da::physics::CPhysicsShapeCompound::create(shapes, shapestrans)
 				, da::physics::CPhysicsDefaultMotionState::create(testBed->getTransform().matrix())
 				, 0.f
 				, { 0.f,0.f,0.f }));
 		testBed->setTag(HASHSTR("TestBedCollision"));
 	}
-	
 
-	// Ramp1
-	{
-		da::core::CEntity* ramp = da::core::CSceneManager::getScene()->createEntity();
-		ramp->getTransform().setPosition({ 0,30,-3 });
-		ramp->getTransform().setRotation({ 15,0,0 });
-		ramp->getTransform().setScale({ 5,10,5.f });
-		ramp->setTag(HASHSTR("ramp1"));
+	m_playerId = da::core::CTime::getEpochTimeNS();
 
-		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = ramp->addComponent<da::core::CSmeshComponent>("assets/cube.fbx");
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/tex_debug_grid_01.png"));
+	if (m_network = da::net::CNetworkManager::getNetwork()) {
+		m_network->getPacket<FTransformPacketInfo>(TRANSFORM_PACKET_ID, [this](FTransformPacketInfo data) {
+			playerMovePacket(data);
+		});
 
-		ramp->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 5.f,10.f,5.f })
-				, da::physics::CPhysicsDefaultMotionState::create(ramp->getTransform().matrix())
-				, 0.f
-				, { 0.f,0.f,0.f }));
+		m_network->getPacket<FPlayerJoinPacketInfo>(PLAYER_JOIN_PACKET_ID, [this](FPlayerJoinPacketInfo data) {
+
+			const std::unordered_map<uint64_t, CVehicle*>::iterator& it = m_vehicles.find(data.PlayerId);
+			if (it != m_vehicles.end()) return;
+
+			LOG_DEBUG(da::ELogChannel::Application, "Player Joined: %ull", data.PlayerId);
+			m_vehicles[data.PlayerId] = new CVehicle();
+			m_vehicles[data.PlayerId]->initialize(&m_window, {-144.f, -80.f, -4.f}, true);
+
+
+			m_pushPlayerId = true;
+		});
+
+		m_network->getPacket<FPlayerLeavePacketInfo>(PLAYER_LEAVE_PACKET_ID, [this](FPlayerLeavePacketInfo data) {
+			LOG_DEBUG(da::ELogChannel::Application, "Player Left: %ull", data.PlayerId);
+			const std::unordered_map<uint64_t, CVehicle*>::iterator& it = m_vehicles.find(data.PlayerId);
+			if (it != m_vehicles.end()) {
+				it->second->shutdown();
+				delete it->second;
+				m_vehicles.erase(it);
+			}
+		});
+
+		m_vehicle->getEntity()->getTransform().addOnTransform([this](const glm::mat4& oldTransform, const glm::mat4& t) {
+			if (m_network && m_timePassed > .016f) {
+				m_timePassed = 0.0;
+				da::maths::CTransform& transform = m_vehicle->getEntity()->getTransform();
+				m_network->sendPacket<FTransformPacketInfo>(FTransformPacketInfo(m_playerId, transform.position(), transform.rotation()), false);
+			}
+		});
+
+		LOG_DEBUG(da::ELogChannel::Application, "Sending Player Joined Packet: %ull", m_playerId);
+		m_network->sendPacket<FPlayerJoinPacketInfo>(FPlayerJoinPacketInfo(m_playerId));
 	}
 }
+
+void CTestBed02Level::playerMovePacket(FTransformPacketInfo data)
+{
+	const auto& it = m_vehicles.find(data.PlayerId);
+
+	if (it == m_vehicles.end())
+	{
+		return;
+	}
+
+	da::maths::CTransform& transform = it->second->getEntity()->getTransform();
+
+	transform.setPosition(glm::mix(transform.position(), data.Position, 20.f * da::core::CTime::getTimeStep()));
+	transform.setRotation(glm::slerp(transform.rotation(), data.Rotation, 20.f * (float)da::core::CTime::getTimeStep()));	
+}
+
 
 void CTestBed02Level::update(float dt)
 {
 	m_vehicle->update(dt);
+
+	for (const auto& kv : m_vehicles) {
+		kv.second->update(dt);
+	}
+
+	m_timePassed += dt;
+
+	if (m_pushPlayerId)
+	{
+		m_pushPlayerId = false;
+		m_network->sendPacket<FPlayerJoinPacketInfo>(FPlayerJoinPacketInfo(m_playerId));
+	}
+
 }
 
 void CTestBed02Level::shutdown()
 {
 	m_vehicle->shutdown();
 	delete m_vehicle;
+
+	if (m_network) {
+		m_network->clearPackets();
+		m_network->sendPacket<FPlayerLeavePacketInfo>(FPlayerLeavePacketInfo(m_playerId));
+	}
+
+	for (const auto& kv : m_vehicles) {
+		delete kv.second;
+	}
+
+	m_vehicles = {};
+
+	
 
 	da::core::CSceneManager::setScene(nullptr);
 }
