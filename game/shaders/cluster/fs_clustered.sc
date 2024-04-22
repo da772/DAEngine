@@ -6,7 +6,7 @@ $input v_worldpos, v_normal, v_tangent, v_texcoord0
 #define SM_PCF 1
 #define SM_CSM 1
 
-#include <bgfx_shader.sh>
+#include <bgfx_shader.sh> 
 #include <bgfx_compute.sh>
 #include "util.sh"
 #include "lights.sh"
@@ -21,9 +21,12 @@ void main()
     float visibility = shadowPass(v_worldpos, u_view, saturate(dot(normalize(v_normal), u_sunLightDirection)), v_normal);
 
     // Lighting pass
-    vec3 radianceOut = lightPass(v_worldpos, v_normal, v_tangent, v_texcoord0, u_camPos, gl_FragCoord, visibility);
+    vec4 radianceOut = lightPass(v_worldpos, v_normal, v_tangent, v_texcoord0, u_camPos, gl_FragCoord, visibility);
+
+    if (radianceOut.w < 0.0001) 
+        discard;
 
     // Output
-    OUT0 = vec4(radianceOut, 1.0);
+    OUT0 = radianceOut;
     OUT1 = vec4(0.0,0.0,0.0,1.0);
 }

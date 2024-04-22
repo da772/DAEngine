@@ -20,7 +20,8 @@ void CTestBed02Level::initialize()
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 	// Vehicle
-	m_vehicle = new CVehicle();
+	m_playerId = da::core::CTime::getEpochTimeNS();
+	m_vehicle = new CVehicle(m_playerId);
 	m_vehicle->initialize(&m_window, { -144.f, -80.f, -4.f });
 
 	// Test Bed
@@ -63,20 +64,14 @@ void CTestBed02Level::initialize()
 		testBed->setTag(HASHSTR("TestBedCollision"));
 	}
 
-	m_playerId = da::core::CTime::getEpochTimeNS();
-
 	if (m_network = da::net::CNetworkManager::getNetwork()) {
-		m_network->getPacket<FTransformPacketInfo>(TRANSFORM_PACKET_ID, [this](FTransformPacketInfo data) {
-			playerMovePacket(data);
-		});
-
 		m_network->getPacket<FPlayerJoinPacketInfo>(PLAYER_JOIN_PACKET_ID, [this](FPlayerJoinPacketInfo data) {
 
 			const std::unordered_map<uint64_t, CVehicle*>::iterator& it = m_vehicles.find(data.PlayerId);
 			if (it != m_vehicles.end()) return;
 
 			LOG_DEBUG(da::ELogChannel::Application, "Player Joined: %ull", data.PlayerId);
-			m_vehicles[data.PlayerId] = new CVehicle();
+			m_vehicles[data.PlayerId] = new CVehicle((uint32_t)data.PlayerId);
 			m_vehicles[data.PlayerId]->initialize(&m_window, {-144.f, -80.f, -4.f}, true);
 
 
@@ -93,32 +88,9 @@ void CTestBed02Level::initialize()
 			}
 		});
 
-		m_vehicle->getEntity()->getTransform().addOnTransform([this](const glm::mat4& oldTransform, const glm::mat4& t) {
-			if (m_network && m_timePassed > .016f) {
-				m_timePassed = 0.0;
-				da::maths::CTransform& transform = m_vehicle->getEntity()->getTransform();
-				m_network->sendPacket<FTransformPacketInfo>(FTransformPacketInfo(m_playerId, transform.position(), transform.rotation()), false);
-			}
-		});
-
 		LOG_DEBUG(da::ELogChannel::Application, "Sending Player Joined Packet: %ull", m_playerId);
 		m_network->sendPacket<FPlayerJoinPacketInfo>(FPlayerJoinPacketInfo(m_playerId));
 	}
-}
-
-void CTestBed02Level::playerMovePacket(FTransformPacketInfo data)
-{
-	const auto& it = m_vehicles.find(data.PlayerId);
-
-	if (it == m_vehicles.end())
-	{
-		return;
-	}
-
-	da::maths::CTransform& transform = it->second->getEntity()->getTransform();
-
-	transform.setPosition(glm::mix(transform.position(), data.Position, 20.f * da::core::CTime::getTimeStep()));
-	transform.setRotation(glm::slerp(transform.rotation(), data.Rotation, 20.f * (float)da::core::CTime::getTimeStep()));	
 }
 
 

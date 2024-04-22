@@ -133,6 +133,23 @@ namespace da::core {
 		return guid;
 	}
 
+	CGuid CGuid::Generate(uint32_t seed)
+	{
+		srand(seed);
+
+		CGuid guid;
+		for (unsigned char i = 0; i < 4; i++)
+		{
+			int rnd = rand();
+			memcpy(&guid.m_uuid[i * 4], &rnd, sizeof(int));
+		}
+#if defined(DA_DEBUG) || defined(DA_RELEASE)
+		guid.genString();
+#endif
+
+		return guid;
+	}
+
 	void CGuid::genString(guid_str out) const
 	{
 		int index = 0;

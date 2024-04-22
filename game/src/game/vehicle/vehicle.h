@@ -22,6 +22,7 @@ namespace da::modules
 class CVehicle
 {
 public:
+	CVehicle(uint32_t id = 0);
 	void initialize(da::modules::CWindowModule* window, const glm::vec3& pos = {0.f,0.f,1.f}, bool proxy = false);
 	void update(float dt);
 	void shutdown();
@@ -39,7 +40,7 @@ private:
 	std::vector<da::core::CEntity*> m_wheels;
 	float m_acceleration = 0.f;
 	float m_steering = 0.f;
-	da::physics::IVehicle* m_vehicle;
+	da::physics::IVehicle* m_vehicle = nullptr;
 	bool m_controlCamera = true;
 	da::modules::CWindowModule* m_window;
 
@@ -55,5 +56,7 @@ private:
 
 	uint32_t m_brakeLightL = 0, m_brakeLightR = 0;
 	uint32_t m_headLightL = 0, m_headLightR = 0;
+
+	uint32_t m_id;
 
 };

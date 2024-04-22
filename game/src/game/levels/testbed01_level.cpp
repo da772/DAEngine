@@ -66,14 +66,14 @@ void CTestBed01Level::initialize()
 	// Test Bed
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/prop/level/testbed.fbx");
+		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/plane.fbx");
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_D.png"));
+		meshComponent->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_N.png"));
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = false;
+		meshComponent->getStaticMesh()->getMaterial(0).uvScale = {75.f, 75.f};
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
-		meshComponent->getStaticMesh()->getMaterial(1).doubleSided = false;
-		meshComponent->getStaticMesh()->getMaterial(1).metallicFactor = 0.0;
-		meshComponent->getStaticMesh()->getMaterial(1).roughnessFactor = 1.0;
-		meshComponent->getStaticMesh()->castShadows(false);
+		meshComponent->getStaticMesh()->castShadows(true);
 		testBed->addComponent<da::core::CRigidBodyComponent>(
 			da::physics::IPhysicsRigidBody::create(
 				  da::physics::CPhysicsShapeCube::create({ 165.f,165.f,0.001f })
@@ -81,6 +81,7 @@ void CTestBed01Level::initialize()
 				, 0.f
 				, { 0.f,0.f,0.f }));
 		testBed->setTag(HASHSTR("TestBed"));
+		testBed->getTransform().setScale({ 165.f, 165.f, 1.f });
 	}
 
 	// Ramp1

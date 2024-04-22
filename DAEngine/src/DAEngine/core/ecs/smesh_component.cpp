@@ -86,6 +86,10 @@ namespace da::core {
 					ImGui::SameLine();
 					ImGui::InputFloat3((std::string("##emissiveFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_staticMesh->getMaterial(i).emissiveFactor);
 
+					ImGui::Text("UV Scale");
+					ImGui::SameLine();
+					ImGui::InputFloat2((std::string("##uvFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_staticMesh->getMaterial(i).uvScale);
+
 				}
 				ImGui::Unindent();
 			}

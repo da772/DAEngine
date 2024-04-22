@@ -525,7 +525,7 @@ namespace da::platform {
 				{ //DepthImpl::InvZ
 
 					{ //SmImpl::Hard
-						12.0f, 7.0f, 12.0f, 1.0f         // m_sizePwrTwo
+						13.0f, 7.0f, 13.0f, 1.0f         // m_sizePwrTwo
 						, 1.0f, 1.0f, 20.0f, 1.0f          // m_depthValuePow
 						, .10f, 1.0f, 10.0f, 1.0f          // m_near
 						, 175.0f, 100.0f, 2000.0f, 50.0f   // m_far
@@ -543,7 +543,7 @@ namespace da::platform {
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::Hard] //m_progDraw
 					},
 					{ //SmImpl::PCF
-						12.0f, 7.0f, 12.0f, 1.0f         // m_sizePwrTwo
+						13.0f, 7.0f, 13.0f, 1.0f         // m_sizePwrTwo
 						, 1.0f, 1.0f, 20.0f, 1.0f          // m_depthValuePow
 						, 0.10f, 1.0f, 99.0f, 1.0f          // m_near
 						, 175.0f, 100.0f, 2000.0f, 50.0f   // m_far
@@ -561,7 +561,7 @@ namespace da::platform {
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::PCF] //m_progDraw
 					},
 					{ //SmImpl::VSM
-						12.0f, 7.0f, 12.0f, 1.0f         // m_sizePwrTwo
+						13.0f, 7.0f, 13.0f, 1.0f         // m_sizePwrTwo
 						, 1.0f, 1.0f, 20.0f, 1.0f          // m_depthValuePow
 						, 1.0f, 1.0f, 10.0f, 1.0f          // m_near
 						, 550.0f, 100.0f, 2000.0f, 50.0f   // m_far
@@ -579,7 +579,7 @@ namespace da::platform {
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::VSM] //m_progDraw
 					},
 					{ //SmImpl::ESM
-						12.0f, 7.0f, 12.0f, 1.0f         // m_sizePwrTwo
+						13.0f, 7.0f, 13.0f, 1.0f         // m_sizePwrTwo
 						, 1.0f, 1.0f, 20.0f, 1.0f          // m_depthValuePow
 						, 1.0f, 1.0f, 10.0f, 0.01f         // m_near
 						, 550.0f, 100.0f, 2000.0f, 50.0f   // m_far
@@ -601,7 +601,7 @@ namespace da::platform {
 				{ //DepthImpl::Linear
 
 					{ //SmImpl::Hard
-						12.0f, 7.0f, 12.0f, 1.0f         // m_sizePwrTwo
+						13.0f, 7.0f, 13.0f, 1.0f         // m_sizePwrTwo
 						, 1.0f, 1.0f, 20.0f, 1.0f          // m_depthValuePow
 						, 1.0f, 1.0f, 10.0f, 1.0f          // m_near
 						, 550.0f, 100.0f, 2000.0f, 50.0f   // m_far
@@ -619,7 +619,7 @@ namespace da::platform {
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::Hard] //m_progDraw
 					},
 					{ //SmImpl::PCF
-						12.0f, 7.0f, 12.0f, 1.0f         // m_sizePwrTwo
+						13.0f, 7.0f, 13.0f, 1.0f         // m_sizePwrTwo
 						, 1.0f, 1.0f, 20.0f, 1.0f          // m_depthValuePow
 						, 1.0f, 1.0f, 99.0f, 1.0f          // m_near
 						, 550.0f, 100.0f, 2000.0f, 50.0f   // m_far
@@ -637,7 +637,7 @@ namespace da::platform {
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::PCF] //m_progDraw
 					},
 					{ //SmImpl::VSM
-						12.0f, 7.0f, 12.0f, 1.0f         // m_sizePwrTwo
+						13.0f, 7.0f, 13.0f, 1.0f         // m_sizePwrTwo
 						, 1.0f, 1.0f, 20.0f, 1.0f          // m_depthValuePow
 						, 1.0f, 1.0f, 10.0f, 1.0f          // m_near
 						, 550.0f, 100.0f, 2000.0f, 50.0f   // m_far
@@ -655,7 +655,7 @@ namespace da::platform {
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::Linear][SmImpl::VSM] //m_progDraw
 					},
 					{ //SmImpl::ESM
-						12.0f, 7.0f, 12.0f, 1.0f         // m_sizePwrTwo
+						13.0f, 7.0f, 13.0f, 1.0f         // m_sizePwrTwo
 						, 1.0f, 1.0f, 20.0f, 1.0f          // m_depthValuePow
 						, 1.0f, 1.0f, 10.0f, 0.01f         // m_near
 						, 550.0f, 100.0f, 2000.0f, 50.0f   // m_far

@@ -20,19 +20,40 @@
 #include <imgui.h>
 #endif
 
+CVehicle::CVehicle(uint32_t id /*= 0*/) : m_id(id)
+{
+
+}
+
 void CVehicle::initialize(da::modules::CWindowModule* window, const glm::vec3& pos, bool proxy) {
 	m_window = window;
 	m_proxy = proxy;
 
 	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
-		m_entity = scene->createEntity();
+		m_entity = scene->createEntity(da::core::CGuid::Generate(m_id));
 
-		da::core::FComponentRef<da::core::CSmeshComponent> cc = m_entity->addComponent<da::core::CSmeshComponent>("assets/prop/veh/prop_veh_sports_01a.fbx", false);
-		cc->getStaticMesh()->getMaterial(0).metallicFactor = .150f;
-		cc->getStaticMesh()->getMaterial(0).roughnessFactor = .0f;
-		cc->getStaticMesh()->getMaterial(0).setEmissiveTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/Tex_Veh_Pearl_02_Cream_Emissive.png"));
-		if (!m_proxy) cc->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/Tex_Veh_Pearl_01_Red_Albedo.png"));
-		cc->getStaticMesh()->getMaterial(0).emissiveFactor = {1000.f,1.f,1.f};
+		da::core::FComponentRef<da::core::CSmeshComponent> cc = m_entity->addComponent<da::core::CSmeshComponent>("assets/prop/veh/prop_veh_sedan/prop_veh_sedan_01a.FBX", false);
+		cc->getStaticMesh()->getMaterial(0).metallicFactor = .15f;
+		cc->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
+		cc->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_DIF.PNG"));
+		cc->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_ORM.PNG"));
+		cc->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_NRM.PNG"));
+		if (!m_proxy) cc->getStaticMesh()->getMaterial(0).baseColorFactor = { .7f, .9f, .9f, 1.f };
+		m_entity->addComponent<da::core::CNetworkedTransformComponent>(!m_proxy);
+
+		cc->getStaticMesh()->getMaterial(1).baseColorFactor = { .7f, .9f, .9f, 0.f };
+
+		cc->getStaticMesh()->getMaterial(2).metallicFactor = .15f;
+		cc->getStaticMesh()->getMaterial(2).roughnessFactor = 1.f;
+		cc->getStaticMesh()->getMaterial(2).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_DIF.PNG"));
+		cc->getStaticMesh()->getMaterial(2).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_ORM.PNG"));
+		cc->getStaticMesh()->getMaterial(2).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_NRM.PNG"));
+
+		cc->getStaticMesh()->getMaterial(3).metallicFactor = .15f;
+		cc->getStaticMesh()->getMaterial(3).roughnessFactor = 1.f;
+		cc->getStaticMesh()->getMaterial(3).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_DIF.PNG"));
+		cc->getStaticMesh()->getMaterial(3).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_ORM.PNG"));
+		cc->getStaticMesh()->getMaterial(3).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_NRM.PNG"));
 		m_entity->getTransform().setPosition(pos);
 		m_entity->setTag("Vehicle");
 
@@ -61,7 +82,12 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const glm::vec3& p
 
 		for (size_t i = 0; i < 4; i++) {
 			da::core::CEntity* wheel = scene->createEntity();
-			da::core::FComponentRef<da::core::CSmeshComponent> mesh = wheel->addComponent<da::core::CSmeshComponent>("assets/prop/veh/prop_veh_sports_wheel_01a.fbx", false);
+			da::core::FComponentRef<da::core::CSmeshComponent> mesh = wheel->addComponent<da::core::CSmeshComponent>("assets/prop/veh/prop_veh_sedan/prop_veh_sedan_wheel_01a.FBX", false);
+			mesh->getStaticMesh()->getMaterial(0).metallicFactor = 1.f;
+			mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
+			mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_DIF.PNG"));
+			mesh->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_ORM.PNG"));
+			mesh->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_NRM.PNG"));
 #ifdef DA_REVIEW
 			wheel->setTag(CHashString((std::string("Wheel") + std::to_string(i)).c_str()));
 #endif
@@ -154,7 +180,7 @@ void CVehicle::update(float dt)
 void CVehicle::shutdown()
 {
 	da::core::CSceneManager::getScene()->removeEntity(m_entity);
-	delete m_vehicle;
+	if (m_vehicle) delete m_vehicle;
 
 	for (size_t i = 0; i < m_wheels.size(); i++) {
 		da::core::CSceneManager::getScene()->removeEntity(m_wheels[i]);

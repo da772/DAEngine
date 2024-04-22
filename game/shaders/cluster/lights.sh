@@ -95,7 +95,7 @@ AmbientLight getAmbientLight()
     return light;
 }
 #ifdef INCLUDE_PASS
-vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0, vec4 u_camPos, vec4 gl_FragCoord, float visibility)
+vec4 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0, vec4 u_camPos, vec4 gl_FragCoord, float visibility)
 {
     // the clustered shading fragment shader is almost identical to forward shading
     // first we determine the cluster id from the fragment's window coordinates
@@ -116,7 +116,7 @@ vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
     {
         mat.F0 = vec3_splat(1.0);
         vec3 msFactor = multipleScatteringFactor(mat, NoV);
-        return whiteFurnace(NoV, mat) * msFactor;
+        return vec4(whiteFurnace(NoV, mat) * msFactor, 1.0);
     }
 
     vec3 msFactor = multipleScatteringFactor(mat, NoV);
@@ -153,7 +153,7 @@ vec3 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
     radianceOut += radianceOut * visibility;
     radianceOut += mat.emissive;
 
-    return radianceOut;
+    return vec4(radianceOut, mat.albedo.w);
 }
 #endif
 

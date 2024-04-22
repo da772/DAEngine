@@ -33,6 +33,7 @@ namespace da::core {
 		/// </summary>
 		/// <returns></returns>
 		static CGuid Generate();
+		static CGuid Generate(uint32_t seed);
 
 	private:
 #if defined(DA_DEBUG) || defined(DA_RELEASE)

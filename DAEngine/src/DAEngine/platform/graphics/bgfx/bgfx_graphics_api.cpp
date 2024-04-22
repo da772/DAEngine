@@ -17,6 +17,9 @@
 #endif
 #include <bgfx/platform.h>
 
+#define ENABLE_VSYNC BGFX_RESET_VSYNC
+//#define ENABLE_VSYNC 0
+
 namespace da::platform {
 
 
@@ -221,7 +224,7 @@ namespace da::platform {
 
 		// Enable debug text.
 		::bgfx::setDebug(debug);// | BGFX_DEBUG_STATS);
-		::bgfx::reset(data.Width, data.Height, BGFX_RESET_MSAA_X8 | BGFX_RESET_VSYNC);
+		::bgfx::reset(data.Width, data.Height, BGFX_RESET_MSAA_X8 | ENABLE_VSYNC);
 		::bgfx::setViewClear(0
 			, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
 			, 0x0c0c0cff
@@ -247,7 +250,7 @@ namespace da::platform {
 		if (m_dirtyWindow) {
 			uint32_t w = m_nativeWindow->getWindowData().Width;
 			uint32_t h = m_nativeWindow->getWindowData().Height;
-			::bgfx::reset(w, h, BGFX_RESET_MSAA_X8 | BGFX_RESET_VSYNC);
+			::bgfx::reset(w, h, BGFX_RESET_MSAA_X8 | ENABLE_VSYNC);
 			::bgfx::setViewRect(0, 0, 0, w, h);
 			m_renderer->reset(w, h);
 			m_dirtyWindow = false;

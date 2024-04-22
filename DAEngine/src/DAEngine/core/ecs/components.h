@@ -5,6 +5,7 @@
 #include "skeletal_mesh_component.h"
 #include "rigid_body_component.h"
 #include "point_light_component.h"
+#include "networked_transform_component.h"
 
 namespace da::core {
 	class CComponents {
