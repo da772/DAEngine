@@ -67,8 +67,8 @@ void CTestBed01Level::initialize()
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/plane.fbx");
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_D.png"));
-		meshComponent->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_N.png"));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_D.dds"));
+		meshComponent->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_N.dds"));
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = false;
 		meshComponent->getStaticMesh()->getMaterial(0).uvScale = {75.f, 75.f};
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;

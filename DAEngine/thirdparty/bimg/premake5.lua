@@ -11,9 +11,13 @@ project "bimg"
 	{
 		"include/bimg/*.h",
 		"src/image.cpp",
+		"src/image_decode.cpp",
 		"src/image_gnf.cpp",
 		"src/*.h",
-		"3rdparty/astc-encoder/source/*.cpp"
+		"3rdparty/astc-encoder/source/*.cpp",
+		"3rdparty/**.cpp",
+		"3rdparty/**.c",
+		"3rdparty/**.h"
 	}
 	excludes
 	{
@@ -24,7 +28,12 @@ project "bimg"
 	{
 		"%{IncludeDir.bx}",
 		"include",
-		"3rdparty/astc-encoder/include"
+		"src",
+		"3rdparty/astc-encoder/include",
+		"3rdparty/",
+		"3rdparty/iqa/include",
+		"3rdparty/nvtt",
+		"3rdparty/tinyexr/deps/miniz",
 	}
 
 

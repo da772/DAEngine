@@ -68,7 +68,7 @@ vec4 pbrBaseColor(vec2 texcoord)
 {
     if(u_hasBaseColorTexture)
     {
-        return texture2D(s_texBaseColor, texcoord * s_uvScale) * u_baseColorFactor;
+        return texture2D(s_texBaseColor, texcoord) * u_baseColorFactor;
     }
     else
     {
@@ -135,7 +135,7 @@ PBRMaterial pbrInitMaterial(PBRMaterial mat);
 PBRMaterial pbrMaterial(vec2 texcoord)
 {
     PBRMaterial mat;
-
+    texcoord *= s_uvScale;
     // Read textures/uniforms
 
     mat.albedo = pbrBaseColor(texcoord);
