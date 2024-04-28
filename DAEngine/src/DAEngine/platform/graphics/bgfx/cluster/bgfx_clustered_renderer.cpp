@@ -16,6 +16,7 @@
 #include "bgfx_samplers.h"
 #include <bx/bx.h>
 #include <bx/math.h>
+#include "core/maths/flags.h"
 
 #ifdef DA_REVIEW
 #include "DAEngine/platform/imgui/bgfx/bgfx_imgui.h"
@@ -78,6 +79,9 @@ namespace da::platform {
         m_bloom.initialize(m_width, m_height);
         m_volumetricLight.initialize();
         m_csm.initialize();
+		m_csm.setRenderFunc([this](uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState) {
+			renderFunc(view, mat, skMat, renderState, ERenderFlags::ShadowPass);
+		});
 
 #ifdef DA_REVIEW
         da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
@@ -178,94 +182,12 @@ namespace da::platform {
 
 		const da::core::FComponentContainer* staticMeshcontainer = scene ? &scene->getComponents<da::core::CSmeshComponent>() : nullptr;
 		const da::core::FComponentContainer* skeletalMeshcontainer = scene ? &scene->getComponents<da::core::CSkeletalMeshComponent>() : nullptr;
+
         // Depth pass
-        if (staticMeshcontainer) {
-            for (size_t x = 0; x < staticMeshcontainer->getCount(); x++) {
-                da::core::CSmeshComponent* meshComponent = staticMeshcontainer->getComponentAtIndex<da::core::CSmeshComponent>(x);
-                glm::mat4 model = meshComponent->getParent().getTransform().matrix();
-
-                for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
-                    const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
-                    ASSERT(mesh);
-
-                    ::bgfx::setTransform(glm::value_ptr(model));
-                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                    ::bgfx::setState(BGFX_STATE_WRITE_Z
-                        | BGFX_STATE_DEPTH_TEST_LESS
-                        | BGFX_STATE_CULL_CCW);
-                    ::bgfx::submit(vDepth, { m_pDepthprogram->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-                }
-            }
-        }
-
-        if (skeletalMeshcontainer) {
-            for (size_t x = 0; x < skeletalMeshcontainer->getCount(); x++) {
-                da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer->getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
-                const glm::mat4& model = meshComponent->getTransform();
-
-                for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
-                    da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
-
-                    ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
-                    ::bgfx::setTransform(glm::value_ptr(model));
-                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                    ::bgfx::setState(
-                        BGFX_STATE_WRITE_Z
-                        | BGFX_STATE_DEPTH_TEST_LESS
-                        | BGFX_STATE_CULL_CCW);
-                    ::bgfx::submit(vDepth, { m_pDepthprogramSk->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-                }
-            }
-        }
+        renderFunc(vDepth, m_pDepthprogram, m_pDepthprogramSk, { BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_CULL_CCW }, ERenderFlags::None);
 
         m_ssao.renderSSAO(m_width, m_height, vSSAO, m_depthBuffer);
         m_ssao.renderBlur(m_width, m_height, vSSAOBlur);
-
-        m_csm.setRenderFunc([this](uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState) {
-            if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
-
-                const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
-                const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
-
-                // Shadow map pass
-                for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
-                    da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
-                    glm::mat4 model = meshComponent->getParent().getTransform().matrix();
-                    for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
-                        const da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
-                        ASSERT(mesh);
-
-                        if (!mesh->getCastShadows()) continue;
-                        if (mesh->getHidden()) continue;
-
-                        ::bgfx::setTransform(glm::value_ptr(model));
-                        ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                        ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                        ::bgfx::setState(renderState.m_state);
-                        ::bgfx::submit(view, { mat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-                    }
-                }
-
-                for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
-
-                    da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
-                    const glm::mat4& model = meshComponent->getTransform();
-
-                    for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
-                        da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
-
-                        ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
-                        ::bgfx::setTransform(glm::value_ptr(model));
-                        ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                        ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                        ::bgfx::setState(renderState.m_state);
-                        ::bgfx::submit(view, { skMat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-                    }
-                }
-            }
-        });
 
         m_csm.update(vShadow, m_sun.m_sunDir, m_width, m_height);
         m_clusters.setUniforms(m_width, m_height);
@@ -317,9 +239,9 @@ namespace da::platform {
             CBgfxClusterShader::CLUSTERS_Z / CBgfxClusterShader::CLUSTERS_Z_THREADS);
         // lighting
 #ifdef DA_REVIEW
-        ::bgfx::ProgramHandle program = { (m_clusterDebugVis ? m_pDebugVisProgram->getHandle() : m_pLightingProgram->getHandle()) };
+        da::graphics::CMaterial* program = m_clusterDebugVis ? m_pDebugVisProgram : m_pLightingProgram;
 #else
-        ::bgfx::ProgramHandle program =  { m_pLightingProgram->getHandle() };
+        da::graphics::CMaterial* program =  m_pLightingProgram;
 #endif
 
 		uint64_t state = BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK;
@@ -329,62 +251,7 @@ namespace da::platform {
 		m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
 		m_sky.render(vLighting, state);
-        if (staticMeshcontainer) {
-            // Render pass
-            for (size_t i = 0; i < staticMeshcontainer->getCount(); i++) {
-                da::core::CSmeshComponent* meshComponent = staticMeshcontainer->getComponentAtIndex<da::core::CSmeshComponent>(i);
-                const glm::mat4& model = meshComponent->getParent().getTransform().matrix();
-
-                for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
-                    da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
-
-                    if (mesh->getHidden()) continue;
-
-                    ::bgfx::setTransform(glm::value_ptr(model));
-                    setNormalMatrix(model);
-                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-                    uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
-                    m_csm.submitUniforms();
-                    m_ssao.bindSSAO();
-
-                    //BGFX_STATE_PT_LINES
-                    ::bgfx::setState(state | materialState);
-                    // preserve buffer bindings between submit calls
-                    ::bgfx::submit(vLighting, program, 0, ~BGFX_DISCARD_BINDINGS);
-                }
-            }
-        }
-
-        if (skeletalMeshcontainer) {
-            for (size_t i = 0; i < skeletalMeshcontainer->getCount(); i++) {
-                da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer->getComponentAtIndex<da::core::CSkeletalMeshComponent>(i);
-                const glm::mat4& model = meshComponent->getTransform();
-
-                for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
-                    da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
-
-                    if (mesh->getHidden()) continue;
-
-                    ::bgfx::setTransform(glm::value_ptr(model));
-                    setNormalMatrix(model);
-                    ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
-                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
-
-
-                    uint64_t materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
-                    m_csm.submitUniforms();
-                    m_ssao.bindSSAO();
-
-                    //BGFX_STATE_PT_LINES
-                    ::bgfx::setState(state | materialState);
-                    // preserve buffer bindings between submit calls
-                    ::bgfx::submit(vLighting, { m_pLightingSkeletalProgram->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
-                }
-            }
-        }
-        
+        renderFunc(vLighting, program, m_pLightingSkeletalProgram, { state }, ERenderFlags::PBR);
 
         ::bgfx::TextureHandle tex = ::bgfx::getTexture(m_frameBuffer, 0);
         m_bloom.render(vBloom, tex, m_width, m_height);
@@ -443,6 +310,78 @@ namespace da::platform {
 	}
 
 
+	void CBgfxClusteredRenderer::onLightEvent(const da::graphics::FPointLightData& data, bool added)
+	{
+		m_pointLights.update(da::graphics::CLightManager::getLights());
+	}
+
+	void CBgfxClusteredRenderer::renderFunc(uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState, ERenderFlags flags)
+	{
+        if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
+
+            const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
+            const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
+			
+            for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
+                da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
+                glm::mat4 model = meshComponent->getParent().getTransform().matrix();
+                for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
+                    da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+                    ASSERT(mesh);
+
+                    if (da::maths::CFlag::hasFlag(flags, ERenderFlags::ShadowPass) && !mesh->getCastShadows()) continue;
+                    if (mesh->getHidden()) continue;
+
+                    ::bgfx::setTransform(glm::value_ptr(model));
+                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+
+                    uint64_t materialState = 0;
+
+                    if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
+                    {
+						setNormalMatrix(model);
+						materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
+						m_csm.submitUniforms();
+						m_ssao.bindSSAO();
+                    }
+
+                    ::bgfx::setState(renderState.m_state | materialState);
+                    ::bgfx::submit(view, { mat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                }
+            }
+
+            for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
+
+                da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
+                const glm::mat4& model = meshComponent->getTransform();
+
+                for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
+                    da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+
+                    ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
+                    ::bgfx::setTransform(glm::value_ptr(model));
+                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+
+					uint64_t materialState = 0;
+
+                    if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
+                    {
+                        setNormalMatrix(model);
+						materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
+						m_csm.submitUniforms();
+						m_ssao.bindSSAO();
+                    }
+
+                    ::bgfx::setState(renderState.m_state | materialState);
+                    ::bgfx::submit(view, { skMat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                }
+            }
+        }
+	}
+
+
 #ifdef DA_REVIEW
     void CBgfxClusteredRenderer::renderLightDebug()
     {
@@ -461,10 +400,6 @@ namespace da::platform {
         ImGui::End();
     }
 
-	void CBgfxClusteredRenderer::onLightEvent(const da::graphics::FPointLightData& data, bool added)
-	{
-        m_pointLights.update(da::graphics::CLightManager::getLights());
-	}
 
 #endif
 }

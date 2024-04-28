@@ -11,6 +11,12 @@ namespace da::platform
 {
     class CBgfxGraphicsMaterial;
 
+    enum ERenderFlags : uint8_t {
+        None = 0x00,
+        PBR = 0x01,
+        ShadowPass = 0x02
+    };
+
     class CBgfxClusteredRenderer : public CBgfxTypeRenderer
     {
     public:
@@ -26,6 +32,7 @@ namespace da::platform
         virtual void onReset(size_t width, size_t height) override;
     private:
         void onLightEvent(const da::graphics::FPointLightData& light, bool added);
+        void renderFunc(uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState, ERenderFlags useMaterials);
 
 #ifdef DA_REVIEW
         void renderLightDebug();
