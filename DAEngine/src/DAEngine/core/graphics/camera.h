@@ -14,7 +14,7 @@ namespace da::core
 		float fov = 73.7397953f;
 
 		float zNear = .1f;
-		float zFar = 10000.0f;
+		float zFar = 4828.03f;
 
 		float exposure = 1.f;
 

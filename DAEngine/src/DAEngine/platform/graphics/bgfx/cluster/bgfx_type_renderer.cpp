@@ -49,6 +49,7 @@ namespace da::platform {
 
         m_pDepthprogram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_depth.sc", "shaders/cluster/fs_depth.sc");
         m_pDepthprogramSk = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
+        m_pDepthprogramInst = da::graphics::CMaterialFactory::create("shaders/cluster/vs_depth_inst.sc", "shaders/cluster/fs_depth.sc");
 
         m_pbr.initialize();
         m_pbr.generateAlbedoLUT();
@@ -128,6 +129,8 @@ namespace da::platform {
         da::graphics::CMaterialFactory::remove(m_pBlipProgram);
         da::graphics::CMaterialFactory::remove(m_pDepthprogram);
         da::graphics::CMaterialFactory::remove(m_pDepthprogramSk);
+        da::graphics::CMaterialFactory::remove(m_pDepthprogramInst);
+
 
         if (bgfx::isValid(m_frameBuffer))
             bgfx::destroy(m_frameBuffer);

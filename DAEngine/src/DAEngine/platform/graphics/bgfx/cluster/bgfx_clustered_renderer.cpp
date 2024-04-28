@@ -58,6 +58,7 @@ namespace da::platform {
 
         m_pLightingProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered.sc");
 
+        m_pLightingInstanceProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered_instance.sc", "shaders/cluster/fs_clustered.sc");
 
         m_pLightingSkeletalProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sk_clustered.sc", "shaders/cluster/fs_clustered.sc");
 
@@ -79,8 +80,8 @@ namespace da::platform {
         m_bloom.initialize(m_width, m_height);
         m_volumetricLight.initialize();
         m_csm.initialize();
-		m_csm.setRenderFunc([this](uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState) {
-			renderFunc(view, mat, skMat, renderState, ERenderFlags::ShadowPass);
+		m_csm.setRenderFunc([this](uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* instanceMat,da::graphics::CMaterial* skMat, da::platform::RenderState renderState) {
+			renderFunc(view, mat, instanceMat, skMat, renderState, ERenderFlags::ShadowPass);
 		});
 
 #ifdef DA_REVIEW
@@ -184,7 +185,7 @@ namespace da::platform {
 		const da::core::FComponentContainer* skeletalMeshcontainer = scene ? &scene->getComponents<da::core::CSkeletalMeshComponent>() : nullptr;
 
         // Depth pass
-        renderFunc(vDepth, m_pDepthprogram, m_pDepthprogramSk, { BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_CULL_CCW }, ERenderFlags::None);
+        renderFunc(vDepth, m_pDepthprogram, m_pDepthprogramInst, m_pDepthprogramSk, { BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_CULL_CCW }, ERenderFlags::None);
 
         m_ssao.renderSSAO(m_width, m_height, vSSAO, m_depthBuffer);
         m_ssao.renderBlur(m_width, m_height, vSSAOBlur);
@@ -251,7 +252,7 @@ namespace da::platform {
 		m_clusters.bindBuffers(true /*lightingPass*/); // read access, only light grid and indices
 
 		m_sky.render(vLighting, state);
-        renderFunc(vLighting, program, m_pLightingSkeletalProgram, { state }, ERenderFlags::PBR);
+        renderFunc(vLighting, program, m_pLightingInstanceProgram, m_pLightingSkeletalProgram, { state }, ERenderFlags::PBR);
 
         ::bgfx::TextureHandle tex = ::bgfx::getTexture(m_frameBuffer, 0);
         m_bloom.render(vBloom, tex, m_width, m_height);
@@ -289,6 +290,7 @@ namespace da::platform {
 		da::graphics::CMaterialFactory::remove(m_pLightingProgram);
 		da::graphics::CMaterialFactory::remove(m_pDebugVisProgram);
         da::graphics::CMaterialFactory::remove(m_pLightingSkeletalProgram);
+        da::graphics::CMaterialFactory::remove(m_pLightingInstanceProgram);
 
         m_pClusterBuildingComputeProgram = m_pResetCounterComputeProgram = m_pLightCullingComputeProgram = m_pLightingProgram =
             m_pDebugVisProgram = nullptr;
@@ -315,7 +317,7 @@ namespace da::platform {
 		m_pointLights.update(da::graphics::CLightManager::getLights());
 	}
 
-	void CBgfxClusteredRenderer::renderFunc(uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState, ERenderFlags flags)
+	void CBgfxClusteredRenderer::renderFunc(uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* instanceMat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState, ERenderFlags flags)
 	{
         if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
 
@@ -333,21 +335,52 @@ namespace da::platform {
                     if (mesh->getHidden()) continue;
 
                     ::bgfx::setTransform(glm::value_ptr(model));
-                    ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
-                    ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
 
                     uint64_t materialState = 0;
 
                     if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
                     {
 						setNormalMatrix(model);
-						materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
+					
+                        materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
 						m_csm.submitUniforms();
 						m_ssao.bindSSAO();
                     }
+                  
 
-                    ::bgfx::setState(renderState.m_state | materialState);
-                    ::bgfx::submit(view, { mat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                    const std::vector<da::core::FInstance>& instances = meshComponent->getInstances();
+                    
+                    if (instances.empty() || !instanceMat) {
+						::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+						::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                        ::bgfx::setState(renderState.m_state | materialState);
+						::bgfx::submit(view, { mat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                    }
+                    else {
+                        const uint16_t instanceStride = sizeof(glm::mat4);
+                        const uint32_t total = instances.size();
+                        ASSERT(total);
+                        uint32_t drawn = ::bgfx::getAvailInstanceDataBuffer(total, instanceStride);
+
+                        if (!drawn) return;
+
+						::bgfx::InstanceDataBuffer idb;
+						::bgfx::allocInstanceDataBuffer(&idb, drawn, instanceStride);
+
+                        uint8_t* data = idb.data;
+
+                        for (int ii = 0; ii < drawn; ii++) {
+                            memcpy(data, &instances[ii].Transform, sizeof(glm::mat4));
+                            data += instanceStride;
+                        }
+                        ::bgfx::setInstanceDataBuffer(&idb);
+
+						::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
+						::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));
+                        ::bgfx::setState(renderState.m_state | materialState);
+                        ::bgfx::submit(view, { instanceMat->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+                    }
+                    
                 }
             }
 

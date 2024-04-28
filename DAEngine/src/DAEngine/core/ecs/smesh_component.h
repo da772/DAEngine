@@ -11,7 +11,11 @@ namespace da::graphics
 
 namespace da::core
 {
-	
+	struct FInstance
+	{
+		glm::mat4 Transform;
+		uint32_t Id;
+	};
 
 	class CSmeshComponent {
 #ifdef DA_REVIEW
@@ -26,6 +30,9 @@ namespace da::core
 
 		void onInitialize();
 		void onShutdown();
+		uint32_t addInstance(const glm::mat4& transform);
+		void removeInstance(uint32_t id);
+		const std::vector<FInstance>& getInstances() const;
 		da::graphics::CStaticMesh* getStaticMesh() const;
 #ifdef DA_REVIEW
 		void onDebugRender();
@@ -34,6 +41,8 @@ namespace da::core
 	private:
 		da::graphics::CStaticMesh* m_staticMesh;
 		bool m_inverseNormals;
+		std::vector<FInstance> m_instances;
+		uint32_t m_instanceCounter = 0;
 
 	};
 }

@@ -32,7 +32,7 @@ namespace da::platform
         virtual void onReset(size_t width, size_t height) override;
     private:
         void onLightEvent(const da::graphics::FPointLightData& light, bool added);
-        void renderFunc(uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState, ERenderFlags useMaterials);
+        void renderFunc(uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* instanceMat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState, ERenderFlags useMaterials);
 
 #ifdef DA_REVIEW
         void renderLightDebug();
@@ -44,6 +44,7 @@ namespace da::platform
         da::graphics::CMaterial* m_pResetCounterComputeProgram;
         da::graphics::CMaterial* m_pLightCullingComputeProgram;
         da::graphics::CMaterial* m_pLightingProgram;
+        da::graphics::CMaterial* m_pLightingInstanceProgram;
         da::graphics::CMaterial* m_pLightingSkeletalProgram;
         da::graphics::CMaterial* m_pDebugVisProgram;
 

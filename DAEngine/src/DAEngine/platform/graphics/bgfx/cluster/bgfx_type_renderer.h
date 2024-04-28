@@ -136,6 +136,7 @@ namespace da::platform
         ::bgfx::VertexBufferHandle m_blitTriangleBuffer = BGFX_INVALID_HANDLE;
         da::graphics::CMaterial* m_pDepthprogram;
         da::graphics::CMaterial* m_pDepthprogramSk;
+        da::graphics::CMaterial* m_pDepthprogramInst;
 
         ::bgfx::UniformHandle m_bonesUniform = BGFX_INVALID_HANDLE;
     private:

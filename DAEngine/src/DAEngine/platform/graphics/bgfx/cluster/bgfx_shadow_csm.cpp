@@ -16,19 +16,18 @@
 namespace da::platform {
 
 
-#define RENDERVIEW_SHADOWMAP_0_ID 0 + viewId
-#define RENDERVIEW_SHADOWMAP_1_ID 1 + viewId
-#define RENDERVIEW_SHADOWMAP_2_ID 2 + viewId
-#define RENDERVIEW_SHADOWMAP_3_ID 3 + viewId
-#define RENDERVIEW_SHADOWMAP_4_ID 4 + viewId
-#define RENDERVIEW_VBLUR_0_ID     5 + viewId
-#define RENDERVIEW_HBLUR_0_ID     6	+ viewId
-#define RENDERVIEW_VBLUR_1_ID     7	+ viewId
-#define RENDERVIEW_HBLUR_1_ID     8	+ viewId
-#define RENDERVIEW_VBLUR_2_ID     9	+ viewId
-#define RENDERVIEW_HBLUR_2_ID     10 + viewId
-#define RENDERVIEW_VBLUR_3_ID     11 + viewId
-#define RENDERVIEW_HBLUR_3_ID     12 + viewId
+#define RENDERVIEW_SHADOWMAP_1_ID 0 + viewId
+#define RENDERVIEW_SHADOWMAP_2_ID 1 + viewId
+#define RENDERVIEW_SHADOWMAP_3_ID 2 + viewId
+#define RENDERVIEW_SHADOWMAP_4_ID 3 + viewId
+#define RENDERVIEW_VBLUR_0_ID     4 + viewId
+#define RENDERVIEW_HBLUR_0_ID     5	+ viewId
+#define RENDERVIEW_VBLUR_1_ID     6	+ viewId
+#define RENDERVIEW_HBLUR_1_ID     7	+ viewId
+#define RENDERVIEW_VBLUR_2_ID     8	+ viewId
+#define RENDERVIEW_HBLUR_2_ID     9 + viewId
+#define RENDERVIEW_VBLUR_3_ID     10 + viewId
+#define RENDERVIEW_HBLUR_3_ID     11 + viewId
 
 	static const float s_texcoord = 5.0f;
 
@@ -540,6 +539,7 @@ namespace da::platform {
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
 						, m_programs.m_packDepthSk[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
+						, m_programs.m_packDepthInstance[DepthImpl::InvZ][PackDepth::RGBA] //m_packDepthInstance
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::Hard] //m_progDraw
 					},
 					{ //SmImpl::PCF
@@ -558,6 +558,7 @@ namespace da::platform {
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
 						, m_programs.m_packDepthSk[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
+						, m_programs.m_packDepthInstance[DepthImpl::InvZ][PackDepth::RGBA] //m_packDepthInstance
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::PCF] //m_progDraw
 					},
 					{ //SmImpl::VSM
@@ -576,6 +577,7 @@ namespace da::platform {
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::InvZ][PackDepth::VSM] //m_progPack
 						, m_programs.m_packDepthSk[DepthImpl::InvZ][PackDepth::VSM] //m_progPackSk
+						, m_programs.m_packDepthInstance[DepthImpl::InvZ][PackDepth::VSM] //m_progPackIntance
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::VSM] //m_progDraw
 					},
 					{ //SmImpl::ESM
@@ -594,6 +596,7 @@ namespace da::platform {
 						, true                             // m_doBlur
 						, m_programs.m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
 						, m_programs.m_packDepthSk[DepthImpl::InvZ][PackDepth::RGBA] //m_progPack
+						, m_programs.m_packDepthInstance[DepthImpl::InvZ][PackDepth::RGBA] //m_packDepthInstance
 						, m_programs.m_colorLighting[SmType::Cascade][DepthImpl::InvZ][SmImpl::ESM] //m_progDraw
 					}
 
@@ -1201,14 +1204,6 @@ namespace da::platform {
 				: BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL
 				;
 
-			bgfx::setViewClear(RENDERVIEW_SHADOWMAP_0_ID
-				, flags0
-				, 0xfefefefe //blur fails on completely white regions
-				, m_clearValues.m_clearDepth
-				, m_clearValues.m_clearStencil
-			);
-			bgfx::touch(RENDERVIEW_SHADOWMAP_0_ID);
-
 			const uint8_t flags1 = (LightType::DirectionalLight == m_settings.m_lightType)
 				? BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
 				: 0
@@ -1241,7 +1236,7 @@ namespace da::platform {
 
 					uint8_t renderStateIndex = RenderState::ShadowMap_PackDepth;
 
-					m_renderFunc(shadowViewId, currentSmSettings->m_progPack, currentSmSettings->m_progPackSk, s_renderStates[renderStateIndex]);
+					m_renderFunc(shadowViewId, currentSmSettings->m_progPack, currentSmSettings->m_progPackInstance, currentSmSettings->m_progPackSk, s_renderStates[renderStateIndex]);
 				}
 			}
 
@@ -1335,7 +1330,7 @@ namespace da::platform {
 
 	}
 
-	void CBgfxShadowCsm::setRenderFunc(const std::function<void(uint8_t, da::graphics::CMaterial*, da::graphics::CMaterial*, RenderState)>& func)
+	void CBgfxShadowCsm::setRenderFunc(const std::function<void(uint8_t, da::graphics::CMaterial*, da::graphics::CMaterial*, da::graphics::CMaterial*, RenderState)>& func)
 	{
 		m_renderFunc = func;
 	}
@@ -1375,12 +1370,18 @@ namespace da::platform {
 
 		m_packDepthSk[DepthImpl::InvZ][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_sk_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth.sc");
 		m_packDepthSk[DepthImpl::InvZ][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_sk_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm.sc");
+		
+		m_packDepthInstance[DepthImpl::InvZ][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_instance_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth.sc");
+		m_packDepthInstance[DepthImpl::InvZ][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_instance_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm.sc");
 
 		m_packDepth[DepthImpl::Linear][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
 		m_packDepth[DepthImpl::Linear][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
 
 		m_packDepthSk[DepthImpl::Linear][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
 		m_packDepthSk[DepthImpl::Linear][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
+
+		m_packDepthInstance[DepthImpl::Linear][PackDepth::RGBA] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
+		m_packDepthInstance[DepthImpl::Linear][PackDepth::VSM] = da::graphics::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
 	}
 
 	void CBgfxShadowCsm::FPrograms::destroy()
@@ -1392,6 +1393,7 @@ namespace da::platform {
 			{
 				da::graphics::CMaterialFactory::remove(m_packDepth[ii][jj]);
 				da::graphics::CMaterialFactory::remove(m_packDepthSk[ii][jj]);
+				da::graphics::CMaterialFactory::remove(m_packDepthInstance[ii][jj]);
 			}
 		}
 

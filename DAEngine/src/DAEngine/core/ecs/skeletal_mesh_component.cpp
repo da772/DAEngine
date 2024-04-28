@@ -179,15 +179,18 @@ namespace da::core {
 			}
 
 			if (ImGui::Button("Reload Mesh")) {
-				std::string path = m_skeletalmesh->getPath();
-				std::vector<da::graphics::FMaterialData> materials = m_skeletalmesh->getMaterials();
-				delete m_skeletalmesh;
+
+				da::graphics::CSkeletalMesh* oldMesh = m_skeletalmesh;
+				std::string path = oldMesh->getPath();
+
 				m_skeletalmesh = new da::platform::CBgfxSkeletalMesh(path, m_inverseNormals);
 
-				for (size_t i = 0; i < m_skeletalmesh->getMaterialCount() && i < materials.size(); i++) {
-					m_skeletalmesh->getMaterial(i) = materials[i];
+				for (size_t i = 0; i < m_skeletalmesh->getMaterialCount() && i < oldMesh->getMaterials().size(); i++) {
+					m_skeletalmesh->getMaterial(i) = oldMesh->getMaterial(i);
+					oldMesh->getMaterial(i) = {};
 				}
 
+				delete oldMesh;
 			}
 			ImGui::Unindent();
 		}

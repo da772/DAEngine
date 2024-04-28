@@ -104,17 +104,41 @@ namespace da::core {
 		}
 
 		if (ImGui::Button("Reload Mesh")) {
-			std::string path = m_staticMesh->getPath();
-			std::vector<da::graphics::FMaterialData> materials = m_staticMesh->getMaterials();
-			delete m_staticMesh;
+			da::graphics::CStaticMesh* oldMesh = m_staticMesh;
+			std::string path = oldMesh->getPath();
+			
 			m_staticMesh = new da::platform::CBgfxStaticMesh(path, m_inverseNormals);
 
-			for (size_t i = 0; i < m_staticMesh->getMaterialCount() && i < materials.size(); i++) {
-				m_staticMesh->getMaterial(i) = materials[i];
+			for (size_t i = 0; i < m_staticMesh->getMaterialCount() && i < oldMesh->getMaterials().size(); i++) {
+				m_staticMesh->getMaterial(i) = oldMesh->getMaterial(i);
+				oldMesh->getMaterial(i) = {};
 			}
 
+			delete oldMesh;
 		}
 	}
+
+	const std::vector<da::core::FInstance>& CSmeshComponent::getInstances() const
+	{
+		return m_instances;
+	}
+
+	void CSmeshComponent::removeInstance(uint32_t id)
+	{
+		for (uint32_t i = 0; i < m_instances.size(); i++) {
+			if (m_instances[i].Id == id) {
+				m_instances.erase(m_instances.begin() + i);
+				return;
+			}
+		}
+	}
+
+	uint32_t CSmeshComponent::addInstance(const glm::mat4& transform)
+	{
+		m_instances.push_back({ transform, ++m_instanceCounter });
+		return m_instanceCounter;
+	}
+
 #endif
 
 }
