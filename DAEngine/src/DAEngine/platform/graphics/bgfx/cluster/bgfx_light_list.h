@@ -18,12 +18,15 @@ namespace da::platform {
 			// can be calculated from radiant flux
 			glm::vec3 intensity;
 			float radius;
+            glm::vec3 direction;
+			float angle;
 
             static void init()
             {
                 layout.begin()
                     .add(::bgfx::Attrib::TexCoord0, 4, ::bgfx::AttribType::Float)
                     .add(::bgfx::Attrib::TexCoord1, 4, ::bgfx::AttribType::Float)
+                    .add(::bgfx::Attrib::TexCoord2, 4, ::bgfx::AttribType::Float)
                     .end();
             }
             static ::bgfx::VertexLayout layout;
@@ -37,7 +40,7 @@ namespace da::platform {
         void shutdown();
 
         // upload changes to GPU
-        void update(const std::vector<da::graphics::FPointLightData>& lights);
+        void update(const std::vector<da::graphics::FLightData>& lights);
         inline const ::bgfx::DynamicVertexBufferHandle getBuffer() const { return m_buffer; };
 
 

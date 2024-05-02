@@ -54,6 +54,12 @@ struct Cluster
     vec3 maxBounds;
 };
 
+struct Sphere
+{
+    vec3 radius;
+    vec3 center;
+};
+
 struct LightGrid
 {
     uint offset;

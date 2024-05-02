@@ -34,7 +34,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const glm::vec3& p
 
 		da::core::FComponentRef<da::core::CSmeshComponent> cc = m_entity->addComponent<da::core::CSmeshComponent>("assets/prop/veh/prop_veh_sedan/prop_veh_sedan_01a.FBX", false);
 		cc->getStaticMesh()->getMaterial(0).metallicFactor = .15f;
-		cc->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
+		cc->getStaticMesh()->getMaterial(0).roughnessFactor = 0.f;
 		cc->getStaticMesh()->getMaterial(0).emissiveFactor = { 1.f, 1.f,1.f };
 		cc->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_DIF.dds"));
 		cc->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_ORM.dds"));
@@ -112,22 +112,11 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const glm::vec3& p
 void CVehicle::update(float dt)
 {
 
-	da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->getComponent<da::core::CPointLightComponent>();
 	da::core::CCamera* cam = da::core::CCamera::getCamera();
 	const glm::vec3 entityPos = m_entity->getTransform().position();
 	const glm::mat4 entityT = glm::toMat4(m_entity->getTransform().rotation());
 
-	if (m_headLightR && m_headLightL) {
-		glm::vec3 rightPos = entityPos + glm::vec3(entityT * glm::vec4(0.948619f, 3.70286f, -0.011385f, 1.f));
-		lights->updateLight(m_headLightR, rightPos);
-		glm::vec3 leftPos = entityPos + glm::vec3(entityT * glm::vec4(-0.948619f, 3.70286f, -0.011385f, 1.f));
-		lights->updateLight(m_headLightL, leftPos);
-	}
-
-	if (m_brakeLightR && m_brakeLightL) {
-		lights->updateLight(m_brakeLightR, entityPos + glm::vec3(entityT * glm::vec4(0.895837f, -2.3808f, 0.110954f, 1.f)));
-		lights->updateLight(m_brakeLightL, entityPos + glm::vec3(entityT * glm::vec4(-0.8925837f, -2.3808f, 0.110954f, 1.f)));
-	}
+	updateLights();
 
 	if (m_proxy) {
 		return;
@@ -296,10 +285,10 @@ void CVehicle::processInput(float dt)
 
 void CVehicle::setBrakeLights(bool on)
 {
-	da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->getComponent<da::core::CPointLightComponent>();
+	da::core::FComponentRef<da::core::CDynamicLightComponent> lights = m_entity->getComponent<da::core::CDynamicLightComponent>();
 	if (on && !m_brakeLightL && !m_brakeLightR) {
-		m_brakeLightL = lights->addLight({ 0.f,0.f,0.f }, { 2.f,0.f,0.f }, 2.f);
-		m_brakeLightR = lights->addLight({ 0.f,0.f,0.f }, { 2.f,0.f,0.f }, 2.f);
+		m_brakeLightL = lights->addPointLight({ 0.f,0.f,0.f }, { 2.f,0.f,0.f }, 2.f);
+		m_brakeLightR = lights->addPointLight({ 0.f,0.f,0.f }, { 2.f,0.f,0.f }, 2.f);
 		return;
 	}
 	
@@ -311,10 +300,10 @@ void CVehicle::setBrakeLights(bool on)
 
 void CVehicle::setHeadLights(bool on)
 {
-	da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->getComponent<da::core::CPointLightComponent>();
+	da::core::FComponentRef<da::core::CDynamicLightComponent> lights = m_entity->getComponent<da::core::CDynamicLightComponent>();
 	if (on && !m_headLightL && !m_headLightR) {
-		m_headLightR = lights->addLight({ 0.f,0.f,0.f }, glm::vec3(1.f, 0.86f, .5f) * 50.f, 15.f);
-		m_headLightL = lights->addLight({ 0.f,0.f,0.f }, glm::vec3(1.f, 0.86f, .5f) * 50.f, 15.f);
+		m_headLightR = lights->addSpotLight({ 0.f,0.f,0.f }, glm::vec3(1.f, 0.86f, .5f) * 3.f, { 0.f,0.f,0.f }, 15.f,  glm::radians(35.f));
+		m_headLightL = lights->addSpotLight({ 0.f,0.f,0.f }, glm::vec3(1.f, 0.86f, .5f) * 3.f, { 0.f,0.f,0.f }, 15.f, glm::radians(35.f));
 		return;
 	}
 
@@ -322,4 +311,26 @@ void CVehicle::setHeadLights(bool on)
 	lights->removeLight(m_headLightR);
 	m_headLightL = 0;
 	m_headLightR = 0;
+}
+
+void CVehicle::updateLights()
+{
+	da::core::FComponentRef<da::core::CDynamicLightComponent> lights = m_entity->getComponent<da::core::CDynamicLightComponent>();
+	const glm::vec3 entityPos = m_entity->getTransform().position();
+	const glm::mat4 entityT = glm::toMat4(m_entity->getTransform().rotation());
+
+	if (m_headLightR && m_headLightL) {
+		const glm::vec3 newDir = m_entity->getTransform().forward() + glm::vec3(0.f, 0.f, -.25f);
+		const glm::vec3 rightPos = entityPos + glm::vec3(entityT * glm::vec4(0.648619f, 2.25286f, -0.511385f, 1.f));
+		lights->updateLight(m_headLightR, rightPos, newDir);
+		glm::vec3 leftPos = entityPos + glm::vec3(entityT * glm::vec4(-0.648619f, 2.25286f, -0.511385f, 1.f));
+		lights->updateLight(m_headLightL, leftPos, newDir);
+		da::graphics::CDebugRender::drawCube(leftPos, m_entity->getTransform().rotation(), { .01f, .01f, .01f }, { 1.f,0.f, 1.f, 1.f }, false);
+		da::graphics::CDebugRender::drawCube(rightPos, m_entity->getTransform().rotation(), { .01f, .01f, .01f }, { 1.f,0.f, 1.f, 1.f }, false);
+	}
+
+	if (m_brakeLightR && m_brakeLightL) {
+		lights->updateLight(m_brakeLightR, entityPos + glm::vec3(entityT * glm::vec4(0.895837f, -2.3808f, 0.110954f, 1.f)));
+		lights->updateLight(m_brakeLightL, entityPos + glm::vec3(entityT * glm::vec4(-0.8925837f, -2.3808f, 0.110954f, 1.f)));
+	}
 }

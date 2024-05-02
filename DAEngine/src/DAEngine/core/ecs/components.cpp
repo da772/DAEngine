@@ -10,7 +10,7 @@ namespace da::core {
 		CSmeshComponent::registerComponent();
 		CSkeletalMeshComponent::registerComponent();
 		CRigidBodyComponent::registerComponent();
-		CPointLightComponent::registerComponent();
+		CDynamicLightComponent::registerComponent();
 		CNetworkedTransformComponent::registerComponent();
 	}
 

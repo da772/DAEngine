@@ -8,8 +8,9 @@
 // builds a light grid that holds indices of lights for each cluster
 // largely inspired by http://www.aortiz.me/2018/12/21/CG.html
 
-// point lights only for now
+bool lightIntersectsCluster(PointLight light, Cluster cluster);
 bool pointLightIntersectsCluster(PointLight light, Cluster cluster);
+bool spotLightIntersectsCluster(PointLight light, Cluster cluster);
 
 #define gl_WorkGroupSize uvec3(CLUSTERS_X_THREADS, CLUSTERS_Y_THREADS, CLUSTERS_Z_THREADS)
 #define GROUP_SIZE (CLUSTERS_X_THREADS * CLUSTERS_Y_THREADS * CLUSTERS_Z_THREADS)
@@ -66,7 +67,7 @@ void main()
         for(uint i = 0; i < batchSize; i++)
         {
             Cluster cluster = getCluster(clusterIndex);
-            if(visibleCount < MAX_LIGHTS_PER_CLUSTER && pointLightIntersectsCluster(lights[i], cluster))
+            if(visibleCount < MAX_LIGHTS_PER_CLUSTER && lightIntersectsCluster(lights[i], cluster))
             {
                 visibleLights[visibleCount] = lightOffset + i;
                 visibleCount++;
@@ -92,6 +93,15 @@ void main()
     b_clusterLightGrid[clusterIndex] = uvec4(offset, visibleCount, 0, 0);
 }
 
+bool lightIntersectsCluster(PointLight light, Cluster cluster)
+{
+    if (light.angle < 0.0) {
+        return pointLightIntersectsCluster(light, cluster);
+    }
+
+    return spotLightIntersectsCluster(light, cluster);
+}
+
 // check if light radius extends into the cluster
 bool pointLightIntersectsCluster(PointLight light, Cluster cluster)
 {
@@ -104,4 +114,37 @@ bool pointLightIntersectsCluster(PointLight light, Cluster cluster)
     // check if point is inside the sphere
     vec3 dist = closest - light.position;
     return dot(dist, dist) <= (light.radius * light.radius);    
+}
+
+vec4 boundingSphereForCone(vec3 coneTip, vec3 coneDirection, float coneAngle, float coneHeight) {
+    // Calculate the radius of the base of the cone
+    float coneRadius = coneHeight * tan(coneAngle);
+
+    // Calculate the center of the base of the cone
+    vec3 coneBaseCenter = coneTip - coneHeight * coneDirection;
+
+    // Calculate the distance from the tip of the cone to the base center
+    float distanceTipToBase = length(coneTip - coneBaseCenter);
+
+    // Calculate the radius of the bounding sphere
+    float boundingRadius = sqrt(coneRadius * coneRadius + distanceTipToBase * distanceTipToBase);
+
+    // Return the bounding sphere center and radius
+    return vec4(coneTip - coneHeight * 0.5 * coneDirection, boundingRadius);
+}
+
+bool spotLightIntersectsCluster(PointLight spotlight, Cluster cluster)
+{
+    vec4 sphere = boundingSphereForCone(spotlight.position, spotlight.direction, spotlight.angle, sqrt(spotlight.radius));
+    // Calculate the closest point on the bounding box to the sphere
+    float closestX = clamp(sphere.x, cluster.minBounds.x, cluster.maxBounds.x);
+    float closestY = clamp(sphere.y, cluster.minBounds.y, cluster.maxBounds.y);
+    float closestZ = clamp(sphere.z, cluster.minBounds.z, cluster.maxBounds.z);
+
+    // Calculate the distance between the sphere center and the closest point on the bounding box
+    vec3 closestPoint = vec3(closestX, closestY, closestZ);
+    float distanceSquared = distance(sphere.xyz, closestPoint);
+
+    // Check if the distance is less than the sphere's radius
+    return distanceSquared <= (sphere.w * sphere.w); 
 }

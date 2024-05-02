@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <glm/gtc/type_ptr.hpp>
+#include <core/graphics/camera.h>
 
 namespace da::platform {
 
@@ -22,7 +23,7 @@ namespace da::platform {
         m_buffer = BGFX_INVALID_HANDLE;
     }
 
-    void CBgfxPointLightList::update(const std::vector<da::graphics::FPointLightData>& lights)
+    void CBgfxPointLightList::update(const std::vector<da::graphics::FLightData>& lights)
     {
         size_t stride = PointLightVertex::layout.getStride();
         const bgfx::Memory* mem = bgfx::alloc(uint32_t(stride * std::max(lights.size(), (size_t)1)));
@@ -34,6 +35,8 @@ namespace da::platform {
             light->position = lights[i].position;
             light->intensity = lights[i].intensity;
             light->radius = lights[i].radius;
+            light->direction = lights[i].direction;
+            light->angle = lights[i].angle;
         }
 
         bgfx::update(m_buffer, 0, mem);

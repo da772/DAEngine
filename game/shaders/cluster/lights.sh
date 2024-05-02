@@ -30,6 +30,8 @@ struct PointLight
     float _padding;
     vec3 intensity;
     float radius;
+    vec3 direction;
+    float angle;
 };
 
 struct AmbientLight
@@ -73,10 +75,13 @@ uint pointLightCount()
 PointLight getPointLight(uint i)
 {
     PointLight light;
-    light.position = b_pointLights[2 * i + 0].xyz;
-    vec4 intensityRadiusVec = b_pointLights[2 * i + 1];
+    light.position = b_pointLights[3 * i + 0].xyz;
+    vec4 intensityRadiusVec = b_pointLights[3 * i + 1];
     light.intensity = intensityRadiusVec.xyz;
     light.radius = intensityRadiusVec.w;
+    vec4 dir = b_pointLights[3 * i + 2];
+    light.direction = dir.xyz;
+    light.angle = dir.w;
     return light;
 }
 
@@ -130,14 +135,33 @@ vec4 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
         uint lightIndex = getGridLightIndex(grid.offset, i);
         PointLight light = getPointLight(lightIndex);
         float dist = distance(light.position, fragPos);
+
         float attenuation = smoothAttenuation(dist, light.radius);
-        if(attenuation > 0.0)
+       
+        if (light.angle < 0.0) {
+            if (attenuation > 0.0)
+            {
+                vec3 L = normalize(light.position - fragPos);
+                vec3 radianceIn = light.intensity * attenuation;
+                float NoL = saturate(dot(N, L));
+                radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * radianceIn * NoL;   
+            }
+        } 
+        else 
         {
             vec3 L = normalize(light.position - fragPos);
-            vec3 radianceIn = light.intensity * attenuation;
-            float NoL = saturate(dot(N, L));
-            radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * radianceIn * NoL;
+            vec3 lightDir = normalize(light.direction.xyz);
+
+            float cosAngle = dot(-lightDir, L);
+            float angle = acos(cosAngle);
+
+            if (angle <= light.angle) {
+                vec3 radianceIn = light.intensity * min(1.0, attenuation);
+                float NoL = max(0.1, saturate(dot(N, L)));
+                radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * radianceIn * NoL * attenuation;                   
+            }
         }
+    
     }
 
     // directional light

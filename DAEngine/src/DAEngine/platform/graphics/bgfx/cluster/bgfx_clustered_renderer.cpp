@@ -312,7 +312,7 @@ namespace da::platform {
 	}
 
 
-	void CBgfxClusteredRenderer::onLightEvent(const da::graphics::FPointLightData& data, bool added)
+	void CBgfxClusteredRenderer::onLightEvent(const da::graphics::FLightData& data, bool added)
 	{
 		m_pointLights.update(da::graphics::CLightManager::getLights());
 	}

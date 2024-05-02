@@ -31,7 +31,7 @@ namespace da::platform
     protected:
         virtual void onReset(size_t width, size_t height) override;
     private:
-        void onLightEvent(const da::graphics::FPointLightData& light, bool added);
+        void onLightEvent(const da::graphics::FLightData& light, bool added);
         void renderFunc(uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* instanceMat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState, ERenderFlags useMaterials);
 
 #ifdef DA_REVIEW

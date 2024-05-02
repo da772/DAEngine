@@ -33,6 +33,7 @@ private:
 	void onKeyboardInput(const da::core::CEvent& e);
 	void setBrakeLights(bool on);
 	void setHeadLights(bool on);
+	void updateLights();
 	void processInput(float dt);
 
 private:
