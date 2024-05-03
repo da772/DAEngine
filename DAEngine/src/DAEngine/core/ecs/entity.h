@@ -32,8 +32,12 @@ namespace da::core
 
 		T* operator->() const {
 
+			ASSERT(m_scene);
+			ASSERT(m_guid.isValid());
 			if (!m_scene || !m_guid.isValid()) return nullptr;
-			return m_scene->getComponent<T>(m_guid);
+			T* p = m_scene->getComponent<T>(m_guid);
+			ASSERT(p);
+			return p;
 		}
 
 	private:

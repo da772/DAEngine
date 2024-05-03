@@ -37,7 +37,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const glm::vec3& p
 		cc->getStaticMesh()->getMaterial(0).roughnessFactor = 0.f;
 		cc->getStaticMesh()->getMaterial(0).emissiveFactor = { 1.f, 1.f,1.f };
 		cc->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_DIF.dds"));
-		cc->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_ORM.dds"));
+		//cc->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_ORM.dds"));
 		cc->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_NRM.dds"));
 		cc->getStaticMesh()->getMaterial(0).setEmissiveTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_EMS.dds"));
 		if (!m_proxy) cc->getStaticMesh()->getMaterial(0).baseColorFactor = { .7f, .9f, .9f, 1.f };
@@ -65,7 +65,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const glm::vec3& p
 		m_entity->getTransform().setPosition(pos);
 		m_entity->setTag("Vehicle");
 
-		da::core::FComponentRef<da::core::CPointLightComponent> lights = m_entity->addComponent<da::core::CPointLightComponent>();
+		m_entity->addComponent<da::core::CDynamicLightComponent>();
 		setHeadLights(true);
 		setBrakeLights(true);
 
@@ -302,8 +302,8 @@ void CVehicle::setHeadLights(bool on)
 {
 	da::core::FComponentRef<da::core::CDynamicLightComponent> lights = m_entity->getComponent<da::core::CDynamicLightComponent>();
 	if (on && !m_headLightL && !m_headLightR) {
-		m_headLightR = lights->addSpotLight({ 0.f,0.f,0.f }, glm::vec3(1.f, 0.86f, .5f) * 3.f, { 0.f,0.f,0.f }, 15.f,  glm::radians(35.f));
-		m_headLightL = lights->addSpotLight({ 0.f,0.f,0.f }, glm::vec3(1.f, 0.86f, .5f) * 3.f, { 0.f,0.f,0.f }, 15.f, glm::radians(35.f));
+		m_headLightR = lights->addSpotLight({ 0.f,0.f,0.f }, glm::vec3(1.f, 0.86f, .5f) * 1.5f, { 0.f,0.f,0.f }, 15.f,  glm::radians(35.f));
+		m_headLightL = lights->addSpotLight({ 0.f,0.f,0.f }, glm::vec3(1.f, 0.86f, .5f) * 1.5f, { 0.f,0.f,0.f }, 15.f, glm::radians(35.f));
 		return;
 	}
 
