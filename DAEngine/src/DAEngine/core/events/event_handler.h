@@ -56,7 +56,7 @@ namespace da::core::events
 
 		void unregisterCallback(EEventCategory category, const std::function<void(const CEvent&)>& callback) {
 			const std::vector<FEventCallback*>::iterator it = std::find_if(m_callbacks.begin(), m_callbacks.end(), ([callback, category](FEventCallback* cb) {
-				return cb->callback_ptr.target<void(const CEvent&)>() == callback.target<void(const CEvent&)>() && category == cb->event_category && cb->event_type == EEventType::None;
+				return compareFunc(cb->callback_ptr, callback) && category == cb->event_category && cb->event_type == EEventType::None;
 				}));
 			if (it != m_callbacks.end())
 			{
@@ -69,7 +69,7 @@ namespace da::core::events
 
 		void unregisterCallback(EEventType type, const std::function<void(const CEvent&)>& callback) {
 			const std::vector<FEventCallback*>::iterator it = std::find_if(m_callbacks.begin(), m_callbacks.end(), [callback, type](FEventCallback* cb) {
-				return cb->callback_ptr.target<void(const CEvent&)>() == callback.target<void(const CEvent&)>() && EEventCategory::None == cb->event_category && cb->event_type == type;
+				return compareFunc(cb->callback_ptr, callback) && EEventCategory::None == cb->event_category && cb->event_type == type;
 				});
 			if (it != m_callbacks.end())
 			{
@@ -83,6 +83,16 @@ namespace da::core::events
 		// Std::function doesnt like to be moved ??
 		// So we'll just use a pointer instead :/
 		std::vector<FEventCallback*> m_callbacks;
+
+		static bool compareFunc(const std::function<void(const CEvent&)>& lhs, const std::function<void(const CEvent&)>& rhs) {
+			if (lhs.target_type() == rhs.target_type())
+			{
+				if (lhs.target<void(const CEvent&)>() == rhs.target<void(const CEvent&)>()) {
+					return true;
+				}
+			}
+			return false;
+		}
 
 	};
 

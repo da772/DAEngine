@@ -6,16 +6,16 @@
 namespace da::graphics
 {
 
-	void FMaterialData::setNormalTexture(CGraphicsTexture2D* texture, bool clear)
+	void FMaterialData::setNormalTexture(CGraphicsTexture2D* texture)
 	{
-		if (m_normalTexture && clear) delete m_normalTexture;
+		if (m_normalTexture) delete m_normalTexture;
 
 		m_normalTexture = texture;
 	}
 
-	void FMaterialData::setBaseColorTexture(CGraphicsTexture2D* texture, bool clear)
+	void FMaterialData::setBaseColorTexture(CGraphicsTexture2D* texture)
 	{
-		if (m_baseColorTexture && clear) {
+		if (m_baseColorTexture) {
 			
 			delete m_baseColorTexture;
 		}
@@ -23,23 +23,23 @@ namespace da::graphics
 		m_baseColorTexture = texture;
 	}
 
-	void FMaterialData::setEmissiveTexture(CGraphicsTexture2D* texture, bool clear)
+	void FMaterialData::setEmissiveTexture(CGraphicsTexture2D* texture)
 	{
-		if (m_emissiveTexture && clear) delete m_emissiveTexture;
+		if (m_emissiveTexture) delete m_emissiveTexture;
 
 		m_emissiveTexture = texture;
 	}
 
-	void FMaterialData::setOcclusionTexture(CGraphicsTexture2D* texture, bool clear)
+	void FMaterialData::setOcclusionTexture(CGraphicsTexture2D* texture)
 	{
-		if (m_occlusionTexture && clear) delete m_occlusionTexture;
+		if (m_occlusionTexture) delete m_occlusionTexture;
 
 		m_occlusionTexture = texture;
 	}
 
-	void FMaterialData::setMetallicRoughnessTexture(CGraphicsTexture2D* texture, bool clear)
+	void FMaterialData::setMetallicRoughnessTexture(CGraphicsTexture2D* texture)
 	{
-		if (m_metallicRoughnessTexture && clear) delete m_metallicRoughnessTexture;
+		if (m_metallicRoughnessTexture) delete m_metallicRoughnessTexture;
 
 		m_metallicRoughnessTexture = texture;
 	}
