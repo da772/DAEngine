@@ -10,7 +10,7 @@ namespace da::physics
 	class CBullet3Vehicle : public IVehicle {
 
 	public:
-		CBullet3Vehicle(FVehicleTuning& tuning, IPhysicsRigidBody* rigidBody);
+		CBullet3Vehicle(const FVehicleData& tuning, IPhysicsRigidBody* rigidBody);
 		~CBullet3Vehicle();
 
 		virtual void setSteeringValue(float value, size_t wheelIndex) override;
@@ -24,7 +24,7 @@ namespace da::physics
 
 	private:
 		btRaycastVehicle* m_vehicle;
-		FVehicleTuning m_tuning;
+		FVehicleData m_tuning;
 		btVehicleRaycaster* m_raycaster;
 
 	};

@@ -16,6 +16,11 @@ public:
 	void update(float dt);
 	void shutdown();
 
+
+private:
+	void createVehicle();
+	void destroyVehicle();
+
 private:
 	da::graphics::CSkeletalAnimation* m_swordSlashAnimation;
 	da::graphics::CSkeletalAnimation* m_runAnimation;

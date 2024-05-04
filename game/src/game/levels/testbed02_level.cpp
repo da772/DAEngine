@@ -4,10 +4,13 @@
 #include <daengine/physics.h>
 #include <daengine/graphics.h>
 #include <daengine/threading.h>
+#include <daengine/script.h>
+#include <DAEngine/physics/physics_vehicle.h>
 #include <imgui.h>
 
 // game
 #include "game/vehicle/vehicle.h"
+
 
 CTestBed02Level::CTestBed02Level(CHashString name, da::modules::CWindowModule& window) : ILevel(name), m_window(window)
 {
@@ -22,7 +25,13 @@ void CTestBed02Level::initialize()
 	// Vehicle
 	m_playerId = da::core::CTime::getEpochTimeNS();
 	m_vehicle = new CVehicle(m_playerId);
-	m_vehicle->initialize(&m_window, { -144.f, -80.f, -4.f });
+
+	int ref = da::script::CScriptEngine::getScript("scripts/build/vehicles/vehicle_test_01.lua", true);
+	sol::reference objRef(da::script::CScriptEngine::getState(), (sol::ref_index)ref);
+	sol::table obj(objRef);
+	da::physics::FVehicleData vehData = GET_SCRIPT_TYPE(da::physics::FVehicleData, obj["vehicleData"]);
+
+	m_vehicle->initialize(&m_window, vehData, { -144.f, -80.f, -4.f });
 
 	// Test Bed
 	{
@@ -65,14 +74,14 @@ void CTestBed02Level::initialize()
 	}
 
 	if (m_network = da::net::CNetworkManager::getNetwork()) {
-		m_network->getPacket<FPlayerJoinPacketInfo>(PLAYER_JOIN_PACKET_ID, [this](FPlayerJoinPacketInfo data) {
+		m_network->getPacket<FPlayerJoinPacketInfo>(PLAYER_JOIN_PACKET_ID, [this, vehData](FPlayerJoinPacketInfo data) {
 
 			const std::unordered_map<uint64_t, CVehicle*>::iterator& it = m_vehicles.find(data.PlayerId);
 			if (it != m_vehicles.end()) return;
 
 			LOG_DEBUG(da::ELogChannel::Application, "Player Joined: %ull", data.PlayerId);
 			m_vehicles[data.PlayerId] = new CVehicle((uint32_t)data.PlayerId);
-			m_vehicles[data.PlayerId]->initialize(&m_window, {-144.f, -80.f, -4.f}, true);
+			m_vehicles[data.PlayerId]->initialize(&m_window, vehData,{-144.f, -80.f, -4.f}, true);
 
 
 			m_pushPlayerId = true;

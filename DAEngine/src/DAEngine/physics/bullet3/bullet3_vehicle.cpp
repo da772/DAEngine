@@ -8,7 +8,7 @@
 namespace da::physics
 {
 
-	CBullet3Vehicle::CBullet3Vehicle(FVehicleTuning& tuning, IPhysicsRigidBody* rigidBody) : IVehicle(tuning, rigidBody)
+	CBullet3Vehicle::CBullet3Vehicle(const FVehicleData& tuning, IPhysicsRigidBody* rigidBody) : IVehicle(tuning, rigidBody)
 	{
 		CBullet3Physics* physics = dynamic_cast<CBullet3Physics*>(CPhysics::getPhysicsType());
 		ASSERT(physics);
@@ -22,12 +22,12 @@ namespace da::physics
 		m_tuning = tuning;
 
 		btRaycastVehicle::btVehicleTuning btTuning;
-		btTuning.m_frictionSlip = m_tuning.FrictionSlip;
-		btTuning.m_maxSuspensionForce = m_tuning.MaxSuspensionForce;
-		btTuning.m_maxSuspensionTravelCm = m_tuning.MaxSuspensionTravelCm;
-		btTuning.m_suspensionDamping = m_tuning.SuspensionDamping;
-		btTuning.m_suspensionStiffness = m_tuning.SuspensionStiffness;
-		btTuning.m_suspensionCompression = m_tuning.SuspensionDamping;
+		btTuning.m_frictionSlip = m_tuning.Tuning.FrictionSlip;
+		btTuning.m_maxSuspensionForce = m_tuning.Tuning.MaxSuspensionForce;
+		btTuning.m_maxSuspensionTravelCm = m_tuning.Tuning.MaxSuspensionTravelCm;
+		btTuning.m_suspensionDamping = m_tuning.Tuning.SuspensionDamping;
+		btTuning.m_suspensionStiffness = m_tuning.Tuning.SuspensionStiffness;
+		btTuning.m_suspensionCompression = m_tuning.Tuning.SuspensionDamping;
 
 		m_vehicle = new btRaycastVehicle(btTuning, btRigidBody->getRigidBody(), rayCaster);
 
@@ -52,46 +52,29 @@ namespace da::physics
 	void CBullet3Vehicle::addWheels()
 	{
 		btRaycastVehicle::btVehicleTuning btTuning;
-		btTuning.m_frictionSlip = m_tuning.FrictionSlip;
-		btTuning.m_maxSuspensionForce = m_tuning.MaxSuspensionForce;
-		btTuning.m_maxSuspensionTravelCm = m_tuning.MaxSuspensionTravelCm;
-		btTuning.m_suspensionDamping = m_tuning.SuspensionDamping;
-		btTuning.m_suspensionStiffness = m_tuning.SuspensionStiffness;
-		btTuning.m_suspensionCompression = m_tuning.SuspensionDamping;
+		btTuning.m_frictionSlip = m_tuning.Tuning.FrictionSlip;
+		btTuning.m_maxSuspensionForce = m_tuning.Tuning.MaxSuspensionForce;
+		btTuning.m_maxSuspensionTravelCm = m_tuning.Tuning.MaxSuspensionTravelCm;
+		btTuning.m_suspensionDamping = m_tuning.Tuning.SuspensionDamping;
+		btTuning.m_suspensionStiffness = m_tuning.Tuning.SuspensionStiffness;
+		btTuning.m_suspensionCompression = m_tuning.Tuning.SuspensionDamping;
 
-		//The direction of the raycast, the btRaycastVehicle uses raycasts instead of simiulating the wheels with rigid bodies
-		btVector3 wheelDirectionCS0(0, 0, -1);
+		for (const FWheelData& wheel : m_tuning.Wheels) {
+			btWheelInfo& wheelInfo = m_vehicle->addWheel(
+				{ wheel.WheelConnectionPoint.x, wheel.WheelConnectionPoint.y, wheel.WheelConnectionPoint.z }
+				, { wheel.WheelDirection.x, wheel.WheelDirection.y, wheel.WheelDirection.z }
+				, { wheel.WheelAxle.x, wheel.WheelAxle.y, wheel.WheelAxle.z }
+				, wheel.SuspensionRestLength
+				, wheel.WheelRadius
+				, btTuning
+				, wheel.FrontWheel);
 
-		//The axis which the wheel rotates arround
-		btVector3 wheelAxleCS(1, 0, 0);
-
-		btScalar suspensionRestLength(0.075f);
-		btScalar wheelWidth(0.265f);
-		btScalar wheelRadius(0.353f);
-
-		btVector3 wheelConnectionPoint = { 0.8f,  1.468f, -0.37f};
-
-		// FR
-		m_vehicle->addWheel(wheelConnectionPoint, wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, true);
-
-		//FL
-		m_vehicle->addWheel(wheelConnectionPoint * btVector3(-1, 1, 1), wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, true);
-
-		// BR
-		m_vehicle->addWheel(wheelConnectionPoint * btVector3(1, -1, 1), wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, false);
-
-		// BL
-		m_vehicle->addWheel(wheelConnectionPoint * btVector3(-1, -1, 1), wheelDirectionCS0, wheelAxleCS, suspensionRestLength, wheelRadius, btTuning, false);
-
-		for (int i = 0; i < m_vehicle->getNumWheels(); i++)
-		{
-			btWheelInfo& wheel = m_vehicle->getWheelInfo(i);
-			wheel.m_suspensionStiffness = 50;
-			wheel.m_wheelsDampingCompression = btScalar(0.3) * 2 * btSqrt(wheel.m_suspensionStiffness);//btScalar(0.8);
-			wheel.m_wheelsDampingRelaxation = btScalar(0.5) * 2 * btSqrt(wheel.m_suspensionStiffness);//1;
+			wheelInfo.m_suspensionStiffness = 50;
+			wheelInfo.m_wheelsDampingCompression = btScalar(0.3) * 2 * btSqrt(wheelInfo.m_suspensionStiffness);//btScalar(0.8);
+			wheelInfo.m_wheelsDampingRelaxation = btScalar(0.5) * 2 * btSqrt(wheelInfo.m_suspensionStiffness);//1;
 			//Larger friction slips will result in better handling
-			wheel.m_frictionSlip = btScalar(1.2);
-			wheel.m_rollInfluence = .5f;
+			wheelInfo.m_frictionSlip = btScalar(1.2);
+			wheelInfo.m_rollInfluence = .5f;
 		}
 	}
 

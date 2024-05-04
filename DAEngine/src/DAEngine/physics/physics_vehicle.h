@@ -4,7 +4,7 @@ namespace da::physics
 {
 	class CVehicleTuning;
 	class IPhysicsRigidBody;
-	
+
 	struct FVehicleTuning
 	{
 		float SuspensionStiffness = 5.88f;
@@ -13,6 +13,22 @@ namespace da::physics
 		float MaxSuspensionTravelCm = 500.f;
 		float FrictionSlip = 10.5f;
 		float MaxSuspensionForce = 6000.f;
+	};
+
+	struct FWheelData
+	{
+		glm::vec3 WheelConnectionPoint;
+		glm::vec3 WheelDirection;
+		glm::vec3 WheelAxle;
+		float SuspensionRestLength;
+		float WheelRadius;
+		bool FrontWheel;
+	};
+
+	struct FVehicleData
+	{
+		FVehicleTuning Tuning;
+		std::vector<FWheelData> Wheels;
 	};
 
 	struct FWheelTransformInfo
@@ -25,7 +41,7 @@ namespace da::physics
 	class IVehicle
 	{
 	public:
-		inline IVehicle(FVehicleTuning& tuning, IPhysicsRigidBody* rigidBody) {};
+		inline IVehicle(const FVehicleData& data, IPhysicsRigidBody* rigidBody) {};
 		inline virtual ~IVehicle() {};
 
 		virtual void setSteeringValue(float value, size_t wheelIndex) = 0;
@@ -37,6 +53,6 @@ namespace da::physics
 	class VehicleFactory
 	{
 	public:
-		static IVehicle* create(FVehicleTuning& tuning, IPhysicsRigidBody* rigidBody);
+		static IVehicle* create(const FVehicleData& tuning, IPhysicsRigidBody* rigidBody);
 	};
 }

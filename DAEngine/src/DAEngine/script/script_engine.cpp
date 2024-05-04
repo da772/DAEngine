@@ -103,18 +103,6 @@ namespace da::script
 		return 0;
 	}
 
-
-	struct FTestSubType {
-		int var1 = 5;
-		int var2 = 10;
-	};
-
-	struct FTestType {
-		int var1 = 0;
-		std::string var2 = {};
-		FTestSubType var3 = {};
-	};
-
 	void my_panic(sol::optional<std::string> maybe_msg) {
 		std::cerr << "Lua is in a panic state and will now abort() the application" << std::endl;
 		if (maybe_msg) {
@@ -167,7 +155,7 @@ namespace da::script
 
 		s_instance->m_stateView = new sol::state_view(s_instance->m_state);
 		s_instance->m_stateView->set_panic(sol::c_call<decltype(&my_panic), &my_panic>);
-		s_instance->m_stateView->open_libraries(sol::lib::base, sol::lib::table, sol::lib::os, sol::lib::string, sol::lib::jit, sol::lib::io, sol::lib::package, sol::lib::math
+		s_instance->m_stateView->open_libraries(sol::lib::base, sol::lib::table, sol::lib::os, sol::lib::io, sol::lib::string, sol::lib::jit, sol::lib::package, sol::lib::math
 #ifdef DA_REVIEW
 			, sol::lib::debug
 #endif

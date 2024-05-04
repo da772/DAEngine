@@ -11,7 +11,7 @@ namespace sol {
 	class state_view;
 }
 
-#define LOG_SASSERT(cond, L, msg, ...) LOG_ASSERT(cond, ELogChannel::Script, "%s - Printing Script callstack: %s", msg, ##__VA_ARGS__, !cond ? CScriptEngine::getCallstack(L).c_str() : "")
+#define LOG_SASSERT(cond, L, msg, ...) LOG_ASSERT(cond, da::ELogChannel::Script, "%s - Printing Script callstack: %s", msg, ##__VA_ARGS__, !cond ? da::script::CScriptEngine::getCallstack(L).c_str() : "")
 
 namespace da::script
 {

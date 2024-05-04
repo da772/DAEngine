@@ -25,7 +25,7 @@ CVehicle::CVehicle(uint32_t id /*= 0*/) : m_id(id)
 
 }
 
-void CVehicle::initialize(da::modules::CWindowModule* window, const glm::vec3& pos, bool proxy) {
+void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics::FVehicleData& vehicleData, const glm::vec3& pos, bool proxy) {
 	m_window = window;
 	m_proxy = proxy;
 
@@ -55,7 +55,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const glm::vec3& p
 		cc->getStaticMesh()->getMaterial(2).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_DIF.dds"));
 		cc->getStaticMesh()->getMaterial(2).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_ORM.dds"));
 		cc->getStaticMesh()->getMaterial(2).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_NRM.dds"));
-		
+
 
 		cc->getStaticMesh()->getMaterial(3).metallicFactor = .15f;
 		cc->getStaticMesh()->getMaterial(3).roughnessFactor = 1.f;
@@ -77,16 +77,14 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const glm::vec3& p
 		da::graphics::CStaticMesh* collisionMesh = new da::graphics::CStaticMesh("assets/prop/veh/prop_collision_veh_sports_01a.fbx", false);
 		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->addComponent<da::core::CRigidBodyComponent>(
 			//da::physics::IPhysicsRigidBody::create(da::physics::IPhysicsShape::createMeshConvexHull(collisionMesh)
-			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({1.f, 2.525f, .35f})
+			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 1.f, 2.525f, .35f })
 				, da::physics::CPhysicsEntityMotionState::create(m_entity)
 				, 1200.f
 				, { 0.f,0.f,0.f }));
 
 		delete collisionMesh;
 
-		da::physics::FVehicleTuning tuning;
-
-		m_vehicle = da::physics::VehicleFactory::create(tuning, rb->getPhysicsBody());
+		m_vehicle = da::physics::VehicleFactory::create(vehicleData, rb->getPhysicsBody());
 
 		for (size_t i = 0; i < 4; i++) {
 			da::core::CEntity* wheel = scene->createEntity();
@@ -325,8 +323,6 @@ void CVehicle::updateLights()
 		lights->updateLight(m_headLightR, rightPos, newDir);
 		glm::vec3 leftPos = entityPos + glm::vec3(entityT * glm::vec4(-0.648619f, 2.25286f, -0.511385f, 1.f));
 		lights->updateLight(m_headLightL, leftPos, newDir);
-		da::graphics::CDebugRender::drawCube(leftPos, m_entity->getTransform().rotation(), { .01f, .01f, .01f }, { 1.f,0.f, 1.f, 1.f }, false);
-		da::graphics::CDebugRender::drawCube(rightPos, m_entity->getTransform().rotation(), { .01f, .01f, .01f }, { 1.f,0.f, 1.f, 1.f }, false);
 	}
 
 	if (m_brakeLightR && m_brakeLightL) {

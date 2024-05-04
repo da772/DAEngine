@@ -8,13 +8,12 @@ import { Vector3 } from "./daengine/vector";
 import { Inputs } from "./daengine/input_enum";
 
 
-
 export class MyComponent extends NativeComponent implements Component {
 
     e : Employee = new Employee(1, "Steve");
 
     initialize(): void {
-        print("script init")
+        print("script init");
         Debug.RegisterDebugMenu("MyComponent", this, MyComponent.prototype.debugUpdate);
     }
 

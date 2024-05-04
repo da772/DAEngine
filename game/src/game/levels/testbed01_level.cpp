@@ -3,10 +3,13 @@
 //engine
 #include <daengine/physics.h>
 #include <daengine/graphics.h>
+#include <daengine/script.h>
+#include <daengine/core.h>
 
 // game
 #include "game/character/character.h"
 #include "game/vehicle/vehicle.h"
+#include <DAEngine/physics/physics_vehicle.h>
 
 
 glm::vec4 hexToVec(uint32_t i) {
@@ -40,9 +43,8 @@ void CTestBed01Level::initialize()
 	m_character = new CCharacter();
 	m_character->initialize();
 
-	// Vehicle
-	m_vehicle = new CVehicle();
-	m_vehicle->initialize(&m_window);
+	// create vehicle
+	createVehicle();
 
 	// Hello World
 	{
@@ -145,6 +147,12 @@ void CTestBed01Level::initialize()
 
 void CTestBed01Level::update(float dt)
 {
+	// R
+	if (da::core::CInput::inputPressed(82)) {
+		destroyVehicle();
+		createVehicle();
+	}
+
 	m_character->update(dt);
 	m_vehicle->update(dt);
 }
@@ -154,8 +162,31 @@ void CTestBed01Level::shutdown()
 	m_character->shutdown();
 	delete m_character;
 
-	m_vehicle->shutdown();
-	delete m_vehicle;
+
 
 	da::core::CSceneManager::setScene(nullptr);
+}
+
+void CTestBed01Level::createVehicle()
+{
+#ifdef DA_REVIEW
+	da::script::CScriptEngine::unloadScript("scripts/build/vehicles/vehicle_test_01.lua");
+#endif
+	int ref = da::script::CScriptEngine::getScript("scripts/build/vehicles/vehicle_test_01.lua", false);
+	sol::reference funcRef(da::script::CScriptEngine::getState(), (sol::ref_index)ref);
+	sol::function func(funcRef);
+	sol::function_result result = func();
+	ASSERT(result.valid());
+	sol::table obj = result.get<sol::table>();
+	da::physics::FVehicleData vehData = GET_SCRIPT_TYPE(da::physics::FVehicleData, obj["vehicleData"]);
+
+	// Vehicle
+	m_vehicle = new CVehicle();
+	m_vehicle->initialize(&m_window, vehData);
+}
+
+void CTestBed01Level::destroyVehicle()
+{
+	m_vehicle->shutdown();
+	delete m_vehicle;
 }

@@ -7,9 +7,9 @@
 namespace da::physics
 {
 
-	da::physics::IVehicle* VehicleFactory::create(FVehicleTuning& tuning, IPhysicsRigidBody* rigidBody)
+	da::physics::IVehicle* VehicleFactory::create(const FVehicleData& data, IPhysicsRigidBody* rigidBody)
 	{
-		return new CBullet3Vehicle(tuning, rigidBody);
+		return new CBullet3Vehicle(data, rigidBody);
 	}
 
 }

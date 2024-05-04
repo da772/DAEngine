@@ -2,6 +2,7 @@
 #include <DAEngine.h>
 // core
 #include "DAEngine/core/time.h"
+#include "DAEngine/core/input/input.h"
 #include "DAEngine/core/window/window.h"
 
 // modules

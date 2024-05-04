@@ -50,11 +50,14 @@ project "game"
 	includedirs 
 	{
 		"DAEngine/src",
+		"DAEngine/src/DAEngine/headers",
 		"%{prj.name}/src",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.sol2}",
+		"%{IncludeDir.lua51}/lua",
 	}
 
 	links
