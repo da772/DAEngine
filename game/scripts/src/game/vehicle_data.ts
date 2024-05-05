@@ -1,3 +1,4 @@
+import { MaterialData } from "../daengine/graphics/material_data";
 import { Vector3 } from "../daengine/vector";
 
 /*
@@ -76,13 +77,13 @@ export class WheelData
 }
 
 /*
-struct FScriptVehicleData
+struct FVehicleTuningData
 {
 	FVehicleTuning Tuning;
 	std::vector<FWheelData> Wheels;
 };
 */
-export class VehicleData {
+export class VehicleTuningData {
     public Tuning : VehicleTuning;
     public Wheels : WheelData[];
     public constructor(tuning: VehicleTuning, wheels : WheelData[]) 
@@ -91,3 +92,38 @@ export class VehicleData {
         this.Wheels = wheels;
     }
 }
+
+/*
+struct FVehicleData
+{
+	da::physics::FVehicleTuningData VehicleData;
+	std::vector<da::graphics::FMaterialData> Materials;
+	std::string VehicleMesh;
+};
+*/
+
+export class VehicleData {
+    public TuningData : VehicleTuningData;
+    public Materials : MaterialData[];
+    public VehicleMesh : string;
+
+    public constructor(tuningData : VehicleTuningData, materialData : MaterialData[], vehicleMesh : string)
+    {
+        this.TuningData = tuningData;
+        this.Materials = materialData;
+        this.VehicleMesh = vehicleMesh;
+    }
+}
+
+export namespace VehicleManager {
+    export function RegisterVehicle(id : string, data: VehicleData) {
+        register_vehicle(id, data);
+    }
+
+    export function UnregisterVehicle(id : string) {
+        unregister_vehicle(id);
+    }
+}
+
+declare function register_vehicle(id : string, data : VehicleData);
+declare function unregister_vehicle(id : string);

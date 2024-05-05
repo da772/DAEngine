@@ -1,15 +1,13 @@
 #include "testbed01_level.h"
 
 //engine
-#include <daengine/physics.h>
 #include <daengine/graphics.h>
-#include <daengine/script.h>
-#include <daengine/core.h>
+#include <daengine/physics.h>
 
 // game
 #include "game/character/character.h"
 #include "game/vehicle/vehicle.h"
-#include <DAEngine/physics/physics_vehicle.h>
+#include <game/vehicle/vehicle_manager.h>
 
 
 glm::vec4 hexToVec(uint32_t i) {
@@ -29,22 +27,20 @@ glm::vec4 hexToVec(uint32_t i) {
 	return glm::vec4(rf, gf, bf, af);
 }
 
-CTestBed01Level::CTestBed01Level(CHashString name, da::modules::CWindowModule& window) : ILevel(name), m_window(window)
+CTestBed01Level::CTestBed01Level(CHashString name, da::modules::CWindowModule& window) : ILevel(name), m_window(window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
 {
 
 }
 
 void CTestBed01Level::initialize()
 {
+	m_scrlevel.setup({}, {});
 	da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid("2f94546a-a92a-4046-946a-f28c2364110b")));
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 	// Character
 	m_character = new CCharacter();
 	m_character->initialize();
-
-	// create vehicle
-	createVehicle();
 
 	// Hello World
 	{
@@ -143,46 +139,47 @@ void CTestBed01Level::initialize()
 			meshComponent->getStaticMesh()->getMaterial(i).doubleSided = false;
 		}
 	}
+
+	m_scrlevel.classInitialize();
+
+	// create vehicle
+	createVehicle();
 }
 
 void CTestBed01Level::update(float dt)
 {
 	// R
 	if (da::core::CInput::inputPressed(82)) {
+		m_scrlevel.classShutdown();
+		m_scrlevel.cleanup();
+		m_scrlevel.setup({}, {});
+		m_scrlevel.classInitialize();
 		destroyVehicle();
 		createVehicle();
 	}
 
 	m_character->update(dt);
 	m_vehicle->update(dt);
+
+	m_scrlevel.classUpdate(dt);
 }
 
 void CTestBed01Level::shutdown()
 {
+	m_scrlevel.classShutdown();
+	m_scrlevel.cleanup();
+
 	m_character->shutdown();
 	delete m_character;
-
-
 
 	da::core::CSceneManager::setScene(nullptr);
 }
 
 void CTestBed01Level::createVehicle()
 {
-#ifdef DA_REVIEW
-	da::script::CScriptEngine::unloadScript("scripts/build/vehicles/vehicle_test_01.lua");
-#endif
-	int ref = da::script::CScriptEngine::getScript("scripts/build/vehicles/vehicle_test_01.lua", false);
-	sol::reference funcRef(da::script::CScriptEngine::getState(), (sol::ref_index)ref);
-	sol::function func(funcRef);
-	sol::function_result result = func();
-	ASSERT(result.valid());
-	sol::table obj = result.get<sol::table>();
-	da::physics::FVehicleData vehData = GET_SCRIPT_TYPE(da::physics::FVehicleData, obj["vehicleData"]);
-
 	// Vehicle
 	m_vehicle = new CVehicle();
-	m_vehicle->initialize(&m_window, vehData);
+	m_vehicle->initialize(&m_window, CVehicleManager::getVehicleTypes().begin()->second);
 }
 
 void CTestBed01Level::destroyVehicle()

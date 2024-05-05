@@ -56,5 +56,5 @@ local wheels = {
         false
     )
 }
-____exports.vehicleData = __TS__New(VehicleData, tuning, wheels)
+____exports.test_vehicle_01 = __TS__New(VehicleData, tuning, wheels)
 return ____exports

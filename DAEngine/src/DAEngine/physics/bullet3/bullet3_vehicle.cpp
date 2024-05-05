@@ -22,12 +22,12 @@ namespace da::physics
 		m_tuning = tuning;
 
 		btRaycastVehicle::btVehicleTuning btTuning;
-		btTuning.m_frictionSlip = m_tuning.Tuning.FrictionSlip;
-		btTuning.m_maxSuspensionForce = m_tuning.Tuning.MaxSuspensionForce;
-		btTuning.m_maxSuspensionTravelCm = m_tuning.Tuning.MaxSuspensionTravelCm;
-		btTuning.m_suspensionDamping = m_tuning.Tuning.SuspensionDamping;
-		btTuning.m_suspensionStiffness = m_tuning.Tuning.SuspensionStiffness;
-		btTuning.m_suspensionCompression = m_tuning.Tuning.SuspensionDamping;
+		btTuning.m_frictionSlip = m_tuning.TuningData.Tuning.FrictionSlip;
+		btTuning.m_maxSuspensionForce = m_tuning.TuningData.Tuning.MaxSuspensionForce;
+		btTuning.m_maxSuspensionTravelCm = m_tuning.TuningData.Tuning.MaxSuspensionTravelCm;
+		btTuning.m_suspensionDamping = m_tuning.TuningData.Tuning.SuspensionDamping;
+		btTuning.m_suspensionStiffness = m_tuning.TuningData.Tuning.SuspensionStiffness;
+		btTuning.m_suspensionCompression = m_tuning.TuningData.Tuning.SuspensionDamping;
 
 		m_vehicle = new btRaycastVehicle(btTuning, btRigidBody->getRigidBody(), rayCaster);
 
@@ -52,14 +52,14 @@ namespace da::physics
 	void CBullet3Vehicle::addWheels()
 	{
 		btRaycastVehicle::btVehicleTuning btTuning;
-		btTuning.m_frictionSlip = m_tuning.Tuning.FrictionSlip;
-		btTuning.m_maxSuspensionForce = m_tuning.Tuning.MaxSuspensionForce;
-		btTuning.m_maxSuspensionTravelCm = m_tuning.Tuning.MaxSuspensionTravelCm;
-		btTuning.m_suspensionDamping = m_tuning.Tuning.SuspensionDamping;
-		btTuning.m_suspensionStiffness = m_tuning.Tuning.SuspensionStiffness;
-		btTuning.m_suspensionCompression = m_tuning.Tuning.SuspensionDamping;
+		btTuning.m_frictionSlip = m_tuning.TuningData.Tuning.FrictionSlip;
+		btTuning.m_maxSuspensionForce = m_tuning.TuningData.Tuning.MaxSuspensionForce;
+		btTuning.m_maxSuspensionTravelCm = m_tuning.TuningData.Tuning.MaxSuspensionTravelCm;
+		btTuning.m_suspensionDamping = m_tuning.TuningData.Tuning.SuspensionDamping;
+		btTuning.m_suspensionStiffness = m_tuning.TuningData.Tuning.SuspensionStiffness;
+		btTuning.m_suspensionCompression = m_tuning.TuningData.Tuning.SuspensionDamping;
 
-		for (const FWheelData& wheel : m_tuning.Wheels) {
+		for (const FWheelData& wheel : m_tuning.TuningData.Wheels) {
 			btWheelInfo& wheelInfo = m_vehicle->addWheel(
 				{ wheel.WheelConnectionPoint.x, wheel.WheelConnectionPoint.y, wheel.WheelConnectionPoint.z }
 				, { wheel.WheelDirection.x, wheel.WheelDirection.y, wheel.WheelDirection.z }

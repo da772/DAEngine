@@ -34,7 +34,6 @@ namespace da::script
         for (size_t i = 14; i < pathLen+14; i++) {
             if (buffer[i] == '.') {
                 buffer[i] = '/';
-                break;
             }
         }
 		char ext[] = ".lua";

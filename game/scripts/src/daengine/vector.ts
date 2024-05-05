@@ -1,3 +1,42 @@
+export class Vector4
+{
+    x : number;
+    y : number;
+    z : number;
+    w : number;
+
+    constructor(x : number = 0.0, y : number = 0.0, z : number = 0.0, w : number = 0.0) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
+    }
+
+    static fromNative(v : Vector4) : Vector4{
+        return new Vector4(v.x,v.y, v.z, v.w);
+    }
+
+    equals(other : Vector4) : boolean {
+        return other.x == this.x && other.y == this.y && other.z == this.z && other.w == this.w;
+    }
+
+    neg() : Vector4
+    {
+        return new Vector4(-this.x, -this.y, -this.z, -this.w);
+    }
+
+    mul(v : Vector4) : Vector4;
+    mul(x : number) : Vector3;
+
+    mul(v : Vector4 | number) : Vector4
+    {
+        if (typeof v == 'number') {
+            return new Vector4(this.x * v, this.y * v, this.z * v, this.w * v);
+        }
+        return new Vector4(this.x * v.x, this.y * v.y, this.z * v.z, this.w * v.w);
+    }
+}
+
 export class Vector3
 {
     x : number;

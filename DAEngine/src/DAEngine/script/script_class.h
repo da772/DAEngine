@@ -4,7 +4,7 @@ namespace da::script
 {
 	class CScriptClass {
 	public:
-		CScriptClass(const std::string& path, const std::string& classType, const std::string& objName);
+		CScriptClass(const std::string& path, const std::string& classType, const std::string& objName, bool component = true);
 
 		void setup(const da::core::CGuid& parent, const da::core::CGuid& guid);
 		void cleanup(bool keepObj = false);
@@ -23,6 +23,7 @@ namespace da::script
 		int m_initRef = 0, m_updateRef = 0, m_shutdownRef = 0;
 
 		void* m_state = nullptr;
+		bool m_component;
 
 	};
 }

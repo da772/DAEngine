@@ -1,4 +1,5 @@
 #pragma once
+#include <daengine/core/graphics/graphics_material_data.h>
 
 namespace da::physics
 {
@@ -25,7 +26,7 @@ namespace da::physics
 		bool FrontWheel;
 	};
 
-	struct FVehicleData
+	struct FVehicleTuningData
 	{
 		FVehicleTuning Tuning;
 		std::vector<FWheelData> Wheels;
@@ -37,6 +38,14 @@ namespace da::physics
 		glm::quat Rotation;
 		glm::mat4 Transform;
 	};
+
+	struct FVehicleData
+	{
+		da::physics::FVehicleTuningData TuningData;
+		std::vector<da::graphics::FMaterialData> Materials;
+		std::string VehicleMesh;
+	};
+
 
 	class IVehicle
 	{

@@ -20,6 +20,7 @@ extern "C" {
 #include <sol/sol.hpp>
 #include <script/script_engine.h>
 #include <core/time.h>
+#include <core/graphics/factory/factory_graphics_texture2d.h>
 
 namespace da::script::core
 {
@@ -226,6 +227,19 @@ namespace da::script::core
 		return CREATE_SCRIPT_TYPE(&lua, glm::vec2, &scrVec);
 	}
 
+	static size_t lua_create_texture2d(sol::this_state state, sol::object _, std::string path)
+	{
+		if (path.empty()) return 0;
+		return reinterpret_cast<size_t>(da::graphics::CTexture2DFactory::Create(path));
+	}
+
+	static void lua_destroy_texture2d(sol::this_state state, sol::object _, size_t ptr)
+	{
+		if (!ptr) return;
+		delete reinterpret_cast<void*>(ptr);
+	}
+
+
 	static sol::table lua_timer_create(sol::this_state state, sol::object _, sol::object ms) {
 
 		uint64_t time = ms.as<uint64_t>();
@@ -300,6 +314,11 @@ namespace da::script::core
 
 		// Physics
 		lua->set_function("native_entity_apply_velocity", lua_entity_apply_vel);
+
+		//Graphics
+		lua->set_function("native_create_texture2d", lua_create_texture2d);
+		lua->set_function("native_destroy_texture2d", lua_destroy_texture2d);
+		
 
 		// Timer
 		lua->set_function("native_timer_create", lua_timer_create);

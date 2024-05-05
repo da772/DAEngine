@@ -2,6 +2,8 @@
 #include <sol/sol.hpp>
 #include "daengine/script/script_engine.h"
 
+#include "daengine/core/graphics/graphics_material_data.h"
+
 #define GET_SCRIPT_TYPE(type, obj) da::script::getSolType<type>(obj, HASHSTR(#type))
 #define CREATE_SCRIPT_TYPE(view, type, obj) da::script::createSolType<type>(view, obj, HASHSTR(#type))
 #define REGISTER_SCRIPT_TYPE(type, ...) da::script::registerSolType<type>(HASHSTR(#type), { __VA_ARGS__ })
@@ -18,6 +20,7 @@ namespace da::script
 		Invalid,
 		Int,
 		Float,
+		Ptr,
 		Bool,
 		String,
 		Object,
@@ -117,8 +120,11 @@ namespace da::script
 				if (type.DataType == EScriptDataType::Int) {
 					*(int*)ptr = o1.as<int>();
 				}
-				else {
+				else if (type.DataType == EScriptDataType::Float) {
 					*(float*)ptr = o1.as<float>();
+				}
+				else if (type.DataType == EScriptDataType::Ptr) {
+					*(size_t*)ptr = o1.as<size_t>();
 				}
 				break;
 			}
@@ -164,7 +170,18 @@ namespace da::script
 							*(std::vector<std::string>*)ptr = cvec;
 							break;
 						}
-						
+						case EScriptDataType::Ptr:
+						{
+							std::vector<char> cvec;
+							cvec.resize(t.size() * sizeof(size_t));
+							for (const auto& key_value_pair : t) {
+								int ii = key_value_pair.first.as<int>() - 1;
+								sol::object value = key_value_pair.second;
+								*(size_t*)&cvec[ii * sizeof(size_t)] = value.as<size_t>();
+							}
+							*(std::vector<char>*)ptr = cvec;
+							break;
+						}
 						case EScriptDataType::Float:
 						case EScriptDataType::Int:
 						{
@@ -210,6 +227,10 @@ namespace da::script
 				break;
 			case EScriptDataType::Float: {
 				table[type.Name] = *(float*)ptr;
+				break;
+			}
+			case EScriptDataType::Ptr: {
+				table[type.Name] = *(size_t*)ptr;
 				break;
 			}
 			case EScriptDataType::String:

@@ -2,6 +2,7 @@
 #include <daengine.h>
 #include <daengine/core.h>
 #include <daengine/components.h>
+#include <daengine/script.h>
 #include "level.h"
 
 
@@ -27,5 +28,6 @@ private:
 	CCharacter* m_character;
 	CVehicle* m_vehicle;
 	da::modules::CWindowModule& m_window;
+	da::script::CScriptClass m_scrlevel;
 
 };

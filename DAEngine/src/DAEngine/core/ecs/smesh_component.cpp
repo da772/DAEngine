@@ -24,6 +24,13 @@ namespace da::core {
 		m_staticMesh = new da::platform::CBgfxStaticMesh(meshPath, inverseNormals);
 	}
 
+	CSmeshComponent::CSmeshComponent(da::graphics::CStaticMesh* mesh, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
+	{
+		m_keepMesh = true;
+		m_staticMesh = mesh;
+		ASSERT(m_staticMesh);
+	}
+
 	void CSmeshComponent::onInitialize()
 	{
 		
@@ -31,7 +38,8 @@ namespace da::core {
 
 	void CSmeshComponent::onShutdown()
 	{
-		delete m_staticMesh;
+		if (!m_keepMesh)
+			delete m_staticMesh;
 	}
 
 	da::graphics::CStaticMesh* CSmeshComponent::getStaticMesh() const

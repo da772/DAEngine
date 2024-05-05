@@ -37,12 +37,13 @@ namespace da::graphics {
         CGraphicsTexture2D* getMetallicRoughnessTexture() const;
         CGraphicsTexture2D* getNormalTexture() const;
 
-    private:
+    public:
         CGraphicsTexture2D* m_baseColorTexture = nullptr;
         CGraphicsTexture2D* m_emissiveTexture = nullptr;
         CGraphicsTexture2D* m_occlusionTexture = nullptr;
         CGraphicsTexture2D* m_normalTexture = nullptr;
         CGraphicsTexture2D* m_metallicRoughnessTexture = nullptr;
+
     };
 
 }

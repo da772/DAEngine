@@ -1,12 +1,28 @@
+//header
 #include "vehicle_script_native.h"
-#include <DAEngine/physics/physics_vehicle.h>
 
-static void vehicleTestNative(sol::this_state state, sol::object _, sol::object vData) {
+// engine
+#include <DAEngine/physics.h>
+#include <DAEngine/graphics.h>
+
+// game
+#include "game/vehicle/vehicle_manager.h"
+#include "game/vehicle/vehicle.h"
+
+
+
+static void registerVehicle(sol::this_state state, sol::object _, std::string strId, sol::object vData) {
+	CHashString id = CHashString(strId.c_str(), strId.size());
 	da::physics::FVehicleData vehicleData = GET_SCRIPT_TYPE(da::physics::FVehicleData, vData);
 
-	LOG_DEBUG(da::ELogChannel::Application, "Vehicle");
+	CVehicleManager::addVehicleType(id, vehicleData);
 }
 
+static void unRegisterVehicle(sol::this_state state, sol::object _, std::string strId) {
+	CHashString id = CHashString(strId.c_str(), strId.size());
+
+	CVehicleManager::removeVehicleType(id);
+}
 
 void CVehicleScriptNative::registerTypes()
 {
@@ -26,15 +42,22 @@ void CVehicleScriptNative::registerTypes()
 		SCRIPT_TYPE(da::physics::FWheelData, WheelRadius, da::script::EScriptDataType::Float),
 		SCRIPT_TYPE(da::physics::FWheelData, FrontWheel, da::script::EScriptDataType::Bool));
 
+	REGISTER_SCRIPT_TYPE(da::physics::FVehicleTuningData,
+		SCRIPT_TYPE_OBJECT(da::physics::FVehicleTuningData, Tuning, da::physics::FVehicleTuning),
+		SCRIPT_ARR_TYPE_OBJECT(da::physics::FVehicleTuningData, Wheels, da::physics::FWheelData));
+
 	REGISTER_SCRIPT_TYPE(da::physics::FVehicleData,
-		SCRIPT_TYPE_OBJECT(da::physics::FVehicleData, Tuning, da::physics::FVehicleTuning),
-		SCRIPT_ARR_TYPE_OBJECT(da::physics::FVehicleData, Wheels, da::physics::FWheelData));
+		SCRIPT_TYPE_OBJECT(da::physics::FVehicleData, TuningData, da::physics::FVehicleTuningData),
+		SCRIPT_ARR_TYPE_OBJECT(da::physics::FVehicleData, Materials, da::graphics::FMaterialData),
+		SCRIPT_TYPE(da::physics::FVehicleData, VehicleMesh, da::script::EScriptDataType::String)
+	);
 }
 
 void CVehicleScriptNative::registerNatives(sol::state_view* view)
 {
 	registerTypes();
-	view->set_function("vehicle_test_native", vehicleTestNative);
+	view->set_function("register_vehicle", registerVehicle);
+	view->set_function("unregister_vehicle", unRegisterVehicle);
 }
 
 

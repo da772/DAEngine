@@ -1,7 +1,8 @@
 #pragma once
 
 #include <DAEngine/core.h>
-#include <daengine/physics/physics_vehicle.h>
+#include <daengine/physics.h>
+#include "daengine/graphics.h"
 
 namespace da::core
 {

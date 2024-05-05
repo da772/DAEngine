@@ -25,8 +25,8 @@ namespace da::script
 		return res;
 	}
 
-	CScriptClass::CScriptClass(const std::string& path, const std::string& classType, const std::string& objName) 
-		: m_path(path), m_objName(objName), m_classType(classType)
+	CScriptClass::CScriptClass(const std::string& path, const std::string& classType, const std::string& objName, bool component) 
+		: m_path(path), m_objName(objName), m_classType(classType), m_component(component)
 	{
 
 	}
@@ -75,6 +75,8 @@ namespace da::script
 
 		sol::function shutdown = protoType["shutdown"];
 		m_shutdownRef = getRef(L, shutdown);
+
+		if (!m_component) return;
 
 		sol::table guidIndex = base[m_objName.c_str()]["Id"];
 		sol::table entityIndex = base[m_objName.c_str()]["Entity"]["Id"];
