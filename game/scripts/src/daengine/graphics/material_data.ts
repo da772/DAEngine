@@ -43,6 +43,7 @@ export class MaterialData {
         this.roughnessFactor = roughnessFactor;
         this.normalScale = normalScale;
         this.occlusionStrength = occlusionStrength;
+        print(`Creating MaterialData: ${baseColorTexture}`);
         this.m_baseColorTexture = native_create_texture2d(baseColorTexture);
         this.m_emissiveTexture =  native_create_texture2d(emissiveTexture);
         this.m_occlusionTexture = native_create_texture2d(occlusionTexture);

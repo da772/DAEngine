@@ -25,7 +25,9 @@ public:
 protected:
 	virtual void onInitialize() override;
 	virtual void onShutdown() override;
-	void renderScriptDebug(bool soft, bool* b);
+#ifdef DA_REVIEW
+	void resetScriptDebug(bool soft, bool* b);
+#endif
 	virtual void onUpdate(float dt) override;
 
 private:

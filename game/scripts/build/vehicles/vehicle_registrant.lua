@@ -19,7 +19,7 @@ do
     end
     function VehicleRegistrant.unregister(self)
         for key in pairs(vehicle_types) do
-            VehicleManager:UnregisterVehicle(key)
+            VehicleManager:UnregisterVehicle(key, true)
             print("Unregistered Vehicle: " .. key)
         end
     end

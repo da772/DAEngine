@@ -18,7 +18,7 @@ const vehicleTuningData : VehicleTuningData = new VehicleTuningData(tuning, whee
 
 const materialData : MaterialData[] = [
     // Material 0
-    new MaterialData(new Vector4(1.0,1.0,1.0,1.0)
+    new MaterialData(new Vector4(1.0,0.0,0.0,1.0)
     , new Vector3(1.0,1.0,1.0)
     , new Vector2(1.0,1.0)
     , 0.15, 0.0, 1.0, 1.0

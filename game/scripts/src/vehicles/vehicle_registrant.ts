@@ -19,7 +19,7 @@ export namespace VehicleRegistrant
     
     export function unregister() {
         for (const key in vehicle_types) {
-            VehicleManager.UnregisterVehicle(key);
+            VehicleManager.UnregisterVehicle(key, true);
             print(`Unregistered Vehicle: ${key}`);
         }
     }

@@ -68,8 +68,8 @@ local materialData = {
         __TS__New(
             Vector4,
             1,
-            1,
-            1,
+            0,
+            0,
             1
         ),
         __TS__New(Vector3, 1, 1, 1),

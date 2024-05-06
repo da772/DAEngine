@@ -52,8 +52,8 @@ do
     function VehicleManager.RegisterVehicle(self, id, data)
         register_vehicle(nil, id, data)
     end
-    function VehicleManager.UnregisterVehicle(self, id)
-        unregister_vehicle(nil, id)
+    function VehicleManager.UnregisterVehicle(self, id, cleanup)
+        unregister_vehicle(nil, id, cleanup)
     end
 end
 return ____exports

@@ -2,7 +2,7 @@ local ____lualib = require("lualib_bundle")
 local __TS__Class = ____lualib.__TS__Class
 local __TS__New = ____lualib.__TS__New
 local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
-__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["7"] = 2,["8"] = 2,["9"] = 2,["10"] = 2,["11"] = 16,["12"] = 16,["13"] = 16,["14"] = 26,["15"] = 33,["16"] = 33,["18"] = 34,["19"] = 34,["21"] = 35,["22"] = 35,["24"] = 36,["25"] = 36,["27"] = 37,["28"] = 37,["30"] = 17,["31"] = 17,["32"] = 17,["33"] = 17,["34"] = 17,["35"] = 17,["36"] = 17,["37"] = 18,["38"] = 19,["39"] = 20,["40"] = 21,["41"] = 22,["42"] = 23,["43"] = 39,["44"] = 40,["45"] = 41,["46"] = 42,["47"] = 43,["48"] = 44,["49"] = 45,["50"] = 46,["51"] = 47,["52"] = 48,["53"] = 49,["54"] = 50,["55"] = 25,["56"] = 53,["57"] = 54,["58"] = 55,["59"] = 56,["60"] = 57,["61"] = 58,["62"] = 53});
+__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["7"] = 2,["8"] = 2,["9"] = 2,["10"] = 2,["11"] = 16,["12"] = 16,["13"] = 16,["14"] = 26,["15"] = 33,["16"] = 33,["18"] = 34,["19"] = 34,["21"] = 35,["22"] = 35,["24"] = 36,["25"] = 36,["27"] = 37,["28"] = 37,["30"] = 17,["31"] = 17,["32"] = 17,["33"] = 17,["34"] = 17,["35"] = 17,["36"] = 17,["37"] = 18,["38"] = 19,["39"] = 20,["40"] = 21,["41"] = 22,["42"] = 23,["43"] = 39,["44"] = 40,["45"] = 41,["46"] = 42,["47"] = 43,["48"] = 44,["49"] = 45,["50"] = 46,["51"] = 47,["52"] = 48,["53"] = 49,["54"] = 50,["55"] = 51,["56"] = 25,["57"] = 54,["58"] = 55,["59"] = 56,["60"] = 57,["61"] = 58,["62"] = 59,["63"] = 54});
 local ____exports = {}
 local ____vector = require("daengine.vector")
 local Vector2 = ____vector.Vector2
@@ -47,6 +47,7 @@ function MaterialData.prototype.____constructor(self, baseColorFactor, emissiveF
     self.roughnessFactor = roughnessFactor
     self.normalScale = normalScale
     self.occlusionStrength = occlusionStrength
+    print("Creating MaterialData: " .. baseColorTexture)
     self.m_baseColorTexture = native_create_texture2d(nil, baseColorTexture)
     self.m_emissiveTexture = native_create_texture2d(nil, emissiveTexture)
     self.m_occlusionTexture = native_create_texture2d(nil, occlusionTexture)

@@ -18,10 +18,10 @@ static void registerVehicle(sol::this_state state, sol::object _, std::string st
 	CVehicleManager::addVehicleType(id, vehicleData);
 }
 
-static void unRegisterVehicle(sol::this_state state, sol::object _, std::string strId) {
+static void unRegisterVehicle(sol::this_state state, sol::object _, std::string strId, bool cleanup) {
 	CHashString id = CHashString(strId.c_str(), strId.size());
 
-	CVehicleManager::removeVehicleType(id);
+	CVehicleManager::removeVehicleType(id, cleanup);
 }
 
 void CVehicleScriptNative::registerTypes()

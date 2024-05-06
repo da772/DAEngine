@@ -6,11 +6,16 @@ void CVehicleManager::addVehicleType(CHashString id, const da::physics::FVehicle
 	ms_manager.m_vehicles[id] = data;
 }
 
-void CVehicleManager::removeVehicleType(CHashString id)
+void CVehicleManager::removeVehicleType(CHashString id, bool cleanup)
 {
 	const std::unordered_map<CHashString, da::physics::FVehicleData>::iterator& it = ms_manager.m_vehicles.find(id);
 
 	if (it != ms_manager.m_vehicles.end()) {
+		if (cleanup) {
+			for (da::graphics::FMaterialData& mat : it->second.Materials) {
+				mat.cleanup();
+			}
+		}
 		ms_manager.m_vehicles.erase(it);
 	}
 

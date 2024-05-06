@@ -150,6 +150,12 @@ void CTestBed01Level::update(float dt)
 {
 	// R
 	if (da::core::CInput::inputPressed(82)) {
+		auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
+		da::script::CScriptEngine::clearAll();
+		for (size_t i = 0; i < components.getCount(); i++) {
+			da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);
+			c->reload(false);
+		}
 		m_scrlevel.classShutdown();
 		m_scrlevel.cleanup();
 		m_scrlevel.setup({}, {});

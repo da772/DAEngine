@@ -279,27 +279,7 @@ namespace da::graphics
 
 	CStaticMesh::~CStaticMesh()
 	{
-		for (size_t i = 0; i < m_materials.size(); i++) {
-			if (m_materials[i].getBaseColorTexture()) {
-				delete m_materials[i].getBaseColorTexture();
-			}
-
-			if (m_materials[i].getEmissiveTexture()) {
-				delete m_materials[i].getEmissiveTexture();
-			}
-
-			if (m_materials[i].getMetallicRoughnessTexture()) {
-				delete m_materials[i].getMetallicRoughnessTexture();
-			}
-
-			if (m_materials[i].getNormalTexture()) {
-				delete m_materials[i].getNormalTexture();
-			}
-
-			if (m_materials[i].getOcclusionTexture()) {
-				delete m_materials[i].getOcclusionTexture();
-			}
-		}
+	
 	}
 
 	da::graphics::FMaterialData& CStaticMesh::getMaterial(size_t index)

@@ -38,7 +38,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics:
 			cc->getStaticMesh()->getMaterial(i) = vehicleData.Materials[i];
 		}
 
-		if (!m_proxy) cc->getStaticMesh()->getMaterial(0).baseColorFactor = { .7f, .9f, .9f, 1.f };
+		if (m_proxy) cc->getStaticMesh()->getMaterial(0).baseColorFactor = { .7f, .9f, .9f, 1.f };
 		m_entity->addComponent<da::core::CNetworkedTransformComponent>(!m_proxy);
 
 		m_entity->getTransform().setPosition(pos);

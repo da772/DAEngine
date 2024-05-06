@@ -69,4 +69,19 @@ namespace da::graphics
 		return m_normalTexture;
 	}
 
+	void FMaterialData::cleanup()
+	{
+		if (m_baseColorTexture) delete m_baseColorTexture;
+		if (m_emissiveTexture) delete m_emissiveTexture;
+		if (m_occlusionTexture) delete m_occlusionTexture;
+		if (m_normalTexture) delete m_normalTexture;
+		if (m_metallicRoughnessTexture) delete m_metallicRoughnessTexture;
+
+		m_baseColorTexture = nullptr;
+		m_emissiveTexture = nullptr;
+		m_occlusionTexture = nullptr;
+		m_normalTexture = nullptr;
+		m_metallicRoughnessTexture = nullptr;
+	}
+
 }

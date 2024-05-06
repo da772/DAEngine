@@ -120,10 +120,10 @@ export namespace VehicleManager {
         register_vehicle(id, data);
     }
 
-    export function UnregisterVehicle(id : string) {
-        unregister_vehicle(id);
+    export function UnregisterVehicle(id : string, cleanup : boolean) {
+        unregister_vehicle(id, cleanup);
     }
 }
 
 declare function register_vehicle(id : string, data : VehicleData);
-declare function unregister_vehicle(id : string);
+declare function unregister_vehicle(id : string, cleanup : boolean);

@@ -321,16 +321,22 @@ namespace da::platform {
 	{
         if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
 
+			if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
+            {
+				m_csm.submitUniforms();
+				m_ssao.bindSSAO();
+			}
+
             const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
             const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
 			
             for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
                 da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
                 glm::mat4 model = meshComponent->getParent().getTransform().matrix();
-                for (size_t z = 0; z < meshComponent->getStaticMesh()->getMeshes().size(); z++) {
-                    da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
-                    ASSERT(mesh);
-
+                da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+                ASSERT(mesh);
+                const std::vector<da::graphics::FMesh>& meshes = mesh->getMeshes();
+                for (size_t z = 0; z < meshes.size(); z++) {
                     if (da::maths::CFlag::hasFlag(flags, ERenderFlags::ShadowPass) && !mesh->getCastShadows()) continue;
                     if (mesh->getHidden()) continue;
 
@@ -341,10 +347,7 @@ namespace da::platform {
                     if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
                     {
 						setNormalMatrix(model);
-					
-                        materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
-						m_csm.submitUniforms();
-						m_ssao.bindSSAO();
+                        materialState = m_pbr.bindMaterial(mesh->getMaterial(meshes[z].MaterialIndex));
                     }
                   
 
@@ -388,9 +391,11 @@ namespace da::platform {
 
                 da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
                 const glm::mat4& model = meshComponent->getTransform();
-
-                for (size_t z = 0; z < meshComponent->getSkeletalMesh()->getMeshes().size(); z++) {
-                    da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+                da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+                ASSERT(mesh);
+                const std::vector<da::graphics::FSkeletalMesh>& meshes = mesh->getMeshes();
+                for (size_t z = 0; z < meshes.size(); z++) {
+                    
 
                     ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
                     ::bgfx::setTransform(glm::value_ptr(model));
@@ -402,9 +407,7 @@ namespace da::platform {
                     if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
                     {
                         setNormalMatrix(model);
-						materialState = m_pbr.bindMaterial(mesh->getMaterial(mesh->getMeshes()[z].MaterialIndex));
-						m_csm.submitUniforms();
-						m_ssao.bindSSAO();
+						materialState = m_pbr.bindMaterial(mesh->getMaterial(meshes[z].MaterialIndex));
                     }
 
                     ::bgfx::setState(renderState.m_state | materialState);

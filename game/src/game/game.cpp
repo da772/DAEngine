@@ -14,8 +14,8 @@ void CGame::onInitialize()
 	createModules();
 	CGameScriptNative::registerNatives();
 #ifdef DA_REVIEW
-	da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"), &m_showScriptDebug, [&] {renderScriptDebug(true, &m_showScriptDebug); });
-	da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts (Hard)"), &m_showScriptDebugHard, [&] {renderScriptDebug(false, &m_showScriptDebugHard); });
+	da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"), &m_showScriptDebug, [&] {resetScriptDebug(true, &m_showScriptDebug); });
+	da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts (Hard)"), &m_showScriptDebugHard, [&] {resetScriptDebug(false, &m_showScriptDebugHard); });
 #endif
 
 	m_levelSelector = new CLevelSelector(*m_window);
@@ -28,17 +28,6 @@ void CGame::onUpdate(float dt)
 	
 	m_levelSelector->update(dt);
 
-}
-void CGame::renderScriptDebug(bool soft, bool* b)
-{
-
-	auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
-	da::script::CScriptEngine::clearAll();
-	for (size_t i = 0; i < components.getCount(); i++) {
-		da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);
-		c->reload(soft);
-	}
-	*b = false;
 }
 
 void CGame::createModules()
@@ -78,3 +67,16 @@ void CGame::onShutdown()
 	m_levelSelector->shutdown();
 	delete m_levelSelector;
 }
+
+#ifdef DA_REVIEW
+void CGame::resetScriptDebug(bool soft, bool* b)
+{
+	auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
+	da::script::CScriptEngine::clearAll();
+	for (size_t i = 0; i < components.getCount(); i++) {
+		da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);
+		c->reload(soft);
+	}
+	*b = false;
+}
+#endif
