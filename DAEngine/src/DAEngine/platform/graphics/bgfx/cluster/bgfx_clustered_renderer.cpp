@@ -323,8 +323,8 @@ namespace da::platform {
 
 			if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
             {
-				m_csm.submitUniforms();
 				m_ssao.bindSSAO();
+                m_csm.bindTextures();
 			}
 
             const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
@@ -346,6 +346,7 @@ namespace da::platform {
 
                     if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
                     {
+                        m_csm.submitUniforms();
 						setNormalMatrix(model);
                         materialState = m_pbr.bindMaterial(mesh->getMaterial(meshes[z].MaterialIndex));
                     }
@@ -406,6 +407,7 @@ namespace da::platform {
 
                     if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
                     {
+                        m_csm.submitUniforms();
                         setNormalMatrix(model);
 						materialState = m_pbr.bindMaterial(mesh->getMaterial(meshes[z].MaterialIndex));
                     }

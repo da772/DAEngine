@@ -14,15 +14,18 @@
 #include "game/vehicle/vehicle_manager.h"
 
 
-CTestBed02Level::CTestBed02Level(CHashString name, da::modules::CWindowModule& window) : ILevel(name), m_window(window)
+CTestBed02Level::CTestBed02Level(CHashString name, da::modules::CWindowModule& window) : ILevel(name), m_window(window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
 {
 
 }
 
 void CTestBed02Level::initialize()
 {
+	m_scrlevel.setup({}, {});
 	da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid("9059cedf-5978-4a51-991b-36d4804d55d7")));
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
+
+	m_scrlevel.classInitialize();
 
 	// Vehicle
 	m_playerId = da::core::CTime::getEpochTimeNS();
@@ -44,7 +47,7 @@ void CTestBed02Level::initialize()
 		meshComponent->getStaticMesh()->getMaterial(1).roughnessFactor = 1.0;
 		meshComponent->getStaticMesh()->getMaterial(1).baseColorFactor = { 184.f / 255.f, 68.f / 255.f, 6.f/255.f, 1.f };
 
-		meshComponent->getStaticMesh()->castShadows(false);
+		meshComponent->getStaticMesh()->castShadows(true);
 		testBed->setTag(HASHSTR("TestBed"));
 	}
 
@@ -97,6 +100,8 @@ void CTestBed02Level::initialize()
 		LOG_DEBUG(da::ELogChannel::Application, "Sending Player Joined Packet: %ull", m_playerId);
 		m_network->sendPacket<FPlayerJoinPacketInfo>(FPlayerJoinPacketInfo(m_playerId));
 	}
+
+
 }
 
 
@@ -135,6 +140,6 @@ void CTestBed02Level::shutdown()
 	m_vehicles = {};
 
 	
-
+	m_scrlevel.classShutdown();
 	da::core::CSceneManager::setScene(nullptr);
 }

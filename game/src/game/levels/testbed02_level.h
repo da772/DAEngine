@@ -49,5 +49,6 @@ private:
 	float m_timePassed = 0.f;
 	uint64_t m_playerId;
 	bool m_pushPlayerId = false;
+	da::script::CScriptClass m_scrlevel;
 
 };

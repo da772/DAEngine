@@ -237,6 +237,7 @@ namespace da::platform {
 		
 		void setRenderFunc(const std::function<void(uint8_t, da::graphics::CMaterial*, da::graphics::CMaterial*, da::graphics::CMaterial*, RenderState)>& func);
 		void submitUniforms();
+		void bindTextures();
 
 	private:
 		struct FPrograms

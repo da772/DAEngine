@@ -1337,10 +1337,11 @@ namespace da::platform {
 
 	void CBgfxShadowCsm::submitUniforms()
 	{
-		//m_uniforms.submitConstUniforms();
 		m_uniforms.submitPerDrawUniforms();
-		//m_uniforms.submitPerFrameUniforms();
+	}
 
+	void CBgfxShadowCsm::bindTextures()
+	{
 		for (uint8_t ii = 0; ii < ShadowMapRenderTargets::Count; ++ii)
 		{
 			bgfx::setTexture(CBgfxSamplers::SAMPLER_SHADOW_MAP_NEAR + ii, m_shadowMap[ii], bgfx::getTexture(m_rtShadowMap[ii]));

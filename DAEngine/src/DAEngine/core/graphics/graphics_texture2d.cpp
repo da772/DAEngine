@@ -18,4 +18,9 @@ namespace da::graphics
 		
 	}
 
+	const std::string& CGraphicsTexture2D::getPath() const
+	{
+		return m_path;
+	}
+
 }

@@ -4,6 +4,8 @@
 #include "core/graphics/graphics_smesh.h"
 #include "platform/graphics/bgfx/bgfx_graphics_material.h"
 #include "platform/graphics/bgfx/bgfx_static_mesh.h"
+#include "core/graphics/graphics_material_data.h"
+#include "core/graphics/graphics_texture2d.h"
 #include <bx/bx.h>
 #include <bgfx/bgfx.h>
 
@@ -97,6 +99,12 @@ namespace da::core {
 					ImGui::Text("UV Scale");
 					ImGui::SameLine();
 					ImGui::InputFloat2((std::string("##uvFactor") + std::to_string(i) + std::string(m_guid.c_str())).c_str(), (float*)&m_staticMesh->getMaterial(i).uvScale);
+
+					ImGui::Text("Albedo Texture: %s", m_staticMesh->getMaterial(i).getBaseColorTexture() ? m_staticMesh->getMaterial(i).getBaseColorTexture()->getPath().c_str() : "None");
+					ImGui::Text("Normal Texture: %s", m_staticMesh->getMaterial(i).getNormalTexture() ? m_staticMesh->getMaterial(i).getNormalTexture()->getPath().c_str() : "None");
+					ImGui::Text("Rough/Metal Texture: %s", m_staticMesh->getMaterial(i).getMetallicRoughnessTexture() ? m_staticMesh->getMaterial(i).getMetallicRoughnessTexture()->getPath().c_str() : "None");
+					ImGui::Text("Occlusion Texture: %s", m_staticMesh->getMaterial(i).getOcclusionTexture() ? m_staticMesh->getMaterial(i).getOcclusionTexture()->getPath().c_str() : "None");
+					ImGui::Text("Emissive Texture: %s", m_staticMesh->getMaterial(i).getEmissiveTexture() ? m_staticMesh->getMaterial(i).getEmissiveTexture()->getPath().c_str() : "None");
 
 				}
 				ImGui::Unindent();
