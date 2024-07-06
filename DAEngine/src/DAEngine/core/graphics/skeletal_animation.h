@@ -19,6 +19,7 @@ namespace da::graphics
 	{
 	public:
 		CSkeletalAnimation(const std::string& animationPath, CSkeletalMesh* model);
+		CSkeletalAnimation(const std::string& name, const CSkeletalAnimation* copy);
 
 		inline CAnimatedBone* FindBone(const CHashString& name, size_t index)
 		{
@@ -48,6 +49,8 @@ namespace da::graphics
 			return m_BoneInfoMap.size();
 		}
 
+		inline const CHashString& getAnimName() const { return m_AnimName; }
+
 	private:
 		void ReadMissingBones(const aiAnimation* animation, FSkeletalMesh& mesh, size_t index);
 		void ReadHeirarchyData(FAssimpNodeData& dest, const aiNode* src);
@@ -58,5 +61,6 @@ namespace da::graphics
 		std::vector<std::unordered_map<CHashString, CAnimatedBone>> m_Bones;
 		FAssimpNodeData m_RootNode;
 		std::vector<std::unordered_map<CHashString, FBoneInfo>> m_BoneInfoMap;
+		CHashString m_AnimName;
 	};
 }

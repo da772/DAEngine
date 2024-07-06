@@ -18,7 +18,7 @@
 namespace da::graphics
 {
 
-	CSkeletalAnimation::CSkeletalAnimation(const std::string& animationPath, CSkeletalMesh* model)
+	CSkeletalAnimation::CSkeletalAnimation(const std::string& animationPath, CSkeletalMesh* model) : m_AnimName(animationPath.c_str())
 	{
 		CAsset asset(animationPath);
 		Assimp::Importer importer;
@@ -42,6 +42,13 @@ namespace da::graphics
 			const FSkeletalMesh& m = model->getMeshes()[i];
 			ReadMissingBones(animation, (FSkeletalMesh&)m, i);
 		}
+	}
+
+	CSkeletalAnimation::CSkeletalAnimation(const std::string& name, const CSkeletalAnimation* copy) : m_AnimName(name.c_str())
+	{
+		m_Bones = copy->m_Bones;;
+		m_RootNode = copy->m_RootNode;
+		m_BoneInfoMap = copy->m_BoneInfoMap;
 	}
 
 	void CSkeletalAnimation::ReadMissingBones(const aiAnimation* animation, FSkeletalMesh& mesh, size_t index)

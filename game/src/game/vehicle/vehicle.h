@@ -48,7 +48,7 @@ private:
 
 	bool m_proxy;
 
-	float m_engineMaxPower = 3000.f;
+	float m_engineMaxPower = 6000.f;
 	float m_brakeMaxPower = 300.f;
 	float m_maxSteer = 0.45f;
 	float m_idleBrake = 10.f;

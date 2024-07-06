@@ -37,6 +37,13 @@ namespace da::core {
 		m_animator = animator;
 	}
 
+	CSkeletalMeshComponent::CSkeletalMeshComponent(da::graphics::CSkeletalAnimGraph* graph, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
+	{
+		m_animGraph = graph;
+		m_animator = const_cast<da::graphics::CSkeletalAnimator*>(graph->getAnim());
+		m_skeletalmesh = graph->getMesh();
+	}
+
 	void CSkeletalMeshComponent::onInitialize()
 	{
 		m_animator->playAnimation(m_animation);
@@ -46,6 +53,11 @@ namespace da::core {
 
 	void CSkeletalMeshComponent::updateAnimation(float dt)
 	{
+		if (m_animGraph) {
+			m_animGraph->update(dt);
+			return;
+		}
+
 		m_animator->updateAnimation(dt);
 	}
 
@@ -56,14 +68,18 @@ namespace da::core {
 
 	void CSkeletalMeshComponent::onShutdown()
 	{
-		delete m_skeletalmesh;
-		delete m_animation;
-		delete m_animator;
+		if (m_skeletalmesh) delete m_skeletalmesh;
+		if (m_animation) delete m_animation;
+		if (m_animator) delete m_animator;
+
+		if (m_animGraph) delete m_animGraph;
+
 		m_parent.getTransform().removeOnTransform(BIND_EVENT_FN_2(da::core::CSkeletalMeshComponent, onTransform));
 	}
 
 	da::graphics::CSkeletalMesh* CSkeletalMeshComponent::getSkeletalMesh() const
 	{
+		if (m_animGraph) return m_animGraph->getMesh();
 		return m_skeletalmesh;
 	}
 
@@ -77,7 +93,7 @@ namespace da::core {
 		return m_animation;
 	}
 
-	glm::mat4 CSkeletalMeshComponent::getTransform()
+	const glm::mat4& CSkeletalMeshComponent::getTransform()
 	{
 		if (m_parent.getTransform().isDirty()) {
 			m_finalTransform = m_parent.getTransform().matrix() * m_transform;
@@ -95,6 +111,12 @@ namespace da::core {
 	void CSkeletalMeshComponent::onTransform(const glm::mat4& oldT, const glm::mat4& newT)
 	{
 		m_finalTransform = newT * m_transform;
+	}
+
+	bool CSkeletalMeshComponent::getBoneTransform(CHashString bone, glm::mat4& transform)
+	{
+		ASSERT(m_animator);
+		return m_animator->getBoneWorldTransform(bone, getTransform(), transform);
 	}
 
 #ifdef DA_REVIEW
@@ -195,6 +217,7 @@ namespace da::core {
 			ImGui::Unindent();
 		}
 	}
+
 #endif
 
 }

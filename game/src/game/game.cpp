@@ -7,6 +7,7 @@
 #include "game.h"
 #include "levels/testbed01_level.h"
 #include "levels/testbed02_level.h"
+#include "levels/testbed03_level.h"
 #include "script/game_script_native.h"
 
 void CGame::onInitialize()
@@ -21,6 +22,7 @@ void CGame::onInitialize()
 	m_levelSelector = new CLevelSelector(*m_window);
 	m_levelSelector->addLevel(new CTestBed01Level(HASHSTR("TestBed01"), *m_window));
 	m_levelSelector->addLevel(new CTestBed02Level(HASHSTR("TestBed02"), *m_window));
+	m_levelSelector->addLevel(new CTestBed03Level(HASHSTR("TestBed03"), *m_window));
 }
 
 void CGame::onUpdate(float dt)

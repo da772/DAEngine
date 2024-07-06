@@ -12,6 +12,12 @@ namespace da::graphics {
 		float fInterpolation = 0.f;
 	};
 
+	struct FNodeInfo {
+		const FAssimpNodeData* Node;
+		glm::mat4 Transform;
+		bool Use;
+	};
+
 	class CSkeletalAnimator
 	{
 	public:
@@ -28,6 +34,8 @@ namespace da::graphics {
 		float getPlayTime() const;
 		void setPlayTime(float time);
 		float getMaxPlayTime() const;
+		void SetBoneSelector(CHashString boneName);
+		const CSkeletalAnimation* getCurrentAnim() const;
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 		void debugRenderJoints(const glm::mat4& modelMat);
@@ -37,14 +45,20 @@ namespace da::graphics {
 		{
 			return m_FinalBoneMatrices[index];
 		}
+
+		void copyFinalBoneMatrices(const CSkeletalAnimator* animator);
+		void interpFinalBoneMatrices(const CSkeletalAnimator* animator, float dt, float weight);
 	private:
 		void calculateBoneTransform(const FAssimpNodeData* node, size_t index);
-		void interpolateBoneTransforms(const FAssimpNodeData* node, size_t index, float interpolation);
+		void interpolateBoneTransforms(const FAssimpNodeData* node, size_t index, float interpolation, bool updateBone);
+		void interpolateBoneTransformsInternal(CSkeletalAnimation* anim, const FAssimpNodeData* node, size_t index, float interpolation, bool updateBone, const CHashString& boneSelector);
+		const FAssimpNodeData* FindNodeByName(const CHashString& name);
 
 	private:
 		std::vector<std::vector<glm::mat4>> m_FinalBoneMatrices;
 		CSkeletalAnimation* m_CurrentAnimation;
 		std::queue<FInterpolatedAnimation> m_AnimationQueue;
+		CHashString m_BoneSelector = HASHSTR("");
 		float m_CurrentTime;
 		float m_DeltaTime;
 		float m_timeScale = 1.f;

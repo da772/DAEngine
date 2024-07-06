@@ -23,7 +23,7 @@ namespace da::core::containers
 			static inline constexpr const uint32_t generateHash(const char* str, const size_t& size) {
 				uint32_t hash = 0xAAAAAAAA;
 				uint32_t i = 0;
-
+				if (!size) return 0;
 				for (i = 0; i < size; ++str, ++i)
 				{
 					hash ^= ((i & 1) == 0) ? ((hash << 7) ^ (*str) * (hash >> 3)) :
@@ -119,6 +119,7 @@ namespace da::core::containers
 			/// <param name="str"></param>
 			/// <returns></returns>
             inline constexpr uint32_t genHash(const char* str) const {
+				if (str == nullptr) return 0;
                 size_t size = 0;
                 for (size_t x = 0; x < 512; x++) {
                     if (str[x] == 0) {
