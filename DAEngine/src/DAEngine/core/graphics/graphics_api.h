@@ -30,6 +30,7 @@ namespace da::graphics
 		inline virtual void update() {};
 		inline virtual void lateUpdate() {};
 		inline virtual void shutdown() {};
+		inline virtual glm::vec2 worldPosToScreenSpace(const glm::vec3& pos) const { return {}; }
 
 	public:
 		inline virtual void setClearColor(uint32_t target, EGraphicsClear clear, Vector4u8 color) {};

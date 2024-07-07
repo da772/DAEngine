@@ -35,6 +35,7 @@ namespace da::platform {
 		virtual void shutdown() override;
 		static ERenderApis getRendererApi();
 		static const char* renderApiToString(ERenderApis api);
+		virtual glm::vec2 worldPosToScreenSpace(const glm::vec3& pos) const override;
 
 	public:
 		virtual void setClearColor(uint32_t target, da::graphics::EGraphicsClear clear, Vector4u8 color) override;

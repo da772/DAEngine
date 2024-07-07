@@ -12,7 +12,7 @@ class CVehicle;
 class CTestBed01Level : public ILevel {
 
 public:
-	CTestBed01Level(CHashString name, da::modules::CWindowModule& window);
+	CTestBed01Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window);
 	void initialize();
 	void update(float dt);
 	void shutdown();
@@ -27,7 +27,6 @@ private:
 	da::graphics::CSkeletalAnimation* m_runAnimation;
 	CCharacter* m_character;
 	CVehicle* m_vehicle;
-	da::modules::CWindowModule& m_window;
 	da::script::CScriptClass m_scrlevel;
 
 };

@@ -20,9 +20,9 @@ void CGame::onInitialize()
 #endif
 
 	m_levelSelector = new CLevelSelector(*m_window);
-	m_levelSelector->addLevel(new CTestBed01Level(HASHSTR("TestBed01"), *m_window));
-	m_levelSelector->addLevel(new CTestBed02Level(HASHSTR("TestBed02"), *m_window));
-	m_levelSelector->addLevel(new CTestBed03Level(HASHSTR("TestBed03"), *m_window));
+	m_levelSelector->addLevel(new CTestBed01Level(HASHSTR("TestBed01"), *m_graphicsModule, *m_window));
+	m_levelSelector->addLevel(new CTestBed02Level(HASHSTR("TestBed02"), *m_graphicsModule, *m_window));
+	m_levelSelector->addLevel(new CTestBed03Level(HASHSTR("TestBed03"), *m_graphicsModule, *m_window));
 }
 
 void CGame::onUpdate(float dt)

@@ -34,7 +34,7 @@ struct FPlayerLeavePacketInfo {
 class CTestBed02Level : public ILevel {
 
 public:
-	CTestBed02Level(CHashString name, da::modules::CWindowModule& window);
+	CTestBed02Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window);
 	void initialize();
 	void update(float dt);
 	void shutdown();

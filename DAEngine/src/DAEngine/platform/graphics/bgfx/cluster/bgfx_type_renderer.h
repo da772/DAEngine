@@ -79,6 +79,7 @@ namespace da::platform
         // window resize/flags changed (MSAA, V-Sync, ...)
         virtual void onRender(float dt) = 0;
         virtual void onShutdown() { }
+        glm::vec2 worldPosToScreenSpace(const glm::vec3& pos) const;
 
         // buffers for debug output (display in the UI)
 

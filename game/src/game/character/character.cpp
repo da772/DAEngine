@@ -12,12 +12,12 @@ void CCharacter::initialize()
 	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
 		m_entity = scene->createEntity();
 
-		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/skeletons/mannequin/idle.fbx", false);
-		mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
-		mesh->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/skeletons/mannequin/alpha_body_mat.png"));
-		mesh->getMaterial(0).setNormalTexture(nullptr);
-		mesh->getMaterial(0).metallicFactor = .1500f;
-		mesh->getMaterial(0).roughnessFactor = 0.f;
+		da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/skeletons/archer/archer.fbx", false);
+		//mesh->getMaterial(1).baseColorFactor = { .45f,0.45f,0.45f,1.f };
+		//mesh->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/skeletons/mannequin/alpha_body_mat.png"));
+		//mesh->getMaterial(0).setNormalTexture(nullptr);
+		//mesh->getMaterial(0).metallicFactor = .1500f;
+		//mesh->getMaterial(0).roughnessFactor = 0.f;
 		m_anim1 = new da::graphics::CSkeletalAnimation("assets/skeletons/mannequin/Idle.fbx", mesh);
 		m_anim2 = new da::graphics::CSkeletalAnimation("assets/skeletons/mannequin/SwordRun.fbx", mesh);
 		m_anim3 = new da::graphics::CSkeletalAnimation("assets/skeletons/mannequin/SwordWalk.fbx", mesh);

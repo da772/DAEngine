@@ -27,7 +27,7 @@ glm::vec4 hexToVec(uint32_t i) {
 	return glm::vec4(rf, gf, bf, af);
 }
 
-CTestBed01Level::CTestBed01Level(CHashString name, da::modules::CWindowModule& window) : ILevel(name), m_window(window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
+CTestBed01Level::CTestBed01Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window) : ILevel(name, graphics, window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
 {
 
 }
@@ -184,8 +184,8 @@ void CTestBed01Level::shutdown()
 void CTestBed01Level::createVehicle()
 {
 	// Vehicle
-	m_vehicle = new CVehicle();
-	m_vehicle->initialize(&m_window, CVehicleManager::getVehicleTypes().begin()->second);
+	m_vehicle = new CVehicle(m_graphicsModule);
+	m_vehicle->initialize(const_cast<da::modules::CWindowModule*>(&m_windowModule), CVehicleManager::getVehicleTypes().begin()->second);
 }
 
 void CTestBed01Level::destroyVehicle()

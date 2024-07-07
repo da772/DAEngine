@@ -322,6 +322,11 @@ namespace da::platform {
 		return s_bgfxRenderers[(uint8_t)api];
 	}
 
+	glm::vec2 CbgfxGraphicsApi::worldPosToScreenSpace(const glm::vec3& pos) const
+	{
+		return m_renderer->worldPosToScreenSpace(pos);
+	}
+
 #ifdef DA_REVIEW
 	void CbgfxGraphicsApi::renderDebugTitle()
 	{

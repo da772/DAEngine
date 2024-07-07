@@ -10,8 +10,8 @@
 #include <game/vehicle/vehicle_manager.h>
 
 
-CTestBed03Level::CTestBed03Level(CHashString name, da::modules::CWindowModule& window) 
-	: ILevel(name)
+CTestBed03Level::CTestBed03Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window) 
+	: ILevel(name,graphics, window)
 	, m_window(window)
 	, m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
 {
@@ -154,7 +154,7 @@ void CTestBed03Level::shutdown()
 void CTestBed03Level::createVehicle()
 {
 	// Vehicle
-	m_vehicle = new CVehicle();
+	m_vehicle = new CVehicle(m_graphicsModule);
 	m_vehicle->initialize(&m_window, CVehicleManager::getVehicleTypes().begin()->second);
 }
 

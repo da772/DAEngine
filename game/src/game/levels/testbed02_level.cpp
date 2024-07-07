@@ -14,7 +14,7 @@
 #include "game/vehicle/vehicle_manager.h"
 
 
-CTestBed02Level::CTestBed02Level(CHashString name, da::modules::CWindowModule& window) : ILevel(name), m_window(window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
+CTestBed02Level::CTestBed02Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window) : ILevel(name, graphics, window), m_window(window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
 {
 
 }
@@ -30,7 +30,7 @@ void CTestBed02Level::initialize()
 	// Vehicle
 	m_playerId = da::core::CTime::getEpochTimeNS();
 
-	m_vehicle = new CVehicle(m_playerId);
+	m_vehicle = new CVehicle(m_graphicsModule, m_playerId);
 	m_vehicle->initialize(&m_window, CVehicleManager::getVehicleTypes().begin()->second, { -144.f, -80.f, -4.f });
 
 	// Test Bed
@@ -80,7 +80,7 @@ void CTestBed02Level::initialize()
 			if (it != m_vehicles.end()) return;
 
 			LOG_DEBUG(da::ELogChannel::Application, "Player Joined: %ull", data.PlayerId);
-			m_vehicles[data.PlayerId] = new CVehicle((uint32_t)data.PlayerId);
+			m_vehicles[data.PlayerId] = new CVehicle(m_graphicsModule, (uint32_t)data.PlayerId);
 			m_vehicles[data.PlayerId]->initialize(&m_window, CVehicleManager::getVehicleTypes().begin()->second,{-144.f, -80.f, -4.f}, true);
 
 

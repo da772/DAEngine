@@ -20,10 +20,23 @@ namespace da::modules
 	class CWindowModule;
 }
 
+class CVehicleGui : da::graphics::CGui {
+public:
+	inline CVehicleGui(const da::graphics::CGraphicsApi& graphics) : da::graphics::CGui(graphics) {}
+
+	inline void renderPos(const glm::vec3& pos, float dt) { m_pos = pos; onRender(dt); }
+
+protected:
+	void onRender(float dt);
+
+private:
+	glm::vec3 m_pos;
+};
+
 class CVehicle
 {
 public:
-	CVehicle(uint32_t id = 0);
+	CVehicle(const da::modules::CGraphicsModule& graphics, uint32_t id = 0);
 	void initialize(da::modules::CWindowModule* window, const da::physics::FVehicleData& vehicleData, const glm::vec3& pos = {0.f,0.f,1.f}, bool proxy = false);
 	void update(float dt);
 	void shutdown();
@@ -60,5 +73,7 @@ private:
 	uint32_t m_headLightL = 0, m_headLightR = 0;
 
 	uint32_t m_id;
+
+	CVehicleGui m_gui;
 
 };

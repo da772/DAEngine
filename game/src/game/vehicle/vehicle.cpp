@@ -20,9 +20,9 @@
 #include <imgui.h>
 #endif
 
-CVehicle::CVehicle(uint32_t id /*= 0*/) : m_id(id)
+CVehicle::CVehicle(const da::modules::CGraphicsModule& graphics, uint32_t id /*= 0*/) : m_id(id), m_gui(*graphics.getGraphicsApi())
 {
-
+	
 }
 
 void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics::FVehicleData& vehicleData, const glm::vec3& pos, bool proxy) {
@@ -99,6 +99,8 @@ void CVehicle::update(float dt)
 		return;
 	}
 
+	m_gui.renderPos(m_entity->getTransform().position(), dt);
+
 	da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->getComponent<da::core::CRigidBodyComponent>();
 
 	updateWheels(dt);
@@ -110,8 +112,9 @@ void CVehicle::update(float dt)
 	const float fov = 73.7397953f;
 
 	cam->fov = glm::min(glm::mix(fov, 90.f, mph / 165.f), 90.f);
-
+	
 	// ImGui
+	/*
 	{
 		ImGui::SetNextWindowSize({ 80.f,15 });
 
@@ -137,6 +140,7 @@ void CVehicle::update(float dt)
 
 		ImGui::End();
 	}
+	*/
 
 
 	if (!m_controlCamera)
@@ -308,4 +312,30 @@ void CVehicle::updateLights()
 		lights->updateLight(m_brakeLightR, entityPos + glm::vec3(entityT * glm::vec4(0.895837f, -2.3808f, 0.110954f, 1.f)));
 		lights->updateLight(m_brakeLightL, entityPos + glm::vec3(entityT * glm::vec4(-0.8925837f, -2.3808f, 0.110954f, 1.f)));
 	}
+}
+
+void CVehicleGui::onRender(float dt)
+{
+	glm::vec2 pos = worldPosToScreenSpace(m_pos);
+	float dist = std::abs(glm::distance(m_pos, da::core::CCamera::getCamera()->position()));
+
+	if (dist < 1.0f) {
+		dist = 1.0f;
+	}
+
+	glm::vec2 size = { 80.f, 15.f };
+	size *= 1.f/ (dist* 0.2f);
+
+	if (size.x > 80.f) size.x = 80.f;
+	if (size.y > 15.f) size.y = 15.f;
+
+	ImGui::SetNextWindowSize({ size.x, size.y });
+	ImGui::SetNextWindowPos({ pos.x, pos.y });
+	if (ImGui::Begin("###mph", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+		
+		auto textWidth = ImGui::CalcTextSize("00 mph").x;
+		ImGui::LabelText("###mph", "%d mph", (int)123);
+	}
+
+	ImGui::End();
 }

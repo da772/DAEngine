@@ -214,6 +214,16 @@ namespace da::platform {
 		bgfx::setViewTransform(view, glm::value_ptr(viewMat), glm::value_ptr(projMat));
 	}
 
+
+	glm::vec2 CBgfxTypeRenderer::worldPosToScreenSpace(const glm::vec3& pos) const
+	{
+        glm::vec4 clipSpace = m_projMat* (m_viewMat * glm::vec4(pos.x, pos.y, pos.z, 1.0f));
+        glm::vec3 ndcSpacePos = glm::vec3(clipSpace.x, 1.0f-clipSpace.y, clipSpace.z) / clipSpace.w;
+       
+        return ((glm::vec2(ndcSpacePos.x, ndcSpacePos.y) + glm::vec2(1.0f, 1.0f)) / glm::vec2(2.0f, 2.0f)) * glm::vec2(m_width, m_height);
+	}
+
+
     void CBgfxTypeRenderer::setNormalMatrix(const glm::mat4& modelMat)
     {
         // usually the normal matrix is based on the model view matrix
