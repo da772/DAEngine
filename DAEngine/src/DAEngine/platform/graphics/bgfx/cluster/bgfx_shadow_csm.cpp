@@ -371,16 +371,16 @@ namespace da::platform {
 		_splits[numSlices - 1] = _far;
 
 		_splits[0] = .1f;
-		_splits[1] = 25.f;
+		_splits[1] = 5.f;
 
-		_splits[2] = 25.f;
-		_splits[3] = 75.f;
+		_splits[2] = 5.f;
+		_splits[3] = 25.f;
 
-		_splits[4] = 75.f;
-		_splits[5] = 300.f;
+		_splits[4] = 25.f;
+		_splits[5] = 50.f;
 
-		_splits[6] = 300.f;
-		_splits[7] = 1000.f;
+		_splits[6] = 50.f;
+		_splits[7] = 300.f;
 
 	}
 

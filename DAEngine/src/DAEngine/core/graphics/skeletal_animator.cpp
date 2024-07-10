@@ -68,10 +68,19 @@ namespace da::graphics
 			
 	}
 
-	void CSkeletalAnimator::interpolateBoneTransformsInternal(CSkeletalAnimation* animation, const FAssimpNodeData* n, size_t idx, float interpolation, bool updateBone, const CHashString& boneSelector)
+	void CSkeletalAnimator::interpolateBoneTransformsInternal(CSkeletalAnimation* animation, const FAssimpNodeData* n, size_t idx, float interpolation, bool updateBone, const std::vector<FBoneSelector>& boneSelector)
 	{
-		std::vector<FNodeInfo> nodeQ;
-		nodeQ.push_back({ n, glm::mat4(1), boneSelector.hash() == 0});
+		std::vector<FNodeInfo> nodeQ;	
+		const std::vector<FBoneSelector>::const_iterator& it = std::find_if(boneSelector.begin(), boneSelector.end(), [&n](const FBoneSelector& other) { return other.Bone == n->name; });
+		
+		bool selected = boneSelector.empty() || it != boneSelector.end();
+		bool selectChildren = boneSelector.empty();
+
+		if (selected && it != boneSelector.end()) {
+			selectChildren = it->Children;
+		}
+
+		nodeQ.push_back({ n, glm::mat4(1), selected, selectChildren });
 
 		ASSERT(animation);
 
@@ -143,7 +152,12 @@ namespace da::graphics
 
 			for (int i = 0; i < node.Node->childrenCount; i++)
 			{
-				nodeQ.push_back({ &node.Node->children[i], globalTransformation, boneSelector == node.Node->name || node.Use });
+				const std::vector<FBoneSelector>::const_iterator& it = std::find_if(boneSelector.begin(), boneSelector.end(), [&node, i](const FBoneSelector& other) { return other.Bone == node.Node->children[i].name; });
+				
+				bool selected = boneSelector.empty() || it != boneSelector.end();
+				bool selectChildren = boneSelector.empty() || node.UseChildren || (selected && it->Children);
+
+				nodeQ.push_back({ &node.Node->children[i], globalTransformation, selected || selectChildren, selectChildren});
 			}
 		}
 	}
@@ -152,14 +166,14 @@ namespace da::graphics
 	{
 		FInterpolatedAnimation& pair = m_AnimationQueue.front();
 		CSkeletalAnimation* animation = pair.pAnimation;
-		interpolateBoneTransformsInternal(animation, n, idx, interpolation, updateBone, HASHSTR(""));
+		interpolateBoneTransformsInternal(animation, n, idx, interpolation, updateBone, { { HASHSTR(""), true} });
 	}
 
-	void CSkeletalAnimator::updateAnimation(float dt)
+	bool CSkeletalAnimator::updateAnimation(float dt, bool disablePlay)
 	{
 		if (!m_CurrentAnimation)
 		{
-			return;
+			return false;
 		}
 
 		// sample the animations at 144 fps and interpolate between frames
@@ -173,41 +187,45 @@ namespace da::graphics
 		if (!m_AnimationQueue.empty())
 		{
 			if (m_tickTime < tickTime) {
-				return;
+				return false;
 			}
 
 			FInterpolatedAnimation& anim = m_AnimationQueue.front();
 			
 			const float interpTime = 1.f / (anim.fInterpolateAmt / tickTime);
 
-			for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
-				interpolateBoneTransforms(&anim.pAnimation->getRootNode(), i, interpTime, true);
+			if (!disablePlay) {
+				for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
+					interpolateBoneTransforms(&anim.pAnimation->getRootNode(), i, interpTime, true);
+				}
 			}
 			
 			anim.fInterpolation += dt;
-			
-
+		
 			if (anim.fInterpolation >= anim.fInterpolateAmt) {
 				m_AnimationQueue.pop();
 				m_CurrentTime = 0.f;
 				m_CurrentAnimation = anim.pAnimation;
 			}
-
-			return;
+			return true;
 		}
 
 		m_CurrentTime += m_CurrentAnimation->getTicksPerSecond() * m_DeltaTime;
 		m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->getDuration());
 
 		if (m_tickTime < tickTime) {
-			return;
+			return false;
 		}
 
 		m_tickTime = 0.f;
+
+		if (disablePlay) {
+			return false;
+		}
+
 		for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
 			calculateBoneTransform(&m_CurrentAnimation->getRootNode(), i);
 		}
-	
 	}
 
 	void CSkeletalAnimator::playAnimation(CSkeletalAnimation* pAnimation, float interpolation)
@@ -419,7 +437,7 @@ namespace da::graphics
 	void CSkeletalAnimator::interpFinalBoneMatrices(const CSkeletalAnimator* animator, float dt, float weight)
 	{
 		for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
-			interpolateBoneTransformsInternal(const_cast<CSkeletalAnimation*> (animator->getCurrentAnim()), &animator->getCurrentAnim()->getRootNode(), i, weight, false, animator->m_BoneSelector);
+			interpolateBoneTransformsInternal(const_cast<CSkeletalAnimation*> (animator->getCurrentAnim()), &animator->getCurrentAnim()->getRootNode(), i, weight, false, animator->m_BoneSelectors);
 		}
 	}
 
@@ -444,9 +462,9 @@ namespace da::graphics
 		return nullptr;
 	}
 
-	void CSkeletalAnimator::SetBoneSelector(CHashString boneName)
+	void CSkeletalAnimator::SetBoneSelector(const std::vector<FBoneSelector>& boneName)
 	{
-		m_BoneSelector = boneName;
+		m_BoneSelectors = boneName;
 	}
 
 }

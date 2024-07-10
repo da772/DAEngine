@@ -25,7 +25,7 @@ namespace da::script
 	CScriptEngine* CScriptEngine::s_instance = nullptr;
 	std::unordered_map<uint32_t, int> CScriptEngine::s_scriptMap;
 
-	extern "C" static int lua_requires(lua_State * L)
+	extern "C" int script_requires(lua_State * L)
 	{
 		char buffer[1024] = "scripts/build/";
 		const char* path = luaL_checkstring(L, 1);
@@ -51,7 +51,7 @@ namespace da::script
 		return 1;
 	}
 
-	extern "C" static int lua_print(lua_State * L)
+	extern "C" int script_print(lua_State * L)
 	{
 		int top = lua_gettop(L);
 
@@ -91,7 +91,7 @@ namespace da::script
 		return 0;
 	}
 
-	extern "C" int lua_break(lua_State * L)
+	extern "C" int script_break(lua_State * L)
 	{
 		sol::state_view lua = sol::state_view(L);
 		auto result = lua.script(
@@ -179,9 +179,9 @@ namespace da::script
 
 	void CScriptEngine::registerFunctions()
 	{
-		lua_register(s_instance->m_state, "require", lua_requires);
-		lua_register(s_instance->m_state, "print", lua_print);
-		lua_register(s_instance->m_state, "_break", lua_break);
+		lua_register(s_instance->m_state, "require", script_requires);
+		lua_register(s_instance->m_state, "print", script_print);
+		lua_register(s_instance->m_state, "_break", script_break);
 	}
 
 	bool CScriptEngine::hasScript(const CHashString& hash)

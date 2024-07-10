@@ -72,8 +72,9 @@ inline static void x(const ELogChannel& channel, const std::string& message, Arg
 		template <typename ...Args> 
 		inline static void LogAssert(bool assert, ELogChannel channel, const std::string& message, Args ... args) {
 			if (assert) return;
-			CLogger::logCallstack(ELogType::Assert, channel);
 			CLogger::log(ELogType::Assert, channel, message, args...);
+			fflush(stdout);
+			CLogger::logCallstack(ELogType::Assert, channel);
 		}
 
 		static void initialize();

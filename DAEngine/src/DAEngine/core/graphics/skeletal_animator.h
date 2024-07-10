@@ -16,6 +16,13 @@ namespace da::graphics {
 		const FAssimpNodeData* Node;
 		glm::mat4 Transform;
 		bool Use;
+		bool UseChildren;
+	};
+
+	struct FBoneSelector
+	{
+		CHashString Bone;
+		bool Children;
 	};
 
 	class CSkeletalAnimator
@@ -23,7 +30,7 @@ namespace da::graphics {
 	public:
 		CSkeletalAnimator(CSkeletalAnimation* animation);
 
-		void updateAnimation(float dt);
+		bool updateAnimation(float dt, bool disablePlay = false);
 		void playAnimation(CSkeletalAnimation* pAnimation, float interpolation = 0.f);
 		bool getBoneLocalTransform(CHashString name, glm::mat4& out) const;
 		bool getBoneWorldTransform(CHashString name, const glm::mat4& modelMat, glm::mat4& out) const;
@@ -34,7 +41,7 @@ namespace da::graphics {
 		float getPlayTime() const;
 		void setPlayTime(float time);
 		float getMaxPlayTime() const;
-		void SetBoneSelector(CHashString boneName);
+		void SetBoneSelector(const std::vector<FBoneSelector>& boneNames);
 		const CSkeletalAnimation* getCurrentAnim() const;
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
@@ -51,14 +58,14 @@ namespace da::graphics {
 	private:
 		void calculateBoneTransform(const FAssimpNodeData* node, size_t index);
 		void interpolateBoneTransforms(const FAssimpNodeData* node, size_t index, float interpolation, bool updateBone);
-		void interpolateBoneTransformsInternal(CSkeletalAnimation* anim, const FAssimpNodeData* node, size_t index, float interpolation, bool updateBone, const CHashString& boneSelector);
+		void interpolateBoneTransformsInternal(CSkeletalAnimation* anim, const FAssimpNodeData* node, size_t index, float interpolation, bool updateBone, const std::vector<FBoneSelector>& boneSelector);
 		const FAssimpNodeData* FindNodeByName(const CHashString& name);
 
 	private:
 		std::vector<std::vector<glm::mat4>> m_FinalBoneMatrices;
 		CSkeletalAnimation* m_CurrentAnimation;
 		std::queue<FInterpolatedAnimation> m_AnimationQueue;
-		CHashString m_BoneSelector = HASHSTR("");
+		std::vector<FBoneSelector> m_BoneSelectors;
 		float m_CurrentTime;
 		float m_DeltaTime;
 		float m_timeScale = 1.f;

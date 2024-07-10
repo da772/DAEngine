@@ -19,13 +19,12 @@ namespace da::graphics
 	{
 		CSkeletalAnimator* baseAnim = nullptr;
 		float maxWeight = -1.f;
+		bool requiresUpdate = false;
 
 		for (int i = 0; i < m_Nodes.size(); i++)
 		{
 			const FSkeletalAnimGraphNode& node = m_Nodes[i];
-			if (node.Weight <= 0.f) continue;
-
-			node.Animator->updateAnimation(dt);
+			requiresUpdate = node.Animator->updateAnimation(dt, node.Weight <= 0.f) || requiresUpdate;
 
 			if (node.Weight > maxWeight) {
 				maxWeight = node.Weight;
@@ -33,7 +32,7 @@ namespace da::graphics
 			}
 		}
 
-		if (!baseAnim) return;
+		if (!baseAnim || !requiresUpdate) return;
 
 		m_AnimBase->copyFinalBoneMatrices(baseAnim);
 
