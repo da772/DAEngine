@@ -25,6 +25,7 @@ namespace da::core {
 	void CRigidBodyComponent::onInitialize()
 	{
 		m_rigidBody->setUserData((void*)&m_parent);
+		m_rigidBody->reset();
 	}
 
 	void CRigidBodyComponent::onShutdown()

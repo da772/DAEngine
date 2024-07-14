@@ -74,7 +74,7 @@ export class CameraComponent extends NativeComponent implements Component {
             let pos : Vector2 = Input.CursorPos();
             if (this.cursorPos.x >= 0.0 && this.cursorPos.y >= 0.0)
             {
-                Camera.Rotate(new Vector2(this.cursorPos.y - pos.y, this.cursorPos.x - pos.x).mul(180.0 / 600.0));
+             //   Camera.Rotate(new Vector2(this.cursorPos.y - pos.y, this.cursorPos.x - pos.x).mul(180.0 / 600.0));
             }
         }
     }

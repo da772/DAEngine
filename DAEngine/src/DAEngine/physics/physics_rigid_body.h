@@ -27,6 +27,7 @@ namespace da::physics
 		virtual void applyImpulse(const glm::vec3& impulse, const glm::vec3& location) = 0;
 		virtual void setRestitution(float restitution) = 0;
 		virtual void setActivationState(EPhysicsActivationState state) = 0;
+		virtual void reset() = 0;
 		virtual void setUserData(void* ptr) = 0;
 
 		virtual void setLinearVelocity(const glm::vec3& impulse) = 0;

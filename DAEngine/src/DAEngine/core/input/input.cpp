@@ -131,6 +131,24 @@ namespace da::core {
 		return false;
 	}
 
+	double CInput::getScrollY()
+	{
+		for (const std::pair<CWindow*, FWindowMouseData>& pair : s_mouse) {
+			return pair.second.YScroll;
+		}
+
+		return 0.0;
+	}
+
+	double CInput::getScrollX()
+	{
+		for (const std::pair<CWindow*, FWindowMouseData>& pair : s_mouse) {
+			return pair.second.XScroll;
+		}
+
+		return 0.0;
+	}
+
 	bool CInput::mouseInputPressed(int input)
 	{
 		for (const std::pair<CWindow*, FWindowMouseData>& it : s_mouse) {
@@ -211,7 +229,7 @@ namespace da::core {
 			return;
 		}
 
-		if (e.getType() == EEventType::InputMouseButton) {
+		if (e.getType() == EEventType::InputMouseScroll) {
 			const CInputScrollEvent* mouse = static_cast<const CInputScrollEvent*>(&e);
 			FWindowMouseData& data = s_mouse[window];
 

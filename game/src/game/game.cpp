@@ -5,6 +5,7 @@
 
 // game
 #include "game.h"
+#include "components/components.h"
 #include "levels/testbed01_level.h"
 #include "levels/testbed02_level.h"
 #include "levels/testbed03_level.h"
@@ -14,6 +15,7 @@ void CGame::onInitialize()
 {
 	createModules();
 	CGameScriptNative::registerNatives();
+	CComponents::registerComponents();
 #ifdef DA_REVIEW
 	da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"), &m_showScriptDebug, [&] {resetScriptDebug(true, &m_showScriptDebug); });
 	da::debug::CDebugMenuBar::register_debug(HASHSTR("Script"), HASHSTR("Reload Scripts (Hard)"), &m_showScriptDebugHard, [&] {resetScriptDebug(false, &m_showScriptDebugHard); });
@@ -23,6 +25,10 @@ void CGame::onInitialize()
 	m_levelSelector->addLevel(new CTestBed01Level(HASHSTR("TestBed01"), *m_graphicsModule, *m_window));
 	m_levelSelector->addLevel(new CTestBed02Level(HASHSTR("TestBed02"), *m_graphicsModule, *m_window));
 	m_levelSelector->addLevel(new CTestBed03Level(HASHSTR("TestBed03"), *m_graphicsModule, *m_window));
+
+#ifndef DA_REVIEW
+	m_levelSelector->startLevel(0);
+#endif
 }
 
 void CGame::onUpdate(float dt)

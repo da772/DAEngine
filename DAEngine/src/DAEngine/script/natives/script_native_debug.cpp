@@ -1,15 +1,17 @@
 #include "dapch.h"
-#ifdef DA_REVIEW
 #include "script_native_debug.h"
-
-#include <imgui.h>
-#include "debug/debug_menu_bar.h"
-
 extern "C" {
 #include <lua/lua.h>
 #include <lua/lualib.h>
 #include <lua/lauxlib.h>
 }
+
+#ifdef DA_REVIEW
+
+#include <imgui.h>
+#include "debug/debug_menu_bar.h"
+
+
 
 struct FHashIdentifier {
 	CHashString Group;
@@ -101,7 +103,18 @@ extern "C" static int lua_unregister_debug_menu(lua_State * L)
 
 	return 0;
 }
+#else
 
+extern "C" static int lua_register_debug_menu(lua_State * L)
+{
+	return 0;
+}
+
+extern "C" static int lua_unregister_debug_menu(lua_State * L)
+{
+	return 0;
+}
+#endif
 namespace da::script::debug
 {
 	void registerNatives(lua_State* L)
@@ -110,4 +123,3 @@ namespace da::script::debug
 		lua_register(L, "native_debug_unregister_debug_menu", lua_unregister_debug_menu);
 	}
 }
-#endif

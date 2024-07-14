@@ -29,7 +29,7 @@ namespace da::net
 		{
 			std::lock_guard<std::mutex> guard(m_mutex);
 			m_portFwd = new Portfwd();
-			if (!m_portFwd->init(2000)) {
+			if (!m_portFwd->init(5000)) {
 				LOG_ERROR(ELogChannel::Net, "Failed to initialize UPNP, Port: %d", m_settings.Port);
 				delete m_portFwd;
 				m_portFwd = nullptr;

@@ -51,9 +51,10 @@ namespace da::physics
 
 		static void rayCast(FRayData& ray);
 		static CPhysicsType* getPhysicsType();
+		static double getFixedTime();
 
 	private:
-
+		static double s_fixedTime;
 		static CPhysicsType* s_physicsType;
 	};
 }

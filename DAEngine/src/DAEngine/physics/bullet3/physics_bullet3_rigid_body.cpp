@@ -163,6 +163,21 @@ namespace da::physics
 		return m_angularFactor;
 	}
 
+	void CBullet3RigidBody::reset()
+	{
+		CBullet3Physics* physics = dynamic_cast<CBullet3Physics*>(CPhysics::getPhysicsType());
+		ASSERT(physics);
+		physics->getDynamicsWorld()->removeRigidBody(m_rigidBody);
+
+		// reset ball
+		m_rigidBody->clearForces();
+		btVector3 zeroVector(0, 0, 0);
+		m_rigidBody->setLinearVelocity(zeroVector);
+		m_rigidBody->setAngularVelocity(zeroVector);
+
+		physics->getDynamicsWorld()->addRigidBody(m_rigidBody);
+	}
+
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 	void CBullet3RigidBody::debugDraw()
 	{

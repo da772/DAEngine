@@ -49,6 +49,27 @@ namespace da::core {
 		return m_staticMesh;
 	}
 
+	const std::vector<da::core::FInstance>& CSmeshComponent::getInstances() const
+	{
+		return m_instances;
+	}
+
+	void CSmeshComponent::removeInstance(uint32_t id)
+	{
+		for (uint32_t i = 0; i < m_instances.size(); i++) {
+			if (m_instances[i].Id == id) {
+				m_instances.erase(m_instances.begin() + i);
+				return;
+			}
+		}
+	}
+
+	uint32_t CSmeshComponent::addInstance(const glm::mat4& transform)
+	{
+		m_instances.push_back({ transform, ++m_instanceCounter });
+		return m_instanceCounter;
+	}
+
 #ifdef DA_REVIEW
 	void CSmeshComponent::onDebugRender()
 	{
@@ -133,28 +154,6 @@ namespace da::core {
 			delete oldMesh;
 		}
 	}
-
-	const std::vector<da::core::FInstance>& CSmeshComponent::getInstances() const
-	{
-		return m_instances;
-	}
-
-	void CSmeshComponent::removeInstance(uint32_t id)
-	{
-		for (uint32_t i = 0; i < m_instances.size(); i++) {
-			if (m_instances[i].Id == id) {
-				m_instances.erase(m_instances.begin() + i);
-				return;
-			}
-		}
-	}
-
-	uint32_t CSmeshComponent::addInstance(const glm::mat4& transform)
-	{
-		m_instances.push_back({ transform, ++m_instanceCounter });
-		return m_instanceCounter;
-	}
-
 #endif
 
 }

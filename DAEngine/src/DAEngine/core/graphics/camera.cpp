@@ -34,12 +34,38 @@ namespace da::core
 
 	void CCamera::lookAt(const glm::vec3& target)
 	{
+		// Compute the forward vector from the camera position to the target position
 		m_forward = glm::normalize(target - m_position);
-		m_right = glm::normalize(glm::cross(m_forward, m_up));
+
+		// Handle the case where forward vector is zero
+		if (glm::length(m_forward) < glm::epsilon<float>() || glm::all(glm::isnan(m_forward))) {
+			m_forward = { 0.f,1.f,0.f };
+			m_right = { 1.f,0.f,0.f };
+			m_up = { 0.f,0.f,1.f };
+			return;
+		}
+
+		// Compute the right vector
+		m_right = glm::normalize(glm::cross(m_forward, {0.f,0.f,1.f}));
+
+		// Handle the case where forward vector is parallel to worldUp vector
+		if (glm::length(m_right) < glm::epsilon<float>() || glm::all(glm::isnan(m_right))) {
+			// Adjust worldUp slightly
+			glm::vec3 adjustedUp = glm::vec3(0.f,0.f,1.f) + glm::vec3(0.001f, 0.0f, 0.0f);
+			m_right = glm::normalize(glm::cross(m_forward, adjustedUp));
+		}
+
+		// Recompute the orthogonal up vector
 		m_up = glm::cross(m_right, m_forward);
-		m_rotation = glm::quat_cast(glm::lookAt(m_position, target, m_up));
-		updateVectors();
-		m_dirty = true;
+		/*
+		// Create the rotation matrix
+		glm::mat3 rotationMatrix(m_right, m_forward, m_up);
+
+		// Convert the rotation matrix to a quaternion
+		glm::quat orientation = glm::quat_cast(rotationMatrix);
+
+		return orientation;
+		*/
 	}
 
 	da::core::CCamera* CCamera::getCamera()

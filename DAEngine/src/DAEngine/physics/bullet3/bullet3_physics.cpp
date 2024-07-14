@@ -1,5 +1,6 @@
 #include "dapch.h"
 #include "bullet3_physics.h"
+#include <bullet3/BulletCollision/CollisionDispatch/btGhostObject.h>
 
 #include "daengine/core/graphics/graphics_debug_render.h"
 #include <glm/gtx/matrix_decompose.hpp>
@@ -17,9 +18,14 @@ namespace da::physics
 	{
 		m_collisionConfiguration = new btDefaultCollisionConfiguration();
 		m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
-		m_overlappingPairCache = new btDbvtBroadphase();
 		m_solver = new btSequentialImpulseConstraintSolver();
 		m_solver->setRandSeed(123);
+		btVector3 worldMin(-1000, -1000, -1000);
+		btVector3 worldMax(1000, 1000, 1000);
+		btAxisSweep3* sweepBP = new btAxisSweep3(worldMin, worldMax);
+		m_overlappingPairCache = sweepBP;
+
+		m_overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
 		m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_overlappingPairCache, m_solver, m_collisionConfiguration);
 
@@ -51,7 +57,7 @@ namespace da::physics
 			}
 		}
 		
-		m_dynamicsWorld->stepSimulation(dt, 10, 1.f / 60.f);
+		m_dynamicsWorld->stepSimulation(dt, 10, da::physics::CPhysics::getFixedTime());
 	}
 
 	void CBullet3Physics::shutdown()

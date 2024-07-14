@@ -3,6 +3,8 @@
 //engine
 #include <daengine/graphics.h>
 #include <daengine/physics.h>
+#include <daengine/components.h>
+
 
 // game
 #include "game/character/character.h"
@@ -135,9 +137,11 @@ void CTestBed03Level::update(float dt)
 	m_scrlevel.classUpdate(dt);
 
 	const std::vector<FPath> path = m_levelGen.getPath();
+#ifdef DA_REVIEW
 	for (const FPath& p : path) {
 		da::graphics::CDebugRender::drawLine({ p.Start.X, p.Start.Y, 1.f }, { p.End.X, p.End.Y, 1.f }, .1f, { 1.f, 0.f, 1.f, 1.f }, true, true);
 	}
+#endif
 }
 
 void CTestBed03Level::shutdown()

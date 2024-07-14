@@ -1,14 +1,10 @@
 #pragma once
 
+#include <DAEngine/core.h>
+
 namespace da::core
 {
 	class CEntity;
-}
-
-namespace da::graphics
-{
-	class CSkeletalAnimation;
-	class CSkeletalAnimGraph;
 }
 
 class CCharacter
@@ -18,9 +14,8 @@ public:
 	void update(float dt);
 	void shutdown();
 
+
 private:
 	da::core::CEntity* m_entity;
-	da::graphics::CSkeletalAnimation* m_anim1, *m_anim2, *m_anim3, *m_anim4;
-	da::graphics::CSkeletalAnimGraph* m_animGraph;
 
 };

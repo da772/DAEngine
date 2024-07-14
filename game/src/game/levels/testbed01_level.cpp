@@ -59,6 +59,7 @@ void CTestBed01Level::initialize()
 				, 1.f
 				, { 0.f,0.f,0.f }));
 		sphere->setTag(HASHSTR("Sphere"));
+		sphere->getTransform().setPosition({ 0.f, 0.f, 1.f });
 	}
 
 	// Test Bed
@@ -143,7 +144,7 @@ void CTestBed01Level::initialize()
 	m_scrlevel.classInitialize();
 
 	// create vehicle
-	createVehicle();
+	//createVehicle();
 }
 
 void CTestBed01Level::update(float dt)
@@ -160,12 +161,12 @@ void CTestBed01Level::update(float dt)
 		m_scrlevel.cleanup();
 		m_scrlevel.setup({}, {});
 		m_scrlevel.classInitialize();
-		destroyVehicle();
-		createVehicle();
+		//destroyVehicle();
+		//createVehicle();
 	}
 
 	m_character->update(dt);
-	m_vehicle->update(dt);
+	//m_vehicle->update(dt);
 
 	m_scrlevel.classUpdate(dt);
 }

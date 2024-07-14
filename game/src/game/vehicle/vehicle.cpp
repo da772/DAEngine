@@ -329,6 +329,7 @@ void CVehicleGui::onRender(float dt)
 	if (size.x > 80.f) size.x = 80.f;
 	if (size.y > 15.f) size.y = 15.f;
 
+#ifdef DA_REVIEW
 	ImGui::SetNextWindowSize({ size.x, size.y });
 	ImGui::SetNextWindowPos({ pos.x, pos.y });
 	if (ImGui::Begin("###mph", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
@@ -338,4 +339,5 @@ void CVehicleGui::onRender(float dt)
 	}
 
 	ImGui::End();
+#endif
 }

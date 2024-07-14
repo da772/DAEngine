@@ -28,6 +28,8 @@ namespace da::core {
 		static bool mouseInputPressed(int input);
 		static double getCursorX();
 		static double getCursorY();
+		static double getScrollX();
+		static double getScrollY();
 		static void registerWindow(class CWindow* window);
 		static void unregisterWindow(class CWindow* window);
 

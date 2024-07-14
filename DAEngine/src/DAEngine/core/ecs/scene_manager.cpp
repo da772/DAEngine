@@ -1,10 +1,10 @@
 #include "dapch.h"
 
 #include "scene_manager.h"
+#include "entity.h"
 
 #ifdef DA_REVIEW
 #include <imgui.h>
-#include "entity.h"
 #include "debug/debug_menu_bar.h"
 #include "daengine/core/graphics/camera.h"
 #endif

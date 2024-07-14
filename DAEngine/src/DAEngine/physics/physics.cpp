@@ -5,6 +5,7 @@
 namespace da::physics
 {
 	da::physics::CPhysicsType* CPhysics::s_physicsType;
+	double CPhysics::s_fixedTime = 1.0 / 60.0;
 
 	void CPhysics::initialize()
 	{
@@ -35,6 +36,11 @@ namespace da::physics
 	{
 		ASSERT(s_physicsType);
 		s_physicsType->rayCast(ray);
+	}
+
+	double CPhysics::getFixedTime()
+	{
+		return s_fixedTime;
 	}
 
 }

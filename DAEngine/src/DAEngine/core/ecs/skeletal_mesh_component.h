@@ -2,9 +2,9 @@
 
 #include "component.h"
 #include "daengine/asset/asset.h"
-#include "core/graphics/skeletal_animation.h"
-#include "core/graphics/skeletal_animator.h"
-#include "core/graphics/skeletal_anim_graph.h"
+#include "daengine/core/graphics/skeletal_animation.h"
+#include "daengine/core/graphics/skeletal_animator.h"
+#include "daengine/core/graphics/skeletal_anim_graph.h"
 
 namespace da::core
 {

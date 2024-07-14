@@ -4,8 +4,6 @@ local __TS__ClassExtends = ____lualib.__TS__ClassExtends
 local __TS__New = ____lualib.__TS__New
 local __TS__AsyncAwaiter = ____lualib.__TS__AsyncAwaiter
 local __TS__Await = ____lualib.__TS__Await
-local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
-__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["10"] = 2,["11"] = 2,["12"] = 3,["13"] = 3,["14"] = 4,["15"] = 4,["16"] = 5,["17"] = 5,["18"] = 6,["19"] = 6,["20"] = 7,["21"] = 7,["22"] = 8,["23"] = 8,["24"] = 9,["25"] = 9,["26"] = 12,["27"] = 12,["28"] = 12,["29"] = 12,["31"] = 12,["32"] = 14,["33"] = 15,["34"] = 16,["35"] = 18,["37"] = 19,["38"] = 20,["39"] = 21,["41"] = 18,["42"] = 12,["43"] = 24,["44"] = 25,["45"] = 26,["46"] = 27,["47"] = 24,["48"] = 29,["49"] = 30,["50"] = 32,["51"] = 34,["52"] = 36,["54"] = 29,["55"] = 41,["56"] = 42,["57"] = 44,["59"] = 47,["60"] = 49,["62"] = 52,["63"] = 54,["65"] = 57,["66"] = 59,["68"] = 62,["69"] = 64,["71"] = 67,["72"] = 69,["74"] = 72,["75"] = 74,["76"] = 75,["77"] = 77,["80"] = 41,["81"] = 82,["82"] = 84,["83"] = 85,["84"] = 86,["85"] = 87,["87"] = 90,["88"] = 82,["89"] = 94,["90"] = 95,["91"] = 96,["92"] = 94,["93"] = 101});
 local ____exports = {}
 local ____camera = require("daengine.camera")
 local Camera = ____camera.Camera
@@ -74,7 +72,6 @@ function CameraComponent.prototype.cameraInput(self, dt)
     if Input:MousePressed(Inputs.MOUSE_BUTTON_2) then
         local pos = Input:CursorPos()
         if self.cursorPos.x >= 0 and self.cursorPos.y >= 0 then
-            Camera:Rotate(__TS__New(Vector2, self.cursorPos.y - pos.y, self.cursorPos.x - pos.x):mul(180 / 600))
         end
     end
 end

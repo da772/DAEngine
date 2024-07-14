@@ -11,14 +11,14 @@ namespace da::net
 	struct FConnectionSettings
 	{
 		std::string IP = "127.0.0.1";
-		uint16_t Port = 27001;
+		uint16_t Port = 27028;
 		uint16_t ListenRate = 16;
-		uint16_t Timeout = 5000;
+		uint16_t Timeout = 15000;
 	};
 
 	struct FNetworkSettings
 	{
-		uint16_t Port = 27001;
+		uint16_t Port = 27028;
 		uint16_t ListenRate = 16;
 		uint8_t MaxClients = 32;
 		uint8_t Channels = 2;

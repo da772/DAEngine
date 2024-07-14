@@ -19,6 +19,7 @@ namespace da::physics
 		btRigidBody* getRigidBody() const;
 		virtual void setRestitution(float restitution) override;
 		virtual void setUserData(void* ptr) override;
+		virtual void reset();
 		
 
 		virtual void setLinearVelocity(const glm::vec3& impulse) override;

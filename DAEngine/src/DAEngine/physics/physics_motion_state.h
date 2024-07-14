@@ -32,7 +32,7 @@ namespace da::physics
 	protected:
 		inline CPhysicsEntityMotionState(da::core::CEntity* entity) : m_entity(entity){};
 		inline virtual ~CPhysicsEntityMotionState() {};
-		da::core::CEntity* m_entity;
+		da::core::CEntity* m_entity = nullptr;
 
 
 	};
