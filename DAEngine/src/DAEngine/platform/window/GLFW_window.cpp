@@ -121,6 +121,12 @@ namespace da::platform {
 		//glfwSwapBuffers(m_Window);
 	}
 
+	void CGLFW_Window::lockCursor(bool lock)
+	{
+		glfwSetInputMode(m_Window, GLFW_CURSOR, lock ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+	}
+
+
 	void CGLFW_Window::shutdown()
 	{
 		if (!m_Window) return;
@@ -154,7 +160,6 @@ namespace da::platform {
         return nullptr;
 #endif
     }
-
 }
 
 #endif

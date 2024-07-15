@@ -18,6 +18,7 @@ namespace da::platform {
 		void* getNativeWindow() const override;
 		void* getPlatformWindow() const override;
         void* getPlatformDisplay() const override;
+		void lockCursor(bool lock) override;
         
 	private:
 		GLFWwindow* m_Window;

@@ -95,7 +95,7 @@ void CCharacterComponent::processInput(float dt)
 	bool D = da::core::CInput::inputPressed(68);
 	if (A || D) {
 		if (S || W) {
-			m_camRot = wrapAngle(m_camRot + (((float)A + (float)-D) * da::physics::CPhysics::getFixedTime()));
+			m_camRot = wrapAngle(m_camRot + (((float)A + (float)-D) * dt * 2.f));
 		}
 		else {
 			double dir = wrapAngle(glm::radians(cam->rotationEuler().z) - glm::radians(m_parent.getTransform().rotationEuler().z));
@@ -104,19 +104,18 @@ void CCharacterComponent::processInput(float dt)
 		}
 	}
 
-	movement->setRotationSpeed(64.f);
+	movement->setRotationSpeed(164.f);
 
 	if (W || S) {
-		double dir = glm::radians(cam->rotationEuler().z) - glm::radians(m_parent.getTransform().rotationEuler().z);
+		double dir = wrapAngle(glm::radians(cam->rotationEuler().z)) - wrapAngle(glm::radians(m_parent.getTransform().rotationEuler().z));
 		double wrappedDir = wrapAngle(dir);
-
-		if (wrappedDir > 0.001f) {
-			if (wrappedDir <= .15f) {
+		if (std::abs(wrappedDir) > 0.001f) {
+			if (std::abs(wrappedDir) <= .05f) {
 				movement->setRotation(cam->rotationEuler().z);
 			}
 			else {
 				rotate += wrappedDir > 3.14f ? -1.f : 1.f;
-				movement->setRotationSpeed(128.f);
+				movement->setRotationSpeed(225.f);
 			}
 		}
 	}
@@ -140,15 +139,12 @@ void CCharacterComponent::processCamera(float dt)
 	if (da::core::CInput::mouseInputPressed(1))
 	{
 		float yDiff = yPos - m_cursorPos.y;
-		m_camHeight += yDiff * dt;
+		m_camHeight += glm::radians(yDiff) * m_camSensitivity;
 		m_camHeight = std::clamp(m_camHeight, -0.5f, 3.f);
 
 		float xDiff = xPos - m_cursorPos.x;
-		m_camRot -= xDiff * dt;
+		m_camRot -= glm::radians(xDiff) * m_camSensitivity;
 		m_camRot = wrapAngle(m_camRot);
-
-		//m_parent.getTransform().setRotation(glm::vec3(0.f, 0.f, cam->rotationEuler().z));
-		//m_parent.getTransform().matrix();
 	}
 
 	glm::vec3 xOff = (m_camDist * std::cos(m_camRot)) * glm::vec3(1.f, 0.f, 0.f);
@@ -164,8 +160,6 @@ void CCharacterComponent::processCamera(float dt)
 	m_cursorPos = { xPos, yPos };
 
 	glm::vec3 pos = m_parent.getTransform().position() + glm::vec3(0.f, 0.f, m_camHeight) + xOff + yOff;
-	
-	//glm::vec3 pos = glm::mix(cam->position(), m_parent.getTransform().position() + (m_parent.getTransform().forward() * -2.5f) + glm::vec3(0.f,0.f,.5f), 5.f * dt);
 	cam->setPosition(pos);
 	cam->lookAt(m_parent.getTransform().position());
 }

@@ -44,8 +44,8 @@ private:
 	glm::vec3 m_direction = glm::vec3(0.f);
 	float m_rotateDir = 0.f;
 	float m_setRotate = 0.f;
-	float m_speed = 4.f;
-	float m_rotateSpeed = 64.f;
+	float m_speed = 4.4f;
+	float m_rotateSpeed = 128.f;
 	da::physics::FCharacterTuning m_tuning = { .5f };
 	bool m_sprint : 1 = false;
 	bool m_jump : 1 = false;

@@ -36,6 +36,7 @@ private:
 	float m_camRot = 4.7123f;
 	float m_camDist = 2.5f;
 	float m_scrollY = 0.f;
+	float m_camSensitivity = .25f;
 	std::vector<da::graphics::FSkeletalAnimGraphNode> m_anims;
 	da::graphics::CSkeletalAnimGraph* m_animGraph;
 

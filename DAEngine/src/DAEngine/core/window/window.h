@@ -46,6 +46,7 @@ namespace da::core {
 		virtual void* getNativeWindow() const = 0;
 		virtual void* getPlatformWindow() const = 0;
         virtual void* getPlatformDisplay() const = 0;
+		virtual void lockCursor(bool lock)= 0;
 
 		inline const FWindowData& getWindowData() const {
 			return m_windowData;
