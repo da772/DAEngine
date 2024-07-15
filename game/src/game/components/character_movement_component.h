@@ -19,7 +19,12 @@ public:
 	bool isSprinting() const;
 	void sprint(bool sprint);
 	void setWalkDirection(const glm::vec3& dir);
+	void rotate(float dir);
+	void setRotation(float dir);
+	void setRotationSpeed(float speed);
+	void setWalkSpeed(float speed);
 	const glm::vec3& getWalkDirection() const;
+	const glm::vec3 getVelocity() const;
 
 protected:
 	void onInitialize();
@@ -36,9 +41,12 @@ private:
 private:
 	da::physics::ICharacterController* m_character = nullptr;
 	da::physics::CPhysicsShapeCapsule* m_shape = nullptr;
-	bool m_sprint = false;
-	bool m_jump = false;
 	glm::vec3 m_direction = glm::vec3(0.f);
+	float m_rotateDir = 0.f;
+	float m_setRotate = 0.f;
 	float m_speed = 4.f;
+	float m_rotateSpeed = 64.f;
 	da::physics::FCharacterTuning m_tuning = { .5f };
+	bool m_sprint : 1 = false;
+	bool m_jump : 1 = false;
 };

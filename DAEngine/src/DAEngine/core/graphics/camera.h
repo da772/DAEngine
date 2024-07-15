@@ -24,6 +24,7 @@ namespace da::core
 
 		void zoom(float offset);
 		void lookAt(const glm::vec3& position);
+		static glm::quat lookAt(const glm::vec3& target, const glm::vec3& position);
 
 		static CCamera* getCamera();
 		static void setCamera(CCamera* camera);

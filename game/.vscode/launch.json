@@ -30,7 +30,7 @@
         ],
         "scriptFiles": ["**/*.lua"],
         "scriptRoots" : ["."],
-        "verbose": true
+        "verbose": false
       }
     ]
   }

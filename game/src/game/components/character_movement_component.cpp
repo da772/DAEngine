@@ -1,6 +1,8 @@
 #include "character_movement_component.h"
 
 #ifdef DA_REVIEW
+#include <DAEngine/core/graphics/graphics_debug_render.h>
+#include <DAEngine/graphics.h>
 COMPONENT_CPP_DEBUG(CCharacterMovementComponent)
 #else
 COMPONENT_CPP(CCharacterMovementComponent)
@@ -34,15 +36,26 @@ void CCharacterMovementComponent::processMovement(float dt)
 	}
 
 	float walkSpeed = walkVelocity * da::physics::CPhysics::getFixedTime();
+	float rotateSpeed = m_rotateSpeed * m_rotateDir * da::physics::CPhysics::getFixedTime();
 
 	if (m_character->grounded() && m_jump) {
 		m_character->jump({ 0.f,0.f,6.5f });
 	}
 
+	if (m_setRotate != 0.f) {
+		m_parent.getTransform().setRotation({ 0.f, 0.f, m_setRotate });
+	}
+	else {
+		m_parent.getTransform().offsetRotation({ 0.f, 0.f, rotateSpeed });
+	}
+
+	m_parent.getTransform().matrix();
 	m_character->setWalkDirection(m_direction * walkSpeed);
 	m_direction = glm::vec3(0.f);
 	m_jump = false;
 	m_sprint = false;
+	m_rotateDir = 0.f;
+	m_setRotate = 0.f;
 }
 
 
@@ -72,9 +85,34 @@ void CCharacterMovementComponent::setWalkDirection(const glm::vec3& dir)
 }
 
 
+void CCharacterMovementComponent::rotate(float dir)
+{
+	m_rotateDir = dir;
+}
+
+void CCharacterMovementComponent::setRotation(float dir)
+{
+	m_setRotate = dir;
+}
+
+void CCharacterMovementComponent::setRotationSpeed(float speed)
+{
+	m_rotateSpeed = speed;
+}
+
+void CCharacterMovementComponent::setWalkSpeed(float speed)
+{
+	m_speed = speed;
+}
+
 const glm::vec3& CCharacterMovementComponent::getWalkDirection() const
 {
 	return m_direction;
+}
+
+const glm::vec3 CCharacterMovementComponent::getVelocity() const
+{
+	return m_character->getLinearVelocity();
 }
 
 void CCharacterMovementComponent::onShutdown()
@@ -100,6 +138,9 @@ void CCharacterMovementComponent::onDebugRender()
 	}
 
 	ImGui::End();
+
+	glm::quat quat = da::core::CCamera::lookAt(m_direction, glm::vec3(0.f));
+	da::graphics::CDebugRender::drawCone(m_parent.getTransform().position(), quat, {.001f, .005f, .001f}, { 1.f,0.f,1.f,1.f }, false);
 
 	m_character->debugDraw();
 }

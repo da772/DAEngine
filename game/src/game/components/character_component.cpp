@@ -64,16 +64,18 @@ void CCharacterComponent::onInitialize()
 
 void CCharacterComponent::onUpdate(float dt)
 {
-	processInput(dt);
 	processCamera(dt);
+	processInput(dt);
 	processAnims(dt);
 }
 
 void CCharacterComponent::processInput(float dt)
 {
 	da::core::FComponentRef<CCharacterMovementComponent> movement = m_parent.getComponent<CCharacterMovementComponent>();
+	da::core::CCamera* cam = da::core::CCamera::getCamera();
 
 	glm::vec3 direction = glm::vec3(0);
+	float rotate = 0.f;
 	bool jump = false;
 	bool sprint = false;
 
@@ -86,43 +88,71 @@ void CCharacterComponent::processInput(float dt)
 	bool W = da::core::CInput::inputPressed(87);
 
 	if (S || W) {
-		direction = (float)(-S + W) * m_parent.getTransform().forward();
+		direction = (float)(-S + W)* glm::normalize(glm::vec3(cam->forward().x, cam->forward().y, 0.f));
 	}
 
 	bool A = da::core::CInput::inputPressed(65);
 	bool D = da::core::CInput::inputPressed(68);
 	if (A || D) {
-		direction += (float)(-A + D) * m_parent.getTransform().right();
-		sprint = false;
+		if (S || W) {
+			m_camRot = wrapAngle(m_camRot + (((float)A + (float)-D) * da::physics::CPhysics::getFixedTime()));
+		}
+		else {
+			double dir = wrapAngle(glm::radians(cam->rotationEuler().z) - glm::radians(m_parent.getTransform().rotationEuler().z));
+			movement->setRotation(cam->rotationEuler().z + (((float)A + (float)-D)*90.f));
+			direction += (float)(-A + D) * cam->right();
+		}
 	}
 
-	if (glm::length(direction) > 0.f) {
-		direction = glm::normalize(direction);
+	movement->setRotationSpeed(64.f);
+
+	if (W || S) {
+		double dir = glm::radians(cam->rotationEuler().z) - glm::radians(m_parent.getTransform().rotationEuler().z);
+		double wrappedDir = wrapAngle(dir);
+
+		if (wrappedDir > 0.001f) {
+			if (wrappedDir <= .15f) {
+				movement->setRotation(cam->rotationEuler().z);
+			}
+			else {
+				rotate += wrappedDir > 3.14f ? -1.f : 1.f;
+				movement->setRotationSpeed(128.f);
+			}
+		}
 	}
 
 	if (jump) {
 		movement->jump();
 	}
-	
+
+
 	movement->sprint(sprint);
 	movement->setWalkDirection(direction);
+	movement->rotate(rotate);
 }
 
 void CCharacterComponent::processCamera(float dt)
 {
-	float xPos = da::core::CInput::getCursorX();
-	float yPos = da::core::CInput::getCursorY();
+	da::core::CCamera* cam = da::core::CCamera::getCamera();
+	const float xPos = da::core::CInput::getCursorX();
+	const float yPos = da::core::CInput::getCursorY();
 
-	if (da::core::CInput::mouseInputPressed(1) && m_cursorPos.x >= 0.0 && m_cursorPos.y >= 0.0)
+	if (da::core::CInput::mouseInputPressed(1))
 	{
-		m_parent.getTransform().offsetRotation(glm::vec3(0.f, 0.f, m_cursorPos.x - xPos) * .3f);
-		m_parent.getTransform().matrix();
-
 		float yDiff = yPos - m_cursorPos.y;
 		m_camHeight += yDiff * dt;
 		m_camHeight = std::clamp(m_camHeight, -0.5f, 3.f);
+
+		float xDiff = xPos - m_cursorPos.x;
+		m_camRot -= xDiff * dt;
+		m_camRot = wrapAngle(m_camRot);
+
+		//m_parent.getTransform().setRotation(glm::vec3(0.f, 0.f, cam->rotationEuler().z));
+		//m_parent.getTransform().matrix();
 	}
 
+	glm::vec3 xOff = (m_camDist * std::cos(m_camRot)) * glm::vec3(1.f, 0.f, 0.f);
+	glm::vec3 yOff = (m_camDist * std::sin(m_camRot)) * glm::vec3(0.f, 1.f, 0.f);
 	double yScroll = da::core::CInput::getScrollY();
 
 	if (m_scrollY != yScroll) {
@@ -132,8 +162,9 @@ void CCharacterComponent::processCamera(float dt)
 	}
 
 	m_cursorPos = { xPos, yPos };
-	glm::vec3 pos = m_parent.getTransform().position() + (m_parent.getTransform().forward() * -m_camDist) + glm::vec3(0.f, 0.f, m_camHeight);
-	da::core::CCamera* cam = da::core::CCamera::getCamera();
+
+	glm::vec3 pos = m_parent.getTransform().position() + glm::vec3(0.f, 0.f, m_camHeight) + xOff + yOff;
+	
 	//glm::vec3 pos = glm::mix(cam->position(), m_parent.getTransform().position() + (m_parent.getTransform().forward() * -2.5f) + glm::vec3(0.f,0.f,.5f), 5.f * dt);
 	cam->setPosition(pos);
 	cam->lookAt(m_parent.getTransform().position());
@@ -192,6 +223,12 @@ void CCharacterComponent::processAnims(float dt)
 	}
 }
 
+double CCharacterComponent::wrapAngle(double angle) const
+{
+	double twoPi = 2.0 * 3.141592865358979;
+	return angle - twoPi * floor(angle / twoPi);
+}
+
 void CCharacterComponent::onShutdown()
 {
 
@@ -202,6 +239,7 @@ void CCharacterComponent::onDebugRender()
 {
 	if (ImGui::Begin("Anim Test")) {
 		da::core::FComponentRef<da::core::CSkeletalMeshComponent> skMesh = m_parent.getComponent<da::core::CSkeletalMeshComponent>();
+		ImGui::LabelText("###camAngle", "Cam Angle?: %f", m_camRot);
 		std::vector<da::graphics::FSkeletalAnimGraphNode>& nodes = m_animGraph->getNodes();
 		for (int i = 0; i < nodes.size(); i++) {
 			ImGui::LabelText("##label", "%s: ", nodes[i].Animator->getCurrentAnim()->getAnimName().c_str());
