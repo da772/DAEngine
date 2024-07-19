@@ -17,8 +17,8 @@
 #endif
 #include <bgfx/platform.h>
 
-//#define ENABLE_VSYNC BGFX_RESET_VSYNC
-#define ENABLE_VSYNC 0
+#define ENABLE_VSYNC BGFX_RESET_VSYNC
+//#define ENABLE_VSYNC 0
 
 #define RESET_FLAGS BGFX_RESET_MSAA_X8 | ENABLE_VSYNC | BGFX_RESET_DEPTH_CLAMP
 

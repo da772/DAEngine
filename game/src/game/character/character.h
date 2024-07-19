@@ -16,6 +16,6 @@ public:
 
 
 private:
-	da::core::CEntity* m_entity;
+	da::core::CEntity* m_entity, *m_sword;
 
 };

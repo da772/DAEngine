@@ -98,7 +98,7 @@ namespace da::core {
 		if (m_parent.getTransform().isDirty()) {
 			m_finalTransform = m_parent.getTransform().matrix() * m_transform;
 		}
-
+		
 		return m_finalTransform;
 	}
 

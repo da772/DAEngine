@@ -39,6 +39,7 @@ private:
 	float m_camSensitivity = .25f;
 	std::vector<da::graphics::FSkeletalAnimGraphNode> m_anims;
 	da::graphics::CSkeletalAnimGraph* m_animGraph;
+	bool m_attack = false;
 
 
 };

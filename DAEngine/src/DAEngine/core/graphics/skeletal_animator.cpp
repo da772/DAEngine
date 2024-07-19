@@ -9,7 +9,7 @@
 namespace da::graphics
 {
 
-	CSkeletalAnimator::CSkeletalAnimator(CSkeletalAnimation* animation)
+	CSkeletalAnimator::CSkeletalAnimator(CSkeletalAnimation* animation, bool looping) : m_looping(looping)
 	{
 		m_CurrentTime = 0.0;
 		m_CurrentAnimation = animation;
@@ -211,8 +211,15 @@ namespace da::graphics
 		}
 
 		m_CurrentTime += m_CurrentAnimation->getTicksPerSecond() * m_DeltaTime;
-		m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->getDuration());
 
+		if (!m_looping && m_CurrentTime > m_CurrentAnimation->getDuration()) {
+			m_CurrentTime = m_CurrentAnimation->getDuration();
+			disablePlay = true;
+		}
+		else {
+			m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->getDuration());
+		}
+	
 		if (m_tickTime < tickTime) {
 			return false;
 		}
@@ -226,6 +233,8 @@ namespace da::graphics
 		for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
 			calculateBoneTransform(&m_CurrentAnimation->getRootNode(), i);
 		}
+
+		return true;
 	}
 
 	void CSkeletalAnimator::playAnimation(CSkeletalAnimation* pAnimation, float interpolation)
@@ -243,7 +252,9 @@ namespace da::graphics
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 	void CSkeletalAnimator::debugRenderJoints(const glm::mat4& modelMat)
 	{
-		if (!m_CurrentAnimation) return;
+		if (!m_CurrentAnimation) {
+			return;
+		}
 
 		std::queue<const FAssimpNodeData*> bones;
 		bones.push(&m_CurrentAnimation->getRootNode());
@@ -346,14 +357,14 @@ namespace da::graphics
 	{
 		ASSERT(m_CurrentAnimation->getMeshCount() != 0);
 
-		const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(0).find(name);
+		const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(2).find(name);
 
-		if (it == m_CurrentAnimation->getBoneIDMap(0).end())
+		if (it == m_CurrentAnimation->getBoneIDMap(2).end())
 		{
 			return false;
 		}
 
-		out = modelMat * (m_FinalBoneMatrices[0][it->second.id] * glm::inverse(it->second.offset));
+		out = modelMat * (m_FinalBoneMatrices[2][it->second.id] * glm::inverse(it->second.offset));
 
 		return true;
 	}

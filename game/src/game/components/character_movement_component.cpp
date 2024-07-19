@@ -43,7 +43,20 @@ void CCharacterMovementComponent::processMovement(float dt)
 	}
 
 	if (m_setRotate != 0.f) {
-		m_parent.getTransform().setRotation({ 0.f, 0.f, m_setRotate });
+		if (m_rotateInstant) {
+			m_parent.getTransform().setRotation({ 0.f, 0.f, m_setRotate });
+		}
+		else {
+			float z = glm::radians(m_parent.getTransform().rotationEuler().z);
+			double angle = wrapAngle(m_setRotate - z);
+			if (std::abs(angle) <= .5f) {
+				m_parent.getTransform().setRotation({ 0.f, 0.f, glm::degrees(m_setRotate) });
+				m_rotateInstant = true;
+			}
+			else {
+				m_parent.getTransform().offsetRotation({ 0.f, 0.f, m_rotateSpeed * (angle > 3.14159f ? -1.f : 1.f) * dt });
+			}
+		}
 	}
 	else {
 		m_parent.getTransform().offsetRotation({ 0.f, 0.f, rotateSpeed });
@@ -51,11 +64,16 @@ void CCharacterMovementComponent::processMovement(float dt)
 
 	m_parent.getTransform().matrix();
 	m_character->setWalkDirection(m_direction * walkSpeed);
+
 	m_direction = glm::vec3(0.f);
 	m_jump = false;
 	m_sprint = false;
 	m_rotateDir = 0.f;
-	m_setRotate = 0.f;
+	if (m_rotateInstant) {
+		m_setRotate = 0.f;
+		m_rotateInstant = false;
+	}
+	
 }
 
 
@@ -90,9 +108,10 @@ void CCharacterMovementComponent::rotate(float dir)
 	m_rotateDir = dir;
 }
 
-void CCharacterMovementComponent::setRotation(float dir)
+void CCharacterMovementComponent::setRotation(float dir, bool instant)
 {
 	m_setRotate = dir;
+	m_rotateInstant = instant;
 }
 
 void CCharacterMovementComponent::setRotationSpeed(float speed)

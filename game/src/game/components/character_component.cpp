@@ -38,6 +38,7 @@ CCharacterComponent::CCharacterComponent(const da::core::CGuid& guid, da::core::
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogLeft.fbx", mesh)), 0.f }
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogRight.fbx", mesh)), 0.f }
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogBack.fbx", mesh)), 0.f }
+		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/swing2.fbx", mesh), false), 0.f }
 	};
 
 	m_animGraph = new da::graphics::CSkeletalAnimGraph(mesh, m_anims);
@@ -74,6 +75,8 @@ void CCharacterComponent::processInput(float dt)
 	da::core::FComponentRef<CCharacterMovementComponent> movement = m_parent.getComponent<CCharacterMovementComponent>();
 	da::core::CCamera* cam = da::core::CCamera::getCamera();
 
+	if (m_attack) return;
+
 	glm::vec3 direction = glm::vec3(0);
 	float rotate = 0.f;
 	bool jump = false;
@@ -98,8 +101,8 @@ void CCharacterComponent::processInput(float dt)
 			m_camRot = wrapAngle(m_camRot + (((float)A + (float)-D) * dt * 2.f));
 		}
 		else {
-			double dir = wrapAngle(glm::radians(cam->rotationEuler().z) - glm::radians(m_parent.getTransform().rotationEuler().z));
-			movement->setRotation(cam->rotationEuler().z + (((float)A + (float)-D)*90.f));
+			float dir = cam->rotationEuler().z + ((float)(-A + D)*-90.f);
+			movement->setRotation(glm::radians(dir), false);
 			direction += (float)(-A + D) * cam->right();
 		}
 	}
@@ -124,6 +127,13 @@ void CCharacterComponent::processInput(float dt)
 		movement->jump();
 	}
 
+	if (da::core::CInput::mouseInputPressed(0)) {
+		m_anims[7].Animator->setPlayTime(0);
+		m_attack = true;
+		sprint = false;
+		direction = glm::vec3(0.f);
+		rotate = 0.f;
+	}
 
 	movement->sprint(sprint);
 	movement->setWalkDirection(direction);
@@ -172,6 +182,19 @@ void CCharacterComponent::processAnims(float dt)
 
 	float forward = glm::dot(m_parent.getTransform().forward(), direction);
 
+	if (m_attack) {
+		if (m_anims[7].Animator->getPlayTime() >= m_anims[7].Animator->getMaxPlayTime())
+		{
+			m_attack = false;
+		}
+		else {
+			m_animGraph->getNodes()[7].Weight = std::min(m_animGraph->getNodes()[7].Weight + 2.f * dt, (float)m_attack);
+		}
+	}
+	else {
+		m_animGraph->getNodes()[7].Weight = std::max(m_animGraph->getNodes()[7].Weight - 2.f * dt, 0.f);
+	}
+
 	if (forward > 0.f && !isSprinting) {
 		m_animGraph->getNodes()[1].Weight = std::min(m_animGraph->getNodes()[1].Weight + 2.f * dt, std::abs(forward));
 	}
@@ -209,7 +232,7 @@ void CCharacterComponent::processAnims(float dt)
 		m_animGraph->getNodes()[5].Weight = std::max(m_animGraph->getNodes()[5].Weight - 2.f * dt, 0.f);
 	}
 
-	if (forward || right) {
+	if (forward || right || m_attack) {
 		m_animGraph->getNodes()[0].Weight = std::max(m_animGraph->getNodes()[0].Weight - 2.f * dt, 0.f);
 	}
 	else {
@@ -234,6 +257,7 @@ void CCharacterComponent::onDebugRender()
 	if (ImGui::Begin("Anim Test")) {
 		da::core::FComponentRef<da::core::CSkeletalMeshComponent> skMesh = m_parent.getComponent<da::core::CSkeletalMeshComponent>();
 		ImGui::LabelText("###camAngle", "Cam Angle?: %f", m_camRot);
+		skMesh->getSkeletalAnimator()->debugRenderJoints(skMesh->getTransform());
 		std::vector<da::graphics::FSkeletalAnimGraphNode>& nodes = m_animGraph->getNodes();
 		for (int i = 0; i < nodes.size(); i++) {
 			ImGui::LabelText("##label", "%s: ", nodes[i].Animator->getCurrentAnim()->getAnimName().c_str());

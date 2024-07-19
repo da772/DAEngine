@@ -20,7 +20,7 @@ public:
 	void sprint(bool sprint);
 	void setWalkDirection(const glm::vec3& dir);
 	void rotate(float dir);
-	void setRotation(float dir);
+	void setRotation(float dir, bool instance = true);
 	void setRotationSpeed(float speed);
 	void setWalkSpeed(float speed);
 	const glm::vec3& getWalkDirection() const;
@@ -33,6 +33,11 @@ protected:
 
 private:
 	void processMovement(float dt);
+	inline double wrapAngle(double angle) const
+	{
+		double twoPi = 2.0 * 3.141592865358979;
+		return angle - twoPi * floor(angle / twoPi);
+	}
 
 #ifdef DA_REVIEW
 	void onDebugRender();
@@ -49,4 +54,6 @@ private:
 	da::physics::FCharacterTuning m_tuning = { .5f };
 	bool m_sprint : 1 = false;
 	bool m_jump : 1 = false;
+	bool m_rotateInstant : 1 = false;
+	
 };

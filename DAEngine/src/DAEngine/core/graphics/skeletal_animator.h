@@ -28,7 +28,7 @@ namespace da::graphics {
 	class CSkeletalAnimator
 	{
 	public:
-		CSkeletalAnimator(CSkeletalAnimation* animation);
+		CSkeletalAnimator(CSkeletalAnimation* animation, bool looping = true);
 
 		bool updateAnimation(float dt, bool disablePlay = false);
 		void playAnimation(CSkeletalAnimation* pAnimation, float interpolation = 0.f);
@@ -70,5 +70,6 @@ namespace da::graphics {
 		float m_DeltaTime;
 		float m_timeScale = 1.f;
 		float m_tickTime = 0.f;
+		bool m_looping : 1 = true;
 	};
 }
