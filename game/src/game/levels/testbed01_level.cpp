@@ -171,6 +171,11 @@ void CTestBed01Level::update(float dt)
 	m_scrlevel.classUpdate(dt);
 }
 
+void CTestBed01Level::lateUpdate(float dt)
+{
+	m_character->lateUpdate(dt);
+}
+
 void CTestBed01Level::shutdown()
 {
 	m_scrlevel.classShutdown();

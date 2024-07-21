@@ -33,9 +33,12 @@ void CGame::onInitialize()
 
 void CGame::onUpdate(float dt)
 {
-	
 	m_levelSelector->update(dt);
+}
 
+void CGame::onLateUpdate(float dt)
+{
+	m_levelSelector->lateUpdate(dt);
 }
 
 void CGame::createModules()

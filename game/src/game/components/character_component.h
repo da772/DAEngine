@@ -22,7 +22,6 @@ protected:
 
 private:
 	void processInput(float dt);
-	void processCamera(float dt);
 	void processAnims(float dt);
 	double wrapAngle(double angle) const;
 
@@ -31,15 +30,12 @@ private:
 #endif
 
 private:
-	glm::vec2 m_cursorPos = { 0.f, 0.f };
-	float m_camHeight = 0.5f;
-	float m_camRot = 4.7123f;
-	float m_camDist = 2.5f;
-	float m_scrollY = 0.f;
-	float m_camSensitivity = .25f;
 	std::vector<da::graphics::FSkeletalAnimGraphNode> m_anims;
 	da::graphics::CSkeletalAnimGraph* m_animGraph;
 	bool m_attack = false;
+	glm::vec2 m_cursorPos = { 0.f, 0.f };
+	float m_camRot = 4.7123f;
+	float m_camSensitivity = .25f;
 
 
 };

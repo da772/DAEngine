@@ -15,6 +15,7 @@ public:
 	CTestBed01Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window);
 	void initialize();
 	void update(float dt);
+	void lateUpdate(float dt) override;
 	void shutdown();
 
 

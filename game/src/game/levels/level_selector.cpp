@@ -80,6 +80,13 @@ void CLevelSelector::update(float dt)
 }
 
 
+void CLevelSelector::lateUpdate(float dt)
+{
+	if (m_level == INVALID_LEVEL_ID) return;
+
+	m_levels[m_level]->lateUpdate(dt);
+}
+
 const std::vector<ILevel*> CLevelSelector::getLevels() const
 {
 	return m_levels;

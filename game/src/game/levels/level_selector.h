@@ -12,6 +12,7 @@ public:
 	void startLevel(uint32_t id);
 	const std::vector<ILevel*> getLevels() const;
 	void update(float dt);
+	void lateUpdate(float dt);
 	void shutdown();
 
 

@@ -71,6 +71,7 @@ namespace da
 			da::core::CWorkerPool::update();
 			da::physics::CPhysics::update(timeStep);
 			da::graphics::CAnimationManager::updateEnd();
+			onLateUpdate(timeStep);
 			for (IModule* m : m_modules) {
 				m->lateUpdate();
 			}

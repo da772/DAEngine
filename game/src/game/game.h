@@ -29,6 +29,7 @@ protected:
 	void resetScriptDebug(bool soft, bool* b);
 #endif
 	virtual void onUpdate(float dt) override;
+	virtual void onLateUpdate(float dt) override;
 
 private:
 	CLevelSelector* m_levelSelector;

@@ -18,6 +18,7 @@ namespace da
 	protected:
 		virtual void onInitialize() = 0;
 		virtual void onUpdate(float dt) = 0;
+		virtual void onLateUpdate(float dt) = 0;
 		virtual void onShutdown() = 0;
 
 		void addModule(IModule* module);
