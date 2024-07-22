@@ -19,11 +19,6 @@ public:
 
 private:
 	void processCamera(float dt);
-	inline double wrapAngle(double angle) const
-	{
-		double twoPi = 2.0 * 3.141592865358979;
-		return angle - twoPi * floor(angle / twoPi);
-	}
 
 private:
 	da::core::CEntity* m_entity, * m_sword;

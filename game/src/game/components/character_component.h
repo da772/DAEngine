@@ -2,6 +2,8 @@
 #include <DAEngine/components.h>
 #include <DAEngine/graphics.h>
 
+class ICharacterMovement;
+
 enum class ECharacterAnims : uint8_t
 {
 	Idle,
@@ -28,6 +30,9 @@ public:
 
 	float getCamRot() const;
 	void setWeaponEntity(const da::core::CEntity* weapon);
+	inline float getCamSensitivity() const { return m_camSensitivity; }
+	void attack();
+	bool isAttacking() const;
 
 protected:
 	void onInitialize();
@@ -35,7 +40,6 @@ protected:
 	void onShutdown();
 
 private:
-	void processInput(float dt);
 	void processAnims(float dt);
 	double wrapAngle(double angle) const;
 
@@ -46,10 +50,10 @@ private:
 private:
 	std::vector<da::graphics::FSkeletalAnimGraphNode> m_anims;
 	da::graphics::CSkeletalAnimGraph* m_animGraph;
-	bool m_attack = false;
 	glm::vec2 m_cursorPos = { 0.f, 0.f };
-	float m_camRot = 4.7123f;
+	bool m_attack = false;
 	float m_camSensitivity = .25f;
+	ICharacterMovement* m_movement;
 	const da::core::CEntity* m_weapon = nullptr;
 
 
