@@ -101,14 +101,26 @@ void CTestBed01Level::initialize()
 				, { 0.f,0.f,0.f }));
 	}
 
-	// Transform obj
+	// Dummy obj
 	{
 		da::core::CEntity* transformObj = da::core::CSceneManager::getScene()->createEntity();
-		transformObj->getTransform().setPosition({ 4,0,0 });
+		transformObj->getTransform().setPosition({ 0,0,-0.2f });
 		transformObj->getTransform().setRotation({ 0,0,0 });
-		transformObj->setTag(HASHSTR("transform"));
+		transformObj->setTag(HASHSTR("dummy"));
 
-		transformObj->addComponent<da::core::CSmeshComponent>("assets/transform.fbx");
+		da::core::FComponentRef<da::core::CSmeshComponent> mesh = transformObj->addComponent<da::core::CSmeshComponent>("assets/prop/misc/target_dummy.fbx");
+		mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/prop/misc/dummy_baseColor.jpeg"));
+		mesh->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/prop/misc/dummy_normal.jpeg"));
+		mesh->getStaticMesh()->getMaterial(0).metallicFactor = 0.f;
+		mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
+
+		da::graphics::CStaticMesh* colMesh = new da::graphics::CStaticMesh("assets/prop/misc/target_dummy_collision.fbx", false);
+
+		transformObj->addComponent<da::core::CRigidBodyComponent>(
+			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(colMesh)
+				, da::physics::CPhysicsDefaultMotionState::create(transformObj->getTransform().matrix())
+				, 0.f
+				, { 0.f,0.f,0.f }));
 	}
 
 	{
@@ -121,11 +133,12 @@ void CTestBed01Level::initialize()
 		meshComponent->getStaticMesh()->castShadows(false);
 
 		da::graphics::CStaticMesh* collision = new da::graphics::CStaticMesh("assets/prop/structure/prop_collision_gladiator_arena.fbx");
-		arena->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(
+		/*arena->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(
 			da::physics::CPhysicsShapeTriangleMesh::create(collision)
 			, da::physics::CPhysicsDefaultMotionState::create(arena->getTransform().matrix())
 			, 0.f
 			, { 0.f,0.f,0.f }));
+*/
 
 		meshComponent->getStaticMesh()->getMaterial(0).baseColorFactor = hexToVec(0xc29d84ff);
 		meshComponent->getStaticMesh()->getMaterial(1).baseColorFactor = hexToVec(0xBBBCBCFF);

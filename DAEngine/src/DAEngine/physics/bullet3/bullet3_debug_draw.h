@@ -17,7 +17,7 @@ namespace da::physics
 		int getDebugMode() const override;
 
 	private:
-		int m_debugMode = (btIDebugDraw::DebugDrawModes::DBG_FastWireframe | btIDebugDraw::DebugDrawModes::DBG_DrawContactPoints);;
+		int m_debugMode = (btIDebugDraw::DebugDrawModes::DBG_DrawWireframe | btIDebugDraw::DebugDrawModes::DBG_DrawContactPoints | btIDebugDraw::DebugDrawModes::DBG_DrawAabb);
 
 	};
 

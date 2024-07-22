@@ -9,6 +9,7 @@ namespace da::core::events
 {
 #define BIND_EVENT_FN(x,y) std::bind(&x::y, this, std::placeholders::_1)
 #define BIND_EVENT_FN_2(x,y) std::bind(&x::y, this, std::placeholders::_1, std::placeholders::_2)
+#define BIND_EVENT_FN_3(x,y) std::bind(&x::y, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
 #define EVENT_HANDLER_REGISTER_CALLBACK(x)
 
 	struct FEventCallback {

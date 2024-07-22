@@ -6,6 +6,7 @@
 #include "rigid_body_component.h"
 #include "dynamic_light_component.h"
 #include "networked_transform_component.h"
+#include "collision_component.h"
 
 namespace da::core {
 	class CComponents {

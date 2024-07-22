@@ -4,17 +4,26 @@
 
 #include <DAEngine/components.h>
 
+CCharacter::CCharacter()
+{
+
+}
+
 void CCharacter::initialize()
 {
 	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
 		m_entity = scene->createEntity();
 		m_entity->setTag(HASHSTR("Character"));
 		m_entity->addComponent<CCharacterMovementComponent>(da::core::CGuid::Generate());
-		m_entity->addComponent<CCharacterComponent>(da::core::CGuid::Generate());
+		da::core::FComponentRef<CCharacterComponent> characterRef = m_entity->addComponent<CCharacterComponent>(da::core::CGuid::Generate());
 
 		m_sword = scene->createEntity();
 		m_sword->setTag(HASHSTR("Sword"));
 		m_sword->addComponent<da::core::CSmeshComponent>("assets/prop/weapon/prop_weap_sword.fbx");
+		da::physics::IPhysicsShape* shape = da::physics::CPhysicsShapeCube::create({ .017f, .057f, .598f });
+		m_sword->addComponent<da::core::CCollisionComponent>(*shape, glm::translate(glm::mat4(1.f), { 0.f, 0.f, 1.f }), da::core::CGuid::Generate());
+
+		characterRef->setWeaponEntity(m_sword);
 	}
 }
 
@@ -51,22 +60,27 @@ void CCharacter::shutdown()
 	da::core::CSceneManager::getScene()->removeEntity(m_sword);
 }
 
+const da::core::CEntity* CCharacter::getEntity() const
+{
+	return m_entity;
+}
+
 void CCharacter::processCamera(float dt)
 {
 	da::core::CCamera* cam = da::core::CCamera::getCamera();
 	const float xPos = da::core::CInput::getCursorX();
 	const float yPos = da::core::CInput::getCursorY();
 
+	da::core::FComponentRef<CCharacterComponent> character = m_entity->getComponent<CCharacterComponent>();
+
 	if (da::core::CInput::mouseInputPressed(1))
 	{
 		float yDiff = yPos - m_cursorPos.y;
 		m_camHeight += glm::radians(yDiff) * m_camSensitivity;
 		m_camHeight = std::clamp(m_camHeight, -0.5f, 3.f);
-
-		float xDiff = xPos - m_cursorPos.x;
-		m_camRot -= glm::radians(xDiff) * m_camSensitivity;
-		m_camRot = wrapAngle(m_camRot);
 	}
+
+	m_camRot = character->getCamRot();
 
 	glm::vec3 xOff = (m_camDist * std::cos(m_camRot)) * glm::vec3(1.f, 0.f, 0.f);
 	glm::vec3 yOff = (m_camDist * std::sin(m_camRot)) * glm::vec3(0.f, 1.f, 0.f);

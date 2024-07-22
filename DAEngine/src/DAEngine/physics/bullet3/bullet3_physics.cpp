@@ -58,6 +58,7 @@ namespace da::physics
 		}
 		
 		m_dynamicsWorld->stepSimulation(dt, 10, da::physics::CPhysics::getFixedTime());
+		//m_dynamicsWorld->debugDrawWorld();
 	}
 
 	void CBullet3Physics::shutdown()

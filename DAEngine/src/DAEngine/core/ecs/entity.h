@@ -71,7 +71,7 @@ namespace da::core
 		}
 
 		template <typename T>
-		FComponentRef<T> getComponent() {
+		FComponentRef<T> getComponent() const {
 			const auto& it = m_components.find(T::getTypeHash());
 
 			if (it == m_components.end()) {

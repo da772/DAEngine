@@ -212,6 +212,19 @@ void CCharacterComponent::processAnims(float dt)
 	else {
 		m_animGraph->getNodes()[0].Weight = std::min(m_animGraph->getNodes()[0].Weight + 2.f * dt, 1.f);
 	}
+
+
+	if (m_animGraph->getNodes()[(uint8_t)ECharacterAnims::Swing2].Weight > 0.f) {
+		float pTime = m_animGraph->getNodes()[(uint8_t)ECharacterAnims::Swing2].Animator->getPlayTime();
+		if (m_weapon) {
+			da::core::FComponentRef<da::core::CCollisionComponent> colComp = m_weapon->getComponent<da::core::CCollisionComponent>();
+			colComp->enable(pTime >= 20.f && pTime <= 30.f);
+#ifdef DA_REVIEW
+			if (pTime >= 20.f && pTime <= 30.f) colComp->debugRender();
+#endif
+		}
+	}
+
 }
 
 double CCharacterComponent::wrapAngle(double angle) const
@@ -225,6 +238,19 @@ void CCharacterComponent::onShutdown()
 
 }
 
+float CCharacterComponent::getCamRot() const
+{
+	return m_camRot;
+}
+
+void CCharacterComponent::setWeaponEntity(const da::core::CEntity* weapon)
+{
+	m_weapon = weapon;
+
+	da::core::FComponentRef<da::core::CCollisionComponent> colComp = weapon->getComponent<da::core::CCollisionComponent>();
+	colComp->enable(false);
+}
+
 #ifdef DA_REVIEW
 void CCharacterComponent::onDebugRender()
 {
@@ -233,22 +259,8 @@ void CCharacterComponent::onDebugRender()
 		skMesh->getSkeletalAnimator()->debugRenderJoints(skMesh->getTransform());
 		std::vector<da::graphics::FSkeletalAnimGraphNode>& nodes = m_animGraph->getNodes();
 		for (int i = 0; i < nodes.size(); i++) {
-			ImGui::LabelText("##label", "%s: ", nodes[i].Animator->getCurrentAnim()->getAnimName().c_str());
+			ImGui::LabelText("##label", "%.2f : %s: ", nodes[i].Animator->getPlayTime(), nodes[i].Animator->getCurrentAnim()->getAnimName().c_str());
 			ImGui::InputFloat(std::to_string(i).c_str(), &nodes[i].Weight, .025, 0.f);
-
-			if (i == 3) {
-				nodes[i].Weight = std::clamp(nodes[i].Weight, 0.f, .9f);
-
-
-				if (nodes[i].Weight >= .90f) {
-					nodes[i].Animator->setTimeScale(2.0);
-				}
-				else {
-					nodes[i].Animator->setTimeScale(0.0);
-				}
-			}
-
-
 		}
 	}
 	ImGui::End();

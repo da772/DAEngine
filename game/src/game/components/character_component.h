@@ -2,6 +2,17 @@
 #include <DAEngine/components.h>
 #include <DAEngine/graphics.h>
 
+enum class ECharacterAnims : uint8_t
+{
+	Idle,
+	Jog,
+	Sprint,
+	Button,
+	JogLeft,
+	JogRight,
+	JogBack,
+	Swing2
+};
 
 class CCharacterComponent
 {
@@ -14,6 +25,9 @@ class CCharacterComponent
 public:
 	CCharacterComponent(const da::core::CGuid& guid, da::core::CEntity& parent);
 	~CCharacterComponent();
+
+	float getCamRot() const;
+	void setWeaponEntity(const da::core::CEntity* weapon);
 
 protected:
 	void onInitialize();
@@ -36,6 +50,7 @@ private:
 	glm::vec2 m_cursorPos = { 0.f, 0.f };
 	float m_camRot = 4.7123f;
 	float m_camSensitivity = .25f;
+	const da::core::CEntity* m_weapon = nullptr;
 
 
 };

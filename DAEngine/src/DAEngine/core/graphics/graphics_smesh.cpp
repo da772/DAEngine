@@ -57,8 +57,8 @@ namespace da::graphics
 
 				aiMesh* mesh = pScene->mMeshes[node->mMeshes[i]];
 
-				glm::mat4 parentTransform = node->mParent ? AssimpGLMHelpers::ConvertMatrixToGLMFormat(node->mParent->mTransformation) : glm::mat4(1.f);
-				glm::mat4 transform = AssimpGLMHelpers::ConvertMatrixToGLMFormat(node->mTransformation) * parentTransform;
+				glm::mat4 parentTransform = glm::mat4(1.f);//node->mParent ? AssimpGLMHelpers::ConvertMatrixToGLMFormat(node->mParent->mTransformation) : glm::mat4(1.f);
+				glm::mat4 transform = glm::mat4(1.f); //AssimpGLMHelpers::ConvertMatrixToGLMFormat(node->mTransformation) * parentTransform;
 
 				for (size_t v = 0; v < mesh->mNumVertices; v++) {
 
