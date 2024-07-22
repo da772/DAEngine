@@ -79,4 +79,9 @@ namespace da::core {
 		}
 	}
 
+	void FComponentContainer::dirty()
+	{
+		m_componentCache = {};
+	}
+
 }

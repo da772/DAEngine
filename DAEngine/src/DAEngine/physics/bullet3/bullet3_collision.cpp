@@ -42,12 +42,14 @@ namespace da::physics
 		m_ghost.setWorldTransform(btT);
 	}
 
+#ifdef DA_REVIEW
 	void CBullet3Collision::debugDraw()
 	{
 		CBullet3Physics* physics = dynamic_cast<CBullet3Physics*>(CPhysics::getPhysicsType());
 		ASSERT(physics);
 		physics->getDynamicsWorld()->debugDrawObject(m_ghost.getWorldTransform(), m_ghost.getCollisionShape(), { 1.f,0.f,1.f });
 	}
+#endif
 
 	void CBullet3Collision::onOverlap(btBroadphaseProxy* otherProxy, btBroadphaseProxy* thisProxy, bool overlap)
 	{

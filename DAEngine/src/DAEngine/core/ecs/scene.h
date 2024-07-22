@@ -15,15 +15,28 @@ namespace da::core {
 #ifdef DA_REVIEW
 			LOG_ASSERT(((T*)ptr)->getId().isValid(), ELogChannel::Core, "Creating component with invalid id");
 #endif
+			CHashString hash((const char*)((T*)ptr)->getId().data(), sizeof(uint128_t));
+			m_componentCache[hash] = (uint32_t)m_count;
 			m_count++;
 			return (T*)ptr;
 		}
 
+
 		template <typename T>
-		T* findComponent(const CGuid& guid) const {
+		T* findComponent(const CGuid& guid) {
+
+			CHashString hash((const char*)guid.data(), sizeof(uint128_t));
+			const std::unordered_map<CHashString, uint32_t>::const_iterator& it = m_componentCache.find(hash);
+
+			if (it != m_componentCache.end())
+			{
+				return (T*)&m_components[it->second * sizeof(T)];
+			}
+
 			for (size_t i = 0; i < m_components.size(); i += sizeof(T)) {
 				T* c = (T*) &m_components[i];
 				if (c->getId() == guid) {
+					m_componentCache[hash] = (uint32_t)i/sizeof(T);
 					return c;
 				}
 			}
@@ -32,10 +45,20 @@ namespace da::core {
 		}
 
 		template <typename T>
-		size_t findComponentIndex(const CGuid& guid) const {
+		size_t findComponentIndex(const CGuid& guid) {
+
+			CHashString hash((const char*)guid.data(), sizeof(uint128_t));
+			const std::unordered_map<CHashString, uint32_t>::const_iterator& it = m_componentCache.find(hash);
+
+			if (it != m_componentCache.end())
+			{
+				return it->second * sizeof(T);
+			}
+
 			for (size_t i = 0; i < m_components.size(); i += sizeof(T)) {
 				T* c = (T*)&m_components[i];
 				if (c->getId() == guid) {
+					m_componentCache[hash] = (uint32_t)i/sizeof(T);
 					return i;
 				}
 			}
@@ -72,6 +95,7 @@ namespace da::core {
 			component->~T();
 			m_components.erase(m_components.begin()+index, m_components.begin() + index + sizeof(T));
 			m_count--;
+			dirty();
 			return true;
 		}
 
@@ -83,6 +107,8 @@ namespace da::core {
 			component->~T();
 			m_components.erase(m_components.begin() + index, m_components.begin() + index + sizeof(T));
 			m_count--;
+
+			dirty();
 			return true;
 		}
 
@@ -104,9 +130,14 @@ namespace da::core {
 		}
 
 	private:
+		void dirty();
+
+
+	private:
 		std::vector<char> m_components;
 		size_t m_count;
 		size_t m_size;
+		std::unordered_map<CHashString, uint32_t> m_componentCache;
 	};
 
 	struct FECSLifeCycle {
