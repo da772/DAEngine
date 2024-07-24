@@ -79,8 +79,9 @@ void CCharacterComponent::processAnims(float dt)
 	const glm::vec3& direction = movement->getWalkDirection();
 	const bool isSprinting = movement->isSprinting();
 
-	float forward = glm::dot(m_parent.getTransform().forward(), direction);
+	float forward = glm::clamp(glm::length(direction), -1.f, 1.f);//glm::clamp(glm::dot(m_parent.getTransform().forward(), direction), -1.f, 1.f);
 
+	// attack
 	if (m_attack) {
 		if (m_anims[7].Animator->getPlayTime() >= m_anims[7].Animator->getMaxPlayTime())
 		{
@@ -94,43 +95,48 @@ void CCharacterComponent::processAnims(float dt)
 		m_animGraph->getNodes()[7].Weight = std::max(m_animGraph->getNodes()[7].Weight - 2.f * dt, 0.f);
 	}
 
-	if (forward > 0.f && !isSprinting) {
+	// jog
+	if (forward != 0.00f && !isSprinting) {
 		m_animGraph->getNodes()[1].Weight = std::min(m_animGraph->getNodes()[1].Weight + 2.f * dt, std::abs(forward));
 	}
 	else {
 		m_animGraph->getNodes()[1].Weight = std::max(m_animGraph->getNodes()[1].Weight - 2.f * dt, 0.f);
 	}
 
-	if (forward > 0.f && isSprinting) {
+	// sprint
+	if (forward != 0.00f && isSprinting) {
 		m_animGraph->getNodes()[2].Weight = std::min(m_animGraph->getNodes()[2].Weight + 2.f * dt, std::abs(forward));
 	}
 	else {
 		m_animGraph->getNodes()[2].Weight = std::max(m_animGraph->getNodes()[2].Weight - 2.f * dt, 0.f);
 	}
 
+	// jog back
 	if (forward < 0.f) {
-		m_animGraph->getNodes()[6].Weight = std::min(m_animGraph->getNodes()[6].Weight + 2.f * dt, std::abs(forward));
+		//m_animGraph->getNodes()[6].Weight = std::min(m_animGraph->getNodes()[6].Weight + 2.f * dt, std::abs(forward));
 	}
 	else {
-		m_animGraph->getNodes()[6].Weight = std::max(m_animGraph->getNodes()[6].Weight - 2.f * dt, 0.f);
+		//m_animGraph->getNodes()[6].Weight = std::max(m_animGraph->getNodes()[6].Weight - 2.f * dt, 0.f);
 	}
 
+	// right
 	float right = glm::dot(m_parent.getTransform().right(), direction);
-
 	if (right < 0.f) {
-		m_animGraph->getNodes()[4].Weight = std::min(m_animGraph->getNodes()[4].Weight + 2.f * dt, std::abs(right));
+		//m_animGraph->getNodes()[4].Weight = std::min(m_animGraph->getNodes()[4].Weight + 2.f * dt, std::abs(right));
 	}
 	else {
-		m_animGraph->getNodes()[4].Weight = std::max(m_animGraph->getNodes()[4].Weight - 2.f * dt, 0.f);
+		//m_animGraph->getNodes()[4].Weight = std::max(m_animGraph->getNodes()[4].Weight - 2.f * dt, 0.f);
 	}
 
+	// left
 	if (right > 0.f) {
-		m_animGraph->getNodes()[5].Weight = std::min(m_animGraph->getNodes()[5].Weight + 2.f * dt, std::abs(right));
+		//m_animGraph->getNodes()[5].Weight = std::min(m_animGraph->getNodes()[5].Weight + 2.f * dt, std::abs(right));
 	}
 	else {
-		m_animGraph->getNodes()[5].Weight = std::max(m_animGraph->getNodes()[5].Weight - 2.f * dt, 0.f);
+		//m_animGraph->getNodes()[5].Weight = std::max(m_animGraph->getNodes()[5].Weight - 2.f * dt, 0.f);
 	}
 
+	// idle
 	if (forward || right || m_attack) {
 		m_animGraph->getNodes()[0].Weight = std::max(m_animGraph->getNodes()[0].Weight - 2.f * dt, 0.f);
 	}

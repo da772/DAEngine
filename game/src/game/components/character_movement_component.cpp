@@ -49,7 +49,7 @@ void CCharacterMovementComponent::processMovement(float dt)
 		else {
 			float z = glm::radians(m_parent.getTransform().rotationEuler().z);
 			double angle = wrapAngle(m_setRotate - z);
-			if (std::abs(angle) <= .5f) {
+			if (std::abs(angle) <= .1f) {
 				m_parent.getTransform().setRotation({ 0.f, 0.f, glm::degrees(m_setRotate) });
 				m_rotateInstant = true;
 			}

@@ -38,6 +38,16 @@ void CCharacterMovement1::processInput(float dt)
 	da::core::FComponentRef<CCharacterComponent> character = m_character->getComponent<CCharacterComponent>();
 	da::core::CCamera* cam = da::core::CCamera::getCamera();
 
+	const float xPos = da::core::CInput::getCursorX();
+
+	if (da::core::CInput::mouseInputPressed(1))
+	{
+		float xDiff = xPos - m_cursorPos.x;
+		m_camRot -= glm::radians(xDiff) * character->getCamSensitivity();
+		m_camRot = da::core::maths::wrapAngle(m_camRot);
+	}
+	m_cursorPos = { xPos, 0.f };
+
 	if (character->isAttacking()) return;
 
 	glm::vec3 direction = glm::vec3(0);
@@ -53,15 +63,6 @@ void CCharacterMovement1::processInput(float dt)
 	bool S = da::core::CInput::inputPressed(83);
 	bool W = da::core::CInput::inputPressed(87);
 
-	const float xPos = da::core::CInput::getCursorX();
-	if (da::core::CInput::mouseInputPressed(1))
-	{
-		float xDiff = xPos - m_cursorPos.x;
-		m_camRot -= glm::radians(xDiff) * character->getCamSensitivity();
-		m_camRot = da::core::maths::wrapAngle(m_camRot);
-	}
-	m_cursorPos = { xPos, 0.f };
-
 	if (S || W) {
 		direction = (float)(-S + W) * glm::normalize(glm::vec3(cam->forward().x, cam->forward().y, 0.f));
 	}
@@ -69,28 +70,38 @@ void CCharacterMovement1::processInput(float dt)
 	bool A = da::core::CInput::inputPressed(65);
 	bool D = da::core::CInput::inputPressed(68);
 	if (A || D) {
-		if (S || W) {
-			m_camRot = da::core::maths::wrapAngle(m_camRot + (((float)A + (float)-D) * dt * 2.f));
+
+		float dirAngle = -90.f;
+
+		if (W) {
+			dirAngle = -45.f;
 		}
-		else {
-			float dir = cam->rotationEuler().z + ((float)(-A + D) * -90.f);
-			movement->setRotation(glm::radians(dir), false);
-			direction += (float)(-A + D) * cam->right();
+		else if (S) {
+			dirAngle = -135.f;
 		}
+
+		float dir = cam->rotationEuler().z + ((float)(-A + D) * dirAngle);
+		movement->setRotation(glm::radians(dir), false);
+		direction += (float)(-A + D) * cam->right();
 	}
 
-	movement->setRotationSpeed(164.f);
+	movement->setRotationSpeed(360.f);
 
 	if (W || S) {
-		double dir = da::core::maths::wrapAngle(glm::radians(cam->rotationEuler().z)) - da::core::maths::wrapAngle(glm::radians(m_character->getTransform().rotationEuler().z));
-		double wrappedDir = da::core::maths::wrapAngle(dir);
-		if (std::abs(wrappedDir) > 0.001f) {
-			if (std::abs(wrappedDir) <= .05f) {
-				movement->setRotation(cam->rotationEuler().z);
-			}
-			else {
-				rotate += wrappedDir > 3.14f ? -1.f : 1.f;
-				movement->setRotationSpeed(225.f);
+
+		if (!A && !D)
+		{
+			double targetDir = cam->rotationEuler().z;
+			double dir = da::core::maths::wrapAngle(glm::radians(targetDir)) - da::core::maths::wrapAngle(glm::radians(m_character->getTransform().rotationEuler().z));
+			if (S) dir *= -1.f;
+			double wrappedDir = da::core::maths::wrapAngle(dir);
+			if (std::abs(wrappedDir) > 0.001f) {
+				if (std::abs(wrappedDir) <= .05f) {
+					movement->setRotation(targetDir);
+				}
+				else {
+					rotate += wrappedDir > 3.14f ? -1.f : 1.f;
+				}
 			}
 		}
 	}
@@ -104,6 +115,10 @@ void CCharacterMovement1::processInput(float dt)
 		sprint = false;
 		direction = glm::vec3(0.f);
 		rotate = 0.f;
+	}
+
+	if (glm::length2(direction) > 0.f) {
+		direction = glm::normalize(direction);
 	}
 
 	movement->sprint(sprint);
