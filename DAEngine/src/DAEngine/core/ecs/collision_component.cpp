@@ -41,6 +41,8 @@ namespace da::core
 
 	void CCollisionComponent::onOverlap(const da::physics::FCollisionEventData& data)
 	{
+		if (!m_enabled) return;
+
 		LOG_DEBUG(ELogChannel::Core, "Collision Event: %s, Overlapping: %d", m_parent.getTag().c_str(), data.Overlapping);
 		if (da::core::CEntity* ent = (da::core::CEntity*)data.Other) {
 			if (data.Overlapping) {
@@ -52,7 +54,7 @@ namespace da::core
 
 	void CCollisionComponent::enable(bool enable /*= true*/)
 	{
-		m_collision->enable(enable);
+		m_enabled = enable;
 	}
 
 #ifdef DA_REVIEW

@@ -8,6 +8,7 @@
 #include "core/ecs/scene_manager.h"
 #include "core/threading/worker_pool.h"
 #include "core/time.h"
+#include "ai/navmesh/nav_mesh_manager.h"
 #include "net/network_manager.h"
 
 #include "physics/physics.h"
@@ -20,6 +21,7 @@
 
 namespace da
 {
+
 	CApp::CApp(int argc, const char** argv) : m_running(true), m_modules() {
 		initalizeInternal(argc, argv);
 	}
@@ -38,9 +40,11 @@ namespace da
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("App"), HASHSTR("Reset"), &m_reset, [&] { reset();});
 #endif
 #endif
+
 		da::net::CNetworkManager::initialize();
 		core::CSceneManager::initialize();
 		da::physics::CPhysics::initialize();
+		da::ai::CNavMeshManager::initialize();
 		for (IModule* m : m_modules) {
 			m->initialize();
 		}
@@ -69,6 +73,7 @@ namespace da
 			}
 
 			da::core::CWorkerPool::update();
+			da::ai::CNavMeshManager::update(timeStep);
 			da::physics::CPhysics::update(timeStep);
 			da::graphics::CAnimationManager::updateEnd();
 			onLateUpdate(timeStep);
@@ -102,6 +107,7 @@ namespace da
 			delete m;
 		}
 		m_modules = {};
+		da::ai::CNavMeshManager::shutdown();
 		da::physics::CPhysics::shutdown();
 		core::CSceneManager::shutdown();
 		da::net::CNetworkManager::shutdown();

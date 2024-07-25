@@ -58,6 +58,11 @@ project "game"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.sol2}",
 		"%{IncludeDir.lua51}/lua",
+		"%{IncludeDir.recast}",
+		"%{IncludeDir['recast-debugutils']}",
+		"%{IncludeDir['recast-detour']}",
+		"%{IncludeDir['recast-detour-crowd']}",
+		"%{IncludeDir['recast-detour-tilecache']}",
 	}
 
 	links

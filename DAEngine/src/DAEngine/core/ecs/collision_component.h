@@ -35,6 +35,7 @@ namespace da::core
 		da::physics::ICollisionObject* m_collision;
 		const da::physics::IPhysicsShape* m_shape;
 		glm::mat4 m_transform;
+		bool m_enabled = true;
 
 	};
 }

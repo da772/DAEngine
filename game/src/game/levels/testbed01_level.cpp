@@ -1,6 +1,7 @@
 #include "testbed01_level.h"
 
 //engine
+#include <daengine/ai.h>
 #include <daengine/graphics.h>
 #include <daengine/physics.h>
 
@@ -65,7 +66,7 @@ void CTestBed01Level::initialize()
 	// Test Bed
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/plane100.fbx");
+		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/navmesh.fbx");
 		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_D.dds"));
 		meshComponent->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_N.dds"));
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = false;
@@ -75,12 +76,14 @@ void CTestBed01Level::initialize()
 		meshComponent->getStaticMesh()->castShadows(true);
 		testBed->addComponent<da::core::CRigidBodyComponent>(
 			da::physics::IPhysicsRigidBody::create(
-				  da::physics::CPhysicsShapeCube::create({ 100.f,100.f,0.001f })
+				  da::physics::CPhysicsShapeTriangleMesh::create(meshComponent->getStaticMesh())
 				, da::physics::CPhysicsDefaultMotionState::create(testBed->getTransform().matrix())
 				, 0.f
 				, { 0.f,0.f,0.f }));
 		testBed->setTag(HASHSTR("TestBed"));
 		testBed->getTransform().setScale({ 1.f, 1.f, 1.f });
+
+		da::ai::CNavMeshManager::addNavMesh(*new da::ai::CTiledNavMesh(meshComponent->getStaticMesh()));
 	}
 
 	// Ramp1

@@ -6,7 +6,7 @@
 #include <algorithm>
 
 #ifdef DA_REVIEW
-#define HASHSTR(x) { x, CBasicHashString::generateHash(x) }
+#define HASHSTR(x) CBasicHashString(x, CBasicHashString::generateHash(x))
 #else
 #define HASHSTR(x) CBasicHashString(CBasicHashString::generateHash(x))	
 #endif

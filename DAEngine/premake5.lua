@@ -22,6 +22,12 @@ IncludeDir["bullet3"] = "%{wks.location}/DAEngine/thirdparty/bullet3/include"
 IncludeDir["sol2"] = "%{wks.location}/DAEngine/thirdparty/sol2/include"
 IncludeDir["enet"] = "%{wks.location}/DAEngine/thirdparty/enet/include"
 IncludeDir["miniupnpc"] = "%{wks.location}/DAEngine/thirdparty/miniupnpc/include"
+IncludeDir["recast"] = "%{wks.location}/DAEngine/thirdparty/recast/Recast/include"
+IncludeDir["recast-debugutils"] = "%{wks.location}/DAEngine/thirdparty/recast/DebugUtils/include"
+IncludeDir["recast-detour"] = "%{wks.location}/DAEngine/thirdparty/recast/Detour/include"
+IncludeDir["recast-detour-crowd"] = "%{wks.location}/DAEngine/thirdparty/recast/DetourCrowd/include"
+IncludeDir["recast-detour-tilecache"] = "%{wks.location}/DAEngine/thirdparty/recast/DetourTileCache/include"
+
 
 group "ThirdParty"
 if os.host() == "macosx" then
@@ -37,6 +43,7 @@ if os.host() == "macosx" then
 	include "thirdparty/bullet3"
 	include "thirdparty/enet"
 	include "thirdparty/miniupnpc"
+	include "thirdparty/recast"
 end
 
 if os.host() == "windows" then
@@ -52,6 +59,7 @@ if os.host() == "windows" then
 	include "thirdparty/bullet3"
 	include "thirdparty/enet"
 	include "thirdparty/miniupnpc"
+	include "thirdparty/recast"
 end
 
 if os.host() == "linux" then
@@ -67,6 +75,7 @@ if os.host() == "linux" then
 	include "thirdparty/bullet3"
 	include "thirdparty/enet"
 	include "thirdparty/miniupnpc"
+	include "thirdparty/recast"
 end
 
 group ""
@@ -126,6 +135,11 @@ project "DAEngine"
 		"%{IncludeDir.sol2}",
 		"%{IncludeDir.enet}",
 		"%{IncludeDir.miniupnpc}",
+		"%{IncludeDir.recast}",
+		"%{IncludeDir['recast-debugutils']}",
+		"%{IncludeDir['recast-detour']}",
+		"%{IncludeDir['recast-detour-crowd']}",
+		"%{IncludeDir['recast-detour-tilecache']}",
 	}
 	
 	libdirs
@@ -174,7 +188,8 @@ project "DAEngine"
 			"CoreVideo.framework",
 			"bullet3",
 			"enet",
-			"miniupnpc"
+			"miniupnpc",
+			"recast"
 		}
 		
 		includedirs
@@ -235,7 +250,8 @@ project "DAEngine"
 			"luajit",
 			"bullet3",
 			"enet",
-			"miniupnpc"
+			"miniupnpc",
+			"recast"
 		}
 
 		buildoptions
@@ -297,7 +313,8 @@ project "DAEngine"
 			"lua51",
 			"bullet3",
 			"enet",
-			"miniupnpc"
+			"miniupnpc",
+			"recast"
 		}
 		
 		includedirs
