@@ -45,7 +45,7 @@ CCharacterComponent::CCharacterComponent(const da::core::CGuid& guid, da::core::
 	m_animGraph = new da::graphics::CSkeletalAnimGraph(mesh, m_anims);
 	da::core::FComponentRef<da::core::CSkeletalMeshComponent> meshComponent = parent.addComponent<da::core::CSkeletalMeshComponent>(m_animGraph);
 
-	glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.15f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.f, 0.f, 180.f))));
+	glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.f, 0.f, 180.f))));
 	meshComponent->setTransform(offset);
 
 	m_movement = new CCharacterMovement1(m_parent);

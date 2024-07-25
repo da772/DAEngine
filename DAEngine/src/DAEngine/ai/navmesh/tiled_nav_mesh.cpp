@@ -55,7 +55,7 @@ namespace da::ai
 			m_crowd->init(128, agentRadius, m_navMesh);
 		}
 
-		const float pos[3] = { 0.f, 0.f,0.f };
+		const float pos[3] = { -11.f, 7.11f,-16.2f };
 
 		dtCrowdAgentParams ap;
 		memset(&ap, 0, sizeof(ap));

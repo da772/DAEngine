@@ -15,7 +15,7 @@ CCharacterMovementComponent::CCharacterMovementComponent(const da::core::CGuid& 
 
 void CCharacterMovementComponent::onInitialize()
 {
-	m_shape = da::physics::CPhysicsShapeCapsule::create(.3f, 1.7f);
+	m_shape = da::physics::CPhysicsShapeCapsule::create(.3f, 1.5f);
 	m_character = da::physics::CharacterControllerFactory::create(m_tuning, *m_shape);
 }
 

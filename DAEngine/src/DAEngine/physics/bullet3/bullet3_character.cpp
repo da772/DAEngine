@@ -23,7 +23,7 @@ namespace da::physics
 
 		btTransform startTransform;
 		startTransform.setIdentity();
-		startTransform.setOrigin(btVector3(0, 5, 20));
+		startTransform.setOrigin(btVector3(0, -2, 5));
 		m_ghost.setWorldTransform(startTransform);
 
 		m_characterController = btKinematicCharacterController(&m_ghost, convexShape, data.StepHeight, {0.f,0.f,1.f});

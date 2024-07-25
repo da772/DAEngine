@@ -66,24 +66,37 @@ void CTestBed01Level::initialize()
 	// Test Bed
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/navmesh.fbx");
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_D.dds"));
-		meshComponent->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_N.dds"));
-		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = false;
-		meshComponent->getStaticMesh()->getMaterial(0).uvScale = {75.f, 75.f};
-		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
-		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
+		da::graphics::CStaticMesh* colMesh = new da::graphics::CStaticMesh("assets/prop/level/dungeon_test_col.fbx");
+		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/prop/level/dungeon_test.fbx");
+
+		for (int i = 0; i < meshComponent->getStaticMesh()->getMaterialCount(); i++) {
+			meshComponent->getStaticMesh()->getMaterial(i).metallicFactor = 0.0;
+			meshComponent->getStaticMesh()->getMaterial(i).roughnessFactor = 1.0;
+			meshComponent->getStaticMesh()->getMaterial(i).doubleSided = true;
+		}
+
 		meshComponent->getStaticMesh()->castShadows(true);
+
+		std::vector<da::physics::IPhysicsShape*> shapes;
+		std::vector<glm::mat4> transforms;
+
+		for (int i = 0; i < colMesh->getMeshes().size(); i++) {
+			shapes.push_back(da::physics::CPhysicsShapeTriangleMesh::create(colMesh, i));
+			transforms.push_back(testBed->getTransform().matrix());
+		}
+		
+		da::physics::CPhysicsShapeCompound* compoundCollision = da::physics::CPhysicsShapeCompound::create(shapes, transforms);
+
 		testBed->addComponent<da::core::CRigidBodyComponent>(
 			da::physics::IPhysicsRigidBody::create(
-				  da::physics::CPhysicsShapeTriangleMesh::create(meshComponent->getStaticMesh())
+				compoundCollision
 				, da::physics::CPhysicsDefaultMotionState::create(testBed->getTransform().matrix())
 				, 0.f
 				, { 0.f,0.f,0.f }));
 		testBed->setTag(HASHSTR("TestBed"));
 		testBed->getTransform().setScale({ 1.f, 1.f, 1.f });
 
-		da::ai::CNavMeshManager::addNavMesh(*new da::ai::CTiledNavMesh(meshComponent->getStaticMesh()));
+		da::ai::CNavMeshManager::addNavMesh(*new da::ai::CTiledNavMesh(colMesh));
 	}
 
 	// Ramp1
