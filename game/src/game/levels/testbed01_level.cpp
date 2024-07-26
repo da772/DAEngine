@@ -120,7 +120,7 @@ void CTestBed01Level::initialize()
 	// Dummy obj
 	{
 		da::core::CEntity* transformObj = da::core::CSceneManager::getScene()->createEntity();
-		transformObj->getTransform().setPosition({ 0,0,-0.2f });
+		transformObj->getTransform().setPosition({ -10.000,-13.000,6.000 });
 		transformObj->getTransform().setRotation({ 0,0,0 });
 		transformObj->setTag(HASHSTR("dummy"));
 

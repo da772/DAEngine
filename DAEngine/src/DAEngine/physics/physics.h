@@ -56,5 +56,6 @@ namespace da::physics
 	private:
 		static double s_fixedTime;
 		static CPhysicsType* s_physicsType;
+		static double s_lastUpdate;
 	};
 }
