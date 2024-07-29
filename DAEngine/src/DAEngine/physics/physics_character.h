@@ -24,6 +24,7 @@ namespace da::physics
 		virtual const glm::vec3& getLinearVelocity() const = 0;
 		virtual const glm::vec3& getAngularVelocity() const = 0;
 		virtual const glm::vec3 getPosition() const = 0;
+		virtual void setUserData(void* ptr) = 0;
 
 #ifdef DA_REVIEW
 		virtual void debugDraw() = 0;

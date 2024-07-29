@@ -33,11 +33,6 @@ protected:
 
 private:
 	void processMovement(float dt);
-	inline double wrapAngle(double angle) const
-	{
-		double twoPi = 2.0 * 3.141592865358979;
-		return angle - twoPi * floor(angle / twoPi);
-	}
 
 #ifdef DA_REVIEW
 	void onDebugRender();

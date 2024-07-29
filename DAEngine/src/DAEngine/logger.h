@@ -11,7 +11,7 @@ namespace da {
 
 #define LOG_INFO(ELogChannel, msg, ...) da::CLogger::LogInfo(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
 #define LOG_DEBUG(ELogChannel, msg, ...) da::CLogger::LogDebug(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
-#define LOG_WARN(ELogChannel, msg, ...) da::CLogger::LogWarning(ELogChannel, std::string("[%s] ") + msg __FUNCTION__  , ##__VA_ARGS__)
+#define LOG_WARN(ELogChannel, msg, ...) da::CLogger::LogWarning(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
 #define LOG_ERROR(ELogChannel, msg, ...) da::CLogger::LogError(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
 #define LOG_ASSERT(x, ELogChannel, msg, ...) da::CLogger::LogAssert(x, ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__); if (!x) { ASSERT(x); }
 #define LOG_CALLSTACK(ELogType, ELogChannel) da::CLogger::log(ELogType, ELogChannel, ::std::string("[%s] PRINTING CALLSTACK\n") + ::std::to_string(::std::stacktrace::current(2)), __FUNCTION__)

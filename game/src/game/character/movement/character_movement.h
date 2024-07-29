@@ -10,6 +10,10 @@ public:
 	virtual void shutdown() = 0;
 	virtual float getMoveDir() const = 0;
 
+#ifdef DA_REVIEW
+	inline virtual void debugUpdate() {};
+#endif
+
 protected:
 	da::core::CEntity* m_character;
 };

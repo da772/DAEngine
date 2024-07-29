@@ -27,8 +27,15 @@ namespace da::physics
 		m_ghost.setWorldTransform(startTransform);
 
 		m_characterController = btKinematicCharacterController(&m_ghost, convexShape, data.StepHeight, {0.f,0.f,1.f});
-		physics->getDynamicsWorld()->addCollisionObject(&m_ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter);
+
+		physics->getDynamicsWorld()->addCollisionObject(&m_ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter | btBroadphaseProxy::SensorTrigger);
 		physics->getDynamicsWorld()->addAction(&m_characterController);
+	}
+
+	void CBullet3Character::setUserData(void* ptr)
+	{
+		m_ghost.setUserPointer(ptr);
+		m_ghost.getCollisionShape()->setUserPointer(ptr);
 	}
 
 	CBullet3Character::~CBullet3Character()

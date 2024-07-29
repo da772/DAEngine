@@ -3,6 +3,7 @@
 //engine
 #include <daengine/ai.h>
 #include <daengine/graphics.h>
+#include <daengine/core.h>
 #include <daengine/physics.h>
 
 // game
@@ -39,30 +40,6 @@ void CTestBed01Level::initialize()
 	da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid("2f94546a-a92a-4046-946a-f28c2364110b")));
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
-	// Character
-	m_character = new CCharacter();
-	m_character->initialize();
-
-	// Hello World
-	{
-		da::core::CEntity* helloWorldEntity = da::core::CSceneManager::getScene()->createEntity();
-		helloWorldEntity->setTag(HASHSTR("helloworld"));
-		helloWorldEntity->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
-	}
-
-	// Sphere
-	{
-		da::core::CEntity* sphere = da::core::CSceneManager::getScene()->createEntity();
-		da::core::FComponentRef<da::core::CSmeshComponent> c = sphere->addComponent<da::core::CSmeshComponent>("assets/sphere.fbx");
-		sphere->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeSphere::create(1.f)
-				, da::physics::CPhysicsEntityMotionState::create(sphere)
-				, 1.f
-				, { 0.f,0.f,0.f }));
-		sphere->setTag(HASHSTR("Sphere"));
-		sphere->getTransform().setPosition({ 0.f, 0.f, 1.f });
-	}
-
 	// Test Bed
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
@@ -84,7 +61,7 @@ void CTestBed01Level::initialize()
 			shapes.push_back(da::physics::CPhysicsShapeTriangleMesh::create(colMesh, i));
 			transforms.push_back(testBed->getTransform().matrix());
 		}
-		
+
 		da::physics::CPhysicsShapeCompound* compoundCollision = da::physics::CPhysicsShapeCompound::create(shapes, transforms);
 
 		testBed->addComponent<da::core::CRigidBodyComponent>(
@@ -96,7 +73,34 @@ void CTestBed01Level::initialize()
 		testBed->setTag(HASHSTR("TestBed"));
 		testBed->getTransform().setScale({ 1.f, 1.f, 1.f });
 
+		// Nav mesh
 		da::ai::CNavMeshManager::addNavMesh(*new da::ai::CTiledNavMesh(colMesh));
+	}
+
+	// Character
+	m_character = new CCharacter(*m_graphicsModule.getGraphicsApi(), true);
+	m_character->initialize();
+	m_ai = new CCharacter(*m_graphicsModule.getGraphicsApi(), false);
+	m_ai ->initialize();
+
+	// Hello World
+	{
+		da::core::CEntity* helloWorldEntity = da::core::CSceneManager::getScene()->createEntity();
+		helloWorldEntity->setTag(HASHSTR("helloworld"));
+		helloWorldEntity->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
+	}
+
+	// Sphere
+	{
+		da::core::CEntity* sphere = da::core::CSceneManager::getScene()->createEntity();
+		da::core::FComponentRef<da::core::CSmeshComponent> c = sphere->addComponent<da::core::CSmeshComponent>("assets/sphere.fbx");
+		sphere->addComponent<da::core::CRigidBodyComponent>(
+			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeSphere::create(1.f)
+				, da::physics::CPhysicsEntityMotionState::create(sphere)
+				, 1.f
+				, { 0.f,0.f,0.f }));
+		sphere->setTag(HASHSTR("Sphere"));
+		sphere->getTransform().setPosition({ 0.f, 0.f, 1.f });
 	}
 
 	// Ramp1
@@ -195,6 +199,7 @@ void CTestBed01Level::update(float dt)
 	}
 
 	m_character->update(dt);
+	m_ai->update(dt);
 	//m_vehicle->update(dt);
 
 	m_scrlevel.classUpdate(dt);
@@ -203,12 +208,16 @@ void CTestBed01Level::update(float dt)
 void CTestBed01Level::lateUpdate(float dt)
 {
 	m_character->lateUpdate(dt);
+	m_ai->lateUpdate(dt);
 }
 
 void CTestBed01Level::shutdown()
 {
 	m_scrlevel.classShutdown();
 	m_scrlevel.cleanup();
+
+	m_ai->shutdown();
+	delete m_ai;
 
 	m_character->shutdown();
 	delete m_character;

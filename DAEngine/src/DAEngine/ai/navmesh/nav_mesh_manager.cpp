@@ -74,4 +74,10 @@ namespace da::ai
 		return s_ctx;
 	}
 
+	da::ai::INavMesh* CNavMeshManager::getNavMesh(uint32_t index /*= 0*/)
+	{
+		ASSERT(index < s_navMeshes.size())
+		return s_navMeshes[index];
+	}
+
 }

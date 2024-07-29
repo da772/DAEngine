@@ -12,4 +12,6 @@ namespace da::core::maths
 		double twoPi = 2.0 * 3.141592865358979;
 		return angle - twoPi * floor(angle / twoPi);
 	}
+	glm::quat calculateRotationForDirection(const glm::vec3& direction);
+	glm::vec3 calculateEulerRotationForDirection(const glm::vec3& direction);
 }

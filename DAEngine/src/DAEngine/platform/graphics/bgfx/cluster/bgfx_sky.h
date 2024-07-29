@@ -93,7 +93,7 @@ namespace da::platform
 
 		float m_eclipticObliquity;
 		float m_delta;
-		float m_time = 18.f;
+		float m_time = 8.2f;
 	};
 
 	class CBgfxProcSky
@@ -114,7 +114,7 @@ namespace da::platform
 #endif
 
 	private:
-		glm::vec4 m_parameters = { 0.1f, 1.0f, 0.1f, 18.f };
+		glm::vec4 m_parameters = { 0.1f, 1.0f, 0.1f, 8.2f };
 		glm::vec3 m_sunColor = { 1.f,1.f,1.f };
 		CDynamicValueController m_sunLuminanceXYZ;
 		CDynamicValueController m_skyLuminanceXYZ;

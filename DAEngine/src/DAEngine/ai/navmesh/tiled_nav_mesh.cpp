@@ -48,20 +48,17 @@ namespace da::ai
 
 	void CTiledNavMesh ::setAgentPosition(const glm::vec3& npos)
 	{
-		const float agentRadius = .6f;
-		const float agentHeight = 2.f;
-
 		if (!m_crowd) {
 			m_crowd = new dtCrowd();
-			m_crowd->init(128, agentRadius, m_navMesh);
+			m_crowd->init(128, m_agentRadius, m_navMesh);
 		}
 
 		const float pos[3] = { -11.f, 7.11f,-16.2f };
 
 		dtCrowdAgentParams ap;
 		memset(&ap, 0, sizeof(ap));
-		ap.radius = agentRadius;
-		ap.height = agentHeight;
+		ap.radius = m_agentRadius;
+		ap.height = m_agentHeight;
 		ap.maxAcceleration = 8.0f;
 		ap.maxSpeed = 3.5f;
 		ap.collisionQueryRange = ap.radius * 12.0f;
@@ -81,10 +78,10 @@ namespace da::ai
 			*/
 		ap.obstacleAvoidanceType = (unsigned char)3;
 		ap.separationWeight = 2;
+		/*
+		if (false) {
 
-		if (m_idx == -1) {
-
-			m_idx = m_crowd->addAgent(pos, &ap);
+			int idx = m_crowd->addAgent(pos, &ap);
 
 			if (m_idx == -1)
 			{
@@ -107,6 +104,7 @@ namespace da::ai
 		m_crowd->resetMoveTarget(m_idx);
 		if (ag && ag->active)
 			m_crowd->requestMoveTarget(m_idx, targetRef, target);
+		*/
 	}
 
 
@@ -386,15 +384,6 @@ namespace da::ai
 
 	void CTiledNavMesh ::update(float dt)
 	{
-		if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
-
-			for (const da::core::CEntity* e : scene->getEntities()) {
-				if (e->getTag() == HASHSTR("Character")) {
-					setAgentPosition(e->getTransform().position());
-				}
-			}
-		}
-
 		m_crowd->update(dt, 0);
 	}
 
@@ -411,38 +400,6 @@ namespace da::ai
 		const float s = m_tileSize * m_cellSize;
 		//duDebugDrawGridXZ(&CNavMeshManager::getDrawer(), bmin[0], bmin[1], bmin[2], tw, th, s, duRGBA(0, 0, 0, 64), 1.0f);
 		duDebugDrawNavMeshWithClosedList(&CNavMeshManager::getDrawer(), *m_navMesh, *m_navQuery, 3);
-
-		if (m_idx != -1) {
-			const dtCrowdAgent* agent = m_crowd->getAgent(m_idx);
-			const dtPolyRef* path = agent->corridor.getPath();
-			const int npath = agent->corridor.getPathCount();
-			for (int j = 0; j < npath; ++j)
-				duDebugDrawNavMeshPoly(&CNavMeshManager::getDrawer(), *m_navMesh, path[j], duRGBA(0, 255, 0, 255));
-
-			glm::vec3 pos = { agent->npos[0], agent->npos[2], agent->npos[1] + .5f };
-			da::graphics::CDebugRender::drawCapsule(pos, glm::quat(1.f, 0.f, 0.f, 0.f), { 1.f, 1.f, 1.f }, { 0.f, 1.f, 0.f, 1.f }, false, true);
-
-			if (agent->targetState != DT_CROWDAGENT_TARGET_VALID)
-			{
-				return;
-			}
-
-			std::vector<glm::vec3> route = findPath(pos, { agent->targetPos[0], agent->targetPos[2] ,agent->targetPos[1] });
-
-			if (route.size()) {
-
-				for (int i = 0; i < route.size(); i++) {
-
-					da::graphics::CDebugRender::drawCube(route[i], glm::quat(1.f, 0.f,0.f,0.f), {.05f,.05f,.05f}, {1.f,1.f,0.f,1.f}, false);
-
-					if (i < route.size() - 1) {
-						da::graphics::CDebugRender::drawLine(route[i], route[i + 1], .01f, { 1.f, 1.f, 1.f, 1.f });
-					}
-					
-				}
-			}
-
-		}
 	}
 #endif
 

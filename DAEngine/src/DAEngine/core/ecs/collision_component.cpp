@@ -41,12 +41,15 @@ namespace da::core
 
 	void CCollisionComponent::onOverlap(const da::physics::FCollisionEventData& data)
 	{
-		if (!m_enabled) return;
+		if (!m_enabled)
+		{	
+			return;
+		}
 
 		LOG_DEBUG(ELogChannel::Core, "Collision Event: %s, Overlapping: %d", m_parent.getTag().c_str(), data.Overlapping);
 		if (da::core::CEntity* ent = (da::core::CEntity*)data.Other) {
-			if (data.Overlapping) {
-				ent->getTransform().offsetRotation({ 70.f, 0.f ,0.f });
+			if (data.Overlapping && ent != &m_parent) {
+				m_func(data);
 			}
 		}
 	}
@@ -54,8 +57,16 @@ namespace da::core
 
 	void CCollisionComponent::enable(bool enable /*= true*/)
 	{
+		bool processOverlaps = !m_enabled && enable;
 		m_enabled = enable;
 	}
+
+
+	void CCollisionComponent::setCallback(const std::function<void(const da::physics::FCollisionEventData& data)>& func)
+	{
+		m_func = func;
+	}
+
 
 #ifdef DA_REVIEW
 	void CCollisionComponent::onDebugRender()

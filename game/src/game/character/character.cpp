@@ -3,8 +3,9 @@
 #include "../components/character_component.h"
 
 #include <DAEngine/components.h>
+#include <game/components/health_component.h>
 
-CCharacter::CCharacter()
+CCharacter::CCharacter(const da::graphics::CGraphicsApi& graphics, bool isLocalPlayer) : m_gui(graphics, this), m_isLocalPlayer(isLocalPlayer)
 {
 
 }
@@ -13,15 +14,38 @@ void CCharacter::initialize()
 {
 	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
 		m_entity = scene->createEntity();
-		m_entity->setTag(HASHSTR("Character"));
+		if (m_isLocalPlayer) {
+			m_entity->setTag(HASHSTR("Character"));
+		}
+		else {
+			m_entity->setTag(HASHSTR("AiCharacter"));
+		}
+
 		m_entity->addComponent<CCharacterMovementComponent>(da::core::CGuid::Generate());
-		da::core::FComponentRef<CCharacterComponent> characterRef = m_entity->addComponent<CCharacterComponent>(da::core::CGuid::Generate());
+		m_entity->addComponent<CHealthComponent>(da::core::CGuid::Generate());
+		da::core::FComponentRef<CCharacterComponent> characterRef = m_entity->addComponent<CCharacterComponent>(m_isLocalPlayer, da::core::CGuid::Generate());
 
 		m_sword = scene->createEntity();
 		m_sword->setTag(HASHSTR("Sword"));
 		m_sword->addComponent<da::core::CSmeshComponent>("assets/prop/weapon/prop_weap_sword.fbx");
 		da::physics::IPhysicsShape* shape = da::physics::CPhysicsShapeCube::create({ .017f, .057f, .598f });
-		m_sword->addComponent<da::core::CCollisionComponent>(*shape, glm::translate(glm::mat4(1.f), { 0.f, 0.f, 1.f }), da::core::CGuid::Generate());
+		da::core::FComponentRef<da::core::CCollisionComponent> colComp =
+			m_sword->addComponent<da::core::CCollisionComponent>(*shape, glm::translate(glm::mat4(1.f), { 0.f, 0.f, 1.f }), da::core::CGuid::Generate());
+
+		colComp->setCallback([colComp](const da::physics::FCollisionEventData& data) {
+			if (!data.Overlapping) return;
+
+			if (da::core::CEntity* other = (da::core::CEntity*)data.Other) {
+				da::core::FComponentRef<CHealthComponent> healthComp = other->getComponent<CHealthComponent>();
+				if (healthComp.isValid()) {
+					healthComp->damage(1.f);
+				}
+
+			}
+
+			});
+
+
 
 		characterRef->setWeaponEntity(m_sword);
 	}
@@ -29,12 +53,19 @@ void CCharacter::initialize()
 
 void CCharacter::update(float dt)
 {
-	
+
 }
 
 void CCharacter::lateUpdate(float dt)
 {
-	processCamera(dt);
+
+	if (m_isLocalPlayer)
+	{
+		processCamera(dt);
+	}
+
+	m_gui.render(dt);
+
 	da::core::FComponentRef<da::core::CSkeletalMeshComponent> skele = m_entity->getComponent<da::core::CSkeletalMeshComponent>();
 	glm::mat4 transform;
 	glm::vec3 position;
@@ -98,3 +129,50 @@ void CCharacter::processCamera(float dt)
 	cam->setPosition(pos);
 	cam->lookAt(m_entity->getTransform().position());
 }
+
+#ifdef DA_REVIEW
+void CCharacterGui::onRender(float dt)
+{
+	glm::vec3 headPos;
+	da::core::FComponentRef<da::core::CSkeletalMeshComponent> skele = m_parent->m_entity->getComponent<da::core::CSkeletalMeshComponent>();
+	if (!skele->getSkeletalAnimator()->getCurrentAnim()) return;
+
+	if (!skele->getSkeletalAnimator()->getBoneWorldPosition(HASHSTR("mixamorig:Head"), skele->getTransform(), headPos)) {
+		return;
+	}
+
+	glm::vec3 worldSpace = m_parent->m_entity->getTransform().position() + glm::vec3(0.f, 0.f, 1.5f);
+
+	glm::vec2 pos = worldPosToScreenSpace(headPos + glm::vec3(0.f, 0.f, 1.f));
+	float dist = std::abs(glm::distance(headPos, da::core::CCamera::getCamera()->position()));
+
+	if (dist < 1.0f) {
+		dist = 1.0f;
+	}
+
+	glm::vec2 size = { 120.f, 40.f };
+
+	ImGui::SetNextWindowSize({ size.x, size.y });
+	ImGui::SetNextWindowPos({ pos.x - size.x / 2.f, pos.y - size.y / 2.f });
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.f,0.f,0.f,0.f });
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, { 0.f,0.f,0.f,0.f });
+	ImGui::PushStyleColor(ImGuiCol_Border, { 0.f,0.f,0.f,0.f });
+	ImGui::PushStyleColor(ImGuiCol_PlotHistogram, { 0.f,1.f,0.f,1.f });
+	if (ImGui::Begin((std::string("###hp") + std::string(m_parent->m_entity->getId().c_str())).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+	{
+		da::core::FComponentRef<CHealthComponent> healthComp = m_parent->m_entity->getComponent<CHealthComponent>();
+		//auto windowWidth = ImGui::GetWindowSize().x;
+		//auto textWidth = ImGui::CalcTextSize("00 Health").x;
+		//
+		//ImGui::SetCursorPosX((size.x - textWidth) * 0.5f);
+		//ImGui::LabelText("###hp", "%2.f Health", healthComp->getHealth());
+
+		ImGui::ProgressBar(healthComp->getHealth() / 100.f);
+	}
+	ImGui::PopStyleColor(4);
+
+	ImGui::End();
+}
+#endif
+
+

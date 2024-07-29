@@ -32,5 +32,6 @@ namespace da::physics
 
 	private:
 		CBullet3GhostObject m_ghost;
+		btConvexShape* m_shape;
 	};
 }

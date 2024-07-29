@@ -4,12 +4,20 @@ namespace da::core {
 
 	class CEntity;
 
+#define COMPONENT_DEFAULT_ALLOC 25
+
 	struct FComponentContainer {
 	public:
 		template <typename T, typename... Args>
 		T* createComponent(Args&&... args) {
+
+			if (m_components.empty()) {
+				m_components.reserve(sizeof(T) * COMPONENT_DEFAULT_ALLOC);
+			}
+
 			m_size = sizeof(T);
 			m_components.insert(m_components.end(), sizeof(T), 0);
+			LOG_ASSERT( (m_components.capacity() <= (size_t)(sizeof(T) * COMPONENT_DEFAULT_ALLOC)), ELogChannel::Core, "Component Arena Full %s", T::getTypeHash().c_str());
 			char* ptr = &m_components[m_count * sizeof(T)];
 			new ((T*)ptr)T (std::forward<Args>(args)...);
 #ifdef DA_REVIEW
@@ -164,7 +172,7 @@ namespace da::core {
 			const CHashString& typeHash = T::getTypeHash();
 			T* component = m_components[typeHash].createComponent<T>(std::forward<Args>(args)...);
 			if (m_initialized) {
-				m_componentLifeCycle[T::getTypeHash()].init((void*)component);
+				getComponentLifeCycle<T>().init((void*)component);
 			}
 
 			return component;
@@ -180,7 +188,7 @@ namespace da::core {
 			}
 
 			if (m_initialized) {
-				m_componentLifeCycle[T::getTypeHash()].shutdown((void*)container.getComponentAtIndexUnscaled(index));
+				getComponentLifeCycle<T>().shutdown((void*)container.getComponentAtIndexUnscaled(index));
 			}
 
 			return container.removeComponentIndex<T>(index);
@@ -197,7 +205,7 @@ namespace da::core {
 
 		template <typename T>
 		static void registerComponentLifeCycle(const FECSLifeCycle& lifeCycle) {
-			m_componentLifeCycle[T::getTypeHash()] = lifeCycle;
+			m_componentLifeCycle.push_back({ T::getTypeHash() , lifeCycle });
 		}
         
 		template <typename T>
@@ -216,19 +224,41 @@ namespace da::core {
 			return m_components[typeHash];
 		}
 
+		template <typename T>
+		inline const FECSLifeCycle& getComponentLifeCycle() const {
+			const CHashString& typeHash = T::getTypeHash();
+			for (const std::pair<CHashString, FECSLifeCycle>& it : m_componentLifeCycle) {
+				if (it.first == typeHash) {
+					return it.second;
+				}
+			}
+
+			ASSERT(false);
+			return m_componentLifeCycle[-1].second;
+		}
+
 		inline const FECSLifeCycle& getComponentLifeCycle(const CHashString& typeHash) const {
-			return m_componentLifeCycle[typeHash];
+			for (const std::pair<CHashString, FECSLifeCycle>& it : m_componentLifeCycle) {
+				if (it.first == typeHash) {
+					return it.second;
+				}
+			}
+
+			ASSERT(false);
+			return m_componentLifeCycle[-1].second;
 		}
 
 		const std::vector<CEntity*>& getEntities() const {
 			return m_entities;
 		}
 
+		const CEntity* getEntityFromTag(CHashString tag) const;
+
 	private:
 		std::vector<CEntity*> m_entities;
 		std::unordered_map<CHashString, FComponentContainer> m_components;
 		CGuid m_guid;
-		static std::unordered_map<CHashString, FECSLifeCycle> m_componentLifeCycle;
+		static std::vector<std::pair<CHashString, FECSLifeCycle>> m_componentLifeCycle;
 		bool m_initialized = false;
 	};
 

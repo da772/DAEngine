@@ -22,13 +22,13 @@ namespace da::ai
 			switch (category)
 			{
 			case RC_LOG_PROGRESS:
-				LOG_DEBUG(ELogChannel::AI, "%s", msg);
+				LOG_DEBUG(da::ELogChannel::AI, "%s", msg);
 				break;
 			case RC_LOG_WARNING:
-				LOG_WARN(ELogChannel::AI, "%s", msg);
+				LOG_WARN(da::ELogChannel::AI, "%s", msg);
 				break;
 			case RC_LOG_ERROR:
-				LOG_ERROR(ELogChannel::AI, "%s", msg);
+				LOG_ERROR(da::ELogChannel::AI, "%s", msg);
 				break;
 
 			}
@@ -71,6 +71,7 @@ namespace da::ai
 	public:
 		virtual void initialize() = 0;
 		virtual void update(float dt) = 0;
+		virtual std::vector<glm::vec3> findPath(const glm::vec3& startPos, const glm::vec3& endPos) = 0;
 #ifdef DA_REVIEW
 		virtual void debugRender() = 0;
 #endif

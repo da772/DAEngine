@@ -14,6 +14,7 @@ namespace da::physics
 
 	CBullet3Collision::CBullet3Collision(IPhysicsShape* shape, uint32_t flags) : ICollisionObject(shape, flags)
 	{
+		m_enabled = false;
 		CBullet3Physics* physics = dynamic_cast<CBullet3Physics*>(CPhysics::getPhysicsType());
 		ASSERT(physics);
 
@@ -22,9 +23,8 @@ namespace da::physics
 		btConvexShape* convexShape = dynamic_cast<btConvexShape*>(b3Shape->getShape());
 		ASSERT(convexShape);
 
-
 		m_ghost.setCollisionShape(convexShape);
-		m_ghost.setCollisionFlags(btCollisionObject::CF_DYNAMIC_OBJECT);
+		m_ghost.setCollisionFlags(btCollisionObject::CF_DYNAMIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		m_ghost.Callback = BIND_EVENT_FN_3(CBullet3Collision, onOverlap);
 
 		btTransform startTransform;
@@ -62,6 +62,11 @@ namespace da::physics
 
 		if (rb) {
 			data.Other = rb->getUserPointer();
+		}
+
+		if (!data.Other)
+		{
+			data.Other = rb->getCollisionShape()->getUserPointer();
 		}
 
 		data.This = this;

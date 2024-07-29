@@ -11,6 +11,7 @@ namespace da::ai
 #endif
 		static CNavCtx& getCtx();
 		static void addNavMesh(INavMesh& navMesh);
+		static INavMesh* getNavMesh(uint32_t index = 0);
 
 		static void initialize();
 		static void update(float dt);

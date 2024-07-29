@@ -25,7 +25,7 @@ class CCharacterComponent
 #endif
 
 public:
-	CCharacterComponent(const da::core::CGuid& guid, da::core::CEntity& parent);
+	CCharacterComponent(bool isLocalPlayer, const da::core::CGuid& guid, da::core::CEntity& parent);
 	~CCharacterComponent();
 
 	float getCamRot() const;
@@ -41,7 +41,6 @@ protected:
 
 private:
 	void processAnims(float dt);
-	double wrapAngle(double angle) const;
 
 #ifdef DA_REVIEW
 	void onDebugRender();
@@ -51,10 +50,11 @@ private:
 	std::vector<da::graphics::FSkeletalAnimGraphNode> m_anims;
 	da::graphics::CSkeletalAnimGraph* m_animGraph;
 	glm::vec2 m_cursorPos = { 0.f, 0.f };
-	bool m_attack = false;
 	float m_camSensitivity = .25f;
-	ICharacterMovement* m_movement;
+	ICharacterMovement* m_movement = nullptr;
 	const da::core::CEntity* m_weapon = nullptr;
+	bool m_attack : 1 = false;
+	bool m_isLocalPlayer : 1;
 
 
 };

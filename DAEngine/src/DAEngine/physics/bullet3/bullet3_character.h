@@ -22,6 +22,7 @@ namespace da::physics
 		void warp(const glm::vec3& pos) override;
 		const glm::vec3 getPosition() const override;
 		void setLinearVelocity(const glm::vec3& dir) override;
+		void setUserData(void* ptr) override;
 
 #ifdef DA_REVIEW
 		virtual void debugDraw() override;

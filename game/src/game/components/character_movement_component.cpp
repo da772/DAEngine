@@ -17,6 +17,7 @@ void CCharacterMovementComponent::onInitialize()
 {
 	m_shape = da::physics::CPhysicsShapeCapsule::create(.3f, 1.5f);
 	m_character = da::physics::CharacterControllerFactory::create(m_tuning, *m_shape);
+	m_character->setUserData((void*)&m_parent);
 }
 
 void CCharacterMovementComponent::onUpdate(float dt)
@@ -48,7 +49,7 @@ void CCharacterMovementComponent::processMovement(float dt)
 		}
 		else {
 			float z = glm::radians(m_parent.getTransform().rotationEuler().z);
-			double angle = wrapAngle(m_setRotate - z);
+			double angle = da::core::maths::wrapAngle(m_setRotate - z);
 			if (std::abs(angle) <= .1f) {
 				m_parent.getTransform().setRotation({ 0.f, 0.f, glm::degrees(m_setRotate) });
 				m_rotateInstant = true;

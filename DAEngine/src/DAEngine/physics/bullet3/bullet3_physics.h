@@ -16,6 +16,7 @@ namespace da::physics
 		void reset() override;
 
 		inline btDiscreteDynamicsWorld* getDynamicsWorld() const { return m_dynamicsWorld; }
+		inline btCollisionWorld* getCollisionWorld() const { return m_collisionWorld; }
 
 		void rayCast(FRayData& ray) override;
 

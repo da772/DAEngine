@@ -8,7 +8,7 @@
 
 namespace da::core {
 
-	std::unordered_map<CHashString, da::core::FECSLifeCycle> CScene::m_componentLifeCycle;
+	std::vector<std::pair<CHashString, da::core::FECSLifeCycle>> CScene::m_componentLifeCycle;
 
 	CScene::CScene(const CGuid& guid) : m_guid(guid)
 	{
@@ -40,10 +40,10 @@ namespace da::core {
 
 	void CScene::initialize()
 	{
-		for (std::pair<const CHashString, FComponentContainer>& kv : m_components) {
-			FECSLifeCycle& f = m_componentLifeCycle[kv.first];
-			for (size_t i = 0; i < kv.second.getCount(); i++) {
-				f.init((void*)kv.second.getComponentAtIndex(i));
+		for (const std::pair<CHashString, FECSLifeCycle>& kv : m_componentLifeCycle) {
+			const FComponentContainer& components = getComponents(kv.first);
+			for (size_t i = 0; i < components.getCount(); i++) {
+				kv.second.init((void*)components.getComponentAtIndex(i));
 			}
 		}
 		m_initialized = true;
@@ -51,21 +51,21 @@ namespace da::core {
 
 	void CScene::update(float dt)
 	{
-		for (std::pair<const CHashString, FComponentContainer>& kv : m_components) {
-			FECSLifeCycle& f = m_componentLifeCycle[kv.first];
-			if (!f.update) continue;
-			for (size_t i = 0; i < kv.second.getCount(); i++) {
-				f.update((void*)kv.second.getComponentAtIndex(i), dt);
+		for (const std::pair<CHashString, FECSLifeCycle>& kv : m_componentLifeCycle) {
+			const FComponentContainer& components = getComponents(kv.first);
+			if (!kv.second.update) continue;
+			for (size_t i = 0; i < components.getCount(); i++) {
+				kv.second.update((void*)components.getComponentAtIndex(i), dt);
 			}
 		}
 	}
 
 	void CScene::shutdown()
 	{
-		for (std::pair<const CHashString, FComponentContainer>& kv : m_components) {
-			FECSLifeCycle& f = m_componentLifeCycle[kv.first];
-			for (size_t i = 0; i < kv.second.getCount(); i++) {
-				f.shutdown((void*)kv.second.getComponentAtIndex(i));
+		for (const std::pair<CHashString, FECSLifeCycle>& kv : m_componentLifeCycle) {
+			const FComponentContainer& components = getComponents(kv.first);
+			for (size_t i = 0; i < components.getCount(); i++) {
+				kv.second.shutdown((void*)components.getComponentAtIndex(i));
 			}
 		}
 
@@ -79,9 +79,22 @@ namespace da::core {
 		}
 	}
 
+	const da::core::CEntity* CScene::getEntityFromTag(CHashString tag) const
+	{
+		for (const CEntity* e : m_entities) {
+			if (e->getTag() == tag) {
+				return e;
+			}
+		}
+
+		return nullptr;
+	}
+
 	void FComponentContainer::dirty()
 	{
 		m_componentCache = {};
 	}
+
+
 
 }

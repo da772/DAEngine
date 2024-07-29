@@ -16,6 +16,7 @@ namespace da::core
 		CCollisionComponent(const da::physics::IPhysicsShape& shape, const glm::mat4& offset, const CGuid& id, da::core::CEntity& parent);
 		virtual ~CCollisionComponent();
 		void enable(bool enable = true);
+		void setCallback(const std::function<void(const da::physics::FCollisionEventData& data)>& func);
 
 	protected:
 		void onInitialize();
@@ -36,6 +37,7 @@ namespace da::core
 		const da::physics::IPhysicsShape* m_shape;
 		glm::mat4 m_transform;
 		bool m_enabled = true;
+		std::function<void(const da::physics::FCollisionEventData& data)> m_func;
 
 	};
 }

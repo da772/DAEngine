@@ -26,7 +26,7 @@ private:
 private:
 	da::graphics::CSkeletalAnimation* m_swordSlashAnimation;
 	da::graphics::CSkeletalAnimation* m_runAnimation;
-	CCharacter* m_character;
+	CCharacter* m_character, *m_ai;
 	CVehicle* m_vehicle;
 	da::script::CScriptClass m_scrlevel;
 

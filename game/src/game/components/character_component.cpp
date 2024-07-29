@@ -4,6 +4,7 @@
 // game
 #include "character_component.h"
 #include "character_movement_component.h"
+#include "game/character/movement/ai_character_movement.h"
 #include "game/character/movement/character_movement_1.h"
 
 // TODO: Remove
@@ -15,7 +16,7 @@ COMPONENT_CPP_DEBUG(CCharacterComponent)
 COMPONENT_CPP(CCharacterComponent)
 #endif
 
-CCharacterComponent::CCharacterComponent(const da::core::CGuid& guid, da::core::CEntity& parent) : m_guid(guid), m_parent(parent)
+CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGuid& guid, da::core::CEntity& parent) : m_isLocalPlayer(isLocalPlayer), m_guid(guid), m_parent(parent)
 {
 	da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/skeletons/archer/archer.fbx", false);
 	// Skin
@@ -47,8 +48,8 @@ CCharacterComponent::CCharacterComponent(const da::core::CGuid& guid, da::core::
 
 	glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.f, 0.f, 180.f))));
 	meshComponent->setTransform(offset);
-
-	m_movement = new CCharacterMovement1(m_parent);
+	if (m_isLocalPlayer) m_movement = new CCharacterMovement1(m_parent);
+	else m_movement = new CAICharacterMovement(m_parent);
 }
 
 CCharacterComponent::~CCharacterComponent()
@@ -59,7 +60,10 @@ CCharacterComponent::~CCharacterComponent()
 	}
 
 	m_anims = {};
-	delete m_movement;
+	if (m_movement) {
+		delete m_movement;
+		m_movement = nullptr;
+	}
 }
 
 void CCharacterComponent::onInitialize()
@@ -69,7 +73,7 @@ void CCharacterComponent::onInitialize()
 
 void CCharacterComponent::onUpdate(float dt)
 {
-	m_movement->update(dt);
+	if (m_movement) m_movement->update(dt);
 	processAnims(dt);
 }
 
@@ -157,13 +161,6 @@ void CCharacterComponent::processAnims(float dt)
 	}
 
 }
-
-double CCharacterComponent::wrapAngle(double angle) const
-{
-	double twoPi = 2.0 * 3.141592865358979;
-	return angle - twoPi * floor(angle / twoPi);
-}
-
 void CCharacterComponent::onShutdown()
 {
 
@@ -171,6 +168,7 @@ void CCharacterComponent::onShutdown()
 
 float CCharacterComponent::getCamRot() const
 {
+	if (!m_movement) return 0.f;
 	return m_movement->getMoveDir();
 }
 
@@ -204,6 +202,12 @@ void CCharacterComponent::onDebugRender()
 			ImGui::LabelText("##label", "%.2f : %s: ", nodes[i].Animator->getPlayTime(), nodes[i].Animator->getCurrentAnim()->getAnimName().c_str());
 			ImGui::InputFloat(std::to_string(i).c_str(), &nodes[i].Weight, .025, 0.f);
 		}
+
+		if (m_movement)
+		{
+			m_movement->debugUpdate();
+		}
+		
 	}
 	ImGui::End();
 }

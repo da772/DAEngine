@@ -24,6 +24,11 @@ namespace da::physics
 		int updateCount = std::floor(s_lastUpdate / s_fixedTime);
 		s_lastUpdate = std::max(s_lastUpdate-(double)updateCount, 0.0);
 
+		if (updateCount > 10) {
+			LOG_WARN(ELogChannel::Physics, "Skipping physics update, count too high: %d", updateCount);
+			return;
+		}
+
 		ASSERT(s_physicsType);
 		for (int i = 0; i < updateCount; i++) {
 			s_physicsType->update(s_fixedTime);

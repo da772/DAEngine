@@ -33,7 +33,7 @@ void CTestBed03Level::initialize()
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 	// Character
-	m_character = new CCharacter();
+	m_character = new CCharacter(*m_graphicsModule.getGraphicsApi(), true);
 	m_character->initialize();
 
 	// Hello World

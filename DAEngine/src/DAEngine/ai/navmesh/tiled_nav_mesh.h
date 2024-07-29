@@ -14,7 +14,7 @@ namespace da::ai
 		void initialize() override;
 		void update(float dt) override;
 		void shutdown() override;
-		std::vector<glm::vec3> findPath(const glm::vec3& startPos, const glm::vec3& endPos);
+		std::vector<glm::vec3> findPath(const glm::vec3& startPos, const glm::vec3& endPos) override;
 #ifdef DA_REVIEW
 		void debugRender() override;
 #endif
@@ -48,15 +48,14 @@ namespace da::ai
 		float m_bmax[3] = { -1e9, -1e9, -1e9 };
 		float m_bmin[3] = { 1e9, 1e9, 1e9 };
 
-		float m_agentHeight = 2.f;
+		float m_agentHeight = 1.5f;
 		float m_agentMaxClimb = .9f;
-		float m_agentRadius = .6f;
+		float m_agentRadius = .3f;
 		float m_tileSize = 32.f;;
 		float m_cellSize = .3f;
 		float* m_verts;
 		uint32_t m_nverts;
 		uint32_t* m_tris;
 		uint32_t m_ntris;
-		int m_idx = -1;
 	};
 }
