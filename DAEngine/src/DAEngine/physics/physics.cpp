@@ -5,7 +5,7 @@
 namespace da::physics
 {
 	da::physics::CPhysicsType* CPhysics::s_physicsType;
-	double CPhysics::s_fixedTime = 1.0 / 60.0;
+	double CPhysics::s_fixedTime = 1.0 / 144.0;
 	double CPhysics::s_lastUpdate = 0.f;
 
 	void CPhysics::initialize()
@@ -22,7 +22,7 @@ namespace da::physics
 		}
 
 		int updateCount = std::floor(s_lastUpdate / s_fixedTime);
-		s_lastUpdate = 0.0;
+		s_lastUpdate = std::max(s_lastUpdate-(double)updateCount, 0.0);
 
 		ASSERT(s_physicsType);
 		for (int i = 0; i < updateCount; i++) {

@@ -6,7 +6,7 @@ namespace da::physics
 
 	struct FCharacterTuning
 	{
-		float StepHeight = .35f;
+		float StepHeight = .01f;
 	};
 
 	class ICharacterController

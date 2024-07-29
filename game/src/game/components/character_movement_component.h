@@ -51,7 +51,7 @@ private:
 	float m_setRotate = 0.f;
 	float m_speed = 4.4f;
 	float m_rotateSpeed = 128.f;
-	da::physics::FCharacterTuning m_tuning = { .5f };
+	da::physics::FCharacterTuning m_tuning = { .15f };
 	bool m_sprint : 1 = false;
 	bool m_jump : 1 = false;
 	bool m_rotateInstant : 1 = false;
