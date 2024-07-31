@@ -32,9 +32,9 @@ void CCharacter::initialize()
 		da::core::FComponentRef<da::core::CCollisionComponent> colComp =
 			m_sword->addComponent<da::core::CCollisionComponent>(*shape, glm::translate(glm::mat4(1.f), { 0.f, 0.f, 1.f }), da::core::CGuid::Generate());
 
-		colComp->setCallback([colComp](const da::physics::FCollisionEventData& data) {
+		colComp->setCallback([colComp, this](const da::physics::FCollisionEventData& data) {
 			if (!data.Overlapping) return;
-
+			LOG_DEBUG(da::ELogChannel::Application, "Collision Event: %s, Overlapping: %d", m_entity->getTag().c_str(), data.Overlapping);
 			if (da::core::CEntity* other = (da::core::CEntity*)data.Other) {
 				da::core::FComponentRef<CHealthComponent> healthComp = other->getComponent<CHealthComponent>();
 				if (healthComp.isValid()) {
@@ -143,7 +143,7 @@ void CCharacterGui::onRender(float dt)
 
 	glm::vec3 worldSpace = m_parent->m_entity->getTransform().position() + glm::vec3(0.f, 0.f, 1.5f);
 
-	glm::vec2 pos = worldPosToScreenSpace(headPos + glm::vec3(0.f, 0.f, 1.f));
+	glm::vec2 pos = worldPosToScreenSpace(headPos + glm::vec3(0.f, 0.f, .25f));
 	float dist = std::abs(glm::distance(headPos, da::core::CCamera::getCamera()->position()));
 
 	if (dist < 1.0f) {

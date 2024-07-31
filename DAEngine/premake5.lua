@@ -227,6 +227,10 @@ project "DAEngine"
 		pchheader "dapch.h"
 		pchsource "src/dapch.cpp"
 		
+		flags
+		{
+			"MultiProcessorCompile"
+		}
 		
 		defines
 		{

@@ -49,6 +49,11 @@ project "BuildVM"
     defines {"_CRT_SECURE_NO_WARNINGS"}
     linkoptions { "/SAFESEH:NO" }
 
+    flags
+	{
+		"MultiProcessorCompile"
+	}
+
     includedirs {
         "../",  -- src folder
         ".",    -- src/host (this folder)

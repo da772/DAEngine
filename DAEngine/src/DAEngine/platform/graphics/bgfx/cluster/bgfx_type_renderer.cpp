@@ -217,10 +217,25 @@ namespace da::platform {
 
 	glm::vec2 CBgfxTypeRenderer::worldPosToScreenSpace(const glm::vec3& pos) const
 	{
-        glm::vec4 clipSpace = m_projMat* (m_viewMat * glm::vec4(pos.x, pos.y, pos.z, 1.0f));
-        glm::vec3 ndcSpacePos = glm::vec3(clipSpace.x, 1.0f-clipSpace.y, clipSpace.z) / clipSpace.w;
-       
-        return ((glm::vec2(ndcSpacePos.x, ndcSpacePos.y) + glm::vec2(1.0f, 1.0f)) / glm::vec2(2.0f, 2.0f)) * glm::vec2(m_width, m_height);
+		glm::vec4 clipSpace = m_projMat * (m_viewMat * glm::vec4(pos.x, pos.y, pos.z, 1.0f));
+
+		// If the point is behind the camera, return off-screen coordinates
+		if (clipSpace.w < 0.0f)
+		{
+			// Return coordinates that are clearly off-screen
+			return glm::vec2(-1000.0f, -1000.0f);
+		}
+
+		glm::vec3 ndcSpacePos = glm::vec3(clipSpace.x, clipSpace.y, clipSpace.z) / clipSpace.w;
+
+		// Convert NDC to screen space
+		glm::vec2 screenSpacePos = ((glm::vec2(ndcSpacePos.x, ndcSpacePos.y) + glm::vec2(1.0f, 1.0f)) / glm::vec2(2.0f, 2.0f)) * glm::vec2(m_width, m_height);
+
+		// Invert the y-coordinate because screen space y goes from top to bottom
+		screenSpacePos.y = m_height - screenSpacePos.y;
+
+		return screenSpacePos;
+
 	}
 
 

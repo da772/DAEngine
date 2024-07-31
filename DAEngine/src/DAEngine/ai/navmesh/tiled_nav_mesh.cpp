@@ -34,7 +34,6 @@ namespace da::ai
 		params.orig[0] = m_bmin[0];
 		params.orig[1] = 0.f;
 		params.orig[2] = m_bmin[2];
-		//rcVcopy(, m_geom->getNavMeshBoundsMin());
 		params.tileWidth = m_tileSize * m_cellSize;
 		params.tileHeight = m_tileSize * m_cellSize;
 		params.maxTiles = 512;
@@ -149,7 +148,6 @@ namespace da::ai
 
 	uint8_t* CTiledNavMesh ::buildTileMesh(const int tx, const int ty, const float* bmin, const float* bmax, int& dataSize, da::graphics::CStaticMesh* mesh, const float* verts, uint32_t nverts, const uint32_t* tris, uint32_t ntris)
 	{
-
 		rcConfig cfg;
 
 		// Rasterization
@@ -185,7 +183,7 @@ namespace da::ai
 		rcChunkyTriMesh chunkyMesh;
 		if (!rcCreateChunkyTriMesh(verts, (const int*)tris, ntris, 256, &chunkyMesh))
 		{
-			LOG_ERROR(ELogChannel::AI, "buildNavigation: Could not create chunky mesh");
+			LOG_WARN(ELogChannel::AI, "Could not create chunky mesh for tile: %d, %d", tx ,ty);
 			return 0;
 		}
 
@@ -193,7 +191,7 @@ namespace da::ai
 
 		if (!rcCreateHeightfield(&CNavMeshManager::getCtx(), *solid, cfg.width, cfg.height, cfg.bmin, cfg.bmax, cfg.cs, cfg.ch))
 		{
-			LOG_ERROR(ELogChannel::AI, "buildNavigation: Could not create solid heightfield.");
+			LOG_ERROR(ELogChannel::AI, "Could not create solid heightfield.");
 			return 0;
 		}
 
@@ -209,7 +207,7 @@ namespace da::ai
 
 		if (!ncid)
 		{
-			LOG_ERROR(ELogChannel::AI, "buildNavigation: Could not create chunky mesh");
+			LOG_WARN(ELogChannel::AI, "Could not create chunky mesh for tile: %d, %d", tx, ty);
 			return 0;
 		}
 
@@ -285,13 +283,13 @@ namespace da::ai
 
 		if (!rcBuildContours(&CNavMeshManager::getCtx(), *chf, cfg.maxSimplificationError, cfg.maxEdgeLen, *cset))
 		{
-			LOG_ERROR(ELogChannel::AI, "buildNavigation: Could not create contours.");
+			LOG_WARN(ELogChannel::AI, "Could not create contours for tile: %d, %d", tx, ty);
 			return 0;
 		}
 
 		if (cset->nconts == 0)
 		{
-			LOG_ERROR(ELogChannel::AI, "buildNavigation: Could not create contours.");
+			LOG_WARN(ELogChannel::AI, "Could not create contours for tile: %d, %d", tx, ty);
 			return 0;
 		}
 
@@ -364,11 +362,11 @@ namespace da::ai
 
 		if (!dtCreateNavMeshData(&params, &navData, &navDataSize))
 		{
-			LOG_ERROR(ELogChannel::AI, "Could not build Detour navmesh.");
+			LOG_WARN(ELogChannel::AI, "Could not build navmesh data for tile: %d,%d", tx,ty);
 			return 0;
 		}
 
-		LOG_INFO(ELogChannel::AI, "buildNavigation: Success?");
+		LOG_INFO(ELogChannel::AI, "NavMesh built for tile: %d,%d", tx,ty);
 		return navData;
 	}
 

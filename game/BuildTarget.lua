@@ -80,6 +80,11 @@ project "game"
 	filter "system:windows"
 		systemversion "latest"
 		kind "WindowedApp"
+		
+		flags
+		{
+			"MultiProcessorCompile"
+		}
 
 		defines
 		{

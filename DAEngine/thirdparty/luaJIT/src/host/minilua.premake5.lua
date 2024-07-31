@@ -8,7 +8,10 @@ project "MiniLua"
         ["Soruces/*"] = "minilua.c",
         ["*"] = "minilua.premake5.lua"
     }
-
+    flags
+	{
+		"MultiProcessorCompile"
+	}
     files {
         "minilua.premake5.lua",
         "minilua.c"

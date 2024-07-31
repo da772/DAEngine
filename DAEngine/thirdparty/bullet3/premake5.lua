@@ -19,6 +19,11 @@ project "bullet3"
 		"src"
 	}
 
+	flags
+	{
+		"MultiProcessorCompile"
+	}
+
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "On"

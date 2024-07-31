@@ -92,7 +92,10 @@ project "recast"
 
     filter "system:windows"
         systemversion "latest"
-
+		flags
+		{
+			"MultiProcessorCompile"
+		}
         filter "configurations:Debug"
             runtime "Debug"
             symbols "On"

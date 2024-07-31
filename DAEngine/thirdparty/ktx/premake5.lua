@@ -21,6 +21,11 @@ project "ktx"
 		"%{IncludeDir.Vulkan}/include"
 	}
 
+	flags
+	{
+		"MultiProcessorCompile"
+	}
+
 	filter { "system:macosx" }
 		xcodebuildsettings
 		{ 

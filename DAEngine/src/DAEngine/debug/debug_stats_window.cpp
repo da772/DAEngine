@@ -54,7 +54,6 @@ void da::debug::CDebugStatsWindow::update()
 		ImGui::Text("Renderer Stats");
 		ImGui::Separator();
 		ImGui::Text("Draw Calls:   %d", s_drawCalls);
-		ImGui::Text("Gpu Memory:   %.2f/%.2f GB (%.2f%%)", s_gpuMem / (double)1e6, s_gpuMemMax / (double)1e6, (double)s_gpuMemMax/(double)s_gpuMem);
 	}
 
 	ImGui::End();

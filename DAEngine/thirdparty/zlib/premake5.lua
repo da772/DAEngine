@@ -17,6 +17,10 @@ project "zlib"
 	filter "system:windows"
 		systemversion "latest"
 		defines { "_WINDOWS" }
+		flags
+		{
+			"MultiProcessorCompile"
+		}
 
 	filter "system:not windows"
 		defines { 'HAVE_UNISTD_H' }

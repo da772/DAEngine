@@ -25,6 +25,11 @@ project "bx"
 		"include"
 	}
 
+	flags
+	{
+		"MultiProcessorCompile"
+	}
+
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "On"

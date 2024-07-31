@@ -46,7 +46,6 @@ namespace da::core
 			return;
 		}
 
-		LOG_DEBUG(ELogChannel::Core, "Collision Event: %s, Overlapping: %d", m_parent.getTag().c_str(), data.Overlapping);
 		if (da::core::CEntity* ent = (da::core::CEntity*)data.Other) {
 			if (data.Overlapping && ent != &m_parent) {
 				m_func(data);

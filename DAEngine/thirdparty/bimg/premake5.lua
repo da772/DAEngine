@@ -35,7 +35,10 @@ project "bimg"
 		"3rdparty/nvtt",
 		"3rdparty/tinyexr/deps/miniz",
 	}
-
+	flags
+	{
+		"MultiProcessorCompile"
+	}
 
 	filter "configurations:Debug"
 		runtime "Debug"
@@ -49,7 +52,6 @@ project "bimg"
 		runtime "Release"
 		optimize "On"
 		defines "BX_CONFIG_DEBUG=0"
-
 
 	filter "configurations:Release"
 		defines "BX_CONFIG_DEBUG=0"

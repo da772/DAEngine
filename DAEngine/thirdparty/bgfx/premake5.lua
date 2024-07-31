@@ -50,6 +50,10 @@ project "bgfx"
 		buildoptions {"/Zc:__cplusplus"}
 
 	filter {"system:windows"}
+		flags
+		{
+			"MultiProcessorCompile"
+		}
 		includedirs {
 			"3rdparty/directx-headers/include/directx"
 		}

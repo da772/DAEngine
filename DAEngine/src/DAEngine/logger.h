@@ -2,6 +2,7 @@
 #include "core/core.h"
 #include "core/containers.h"
 #include "core/utility.h"
+#include "core/time.h"
 
 #include <stdio.h>
 #include <fstream>
@@ -87,11 +88,11 @@ inline static void x(const ELogChannel& channel, const std::string& message, Arg
 			char buffer[20384];
 			
 #ifdef DA_COLORED_OUT
-			const std::string msg = "%s[%llu] %s: [%s] " + message + "\n%s";
+			const std::string msg = "%s[%llu][%.9llu] %s: [%s] " + message + "\n%s";
 #if DA_PLATFORM_WINDOWS
-			sprintf_s(buffer, sizeof(buffer), msg.c_str(), colorTypeMap[(uint8_t)type], utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
+			sprintf_s(buffer, sizeof(buffer), msg.c_str(), colorTypeMap[(uint8_t)type], utility::GetTimeUS(),core::CTime::getFrameCount(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
 #else
-            snprintf(buffer, sizeof(buffer), msg.c_str(), colorTypeMap[(uint8_t)type], utility::GetTimeUS(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
+            snprintf(buffer, sizeof(buffer), msg.c_str(), colorTypeMap[(uint8_t)type], utility::GetTimeUS(), core::CTime::getFrameCount(), logTypeMap[(uint8_t)type], logChannelMap[(uint8_t)channel], args..., colorTypeMap[(uint8_t)ELogColor::Default]);
 #endif
 			logInternal(std::string(buffer));
 #else
