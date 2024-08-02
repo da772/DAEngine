@@ -22,7 +22,7 @@ namespace da::ai
 	private:
 		void buildTiles();
 		void setAgentPosition(const glm::vec3& pos);
-		uint8_t* buildTileMesh(const int tx, const int ty, const float* bmin, const float* bmax, int& dataSize, da::graphics::CStaticMesh* mesh, const float* verts, uint32_t vsize, const uint32_t* tris, uint32_t ntris);
+		uint8_t* buildTileMesh(const int tx, const int ty, const float* bmin, const float* bmax, int& dataSize, const float* verts, uint32_t vsize, const uint32_t* tris, uint32_t ntris);
 		void setupMesh(da::graphics::CStaticMesh* mesh);
 		static bool getSteerTarget(dtNavMeshQuery* navQuery, const float* startPos, const float* endPos,
 			const float minTargetDist,

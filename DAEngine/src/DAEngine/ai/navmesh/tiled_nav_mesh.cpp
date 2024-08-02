@@ -109,9 +109,6 @@ namespace da::ai
 
 	void CTiledNavMesh ::buildTiles()
 	{
-		da::graphics::CStaticMesh* mesh = new da::platform::CBgfxStaticMesh("assets/navmesh.fbx", false);
-
-
 		int gw = 0, gh = 0;
 		rcCalcGridSize(m_bmin, m_bmax, m_cellSize, &gw, &gh);
 		const int ts = (int)m_tileSize;
@@ -132,7 +129,7 @@ namespace da::ai
 				m_lastBuiltTileBmax[2] = m_bmin[2] + (y + 1) * tcs;
 
 				int dataSize = 0;
-				unsigned char* data = buildTileMesh(x, y, m_lastBuiltTileBmin, m_lastBuiltTileBmax, dataSize, mesh, m_verts, m_nverts, m_tris, m_ntris);
+				unsigned char* data = buildTileMesh(x, y, m_lastBuiltTileBmin, m_lastBuiltTileBmax, dataSize, m_verts, m_nverts, m_tris, m_ntris);
 				if (data)
 				{
 					// Remove any previous data (navmesh owns and deletes the data).
@@ -146,7 +143,7 @@ namespace da::ai
 		}
 	}
 
-	uint8_t* CTiledNavMesh ::buildTileMesh(const int tx, const int ty, const float* bmin, const float* bmax, int& dataSize, da::graphics::CStaticMesh* mesh, const float* verts, uint32_t nverts, const uint32_t* tris, uint32_t ntris)
+	uint8_t* CTiledNavMesh ::buildTileMesh(const int tx, const int ty, const float* bmin, const float* bmax, int& dataSize, const float* verts, uint32_t nverts, const uint32_t* tris, uint32_t ntris)
 	{
 		rcConfig cfg;
 
