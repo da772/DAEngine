@@ -21,6 +21,7 @@ namespace da::physics
 		virtual const glm::vec3& getWalkDirection() const = 0;
 		virtual void jump(const glm::vec3& jump) = 0;
 		virtual bool grounded() const = 0;
+		virtual void applyImpulse(const glm::vec3& impulse) = 0;
 		virtual const glm::vec3& getLinearVelocity() const = 0;
 		virtual const glm::vec3& getAngularVelocity() const = 0;
 		virtual const glm::vec3 getPosition() const = 0;

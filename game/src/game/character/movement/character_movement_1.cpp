@@ -69,6 +69,13 @@ void CCharacterMovement1::processInput(float dt)
 
 	bool A = da::core::CInput::inputPressed(65);
 	bool D = da::core::CInput::inputPressed(68);
+
+	if (A && D)
+	{
+		A = false;
+		D = false;
+	}
+
 	if (A || D) {
 
 		float dirAngle = -90.f;

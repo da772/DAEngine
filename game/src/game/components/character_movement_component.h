@@ -23,6 +23,7 @@ public:
 	void setRotation(float dir, bool instance = true);
 	void setRotationSpeed(float speed);
 	void setWalkSpeed(float speed);
+	void applyImpulse(const glm::vec3& impulse);
 	const glm::vec3& getWalkDirection() const;
 	const glm::vec3 getVelocity() const;
 

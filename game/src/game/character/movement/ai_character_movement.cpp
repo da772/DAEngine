@@ -5,6 +5,7 @@
 
 #include "ai_character_movement.h"
 #include "game/components/character_movement_component.h"
+#include "game/components/character_component.h"
 
 
 CAICharacterMovement::CAICharacterMovement(const da::core::CEntity& entity) : ICharacterMovement(entity)
@@ -34,13 +35,26 @@ void CAICharacterMovement::shutdown()
 
 void CAICharacterMovement::processAi()
 {
+
+	da::core::FComponentRef<CCharacterComponent> character = m_character->getComponent<CCharacterComponent>();
+
+	if (character->isAttacking())
+	{
+		return;
+	}
+
 	const da::core::CEntity* target = da::core::CSceneManager::getScene()->getEntityFromTag(HASHSTR("Character"));
 	const glm::vec3 targetPos = target->getTransform().position();
 	const glm::vec3 currentPos = m_character->getTransform().position();
 
 	if (glm::distance(currentPos, targetPos) < 1.f)
 	{
+		if (!m_path.empty())
+		{
+			character->attack();
+		}
 		m_path = {};
+		
 		return;
 	}
 
@@ -97,3 +111,4 @@ void CAICharacterMovement::debugUpdate()
 	
 }
 #endif
+

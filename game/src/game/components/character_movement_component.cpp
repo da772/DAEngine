@@ -125,6 +125,11 @@ void CCharacterMovementComponent::setWalkSpeed(float speed)
 	m_speed = speed;
 }
 
+void CCharacterMovementComponent::applyImpulse(const glm::vec3& impulse)
+{
+	m_character->applyImpulse(impulse);
+}
+
 const glm::vec3& CCharacterMovementComponent::getWalkDirection() const
 {
 	return m_direction;

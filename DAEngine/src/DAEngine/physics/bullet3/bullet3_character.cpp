@@ -79,6 +79,11 @@ namespace da::physics
 		return { vel.x(), vel.y(), vel.z() };
 	}
 
+	void CBullet3Character::applyImpulse(const glm::vec3& impulse)
+	{
+		m_characterController.applyImpulse({ impulse.x, impulse.y, impulse.z});
+	}
+
 	void CBullet3Character::warp(const glm::vec3& pos)
 	{
 		m_characterController.warp({ pos.x, pos.y, pos.z });
@@ -103,6 +108,7 @@ namespace da::physics
 		ASSERT(physics);
 		physics->getDynamicsWorld()->debugDrawObject(m_ghost.getWorldTransform(), m_ghost.getCollisionShape(), { 1.f,0.f,0.f });
 	}
+
 #endif
 
 }
