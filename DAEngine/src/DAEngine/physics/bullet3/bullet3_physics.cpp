@@ -42,22 +42,29 @@ namespace da::physics
 
 	void CBullet3Physics::update(float dt)
 	{
-		for (int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+		PROFILE()
 		{
-			btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
-			btRigidBody* body = btRigidBody::upcast(obj);
-			
-			if (body && body->getMotionState())
+			PROFILE("CBullet3Physics::update::collisionloop")
+			for (int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
 			{
-				if (da::core::CEntity* e = (da::core::CEntity*)body->getUserPointer()) {
-					if (e->getTransform().isDirty()) {
-						e->getTransform().matrix();
+				btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
+				btRigidBody* body = btRigidBody::upcast(obj);
+
+				if (body && body->getMotionState())
+				{
+					if (da::core::CEntity* e = (da::core::CEntity*)body->getUserPointer()) {
+						if (e->getTransform().isDirty()) {
+							e->getTransform().matrix();
+						}
 					}
 				}
 			}
 		}
 		
-		m_dynamicsWorld->stepSimulation(dt, 10, da::physics::CPhysics::getFixedTime());
+		{
+			PROFILE("CBullet3Physics::update::stepSimulation")
+			m_dynamicsWorld->stepSimulation(dt, 10, da::physics::CPhysics::getFixedTime());
+		}
 		//m_dynamicsWorld->debugDrawWorld();
 	}
 
@@ -99,6 +106,7 @@ namespace da::physics
 
 	void CBullet3Physics::rayCast(FRayData& ray)
 	{
+		PROFILE("")
 		if (ray.eType == ERayType::All)
 		{
 			btCollisionWorld::AllHitsRayResultCallback callback({ ray.startPos.x, ray.startPos.y, ray.startPos.z }, { ray.startPos.x, ray.endPos.y, ray.endPos.z });

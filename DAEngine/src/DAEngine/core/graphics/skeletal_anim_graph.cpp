@@ -17,12 +17,14 @@ namespace da::graphics
 
 	void CSkeletalAnimGraph::update(float dt)
 	{
+		PROFILE()
 		CSkeletalAnimator* baseAnim = nullptr;
 		float maxWeight = -1.f;
 		bool requiresUpdate = false;
 
 		for (int i = 0; i < m_Nodes.size(); i++)
 		{
+			PROFILE("CSkeletalAnimGraph::update::nodeLoop1")
 			const FSkeletalAnimGraphNode& node = m_Nodes[i];
 			requiresUpdate = node.Animator->updateAnimation(dt, node.Weight <= 0.f) || requiresUpdate;
 
@@ -34,10 +36,14 @@ namespace da::graphics
 
 		if (!baseAnim || !requiresUpdate) return;
 
-		m_AnimBase->copyFinalBoneMatrices(baseAnim);
+		{
+			PROFILE("CSkeletalAnimGraph::update::copyBaseAnim")
+			m_AnimBase->copyFinalBoneMatrices(baseAnim);
+		}
 
 		for (int i = 0; i < m_Nodes.size(); i++)
 		{
+			PROFILE("CSkeletalAnimGraph::update::nodeLoop2")
 			const FSkeletalAnimGraphNode& node = m_Nodes[i];
 
 			if (node.Animator == baseAnim) continue;

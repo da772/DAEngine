@@ -27,6 +27,7 @@ IncludeDir["recast-debugutils"] = "%{wks.location}/DAEngine/thirdparty/recast/De
 IncludeDir["recast-detour"] = "%{wks.location}/DAEngine/thirdparty/recast/Detour/include"
 IncludeDir["recast-detour-crowd"] = "%{wks.location}/DAEngine/thirdparty/recast/DetourCrowd/include"
 IncludeDir["recast-detour-tilecache"] = "%{wks.location}/DAEngine/thirdparty/recast/DetourTileCache/include"
+IncludeDir["optick"] = "%{wks.location}/DAEngine/thirdparty/optick/include"
 
 
 group "ThirdParty"
@@ -44,6 +45,7 @@ if os.host() == "macosx" then
 	include "thirdparty/enet"
 	include "thirdparty/miniupnpc"
 	include "thirdparty/recast"
+	include "thirdparty/optick"
 end
 
 if os.host() == "windows" then
@@ -60,6 +62,7 @@ if os.host() == "windows" then
 	include "thirdparty/enet"
 	include "thirdparty/miniupnpc"
 	include "thirdparty/recast"
+	include "thirdparty/optick"
 end
 
 if os.host() == "linux" then
@@ -76,6 +79,7 @@ if os.host() == "linux" then
 	include "thirdparty/enet"
 	include "thirdparty/miniupnpc"
 	include "thirdparty/recast"
+	include "thirdparty/optick"
 end
 
 group ""
@@ -140,6 +144,7 @@ project "DAEngine"
 		"%{IncludeDir['recast-detour']}",
 		"%{IncludeDir['recast-detour-crowd']}",
 		"%{IncludeDir['recast-detour-tilecache']}",
+		"%{IncludeDir.optick}",
 	}
 	
 	libdirs
@@ -189,7 +194,8 @@ project "DAEngine"
 			"bullet3",
 			"enet",
 			"miniupnpc",
-			"recast"
+			"recast",
+			"optick"
 		}
 		
 		includedirs
@@ -255,7 +261,8 @@ project "DAEngine"
 			"bullet3",
 			"enet",
 			"miniupnpc",
-			"recast"
+			"recast",
+			"optick"
 		}
 
 		buildoptions
@@ -318,7 +325,8 @@ project "DAEngine"
 			"bullet3",
 			"enet",
 			"miniupnpc",
-			"recast"
+			"recast",
+			"optick"
 		}
 		
 		includedirs

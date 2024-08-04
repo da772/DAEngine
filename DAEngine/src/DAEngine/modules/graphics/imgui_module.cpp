@@ -20,6 +20,7 @@ namespace da::modules
 
 	void CImGuiModule::update()
 	{
+		PROFILE()
 		m_imGuiApi->update();
 	}
 
@@ -36,6 +37,7 @@ namespace da::modules
 
 	void CImGuiModule::lateUpdate()
 	{
+		PROFILE()
 		m_imGuiApi->lateUpdate();
 	}
 

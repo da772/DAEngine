@@ -171,6 +171,7 @@ namespace da::graphics
 
 	bool CSkeletalAnimator::updateAnimation(float dt, bool disablePlay)
 	{
+		PROFILE()
 		if (!m_CurrentAnimation)
 		{
 			return false;

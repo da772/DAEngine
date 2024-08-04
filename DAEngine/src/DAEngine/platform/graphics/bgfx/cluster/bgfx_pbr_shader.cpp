@@ -87,6 +87,7 @@ namespace da::platform {
 
     uint64_t CBgfxPBRShader::bindMaterial(const da::graphics::FMaterialData& material)
     {
+        PROFILE()
         float factorValues[4] = {
             material.metallicFactor, material.roughnessFactor, material.normalScale, material.occlusionStrength
         };

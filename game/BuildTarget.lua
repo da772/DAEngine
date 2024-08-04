@@ -63,6 +63,7 @@ project "game"
 		"%{IncludeDir['recast-detour']}",
 		"%{IncludeDir['recast-detour-crowd']}",
 		"%{IncludeDir['recast-detour-tilecache']}",
+		"%{IncludeDir.optick}",
 	}
 
 	links
@@ -74,7 +75,8 @@ project "game"
 		"bimg",
 		"bx",
 		"GLFW",
-		"zlib"
+		"zlib",
+		"optick"
 	}
 	
 	filter "system:windows"

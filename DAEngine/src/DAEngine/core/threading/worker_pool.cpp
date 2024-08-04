@@ -32,6 +32,7 @@ namespace da::core
 		std::lock_guard<std::mutex> g(CWorkerPool::ms_threadMutex);
 		for (int i = 0; i < numThreads; i++) {
 			ms_threads.push_back(std::thread([]() {
+				PROFILE_THREAD("Worker")
 				std::function<void()> job;
 
 				while (true) {
@@ -52,6 +53,7 @@ namespace da::core
 							job = CWorkerPool::ms_jobQueue.front();
 							CWorkerPool::ms_jobQueue.pop();
 						}
+						PROFILE_NAME("job")
 						job();
 					}
 				}

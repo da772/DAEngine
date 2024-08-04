@@ -147,9 +147,11 @@ namespace da::script
 
 	void CScriptClass::classUpdate(float dt)
 	{
+		PROFILE(m_path.c_str())
 		if (!m_state) return;
 		lua_State* L = (lua_State*)m_state;
 		sol::state_view lua(L);
+
 
 		sol::protected_function func(lua, (sol::ref_index)m_updateRef);	
 #ifdef DA_REVIEW

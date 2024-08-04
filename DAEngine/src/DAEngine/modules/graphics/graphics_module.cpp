@@ -24,11 +24,13 @@ namespace da::modules
 
 	void CGraphicsModule::update()
 	{
+		PROFILE()
 		m_GraphicsApi->update();
 	}
 
 	void CGraphicsModule::lateUpdate()
 	{
+		PROFILE()
 		m_GraphicsApi->lateUpdate();
 	}
 

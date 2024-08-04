@@ -85,6 +85,7 @@ namespace da::platform {
 
     void CBgfxTypeRenderer::render(float dt)
     {
+        PROFILE()
         m_time += dt;
 
 
@@ -179,6 +180,7 @@ namespace da::platform {
 
     void CBgfxTypeRenderer::setViewProjection(bgfx::ViewId view, bool rightHanded)
     {
+        PROFILE()
         // view matrix
         da::core::CCamera* cam = da::core::CCamera::getCamera();
 
@@ -200,6 +202,7 @@ namespace da::platform {
 
 	void CBgfxTypeRenderer::setViewProjection(bgfx::ViewId view, const glm::mat4& mat, float fov, float zNear, float zFar, float aspectRatio)
 	{
+        PROFILE()
 		// view matrix
 		glm::mat4 viewMat = mat;
         glm::mat4 projMat;
@@ -241,6 +244,7 @@ namespace da::platform {
 
     void CBgfxTypeRenderer::setNormalMatrix(const glm::mat4& modelMat)
     {
+        PROFILE()
         // usually the normal matrix is based on the model view matrix
         // but shading is done in world space (not eye space) so it's just the model matrix
         //glm::mat4 modelViewMat = viewMat * modelMat;
@@ -258,6 +262,7 @@ namespace da::platform {
 
     void CBgfxTypeRenderer::blitToScreen(bgfx::ViewId view)
     {
+        PROFILE()
         bgfx::setViewName(view, "Tonemapping");
         bgfx::setViewClear(view, BGFX_CLEAR_NONE);
         bgfx::setViewRect(view, 0, 0, m_width, m_height);

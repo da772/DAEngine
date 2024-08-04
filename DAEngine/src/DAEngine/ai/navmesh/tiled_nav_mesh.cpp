@@ -109,6 +109,7 @@ namespace da::ai
 
 	void CTiledNavMesh ::buildTiles()
 	{
+		PROFILE()
 		int gw = 0, gh = 0;
 		rcCalcGridSize(m_bmin, m_bmax, m_cellSize, &gw, &gh);
 		const int ts = (int)m_tileSize;
@@ -379,12 +380,14 @@ namespace da::ai
 
 	void CTiledNavMesh ::update(float dt)
 	{
+		PROFILE()
 		m_crowd->update(dt, 0);
 	}
 
 #ifdef DA_REVIEW
 	void CTiledNavMesh ::debugRender()
 	{
+		PROFILE()
 		// Tiling grid.
 		int gw = 0, gh = 0;
 		float bmin[3] = { -100, 0, -100 };

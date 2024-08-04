@@ -53,6 +53,7 @@ namespace da::core {
 
 	void CSkeletalMeshComponent::updateAnimation(float dt)
 	{
+		PROFILE()
 		if (m_animGraph) {
 			m_animGraph->update(dt);
 			return;

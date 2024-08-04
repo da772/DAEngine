@@ -30,6 +30,7 @@ namespace da::modules
 
 	void CWindowModule::update()
 	{
+		PROFILE()
 		m_Window->update();
 	}
 

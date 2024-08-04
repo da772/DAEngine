@@ -274,7 +274,10 @@ namespace da::platform {
 	void CbgfxGraphicsApi::lateUpdate()
 	{
 		m_renderer->render(0.1f);
-		::bgfx::frame();
+		{
+			PROFILE_NAME("rendererFrame")
+			::bgfx::frame();
+		}
 	}
 
 	void CbgfxGraphicsApi::shutdown()

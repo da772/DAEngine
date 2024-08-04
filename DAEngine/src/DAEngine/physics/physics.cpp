@@ -28,9 +28,9 @@ namespace da::physics
 			LOG_WARN(ELogChannel::Physics, "Skipping physics update, count too high: %d", updateCount);
 			return;
 		}
-
 		ASSERT(s_physicsType);
 		for (int i = 0; i < updateCount; i++) {
+			PROFILE("Physics Tick")
 			s_physicsType->update(s_fixedTime);
 		}
 	}

@@ -14,6 +14,7 @@
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 #define DA_REVIEW
+#define DA_PROFILE
 #endif
 
 #if defined(DA_PLATFORM_WINDOWS) && defined(DA_REVIEW)
@@ -33,6 +34,20 @@
 #else
 #define BX_CONFIG_DEBUG 0
 #endif
+#endif
+
+#ifdef DA_PROFILE
+#include "optick.h"
+#define PROFILE_FRAME(x) OPTICK_FRAME(x);
+#define PROFILE(...) OPTICK_EVENT(##__VA_ARGS__)
+#define PROFILE_NAME(name) OPTICK_EVENT(__FUNCTION__ "::" name)
+#define PROFILE_THREAD(x) OPTICK_THREAD(x)
+#define PROFILE_TAG(NAME, ...) OPTICK_TAG(NAME, ##__VA_ARGS__)
+#else
+#define PROFILE_FRAME(x) 
+#define PROFILE(...) 
+#define PROFILE_THREAD(x) 
+#define PROFILE_TAG(...) 
 #endif
 
 namespace da

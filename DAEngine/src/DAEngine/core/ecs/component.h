@@ -25,7 +25,7 @@ inline void shutdown() { onShutdown(); }; inline da::core::CEntity& getParent() 
 #define COMPONENT_REGISTER_NO_UPDATE_DEBUG(x) void x::registerComponent() { da::core::CScene::registerComponentLifeCycle<x>({ register_init, nullptr, register_shutdown, register_debug_render }); }
 #endif
 
-#define COMPONENT_CPP_INTERNAL(x) static void register_init(void* p) { ((x*)p)->initialize();} static void register_update(void* p, float dt) { ((x*)p)->update(dt);} static void register_shutdown(void* p) { ((x*)p)->shutdown();}
+#define COMPONENT_CPP_INTERNAL(x) static void register_init(void* p) { ((x*)p)->initialize();} static void register_update(void* p, float dt) { PROFILE(#x"::update") ((x*)p)->update(dt);} static void register_shutdown(void* p) { ((x*)p)->shutdown();}
 #define COMPONENT_CPP_INTERNAL_NO_UPDATE(x) static void register_init(void* p) { ((x*)p)->initialize();} static void register_shutdown(void* p) { ((x*)p)->shutdown();}
 
 #define COMPONENT_CPP(x) COMPONENT_CPP_INTERNAL(x) COMPONENT_REGISTER(x)

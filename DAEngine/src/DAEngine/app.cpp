@@ -58,27 +58,68 @@ namespace da
 	{
 		while (m_running)
 		{
+			PROFILE_FRAME("Main")
 			double timeStep = da::core::CTime::newFrame();
-			da::graphics::CAnimationManager::updateBegin(timeStep);
-			for (IModule* m : m_modules) {
-				m->update();
+			{
+				PROFILE("AnimManager Update Begin")
+				da::graphics::CAnimationManager::updateBegin(timeStep);
+			}
+			{
+				PROFILE("Module Update")
+				for (IModule* m : m_modules) {
+					m->update();
+				}
 			}
 #ifdef DA_REVIEW
-			da::debug::CDebug::update(timeStep);
-			da::script::CScriptEngine::update();
+			{
+				PROFILE("Debug Update")
+				da::debug::CDebug::update(timeStep);
+			}
+			{
+				PROFILE("Script Debug Update")
+				da::script::CScriptEngine::update();
+			}
 #endif
-			onUpdate(timeStep);
+			{
+				PROFILE("App Update")
+				onUpdate(timeStep);
+			}
+
 			if (core::CScene* scene = core::CSceneManager::getScene()) {
+				PROFILE("Scene Update")
 				scene->update(timeStep);
 			}
 
-			da::core::CWorkerPool::update();
-			da::ai::CNavMeshManager::update(timeStep);
-			da::physics::CPhysics::update(timeStep);
-			da::graphics::CAnimationManager::updateEnd();
-			onLateUpdate(timeStep);
-			for (IModule* m : m_modules) {
-				m->lateUpdate();
+			{
+				PROFILE("WorkerPool Update")
+				da::core::CWorkerPool::update();
+			}
+
+			{
+				PROFILE("NavMesh Update")
+				da::ai::CNavMeshManager::update(timeStep);
+			}
+
+			{
+				PROFILE("Physics Update")
+				da::physics::CPhysics::update(timeStep);
+			}
+			
+			{
+				PROFILE("AnimManager Update End")
+				da::graphics::CAnimationManager::updateEnd();
+			}
+			
+			{
+				PROFILE("App Late Update")
+				onLateUpdate(timeStep);
+			}
+
+			{
+				PROFILE("Module Late Update")
+				for (IModule* m : m_modules) {
+					m->lateUpdate();
+				}
 			}
 			
 			if (m_reset) {
