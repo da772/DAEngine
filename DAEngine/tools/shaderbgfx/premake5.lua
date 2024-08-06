@@ -78,6 +78,12 @@ project "shaderbgfx"
             path.join(GLSL_OPTIMIZER, "include/c99")
         }
 
+		flags
+		{
+			"MultiProcessorCompile"
+		}
+		
+
 	filter "system:macosx"
 		links
 		{

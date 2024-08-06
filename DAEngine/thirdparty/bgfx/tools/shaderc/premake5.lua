@@ -110,6 +110,11 @@ project "spirv-opt"
 			"/wd4702", -- warning C4702: unreachable code
 			"/wd4706", -- warning C4706: assignment within conditional expression
 		}
+		flags
+		{
+			"MultiProcessorCompile"
+		}
+		
 
 	configuration { "mingw* or linux* or osx*" }
 		buildoptions {
@@ -170,6 +175,11 @@ project "spirv-cross"
 			"/wd4706", -- warning C4706: assignment within conditional expression
 			"/wd4715", -- warning C4715: '': not all control paths return a value
 		}
+		flags
+		{
+			"MultiProcessorCompile"
+		}
+		
 
 	configuration { "mingw* or linux* or osx*" }
 		buildoptions {
@@ -216,6 +226,11 @@ project "glslang"
 			path.join(GLSLANG, "glslang/OSDependent/Unix/**.cpp"),
 			path.join(GLSLANG, "glslang/OSDependent/Unix/**.h"),
 		}
+		flags
+		{
+			"MultiProcessorCompile"
+		}
+		
 
 	configuration { "not windows" }
 		removefiles {
@@ -241,6 +256,11 @@ project "glslang"
 			"/wd4838", -- warning C4838: conversion from 'spv::GroupOperation' to 'unsigned int' requires a narrowing conversion
 		}
 
+		flags
+		{
+			"MultiProcessorCompile"
+		}
+		
 	configuration { "mingw-gcc or linux-gcc" }
 		buildoptions {
 			"-Wno-logical-op",
@@ -483,6 +503,12 @@ project "glsl-optimizer"
 			path.join(GLSL_OPTIMIZER, "src/glsl/msvc"),
 		}
 
+		flags
+		{
+			"MultiProcessorCompile"
+		}
+		
+
 		defines { -- glsl-optimizer
 			"__STDC__",
 			"__STDC_VERSION__=199901L",
@@ -567,6 +593,12 @@ project "fcpp"
 			"/wd4706", -- warning C4706: assignment within conditional expression
 		}
 
+		flags
+		{
+			"MultiProcessorCompile"
+		}
+		
+
 	configuration { "not vs*" }
 		buildoptions {
 			"-Wno-implicit-fallthrough",
@@ -639,7 +671,11 @@ project "shaderc"
             path.join(GLSL_OPTIMIZER, "include/c99")
         }
 
-
+		flags
+		{
+			"MultiProcessorCompile"
+		}
+		
 
 
 	
