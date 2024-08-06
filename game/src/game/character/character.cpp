@@ -108,7 +108,7 @@ void CCharacter::processCamera(float dt)
 	{
 		float yDiff = yPos - m_cursorPos.y;
 		m_camHeight += glm::radians(yDiff) * m_camSensitivity;
-		m_camHeight = std::clamp(m_camHeight, -0.5f, 3.f);
+		m_camHeight = std::clamp(m_camHeight, -1.5f, 3.f);
 	}
 
 	m_camRot = character->getCamRot();
@@ -130,9 +130,10 @@ void CCharacter::processCamera(float dt)
 	cam->lookAt(m_entity->getTransform().position());
 }
 
-#ifdef DA_REVIEW
+
 void CCharacterGui::onRender(float dt)
 {
+#ifdef DA_REVIEW
 	return;
 	glm::vec3 headPos;
 	da::core::FComponentRef<da::core::CSkeletalMeshComponent> skele = m_parent->m_entity->getComponent<da::core::CSkeletalMeshComponent>();
@@ -173,7 +174,8 @@ void CCharacterGui::onRender(float dt)
 	ImGui::PopStyleColor(4);
 
 	ImGui::End();
-}
 #endif
+}
+
 
 

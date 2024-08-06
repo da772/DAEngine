@@ -46,6 +46,7 @@
 #else
 #define PROFILE_FRAME(x) 
 #define PROFILE(...) 
+#define PROFILE_NAME(name)
 #define PROFILE_THREAD(x) 
 #define PROFILE_TAG(...) 
 #endif

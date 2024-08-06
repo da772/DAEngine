@@ -157,7 +157,7 @@ namespace std
 
 			return strcmp(lhs.c_str(), rhs.c_str()) < 0;
 #else
-			return lhs.hash() < rhs.hash()
+			return lhs.hash() < rhs.hash();
 #endif
 		}
 	};

@@ -23,6 +23,7 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGu
 	for (const da::graphics::FMaterialData& mat : mesh->getMaterials())
 	{
 		const_cast<da::graphics::FMaterialData&>(mat).metallicFactor = 0.f;
+		const_cast<da::graphics::FMaterialData&>(mat).roughnessFactor = 0.45f;
 	}
 
 	mesh->getMaterial(10).baseColorFactor = { 0.f,0.f,0.f,0.f };
@@ -50,7 +51,7 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGu
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogLeft.fbx", mesh)), 0.f }
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogRight.fbx", mesh)), 0.f }
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogBack.fbx", mesh)), 0.f }
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Combo_A3_RM_01.fbx", mesh), false), 0.f } // attack
+		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Combo_A1_IP_01.fbx", mesh), false), 0.f } // attack
 	};
 
 
@@ -58,7 +59,7 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGu
 	m_animGraph = new da::graphics::CSkeletalAnimGraph(mesh, m_anims);
 	da::core::FComponentRef<da::core::CSkeletalMeshComponent> meshComponent = parent.addComponent<da::core::CSkeletalMeshComponent>(m_animGraph);
 
-	glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.f, 0.f, 180.f))));
+	glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.00f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.f, 0.f, 180.f))));
 	meshComponent->setTransform(offset);
 	if (m_isLocalPlayer) m_movement = new CCharacterMovement1(m_parent);
 	else m_movement = new CAICharacterMovement(m_parent);
@@ -99,9 +100,15 @@ void CCharacterComponent::processAnims(float dt)
 
 	// attack
 	if (m_attack) {
-		if (m_anims[7].Animator->getPlayTime() >= m_anims[7].Animator->getMaxPlayTime())
+		if (m_anims[7].Animator->getPlayTime() >= 34.f/*m_anims[7].Animator->getMaxPlayTime()*/)
 		{
 			m_attack = false;
+
+			for (size_t i = 0; i < m_anims.size(); i++)
+			{
+				if (i == 7) continue;
+				m_anims[i].Animator->setPlayTime(0.f);
+			}
 		}
 		else {
 			m_animGraph->getNodes()[7].Weight = std::min(m_animGraph->getNodes()[7].Weight + 2.f * dt, (float)m_attack);
@@ -165,9 +172,15 @@ void CCharacterComponent::processAnims(float dt)
 		float pTime = m_animGraph->getNodes()[(uint8_t)ECharacterAnims::Swing2].Animator->getPlayTime();
 		if (m_weapon) {
 			da::core::FComponentRef<da::core::CCollisionComponent> colComp = m_weapon->getComponent<da::core::CCollisionComponent>();
-			colComp->enable(pTime >= 20.f && pTime <= 30.f);
+			colComp->enable(pTime >= 14.f && pTime <= 20.f);
+
+			if (pTime >= 3.f && pTime < 4.f)
+			{
+				movement->applyImpulse(m_parent.getTransform().forward() * 6.f);
+			}
+
 #ifdef DA_REVIEW
-			if (pTime >= 20.f && pTime <= 30.f) colComp->debugRender();
+			if (pTime >= 14.f && pTime <= 20.f) colComp->debugRender();
 #endif
 		}
 	}
