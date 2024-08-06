@@ -6,7 +6,7 @@
 
 namespace da::debug
 {
-	std::unordered_map<CHashString, std::unordered_map<CHashString, std::pair<bool*, std::function<void()>>>> CDebugMenuBar::s_refs;
+	std::map<CHashString, std::map<CHashString, std::pair<bool*, std::function<void()>>>> CDebugMenuBar::s_refs;
 	std::vector < std::pair<CHashString, CHashString>> CDebugMenuBar::s_dirty;
 	bool CDebugMenuBar::s_processing = false;
 
@@ -20,7 +20,7 @@ namespace da::debug
 		s_processing = true;
 		if (ImGui::BeginMainMenuBar()) {
 
-			for (const std::pair<CHashString, std::unordered_map<CHashString, std::pair<bool*, std::function<void()>>>>& map : s_refs)
+			for (const std::pair<CHashString, std::map<CHashString, std::pair<bool*, std::function<void()>>>>& map : s_refs)
 			{
 				if (ImGui::BeginMenu(map.first.c_str())) {
 					for (const std::pair<CHashString, std::pair<bool*, std::function<void()>>>& kv : map.second)
@@ -31,7 +31,7 @@ namespace da::debug
 				}
 			}
 
-			for (const std::pair<CHashString,  std::unordered_map<CHashString, std::pair<bool*, std::function<void()>>>>& map : s_refs)
+			for (const std::pair<CHashString,  std::map<CHashString, std::pair<bool*, std::function<void()>>>>& map : s_refs)
 			{
 				for (const std::pair<CHashString, std::pair<bool*, std::function<void()>>>& kv : map.second)
 				{
@@ -77,7 +77,7 @@ namespace da::debug
 			return;
 		}
 
-		const std::unordered_map< CHashString, std::pair<bool*, std::function<void()>>>::iterator& it2 = it1->second.find(id);
+		const std::map< CHashString, std::pair<bool*, std::function<void()>>>::iterator& it2 = it1->second.find(id);
 
 		if (it2 == it1->second.end())
 		{

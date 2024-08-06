@@ -148,4 +148,17 @@ namespace std
 			return hashStr.hash();
 		}
 	};
+
+	template<> struct less<da::core::containers::CBasicHashString>
+	{
+		bool operator() (const da::core::containers::CBasicHashString& lhs, const da::core::containers::CBasicHashString& rhs) const
+		{
+#ifdef DA_REVIEW
+
+			return strcmp(lhs.c_str(), rhs.c_str()) < 0;
+#else
+			return lhs.hash() < rhs.hash()
+#endif
+		}
+	};
 }

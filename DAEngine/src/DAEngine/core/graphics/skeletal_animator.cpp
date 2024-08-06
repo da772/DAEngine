@@ -356,18 +356,31 @@ namespace da::graphics
 
 	bool CSkeletalAnimator::getBoneWorldTransform(CHashString name, const glm::mat4& modelMat, glm::mat4& out) const
 	{
+		PROFILE();
 		ASSERT(m_CurrentAnimation->getMeshCount() != 0);
 
-		const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(2).find(name);
+		for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
+			const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(i).find(name);
 
-		if (it == m_CurrentAnimation->getBoneIDMap(2).end())
-		{
-			return false;
+			if (it == m_CurrentAnimation->getBoneIDMap(i).end())
+			{
+				continue;
+			}
+
+			out = modelMat * (m_FinalBoneMatrices[i][it->second.id] * glm::inverse(it->second.offset));
+
+			if (glm::all(glm::isnan(out[3])))
+			{
+				continue;
+			}
+
+			
+			return true;
 		}
 
-		out = modelMat * (m_FinalBoneMatrices[2][it->second.id] * glm::inverse(it->second.offset));
+		
 
-		return true;
+		return false;
 	}
 
 

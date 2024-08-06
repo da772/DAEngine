@@ -19,7 +19,7 @@ namespace da::debug
 
 
 	private:
-		static std::unordered_map<CHashString, std::unordered_map<CHashString, std::pair<bool*, std::function<void()>>>> s_refs;
+		static std::map<CHashString, std::map<CHashString, std::pair<bool*, std::function<void()>>>> s_refs;
 		static std::vector < std::pair<CHashString, CHashString>> s_dirty;
 		static bool s_processing;
 

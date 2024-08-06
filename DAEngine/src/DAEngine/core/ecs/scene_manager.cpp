@@ -17,6 +17,7 @@ namespace da::core {
 	bool CSceneManager::s_initialized = false;
 #ifdef DA_REVIEW
 	bool CSceneManager::s_showDebug = false;
+	bool CSceneManager::s_showECSDebug = false;
 	bool CSceneManager::s_showCameraDebug = false;
 #endif
 
@@ -24,6 +25,7 @@ namespace da::core {
 	{
 #ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"), &s_showDebug, renderDebug);
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("Component View"), &s_showECSDebug, renderECSDebug);
 		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Camera"), &s_showCameraDebug, renderCameraDebug);
 #endif
 		s_initialized = true;
@@ -132,6 +134,45 @@ namespace da::core {
 			ImGui::End();
 		}
 	}
+
+
+	void CSceneManager::renderECSDebug()
+	{
+		if (CScene* scene = getScene()) {
+
+			if (ImGui::Begin("ECS Debug", &s_showECSDebug)) {
+
+				for (const std::pair<CHashString, FComponentContainer>& kv : scene->getComponentContainers())
+				{
+					constexpr int colSize = 5;
+					if (ImGui::CollapsingHeader(kv.first.c_str()))
+					{
+						if (kv.second.getCount())
+						{
+							ImGui::BeginTable(kv.first.c_str(), colSize, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg);
+							for (size_t i = 0; i < kv.second.getCount() * kv.second.getComponentSize(); i+= 2) {
+								if (i % colSize == 0) {
+									ImGui::TableNextRow();
+								}
+								ImGui::TableSetColumnIndex(i % colSize);
+								if (i % kv.second.getComponentSize() == 0) {
+									ImU32 cell_bg_color = ImGui::GetColorU32(ImVec4(0.3f, 0.3f, 0.7f, 0.65f));
+									ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, cell_bg_color);
+								}
+								ImGui::Text("0x%04x", *((uint16_t*)kv.second.getComponentAtIndexUnscaled(i)));
+							}
+
+							ImGui::EndTable();
+						}
+					}
+				}
+
+			}
+
+			ImGui::End();
+		}
+	}
+
 #endif
 
 	void CSceneManager::shutdown()
@@ -139,6 +180,7 @@ namespace da::core {
 #ifdef DA_REVIEW
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"));
 		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Camera"));
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Component View"), HASHSTR("Camera"));
 #endif
 		if (s_scene) {
 			if (s_initialized) s_scene->shutdown();

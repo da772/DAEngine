@@ -137,6 +137,10 @@ namespace da::core {
 			return m_count;
 		}
 
+		inline size_t getComponentSize() const {
+			return m_size;
+		}
+
 	private:
 		void dirty();
 
@@ -253,6 +257,10 @@ namespace da::core {
 		}
 
 		const CEntity* getEntityFromTag(CHashString tag) const;
+
+#ifdef DA_REVIEW
+		inline const std::unordered_map<CHashString, FComponentContainer>& getComponentContainers() const { return m_components; }
+#endif
 
 	private:
 		std::vector<CEntity*> m_entities;

@@ -27,7 +27,7 @@ namespace da::ai
 		s_initialized = true;
 		
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("ai"), HASHSTR("NavMesh"), &s_debugRender, []() { });
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("Ai"), HASHSTR("NavMesh"), &s_debugRender, []() { });
 #endif
 
 		for (INavMesh* m : s_navMeshes)
@@ -45,7 +45,7 @@ namespace da::ai
 	void CNavMeshManager::shutdown()
 	{
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("ai"), HASHSTR("NavMesh"));
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Ai"), HASHSTR("NavMesh"));
 #endif
 
 		for (INavMesh* m : s_navMeshes)

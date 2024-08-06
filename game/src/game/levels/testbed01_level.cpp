@@ -93,14 +93,19 @@ void CTestBed01Level::initialize()
 	// Sphere
 	{
 		da::core::CEntity* sphere = da::core::CSceneManager::getScene()->createEntity();
-		da::core::FComponentRef<da::core::CSmeshComponent> c = sphere->addComponent<da::core::CSmeshComponent>("assets/sphere.fbx");
-		sphere->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeSphere::create(1.f)
-				, da::physics::CPhysicsEntityMotionState::create(sphere)
-				, 1.f
-				, { 0.f,0.f,0.f }));
-		sphere->setTag(HASHSTR("Sphere"));
-		sphere->getTransform().setPosition({ 0.f, 0.f, 1.f });
+		da::core::FComponentRef<da::core::CSkeletalMeshComponent> c = 
+			sphere->addComponent<da::core::CSkeletalMeshComponent>(
+				  "assets/skeletons/camilla/camilla_02.fbx"
+				, "assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx");
+		for (const da::graphics::FMaterialData& mat : c->getSkeletalMesh()->getMaterials())
+		{
+			const_cast<da::graphics::FMaterialData&>(mat).metallicFactor = 0.f;
+		}
+
+		c->getSkeletalMesh()->getMaterial(10).baseColorFactor = { 0.f,0.f,0.f,0.f };
+		c->getSkeletalMesh()->getMaterial(13).baseColorFactor = { 0.f,0.f,0.f,0.25f };
+		sphere->setTag(HASHSTR("Camilla"));
+		sphere->getTransform().setPosition({ -2.f, 0.f, 1.f });
 	}
 
 	// Ramp1

@@ -1,0 +1,317 @@
+﻿[BoneMapOption]
+Prefix = 
+
+
+[BoneMap]
+CC_Base_Head = Head
+CC_Base_Hip = Hips
+CC_Base_L_Calf = LeftLeg
+CC_Base_L_Clavicle = LeftShoulder
+CC_Base_L_Foot = LeftFoot
+CC_Base_L_Forearm = LeftForeArm
+CC_Base_L_Hand = LeftHand
+CC_Base_L_Index1 = LeftHandIndex1
+CC_Base_L_Index2 = LeftHandIndex2
+CC_Base_L_Index3 = LeftHandIndex3
+CC_Base_L_Mid1 = LeftHandMiddle1
+CC_Base_L_Mid2 = LeftHandMiddle2
+CC_Base_L_Mid3 = LeftHandMiddle3
+CC_Base_L_Pinky1 = LeftHandPinky1
+CC_Base_L_Pinky2 = LeftHandPinky2
+CC_Base_L_Pinky3 = LeftHandPinky3
+CC_Base_L_Ring1 = LeftHandRing1
+CC_Base_L_Ring2 = LeftHandRing2
+CC_Base_L_Ring3 = LeftHandRing3
+CC_Base_L_Thigh = LeftUpLeg
+CC_Base_L_Thumb1 = LeftHandThumb1
+CC_Base_L_Thumb2 = LeftHandThumb2
+CC_Base_L_Thumb3 = LeftHandThumb3
+CC_Base_L_ToeBase = LeftToeBase
+CC_Base_L_Upperarm = LeftArm
+CC_Base_NeckTwist01 = Neck
+CC_Base_NeckTwist02 = Neck1
+CC_Base_R_Calf = RightLeg
+CC_Base_R_Clavicle = RightShoulder
+CC_Base_R_Foot = RightFoot
+CC_Base_R_Forearm = RightForeArm
+CC_Base_R_Hand = RightHand
+CC_Base_R_Index1 = RightHandIndex1
+CC_Base_R_Index2 = RightHandIndex2
+CC_Base_R_Index3 = RightHandIndex3
+CC_Base_R_Mid1 = RightHandMiddle1
+CC_Base_R_Mid2 = RightHandMiddle2
+CC_Base_R_Mid3 = RightHandMiddle3
+CC_Base_R_Pinky1 = RightHandPinky1
+CC_Base_R_Pinky2 = RightHandPinky2
+CC_Base_R_Pinky3 = RightHandPinky3
+CC_Base_R_Ring1 = RightHandRing1
+CC_Base_R_Ring2 = RightHandRing2
+CC_Base_R_Ring3 = RightHandRing3
+CC_Base_R_Thigh = RightUpLeg
+CC_Base_R_Thumb1 = RightHandThumb1
+CC_Base_R_Thumb2 = RightHandThumb2
+CC_Base_R_Thumb3 = RightHandThumb3
+CC_Base_R_ToeBase = RightToeBase
+CC_Base_R_Upperarm = RightArm
+CC_Base_Spine01 = Spine1
+CC_Base_Spine02 = Spine2
+CC_Base_Waist = Spine
+
+
+[BoneRotate]
+CC_Base_Hip = 0.7071067691,0.,0.,0.7071067691,
+CC_Base_Pelvis = 9.724218398e-002,2.274541475e-004,-1.939725713e-003,0.9952596426,
+CC_Base_L_Thigh = -1.211382682e-003,9.00490731e-002,0.9959103465,7.294503041e-003,
+CC_Base_L_Calf = -5.405496806e-003,1.705395553e-004,-9.455763502e-004,0.9999850392,
+CC_Base_L_Foot = 0.6015323997,-3.998427466e-002,3.937081993e-002,0.7968751192,
+CC_Base_L_ToeBaseShareBone = 0.1371702701,2.662781999e-002,-1.491652709e-002,0.9900771976,
+CC_Base_L_ToeBase = 0.1371765584,2.645266056e-002,-1.495705079e-002,0.9900804162,
+CC_Base_L_PinkyToe1 = -0.118118763,3.647595271e-002,-1.342004351e-002,0.9922385812,
+CC_Base_L_RingToe1 = -0.1842679232,5.409966409e-002,2.464543562e-003,0.981382966,
+CC_Base_L_MidToe1 = -0.108101204,3.871067986e-002,2.769309096e-003,0.9933820963,
+CC_Base_L_IndexToe1 = -9.641669691e-002,4.418689758e-002,8.931422606e-003,0.9943196774,
+CC_Base_L_BigToe1 = 2.388045937e-002,-9.388736798e-004,4.415430129e-003,0.999704659,
+CC_Base_L_CalfTwist01 = -7.161871508e-006,-1.188401049e-012,-9.246637092e-006,1.,
+CC_Base_L_CalfTwist02 = -1.412816573e-006,1.20023069e-005,-1.678709054e-006,1.,
+CC_Base_L_KneeShareBone = 5.102222076e-006,1.60826426e-002,6.620556633e-006,0.9998701811,
+CC_Base_L_ThighTwist01 = 2.298519394e-005,-1.374624276e-006,7.585151252e-006,1.,
+CC_Base_L_ThighTwist02 = -1.271255456e-007,-2.002138899e-006,-6.565817046e-008,1.,
+CC_Base_R_Thigh = 7.827259833e-004,9.085886925e-002,0.9958000779,-1.128253154e-002,
+CC_Base_R_Calf = -3.876763629e-003,-1.722350135e-004,1.11637637e-003,0.9999919534,
+CC_Base_R_KneeShareBone = 5.143675935e-006,-1.60826426e-002,-6.618930456e-006,0.9998701811,
+CC_Base_R_Foot = 0.5996205807,3.98933515e-002,-3.956227005e-002,0.798309803,
+CC_Base_R_ToeBase = 0.1372047216,-2.645310201e-002,1.495304145e-002,0.9900764823,
+CC_Base_R_BigToe1 = 2.395417914e-002,1.099533867e-003,-4.425110295e-003,0.9997026324,
+CC_Base_R_PinkyToe1 = -0.11803101,-3.632022813e-002,1.337760128e-002,0.9922552705,
+CC_Base_R_RingToe1 = -0.1851190776,-5.427904055e-002,-2.404092113e-003,0.9812130332,
+CC_Base_R_IndexToe1 = -9.727701545e-002,-4.436572269e-002,-8.852045052e-003,0.9942286015,
+CC_Base_R_MidToe1 = -0.1089474708,-3.888568282e-002,-2.699346747e-003,0.9932830334,
+CC_Base_R_ToeBaseShareBone = 0.1371950805,-2.662697434e-002,1.492068917e-002,0.9900736809,
+CC_Base_R_CalfTwist01 = -7.120428563e-006,1.188760353e-012,9.249432878e-006,1.,
+CC_Base_R_CalfTwist02 = -1.412816573e-006,-1.200223414e-005,1.674983764e-006,1.,
+CC_Base_R_ThighTwist01 = 2.298519394e-005,1.373343707e-006,-7.598189768e-006,1.,
+CC_Base_R_ThighTwist02 = -8.149069197e-010,2.001582061e-006,6.61239028e-008,1.,
+CC_Base_Waist = 0.1229591966,2.295103041e-004,-1.630429993e-003,0.9924103618,
+CC_Base_Spine01 = -0.1840609163,-5.176611594e-004,5.042362027e-004,0.9829144478,
+CC_Base_Spine02 = -3.143048659e-002,-1.951672493e-005,2.097288845e-003,0.9995036721,
+CC_Base_NeckTwist01 = 0.2680016458,1.830987865e-003,-8.664730936e-003,0.9633777142,
+CC_Base_NeckTwist02 = -2.014951594e-002,2.349654278e-005,2.067979192e-003,0.9997956753,
+CC_Base_Head = -0.1571200937,-5.952329375e-004,5.707153119e-003,0.9875633121,
+CC_Base_FacialBone = 0.5,0.5,0.5,0.5,
+CC_Base_JawRoot = -5.861023237e-005,-4.24994796e-005,0.7070915103,0.7071220279,
+CC_Base_Tongue01 = -1.464238594e-004,1.045173779e-002,4.622413218e-002,0.9988763332,
+CC_Base_Tongue02 = -6.476818235e-004,-1.048899628e-002,8.06992799e-002,0.9966830611,
+CC_Base_Tongue03 = -4.12595924e-004,-5.459354143e-004,-1.85503962e-003,0.999998033,
+CC_Base_Teeth02 = 1.,-2.510106469e-006,9.716049681e-005,-7.986840501e-005,
+CC_Base_R_Eye = 0.7070609927,-5.012801921e-005,0.7071525455,-5.249169408e-005,
+CC_Base_L_Eye = 0.7071525455,5.258327292e-005,0.7070609927,5.021961624e-005,
+CC_Base_UpperJaw = 2.838221371e-005,-3.107763405e-005,0.7071106434,0.7071028948,
+CC_Base_Teeth01 = 1.,-1.061500006e-005,-3.413824015e-005,1.083291136e-005,
+CC_Base_L_Clavicle = -1.779976487e-002,0.1479596347,-0.704831779,0.6935434937,
+CC_Base_L_Upperarm = 0.116018489,1.342445612e-004,1.635691896e-002,0.9931122065,
+CC_Base_L_Forearm = 1.087049022e-002,1.602751217e-005,-2.055661607e-004,0.9999406934,
+CC_Base_L_ForearmTwist01 = -1.631976119e-007,-5.38407221e-008,-5.953014806e-006,1.,
+CC_Base_L_ForearmTwist02 = 4.486456874e-006,2.399867149e-008,5.774190868e-006,1.,
+CC_Base_L_ElbowShareBone = 3.403207753e-003,4.213643551e-004,-5.487931194e-004,0.9999939203,
+CC_Base_L_Hand = 3.68879037e-003,-2.756617498e-003,-1.481910516e-002,0.9998796582,
+CC_Base_L_Pinky1 = 1.805306971e-002,1.875280053e-003,9.017097764e-003,0.9997947812,
+CC_Base_L_Pinky2 = -1.941755973e-002,-3.654948203e-003,-3.296890855e-002,0.9992613792,
+CC_Base_L_Pinky3 = -2.860687906e-003,1.044433564e-003,6.872492284e-002,0.9976316094,
+CC_Base_L_Ring1 = 8.222311735e-004,2.355685428e-004,3.156727552e-002,0.9995012879,
+CC_Base_L_Ring2 = -8.854005486e-003,-5.164158065e-004,-3.632105887e-002,0.9993014336,
+CC_Base_L_Ring3 = 1.354289125e-003,8.34087783e-004,4.199291766e-002,0.9991168976,
+CC_Base_L_Mid1 = 8.375431411e-003,-2.855852945e-003,1.897351071e-002,0.9997807145,
+CC_Base_L_Mid2 = -2.25766818e-003,3.522569546e-003,-1.895657741e-002,0.9998117685,
+CC_Base_L_Mid3 = 9.460009634e-003,2.763983211e-004,1.046344731e-002,0.9999001622,
+CC_Base_L_Index1 = -8.071963675e-003,-3.90500389e-003,1.502508018e-002,0.9998467565,
+CC_Base_L_Index2 = 1.020193007e-002,4.862951115e-003,-2.836037241e-002,0.9995341301,
+CC_Base_L_Index3 = -5.083250653e-005,4.362915643e-004,3.290648386e-002,0.9994589686,
+CC_Base_L_Thumb1 = 0.3724568188,-7.805838436e-002,-6.867811084e-002,0.9222076535,
+CC_Base_L_Thumb2 = -0.159964636,-2.055741288e-002,8.850803226e-002,0.9829313755,
+CC_Base_L_Thumb3 = -2.274119994e-003,-8.175313706e-004,4.747188836e-002,0.9988700747,
+CC_Base_L_UpperarmTwist01 = 2.945369715e-006,-1.185844738e-007,1.937277148e-007,1.,
+CC_Base_L_UpperarmTwist02 = 1.246574584e-006,-6.261544172e-008,1.863414951e-007,1.,
+CC_Base_L_RibsTwist = 6.184971426e-004,0.6379547715,0.7700724602,7.624776918e-004,
+CC_Base_L_Breast = -8.568168397e-008,0.,0.,1.,
+CC_Base_R_RibsTwist = 6.063872715e-004,0.6379547715,0.7700724602,7.537669153e-004,
+CC_Base_R_Breast = -8.568168397e-008,0.,0.,1.,
+CC_Base_R_Clavicle = -1.512367465e-002,-0.1454771608,0.7041722536,0.6948004961,
+CC_Base_R_Upperarm = 0.114138715,1.168783754e-003,-1.725167222e-002,0.9933143258,
+CC_Base_R_Forearm = 8.519376628e-003,-5.510573828e-007,1.054559601e-003,0.9999629855,
+CC_Base_R_ElbowShareBone = 3.403207753e-003,-4.213643551e-004,5.487931194e-004,0.9999939203,
+CC_Base_R_ForearmTwist01 = -1.631976119e-007,5.38407221e-008,5.953014806e-006,1.,
+CC_Base_R_ForearmTwist02 = 4.486456874e-006,-2.399867149e-008,-5.774190868e-006,1.,
+CC_Base_R_Hand = 3.67584778e-003,2.754843794e-003,1.479911618e-002,0.9998800159,
+CC_Base_R_Ring1 = 8.195732371e-004,-2.339149651e-004,-3.15605402e-002,0.999501884,
+CC_Base_R_Ring2 = -9.569200687e-003,-1.583798876e-004,3.655573726e-002,0.999286294,
+CC_Base_R_Ring3 = 1.63976429e-003,-8.110621129e-004,-4.083229601e-002,0.9991645217,
+CC_Base_R_Mid1 = 7.252807263e-003,3.06326081e-003,-1.957088709e-002,0.999777317,
+CC_Base_R_Mid2 = -2.239698311e-003,-3.5228692e-003,1.895631291e-002,0.9998118281,
+CC_Base_R_Mid3 = 9.299931116e-003,-2.551436774e-004,-9.743716568e-003,0.9999089837,
+CC_Base_R_Thumb1 = 0.372451365,7.806333899e-002,6.869919598e-002,0.9222080708,
+CC_Base_R_Thumb2 = -0.1599565148,2.056023292e-002,-8.850278705e-002,0.9829331636,
+CC_Base_R_Thumb3 = -3.574954579e-003,3.593801521e-003,-4.679639265e-002,0.99889189,
+CC_Base_R_Index1 = -8.073119447e-003,3.905565012e-003,-1.501594204e-002,0.9998471737,
+CC_Base_R_Index2 = 9.368918836e-003,-5.812667776e-003,2.836380154e-002,0.9995371103,
+CC_Base_R_Index3 = -5.839511286e-004,-4.079187929e-004,-3.213097155e-002,0.9994838834,
+CC_Base_R_Pinky1 = 1.805040985e-002,-1.874888665e-003,-9.000425227e-003,0.9997950792,
+CC_Base_R_Pinky2 = -1.938992366e-002,3.676597262e-003,3.313920647e-002,0.9992563725,
+CC_Base_R_Pinky3 = -2.860655077e-003,-1.042782795e-003,-6.87296018e-002,0.9976312518,
+CC_Base_R_UpperarmTwist01 = 2.945369715e-006,1.185844738e-007,-1.937277148e-007,1.,
+CC_Base_R_UpperarmTwist02 = 1.246574584e-006,6.261544172e-008,-1.863414951e-007,1.,
+
+
+[FloorContact]
+HandBottom = 2.436706543
+HandBack = 3.720436096
+HandMiddle = 0.
+HandFront = 16.51306152
+HandIn = 8.204620361
+HandOut = 2.301066399
+FootBottom = 7.589752197
+FootBack = 6.380770683
+FootMiddle = 12.18521214
+FootFront = 7.488427162
+FootIn = 5.05381155
+FootOut = 6.848954201
+
+
+[Property]
+AnkleHeight = 0.
+AnkleSpacing = 0.
+HipsForward = 0.
+AutoAnkleHeight = true
+AutoAnkleSpacing = true
+RollExtractionMode = false
+
+
+[RootTransform]
+Value = 1.,0.9338103533,0.9550049305,0.9337807298,0.,0.,0.,1.,0.7071067691,0.,0.,0.7071067691,0.,0.,93.92395782,
+
+
+[FacialMap_LEye]
+Bone0 = CC_Base_L_Eye
+
+
+[FacialMap_REye]
+Bone0 = CC_Base_R_Eye
+
+
+[BoneTypeOfBonesUnderHead]
+CC_Base_FacialBone = Facial
+CC_Base_JawRoot = Facial
+CC_Base_Tongue01 = Facial
+CC_Base_Tongue02 = Unused
+CC_Base_Tongue03 = Unused
+CC_Base_Teeth02 = Facial
+CC_Base_R_Eye = Facial
+CC_Base_L_Eye = Facial
+CC_Base_UpperJaw = Facial
+CC_Base_Teeth01 = Facial
+
+
+[Custom_Bone_Share]
+Bone0 = CC_Base_L_CalfTwist01
+Bone1 = CC_Base_L_CalfTwist02
+Bone2 = CC_Base_L_KneeShareBone
+Bone3 = CC_Base_L_ThighTwist01
+Bone4 = CC_Base_L_ThighTwist02
+Bone5 = CC_Base_R_KneeShareBone
+Bone6 = CC_Base_R_CalfTwist01
+Bone7 = CC_Base_R_CalfTwist02
+Bone8 = CC_Base_R_ThighTwist01
+Bone9 = CC_Base_R_ThighTwist02
+Bone10 = CC_Base_L_ForearmTwist01
+Bone11 = CC_Base_L_ForearmTwist02
+Bone12 = CC_Base_L_ElbowShareBone
+Bone13 = CC_Base_L_UpperarmTwist01
+Bone14 = CC_Base_L_UpperarmTwist02
+Bone15 = CC_Base_R_ElbowShareBone
+Bone16 = CC_Base_R_ForearmTwist01
+Bone17 = CC_Base_R_ForearmTwist02
+Bone18 = CC_Base_R_UpperarmTwist01
+Bone19 = CC_Base_R_UpperarmTwist02
+
+
+[CC_Base_L_CalfTwist01]
+CC_Base_L_Calf = y, false, -1., 0., 1., 0., 0., 0.
+
+
+[CC_Base_L_CalfTwist02]
+CC_Base_L_Calf = y, false, 0.5, 0., 1., 0., 0., 0.
+CC_Base_L_Foot = y, false, 0.5, 0., 0., 0., 0., 0.
+
+
+[CC_Base_L_KneeShareBone]
+CC_Base_L_Calf = y, false, -1., -0.5, 1., 0., 0., 0.
+
+
+[CC_Base_L_ThighTwist01]
+CC_Base_L_Thigh = y, false, -0.5, 0., 1., 0., 0., 0.
+
+
+[CC_Base_L_ThighTwist02]
+CC_Base_L_Thigh = y, false, 0.5, 0., 1., 0., 0., 0.
+
+
+[CC_Base_R_KneeShareBone]
+CC_Base_R_Calf = y, false, -1., -0.5, 1., 0., 0., 0.
+
+
+[CC_Base_R_CalfTwist01]
+CC_Base_R_Calf = y, false, -1., 0., 1., 0., 0., 0.
+
+
+[CC_Base_R_CalfTwist02]
+CC_Base_R_Calf = y, false, 0.5, 0., 1., 0., 0., 0.
+CC_Base_R_Foot = y, false, 0.5, 0., 0., 0., 0., 0.
+
+
+[CC_Base_R_ThighTwist01]
+CC_Base_R_Thigh = y, false, -0.5, 0., 1., 0., 0., 0.
+
+
+[CC_Base_R_ThighTwist02]
+CC_Base_R_Thigh = y, false, 0.5, 0., 1., 0., 0., 0.
+
+
+[CC_Base_L_ForearmTwist01]
+CC_Base_L_Forearm = y, false, -0.5, 0., 1., 0., 0., 0.
+
+
+[CC_Base_L_ForearmTwist02]
+CC_Base_L_Forearm = y, false, 0.5, 0., 1., 0., 0., 0.
+CC_Base_L_Hand = y, false, 0.5, 0., 0., 0., 0., 0.
+
+
+[CC_Base_L_ElbowShareBone]
+CC_Base_L_Forearm = y, false, -1., -0.6000000238, 1., 0., 0., 0.
+
+
+[CC_Base_L_UpperarmTwist01]
+CC_Base_L_Upperarm = y, false, -0.5, 0., 1., 0., 0., 0.
+
+
+[CC_Base_L_UpperarmTwist02]
+CC_Base_L_Upperarm = y, false, 0.5, 0., 1., 0., 0., 0.
+
+
+[CC_Base_R_ElbowShareBone]
+CC_Base_R_Forearm = y, false, -1., -0.6000000238, 1., 0., 0., 0.
+
+
+[CC_Base_R_ForearmTwist01]
+CC_Base_R_Forearm = y, false, -0.5, 0., 1., 0., 0., 0.
+
+
+[CC_Base_R_ForearmTwist02]
+CC_Base_R_Forearm = y, false, 0.5, 0., 1., 0., 0., 0.
+CC_Base_R_Hand = y, false, 0.5, 0., 0., 0., 0., 0.
+
+
+[CC_Base_R_UpperarmTwist01]
+CC_Base_R_Upperarm = y, false, -0.5, 0., 1., 0., 0., 0.
+
+
+[CC_Base_R_UpperarmTwist02]
+CC_Base_R_Upperarm = y, false, 0.5, 0., 1., 0., 0., 0.

@@ -18,30 +18,42 @@ COMPONENT_CPP(CCharacterComponent)
 
 CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGuid& guid, da::core::CEntity& parent) : m_isLocalPlayer(isLocalPlayer), m_guid(guid), m_parent(parent)
 {
-	da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/skeletons/archer/archer.fbx", false);
+	da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/skeletons/camilla/camilla_02.fbx", false);
+
+	for (const da::graphics::FMaterialData& mat : mesh->getMaterials())
+	{
+		const_cast<da::graphics::FMaterialData&>(mat).metallicFactor = 0.f;
+	}
+
+	mesh->getMaterial(10).baseColorFactor = { 0.f,0.f,0.f,0.f };
+	mesh->getMaterial(13).baseColorFactor = { 0.f,0.f,0.f,0.25f };
+
 	// Skin
-	mesh->getMaterial(0).metallicFactor = .200f;
-	mesh->getMaterial(0).roughnessFactor = 0.45f;
-	// Eye
-	mesh->getMaterial(1).metallicFactor = .1f;
-	mesh->getMaterial(1).roughnessFactor = 0.0f;
-	// Clothes
-	mesh->getMaterial(2).metallicFactor = .2f;
-	mesh->getMaterial(2).roughnessFactor = 1.0f;
-	// Lashes
-	mesh->getMaterial(3).metallicFactor = .1f;
-	mesh->getMaterial(3).roughnessFactor = 0.5f;
+	//mesh->getMaterial(0).metallicFactor = .200f;
+	//mesh->getMaterial(0).roughnessFactor = 0.45f;
+	//// Eye
+	//mesh->getMaterial(1).metallicFactor = .1f;
+	//mesh->getMaterial(1).roughnessFactor = 0.0f;
+	//// Clothes
+	//mesh->getMaterial(2).metallicFactor = .2f;
+	//mesh->getMaterial(2).roughnessFactor = 1.0f;
+	//// Lashes
+	//mesh->getMaterial(3).metallicFactor = .1f;
+	//mesh->getMaterial(3).roughnessFactor = 0.5f;
 
 	m_anims = {
-		  { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/idle.fbx", mesh)), 1.f }
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jog.fbx", mesh)), 0.f }
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/sprint.fbx", mesh)), 0.f }
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/button.fbx", mesh)), 0.f }
+			
+		  { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/camilla/camilla_02.fbx", mesh)), 1.f }// idle
+		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // jog
+		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // sprint
+		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/button.fbx", mesh)), 0.f } // button
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogLeft.fbx", mesh)), 0.f }
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogRight.fbx", mesh)), 0.f }
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogBack.fbx", mesh)), 0.f }
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/swing2.fbx", mesh), false), 0.f }
+		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh), false), 0.f }
 	};
+
+
 
 	m_animGraph = new da::graphics::CSkeletalAnimGraph(mesh, m_anims);
 	da::core::FComponentRef<da::core::CSkeletalMeshComponent> meshComponent = parent.addComponent<da::core::CSkeletalMeshComponent>(m_animGraph);

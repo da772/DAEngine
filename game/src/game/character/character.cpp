@@ -73,16 +73,16 @@ void CCharacter::lateUpdate(float dt)
 
 	if (!skele->getSkeletalAnimator()->getCurrentAnim()) return;
 
-	if (!skele->getSkeletalAnimator()->getBoneWorldPosition(HASHSTR("mixamorig:RightHand"), skele->getTransform(), position)) {
+	if (!skele->getSkeletalAnimator()->getBoneWorldPosition(HASHSTR("hand_r"), skele->getTransform(), position)) {
 		return;
 	}
 
-	if (!skele->getSkeletalAnimator()->getBoneWorldRotation(HASHSTR("mixamorig:RightHand"), skele->getTransform(), rot)) {
+	if (!skele->getSkeletalAnimator()->getBoneWorldRotation(HASHSTR("hand_r"), skele->getTransform(), rot)) {
 		return;
 	}
 
-	m_sword->getTransform().setPosition(position + rot * glm::vec3(-0.1f, 0.1f, 0.02f));
-	m_sword->getTransform().setRotation(rot * glm::quat(glm::radians(glm::vec3(0.f, 90.f, 0.f))));
+	m_sword->getTransform().setPosition(position + rot * glm::vec3(-0.075f, -0.02f, 0.03f));
+	m_sword->getTransform().setRotation(rot * glm::quat(glm::radians(glm::vec3(0.f, 0.f, 90.f))));
 }
 
 void CCharacter::shutdown()
@@ -133,6 +133,7 @@ void CCharacter::processCamera(float dt)
 #ifdef DA_REVIEW
 void CCharacterGui::onRender(float dt)
 {
+	return;
 	glm::vec3 headPos;
 	da::core::FComponentRef<da::core::CSkeletalMeshComponent> skele = m_parent->m_entity->getComponent<da::core::CSkeletalMeshComponent>();
 	if (!skele->getSkeletalAnimator()->getCurrentAnim()) return;
