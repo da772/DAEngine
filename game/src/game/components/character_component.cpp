@@ -43,14 +43,14 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGu
 
 	m_anims = {
 			
-		  { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/camilla/camilla_02.fbx", mesh)), 1.f }// idle
+		  { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Idle_RM_01.fbx", mesh)), 1.f }// idle
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // jog
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // sprint
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/button.fbx", mesh)), 0.f } // button
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogLeft.fbx", mesh)), 0.f }
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogRight.fbx", mesh)), 0.f }
 		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogBack.fbx", mesh)), 0.f }
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh), false), 0.f }
+		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Combo_A3_RM_01.fbx", mesh), false), 0.f } // attack
 	};
 
 

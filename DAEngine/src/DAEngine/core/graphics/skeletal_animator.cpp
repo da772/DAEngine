@@ -28,6 +28,7 @@ namespace da::graphics
 
 	void CSkeletalAnimator::calculateBoneTransform(const FAssimpNodeData* n, size_t idx)
 	{
+		PROFILE()
 		std::vector<FNodeInfo> nodeQ;
 		nodeQ.push_back({ n, glm::mat4(1), true });
 
@@ -70,6 +71,7 @@ namespace da::graphics
 
 	void CSkeletalAnimator::interpolateBoneTransformsInternal(CSkeletalAnimation* animation, const FAssimpNodeData* n, size_t idx, float interpolation, bool updateBone, const std::vector<FBoneSelector>& boneSelector)
 	{
+		PROFILE()
 		std::vector<FNodeInfo> nodeQ;	
 		const std::vector<FBoneSelector>::const_iterator& it = std::find_if(boneSelector.begin(), boneSelector.end(), [&n](const FBoneSelector& other) { return other.Bone == n->name; });
 		
