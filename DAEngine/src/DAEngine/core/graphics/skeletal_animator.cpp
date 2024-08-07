@@ -16,17 +16,17 @@ namespace da::graphics
 
 		if (!animation) return;
 
-		for (int j = 0; j < animation->getMeshCount(); j++) {
-			m_FinalBoneMatrices.push_back({});
-			m_FinalBoneMatrices[j].reserve(128);
-			for (int i = 0; i < 128; i++)
-				m_FinalBoneMatrices[j].push_back(glm::mat4(1.0f));
+		m_FinalBoneMatrices.reserve(128);
+		for (int i = 0; i < 128; i++)
+		{
+			m_FinalBoneMatrices.push_back(glm::mat4(1.0f));
 		}
 		
+		calculateBoneTransform(&m_CurrentAnimation->getRootNode());
 	}
 
 
-	void CSkeletalAnimator::calculateBoneTransform(const FAssimpNodeData* n, size_t idx)
+	void CSkeletalAnimator::calculateBoneTransform(const FAssimpNodeData* n)
 	{
 		PROFILE()
 		std::vector<FNodeInfo> nodeQ;
@@ -43,22 +43,33 @@ namespace da::graphics
 
 			glm::mat4 nodeTransform = node.Node->transformation;
 
-			CAnimatedBone* bone = m_CurrentAnimation->FindBone(node.Node->name, idx);
+			CAnimatedBone* bone = m_CurrentAnimation->FindBone(node.Node->name);
 			
 			if (bone)
 			{
+				PROFILE("CSkeletalAnimator::calculateBoneTransform::updateBone")
 				bone->Update(m_CurrentTime);
 				nodeTransform = bone->GetLocalTransform();
 			}
 
 			glm::mat4 globalTransformation = node.Transform * nodeTransform;
-			const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(idx).find(node.Node->name);
+			const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap().find(node.Node->name);
 
-			if (it != m_CurrentAnimation->getBoneIDMap(idx).end())
+			if (it != m_CurrentAnimation->getBoneIDMap().end())
 			{
+				PROFILE("CSkeletalAnimator::calculateBoneTransform::updateMatrix")
 				int index = it->second.id;
 				glm::mat4 offset = it->second.offset;
-				m_FinalBoneMatrices[idx][index] = globalTransformation * offset;
+
+				if (index < m_FinalBoneMatrices.size())
+				{
+					m_FinalBoneMatrices[index] = globalTransformation * offset;
+				}	
+				else 
+				{
+					LOG_WARN(ELogChannel::Graphics, "Failed to index bone, %s, in final matrix. Index: %d Size: %d Path: %s",
+						node.Node->name.c_str(), index, m_FinalBoneMatrices.size(), m_CurrentAnimation->getAnimName().c_str());
+				}
 			}
 
 			for (int i = 0; i < node.Node->childrenCount; i++)
@@ -69,7 +80,7 @@ namespace da::graphics
 			
 	}
 
-	void CSkeletalAnimator::interpolateBoneTransformsInternal(CSkeletalAnimation* animation, const FAssimpNodeData* n, size_t idx, float interpolation, bool updateBone, const std::vector<FBoneSelector>& boneSelector)
+	void CSkeletalAnimator::interpolateBoneTransformsInternal(CSkeletalAnimation* animation, const FAssimpNodeData* n, float interpolation, bool updateBone, const std::vector<FBoneSelector>& boneSelector)
 	{
 		PROFILE()
 		std::vector<FNodeInfo> nodeQ;	
@@ -97,7 +108,7 @@ namespace da::graphics
 
 			glm::mat4 nodeTransform = node.Node->transformation;
 
-			CAnimatedBone* bone = animation->FindBone(node.Node->name, idx);
+			CAnimatedBone* bone = animation->FindBone(node.Node->name);
 
 			if (bone)
 			{
@@ -105,7 +116,7 @@ namespace da::graphics
 				nodeTransform = bone->GetLocalTransform();
 			}
 
-			const std::unordered_map<CHashString, FBoneInfo>& animBoneMap = animation->getBoneIDMap(idx);
+			const std::unordered_map<CHashString, FBoneInfo>& animBoneMap = animation->getBoneIDMap();
 			const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = animBoneMap.find(node.Node->name);
 
 			glm::mat4 globalTransformation = node.Transform * nodeTransform;
@@ -117,11 +128,11 @@ namespace da::graphics
 
 				glm::mat4 offset = it->second.offset;
 
-				const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(idx).find(node.Node->name);
+				const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap().find(node.Node->name);
 
 				glm::mat4 finalMat = globalTransformation;
 
-				if (it != m_CurrentAnimation->getBoneIDMap(idx).end() && node.Use) {
+				if (it != m_CurrentAnimation->getBoneIDMap().end() && node.Use) {
 					glm::vec3 scale2;
 					glm::quat rotation2;
 					glm::vec3 translation2;
@@ -134,7 +145,7 @@ namespace da::graphics
 					glm::vec3 translation1;
 					glm::vec3 skew1;
 					glm::vec4 perspective1;
-					glm::decompose(m_FinalBoneMatrices[idx][it->second.id] * glm::inverse(it->second.offset), scale1, rotation1, translation1, skew1, perspective1);
+					glm::decompose(m_FinalBoneMatrices[it->second.id] * glm::inverse(it->second.offset), scale1, rotation1, translation1, skew1, perspective1);
 
 					translation1 = glm::mix(translation1, translation2, interpolation);
 					rotation1 = glm::slerp(rotation1, rotation2, interpolation);
@@ -145,10 +156,10 @@ namespace da::graphics
 				}
 
 				if (node.Use) {
-					m_FinalBoneMatrices[idx][index] = finalMat * offset;
+					m_FinalBoneMatrices[index] = finalMat * offset;
 				}
 				else {
-					m_FinalBoneMatrices[idx][index] = (m_FinalBoneMatrices[idx][it->second.id] * glm::inverse(it->second.offset)) * offset;
+					m_FinalBoneMatrices[index] = (m_FinalBoneMatrices[it->second.id] * glm::inverse(it->second.offset)) * offset;
 				}
 			}
 
@@ -164,11 +175,11 @@ namespace da::graphics
 		}
 	}
 
-	void CSkeletalAnimator::interpolateBoneTransforms(const FAssimpNodeData* n, size_t idx, float interpolation, bool updateBone)
+	void CSkeletalAnimator::interpolateBoneTransforms(const FAssimpNodeData* n, float interpolation, bool updateBone)
 	{
 		FInterpolatedAnimation& pair = m_AnimationQueue.front();
 		CSkeletalAnimation* animation = pair.pAnimation;
-		interpolateBoneTransformsInternal(animation, n, idx, interpolation, updateBone, { { HASHSTR(""), true} });
+		interpolateBoneTransformsInternal(animation, n, interpolation, updateBone, { { HASHSTR(""), true} });
 	}
 
 	bool CSkeletalAnimator::updateAnimation(float dt, bool disablePlay)
@@ -198,9 +209,7 @@ namespace da::graphics
 			const float interpTime = 1.f / (anim.fInterpolateAmt / tickTime);
 
 			if (!disablePlay) {
-				for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
-					interpolateBoneTransforms(&anim.pAnimation->getRootNode(), i, interpTime, true);
-				}
+				interpolateBoneTransforms(&anim.pAnimation->getRootNode(), interpTime, true);
 			}
 			
 			anim.fInterpolation += dt;
@@ -233,9 +242,7 @@ namespace da::graphics
 			return false;
 		}
 
-		for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
-			calculateBoneTransform(&m_CurrentAnimation->getRootNode(), i);
-		}
+		calculateBoneTransform(&m_CurrentAnimation->getRootNode());
 
 		return true;
 	}
@@ -271,9 +278,9 @@ namespace da::graphics
 			bones.pop();
 			{
 
-				const std::unordered_map<CHashString, FBoneInfo>::const_iterator& bIt = m_CurrentAnimation->getBoneIDMap(0).find(b->name);
+				const std::unordered_map<CHashString, FBoneInfo>::const_iterator& bIt = m_CurrentAnimation->getBoneIDMap().find(b->name);
 				
-				if (bIt == m_CurrentAnimation->getBoneIDMap(0).end()) {
+				if (bIt == m_CurrentAnimation->getBoneIDMap().end()) {
 					for (size_t i = 0; i < b->children.size(); i++) {
 						bones.push(&b->children[i]);
 					}
@@ -304,14 +311,14 @@ namespace da::graphics
 
 			for (size_t i = 0; i < b->children.size(); i++) {
 
-				const std::unordered_map<CHashString, FBoneInfo>::const_iterator& cbIt = m_CurrentAnimation->getBoneIDMap(0).find(b->children[i].name);
+				const std::unordered_map<CHashString, FBoneInfo>::const_iterator& cbIt = m_CurrentAnimation->getBoneIDMap().find(b->children[i].name);
 
-				if (cbIt == m_CurrentAnimation->getBoneIDMap(0).end()) {
+				if (cbIt == m_CurrentAnimation->getBoneIDMap().end()) {
 					bones.push(&b->children[i]);
 					continue;
 				}
 
-				const FBoneInfo& bInfo = m_CurrentAnimation->getBoneIDMap(0).at(b->children[i].name);
+				const FBoneInfo& bInfo = m_CurrentAnimation->getBoneIDMap().at(b->children[i].name);
 
 				glm::mat4 transform;
 				const std::unordered_map<CHashString, glm::mat4>::iterator& it = cachedBones.find(b->children[i].name);
@@ -342,16 +349,14 @@ namespace da::graphics
 
 	bool CSkeletalAnimator::getBoneLocalTransform(CHashString name, glm::mat4& out) const
 	{
-		ASSERT(m_CurrentAnimation->getMeshCount() != 0);
+		const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap().find(name);
 
-		const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(0).find(name);
-
-		if (it == m_CurrentAnimation->getBoneIDMap(0).end())
+		if (it == m_CurrentAnimation->getBoneIDMap().end())
 		{
 			return false;
 		}
 
-		out = m_FinalBoneMatrices[0][it->second.id] * glm::inverse(it->second.offset);
+		out = m_FinalBoneMatrices[it->second.id] * glm::inverse(it->second.offset);
 
 		return true;
 	}
@@ -359,30 +364,23 @@ namespace da::graphics
 	bool CSkeletalAnimator::getBoneWorldTransform(CHashString name, const glm::mat4& modelMat, glm::mat4& out) const
 	{
 		PROFILE();
-		ASSERT(m_CurrentAnimation->getMeshCount() != 0);
 
-		for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
-			const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap(i).find(name);
+		const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = m_CurrentAnimation->getBoneIDMap().find(name);
 
-			if (it == m_CurrentAnimation->getBoneIDMap(i).end())
-			{
-				continue;
-			}
-
-			out = modelMat * (m_FinalBoneMatrices[i][it->second.id] * glm::inverse(it->second.offset));
-
-			if (glm::all(glm::isnan(out[3])))
-			{
-				continue;
-			}
-
-			
-			return true;
+		if (it == m_CurrentAnimation->getBoneIDMap().end())
+		{
+			return false;
 		}
 
-		
+		out = modelMat * (m_FinalBoneMatrices[it->second.id] * glm::inverse(it->second.offset));
 
-		return false;
+		if (glm::all(glm::isnan(out[3])))
+		{
+			return false;
+		}
+
+
+		return true;
 	}
 
 
@@ -463,9 +461,7 @@ namespace da::graphics
 
 	void CSkeletalAnimator::interpFinalBoneMatrices(const CSkeletalAnimator* animator, float dt, float weight)
 	{
-		for (size_t i = 0; i < m_CurrentAnimation->getMeshCount(); i++) {
-			interpolateBoneTransformsInternal(const_cast<CSkeletalAnimation*> (animator->getCurrentAnim()), &animator->getCurrentAnim()->getRootNode(), i, weight, false, animator->m_BoneSelectors);
-		}
+		interpolateBoneTransformsInternal(const_cast<CSkeletalAnimation*> (animator->getCurrentAnim()), &animator->getCurrentAnim()->getRootNode(), weight, false, animator->m_BoneSelectors);
 	}
 
 	const da::graphics::FAssimpNodeData* CSkeletalAnimator::FindNodeByName(const CHashString& name)

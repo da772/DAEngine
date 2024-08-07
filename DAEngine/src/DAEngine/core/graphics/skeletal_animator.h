@@ -48,21 +48,21 @@ namespace da::graphics {
 		void debugRenderJoints(const glm::mat4& modelMat);
 #endif
 
-		const std::vector<glm::mat4>& getFinalBoneMatrices(size_t index) const
+		const std::vector<glm::mat4>& getFinalBoneMatrices() const
 		{
-			return m_FinalBoneMatrices[index];
+			return m_FinalBoneMatrices;
 		}
 
 		void copyFinalBoneMatrices(const CSkeletalAnimator* animator);
 		void interpFinalBoneMatrices(const CSkeletalAnimator* animator, float dt, float weight);
 	private:
-		void calculateBoneTransform(const FAssimpNodeData* node, size_t index);
-		void interpolateBoneTransforms(const FAssimpNodeData* node, size_t index, float interpolation, bool updateBone);
-		void interpolateBoneTransformsInternal(CSkeletalAnimation* anim, const FAssimpNodeData* node, size_t index, float interpolation, bool updateBone, const std::vector<FBoneSelector>& boneSelector);
+		void calculateBoneTransform(const FAssimpNodeData* node);
+		void interpolateBoneTransforms(const FAssimpNodeData* node, float interpolation, bool updateBone);
+		void interpolateBoneTransformsInternal(CSkeletalAnimation* anim, const FAssimpNodeData* node, float interpolation, bool updateBone, const std::vector<FBoneSelector>& boneSelector);
 		const FAssimpNodeData* FindNodeByName(const CHashString& name);
 
 	private:
-		std::vector<std::vector<glm::mat4>> m_FinalBoneMatrices;
+		std::vector<glm::mat4> m_FinalBoneMatrices;
 		CSkeletalAnimation* m_CurrentAnimation;
 		std::queue<FInterpolatedAnimation> m_AnimationQueue;
 		std::vector<FBoneSelector> m_BoneSelectors;

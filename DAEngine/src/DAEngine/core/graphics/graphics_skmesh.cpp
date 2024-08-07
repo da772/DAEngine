@@ -43,7 +43,6 @@ namespace da::graphics
 
 		m_meshes = {};
 		m_meshes.reserve(pScene->mNumMeshes);
-
 		std::queue<aiNode*> q;
 		q.push(pScene->mRootNode);
 		size_t count = 0;
@@ -126,17 +125,17 @@ namespace da::graphics
 					int boneId = -1;
 					CHashString name = CHashString(mesh->mBones[b]->mName.C_Str(), mesh->mBones[b]->mName.length);
 
-					const std::unordered_map<CHashString, FBoneInfo>::iterator& it = skMesh.BoneMap.find(name);
+					const std::unordered_map<CHashString, FBoneInfo>::iterator& it = m_boneMap.find(name);
 
-					if (it != skMesh.BoneMap.end()) {
+					if (it != m_boneMap.end()) {
 						boneId = it->second.id;
 					}
 					else {
-						boneId = skMesh.BoneCounter++;
+						boneId = m_boneCount++;
 						FBoneInfo boneInfo;
 						boneInfo.id = boneId;
 						boneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(mesh->mBones[b]->mOffsetMatrix);
-						skMesh.BoneMap[name] = std::move(boneInfo);
+						m_boneMap[name] = std::move(boneInfo);
 					}
 
 					uint32_t numWeights = mesh->mBones[b]->mNumWeights;
@@ -148,8 +147,6 @@ namespace da::graphics
 
 						setVertexBoneData(vertices[vertexId], boneId, weight);
 					}
-
-
 				}
 
 				skMesh.Vertices = std::move(vertices);
@@ -360,6 +357,19 @@ namespace da::graphics
 				break;
 			}
 		}
+	}
+
+	const da::graphics::FBoneInfo& CSkeletalMesh::addBone(CHashString name)
+	{
+		const std::unordered_map<CHashString, FBoneInfo>::iterator& it = m_boneMap.find(name);
+
+		if (it != m_boneMap.end())
+		{
+			return it->second;
+		}
+
+		m_boneMap[name] = { m_boneCount++, glm::mat4(1.f)};
+		return m_boneMap[name];
 	}
 
 }

@@ -13,11 +13,11 @@ namespace da::graphics
 
 	void CAnimationManager::updateBegin(float deltaTime)
 	{
+		PROFILE()
 		
 		//const da::core::FComponentContainer& skeletalMeshcontainer = da::core::CSceneManager::getScene()->getComponents<da::core::CSkeletalMeshComponent>();
 		
 		if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
-
 			//da::core::CWorkerPool::addJob([deltaTime] {
 			CAnimationManager::s_mutex.lock();
 			if (!da::core::CSceneManager::getScene()->hasComponents<da::core::CSkeletalMeshComponent>()) {
@@ -25,11 +25,10 @@ namespace da::graphics
 				return;
 			}
 
-
 			const da::core::FComponentContainer& skeletalMeshcontainer = da::core::CSceneManager::getScene()->getComponents<da::core::CSkeletalMeshComponent>();
+			PROFILE_TAG("Count: ", skeletalMeshcontainer.getCount())
 			for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
 				da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
-
 				da::graphics::CSkeletalAnimator* animator = meshComponent->getSkeletalAnimator();
 
 				if (s_animators.find((void*)animator) != s_animators.end()) {

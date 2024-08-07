@@ -446,7 +446,7 @@ namespace da::platform {
                     const std::vector<da::graphics::FSkeletalMesh>& meshes = mesh->getMeshes();
                     PROFILE_TAG("meshes", meshes.size())
                     for (size_t z = 0; z < meshes.size(); z++) {
-                        ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices(z).data(), 128);
+                        ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices().data(), 128);
                         ::bgfx::setTransform(glm::value_ptr(model));
                         ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
                         ::bgfx::setIndexBuffer(*((::bgfx::IndexBufferHandle*)mesh->getNativeIBIndex(z)));

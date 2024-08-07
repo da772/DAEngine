@@ -21,11 +21,11 @@ namespace da::graphics
 		CSkeletalAnimation(const std::string& animationPath, CSkeletalMesh* model);
 		CSkeletalAnimation(const std::string& name, const CSkeletalAnimation* copy);
 
-		inline CAnimatedBone* FindBone(const CHashString& name, size_t index)
+		inline CAnimatedBone* FindBone(const CHashString& name)
 		{
-			const std::unordered_map<CHashString, CAnimatedBone>::iterator& it = m_Bones[index].find(name);
+			const std::unordered_map<CHashString, CAnimatedBone>::iterator& it = m_Bones.find(name);
 
-			if (it == m_Bones[index].end())
+			if (it == m_Bones.end())
 			{
 				return nullptr;
 			}
@@ -40,27 +40,23 @@ namespace da::graphics
 
 		inline const FAssimpNodeData& getRootNode() const { return m_RootNode; }
 
-		inline const std::unordered_map<CHashString, FBoneInfo>& getBoneIDMap(size_t index) const
+		inline const std::unordered_map<CHashString, FBoneInfo>& getBoneIDMap() const
 		{
-			return m_BoneInfoMap[index];
-		}
-
-		inline size_t getMeshCount() const {
-			return m_BoneInfoMap.size();
+			return m_BoneInfoMap;
 		}
 
 		inline const CHashString& getAnimName() const { return m_AnimName; }
 
 	private:
-		void ReadMissingBones(const aiAnimation* animation, FSkeletalMesh& mesh, size_t index);
+		void ReadMissingBones(const aiAnimation* animation, CSkeletalMesh& mesh);
 		void ReadHeirarchyData(FAssimpNodeData& dest, const aiNode* src);
 
 	private:
 		float m_Duration;
 		int m_TicksPerSecond;
-		std::vector<std::unordered_map<CHashString, CAnimatedBone>> m_Bones;
+		std::unordered_map<CHashString, CAnimatedBone> m_Bones;
 		FAssimpNodeData m_RootNode;
-		std::vector<std::unordered_map<CHashString, FBoneInfo>> m_BoneInfoMap;
+		std::unordered_map<CHashString, FBoneInfo> m_BoneInfoMap;
 		CHashString m_AnimName;
 	};
 }

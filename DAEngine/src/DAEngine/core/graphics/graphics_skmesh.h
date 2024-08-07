@@ -22,8 +22,6 @@ namespace da::graphics
 		std::vector<FSkeletalVertexBase> Vertices;
 		std::vector<uint32_t> Indices;
 		size_t MaterialIndex;
-		std::unordered_map<CHashString, FBoneInfo> BoneMap;
-		int BoneCounter;
 	};
 
 	class CSkeletalMesh
@@ -42,6 +40,8 @@ namespace da::graphics
 		inline virtual const void* getNativeIBIndex(size_t index) const { return nullptr; };
 		inline bool getCastShadows() const { return m_castShadows; };
 		inline void castShadows(bool b) { m_castShadows = b; }
+		inline const std::unordered_map<CHashString, FBoneInfo>& getBoneMap() const { return m_boneMap; }
+		const FBoneInfo& addBone(CHashString name);
 
 		inline bool getHidden() const { return m_hidden; };
 		inline void hide(bool b) { m_hidden = b; }
@@ -55,8 +55,10 @@ namespace da::graphics
 		std::string m_path;
 
 	protected:
+		int m_boneCount = 0;
 		std::vector<FSkeletalMesh> m_meshes;
 		std::vector<FMaterialData> m_materials;
+		std::unordered_map<CHashString, FBoneInfo> m_boneMap;
 		bool m_castShadows = true;
 		bool m_hidden = false;
 

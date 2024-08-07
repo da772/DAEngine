@@ -36,12 +36,7 @@ namespace da::graphics
 		m_Duration = animation->mDuration;
 		m_TicksPerSecond = animation->mTicksPerSecond;
 		ReadHeirarchyData(m_RootNode, scene->mRootNode);
-
-		for (size_t i = 0; i < model->getMeshes().size(); i++) {
-			m_Bones.push_back({});
-			const FSkeletalMesh& m = model->getMeshes()[i];
-			ReadMissingBones(animation, (FSkeletalMesh&)m, i);
-		}
+		ReadMissingBones(animation, *model);
 	}
 
 	CSkeletalAnimation::CSkeletalAnimation(const std::string& name, const CSkeletalAnimation* copy) : m_AnimName(name.c_str())
@@ -51,12 +46,10 @@ namespace da::graphics
 		m_BoneInfoMap = copy->m_BoneInfoMap;
 	}
 
-	void CSkeletalAnimation::ReadMissingBones(const aiAnimation* animation, FSkeletalMesh& mesh, size_t index)
+	void CSkeletalAnimation::ReadMissingBones(const aiAnimation* animation, CSkeletalMesh& mesh)
 	{
 		int size = animation->mNumChannels;
-
-		auto& boneInfoMap = mesh.BoneMap;//getting m_BoneInfoMap from Model class
-		int& boneCount = mesh.BoneCounter; //getting the m_BoneCounter from Model class
+		const std::unordered_map<CHashString, FBoneInfo>& boneInfoMap = mesh.getBoneMap();//getting m_BoneInfoMap from Model class
 
 		//reading channels(bones engaged in an animation and their keyframes)
 		for (int i = 0; i < size; i++)
@@ -64,16 +57,24 @@ namespace da::graphics
 			auto channel = animation->mChannels[i];
 			CHashString boneName = channel->mNodeName.data;
 
-			if (boneInfoMap.find(boneName) == boneInfoMap.end())
-			{
-				boneInfoMap[boneName].id = boneCount;
-				boneCount++;
-			}
-			m_Bones[index][boneName] = CAnimatedBone(channel->mNodeName.data,
-				boneInfoMap[channel->mNodeName.data].id, channel);
-		}
+			bool boneMapped = m_BoneInfoMap.find(boneName) != m_BoneInfoMap.end();
 
-		m_BoneInfoMap.push_back(boneInfoMap);
+			const std::unordered_map<CHashString, FBoneInfo>::const_iterator& it = boneInfoMap.find(boneName);
+			const FBoneInfo& boneInfo = it == boneInfoMap.end() ? mesh.addBone(boneName) : it->second;
+
+			if (!boneMapped)
+			{
+				m_BoneInfoMap[boneName].id = boneInfo.id;
+				m_BoneInfoMap[boneName].offset = boneInfo.offset;
+			}
+
+			if (m_Bones.find(boneName) != m_Bones.end())
+			{
+				continue;
+			}
+
+			m_Bones[boneName] = CAnimatedBone(channel->mNodeName.data, boneInfo.id, channel);
+		}
 	}
 
 	void CSkeletalAnimation::ReadHeirarchyData(FAssimpNodeData& dest, const aiNode* src)
