@@ -34,13 +34,15 @@ float CCharacterMovement1::getMoveDir() const
 
 void CCharacterMovement1::processInput(float dt)
 {
+	da::core::CInputContext inputCtx(HASHSTR("CharacterInput"), 0);
+
 	da::core::FComponentRef<CCharacterMovementComponent> movement = m_character->getComponent<CCharacterMovementComponent>();
 	da::core::FComponentRef<CCharacterComponent> character = m_character->getComponent<CCharacterComponent>();
 	da::core::CCamera* cam = da::core::CCamera::getCamera();
 
 	const float xPos = da::core::CInput::getCursorX();
 
-	if (da::core::CInput::mouseInputPressed(1))
+	if (true/*da::core::CInput::mouseInputPressed(1)*/)
 	{
 		float xDiff = xPos - m_cursorPos.x;
 		m_camRot -= glm::radians(xDiff) * character->getCamSensitivity();

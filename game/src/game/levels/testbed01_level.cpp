@@ -36,6 +36,7 @@ CTestBed01Level::CTestBed01Level(CHashString name, da::modules::CGraphicsModule&
 
 void CTestBed01Level::initialize()
 {
+	m_windowModule.getWindow()->lockCursor(true);
 	m_scrlevel.setup({}, {});
 	da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid("2f94546a-a92a-4046-946a-f28c2364110b")));
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
@@ -181,8 +182,31 @@ void CTestBed01Level::initialize()
 
 	m_scrlevel.classInitialize();
 
+	m_windowModule.getWindow()->getEventHandler().registerCallback(EEventType::InputKeyboard, BIND_EVENT_FN(CTestBed01Level, onKeyboardEvent));
+
 	// create vehicle
 	//createVehicle();
+}
+
+void CTestBed01Level::onKeyboardEvent(const da::core::events::CEvent& event)
+{
+	const da::core::events::CInputKeyboardEvent& kb = (da::core::events::CInputKeyboardEvent&)event;
+
+	if (kb.getBtn() != 290 || kb.getType() != EInputType::RELEASED) // F1
+	{
+		return;
+	}
+
+	if (!m_freeCam)
+	{
+		da::core::CInput::pushInputContext(HASHSTR("FreeCam"), 1e9);
+	}
+	else
+	{
+		da::core::CInput::popInputContext(HASHSTR("FreeCam"));
+	}
+	m_freeCam = !m_freeCam;
+	m_windowModule.getWindow()->lockCursor(!m_freeCam);
 }
 
 void CTestBed01Level::update(float dt)
@@ -214,10 +238,69 @@ void CTestBed01Level::lateUpdate(float dt)
 {
 	m_character->lateUpdate(dt);
 	m_ai->lateUpdate(dt);
+
+	if (m_freeCam)
+	{
+		static glm::vec2 cursorPos = { 0.f, 0.f };
+		const float camSpeed = 5.f;
+
+		da::core::CCamera* cam = da::core::CCamera::getCamera();
+
+		if (da::core::CInput::inputPressed(87)) // W
+		{
+			cam->offsetPosition(cam->forward() * camSpeed * dt);
+		}
+
+		if (da::core::CInput::inputPressed(83)) // S
+		{
+			cam->offsetPosition(-cam->forward() * camSpeed * dt);
+		}
+
+		if (da::core::CInput::inputPressed(65)) // A
+		{
+			cam->offsetPosition(-cam->right() * camSpeed * dt);
+		}
+
+		if (da::core::CInput::inputPressed(68)) // D
+		{
+			cam->offsetPosition(cam->right() * camSpeed * dt);
+		}
+
+		if (da::core::CInput::inputPressed(69)) // E
+		{
+			cam->offsetPosition(-cam->up() * camSpeed * dt);
+		}
+
+		if (da::core::CInput::inputPressed(81)) // Q
+		{
+			cam->offsetPosition(cam->up() * camSpeed * dt);
+		}
+
+		glm::vec2 pos = { da::core::CInput::getCursorX(), da::core::CInput::getCursorY() };
+		if (da::core::CInput::mouseInputPressed(1))
+		{
+			if (cursorPos.x >= 0.0 && cursorPos.y >= 0.0)
+			{
+				cam->offsetRotation({ cursorPos.y - pos.y, 0.f, cursorPos.x - pos.x });
+			}
+		}
+		cursorPos = pos;
+	}
+
 }
 
 void CTestBed01Level::shutdown()
 {
+
+	m_windowModule.getWindow()->getEventHandler().unregisterCallback(EEventType::InputKeyboard, BIND_EVENT_FN(CTestBed01Level, onKeyboardEvent));
+
+	if (m_freeCam)
+	{
+		da::core::CInput::popInputContext(HASHSTR("FreeCam"));
+		m_windowModule.getWindow()->lockCursor(false);
+		m_freeCam = false;
+	}
+
 	m_scrlevel.classShutdown();
 	m_scrlevel.cleanup();
 
@@ -242,3 +325,5 @@ void CTestBed01Level::destroyVehicle()
 	m_vehicle->shutdown();
 	delete m_vehicle;
 }
+
+

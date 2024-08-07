@@ -21,6 +21,23 @@ namespace da::core {
 		std::function<void(const events::CEvent&)> Func;
 	};
 
+	struct FInputContextData
+	{
+		CHashString Context;
+		uint32_t Priority;
+
+		inline bool operator<(const FInputContextData& rhs) const
+		{
+			return Priority < rhs.Priority;
+		}
+
+		inline bool operator==(const CHashString& rhs) const
+		{
+			return Context == rhs;
+		}
+
+	};
+
 	class CInput
 	{
 	public:
@@ -32,6 +49,9 @@ namespace da::core {
 		static double getScrollY();
 		static void registerWindow(class CWindow* window);
 		static void unregisterWindow(class CWindow* window);
+		static void pushInputContext(CHashString ctx, uint32_t priority);
+		static void popInputContext(CHashString ctx);
+		static bool inputContextAvailable();
 
 	private:
 		static void handleKeyInput(class CWindow* window, const events::CEvent& e);
@@ -44,6 +64,8 @@ namespace da::core {
 	private:
 		static std::unordered_map<class CWindow*, FWindowInputData> s_inputs;
 		static std::unordered_map<class CWindow*, FWindowMouseData> s_mouse;
+		static std::set<FInputContextData> s_inputContext;
+		static std::vector<FInputContextData> s_inputContextList;
 
 	};
 

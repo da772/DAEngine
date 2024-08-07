@@ -98,13 +98,15 @@ const da::core::CEntity* CCharacter::getEntity() const
 
 void CCharacter::processCamera(float dt)
 {
+	da::core::CInputContext inputCtx(HASHSTR("CharacterInput"), 0);
+
 	da::core::CCamera* cam = da::core::CCamera::getCamera();
 	const float xPos = da::core::CInput::getCursorX();
 	const float yPos = da::core::CInput::getCursorY();
 
 	da::core::FComponentRef<CCharacterComponent> character = m_entity->getComponent<CCharacterComponent>();
 
-	if (da::core::CInput::mouseInputPressed(1))
+	if (true/*da::core::CInput::mouseInputPressed(1)*/)
 	{
 		float yDiff = yPos - m_cursorPos.y;
 		m_camHeight += glm::radians(yDiff) * m_camSensitivity;
@@ -124,6 +126,11 @@ void CCharacter::processCamera(float dt)
 	}
 
 	m_cursorPos = { xPos, yPos };
+
+	if (!da::core::CInput::inputContextAvailable())
+	{
+		return;
+	}
 
 	glm::vec3 pos = m_entity->getTransform().position() + glm::vec3(0.f, 0.f, m_camHeight) + xOff + yOff;
 	cam->setPosition(pos);

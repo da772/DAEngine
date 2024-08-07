@@ -1,19 +1,15 @@
 #pragma once
 
-#include "core/window/window.h"
-
 namespace da::core
 {
-	class CInputContext {
+	class CInputContext
+	{
 	public:
-		CInputContext(const CWindow& nativeWindow);
+		CInputContext(CHashString ctx, uint32_t priority);
+		~CInputContext();
 
-		inline virtual void initialize() {};
-		inline virtual void update() {};
-		inline virtual void shutdown() {};
-
-	protected:
-		const CWindow& m_nativeWindow;
-
+	private:
+		CHashString m_ctx;
+		uint32_t m_priority;
 	};
 }

@@ -50,7 +50,7 @@ private:
 	std::vector<da::graphics::FSkeletalAnimGraphNode> m_anims;
 	da::graphics::CSkeletalAnimGraph* m_animGraph;
 	glm::vec2 m_cursorPos = { 0.f, 0.f };
-	float m_camSensitivity = .25f;
+	float m_camSensitivity = .1f;
 	ICharacterMovement* m_movement = nullptr;
 	const da::core::CEntity* m_weapon = nullptr;
 	bool m_attack : 1 = false;

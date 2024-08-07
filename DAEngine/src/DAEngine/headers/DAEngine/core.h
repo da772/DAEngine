@@ -3,6 +3,7 @@
 // core
 #include "DAEngine/core/time.h"
 #include "DAEngine/core/input/input.h"
+#include "DAEngine/core/input/input_context.h"
 #include "DAEngine/core/window/window.h"
 #include "DAEngine/core/maths/maths.h"
 

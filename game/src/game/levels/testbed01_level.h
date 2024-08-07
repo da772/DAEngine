@@ -22,6 +22,7 @@ public:
 private:
 	void createVehicle();
 	void destroyVehicle();
+	void onKeyboardEvent(const da::core::events::CEvent& event);
 
 private:
 	da::graphics::CSkeletalAnimation* m_swordSlashAnimation;
@@ -29,5 +30,6 @@ private:
 	CCharacter* m_character, *m_ai;
 	CVehicle* m_vehicle;
 	da::script::CScriptClass m_scrlevel;
+	bool m_freeCam = false;
 
 };

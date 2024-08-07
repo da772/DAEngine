@@ -28,7 +28,8 @@ namespace da::physics
 
 		m_characterController = btKinematicCharacterController(&m_ghost, convexShape, data.StepHeight, {0.f,0.f,1.f});
 
-		physics->getDynamicsWorld()->addCollisionObject(&m_ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter | btBroadphaseProxy::SensorTrigger);
+		physics->getDynamicsWorld()->addCollisionObject(&m_ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter | btBroadphaseProxy::SensorTrigger
+			| btBroadphaseProxy::CharacterFilter);
 		physics->getDynamicsWorld()->addAction(&m_characterController);
 	}
 

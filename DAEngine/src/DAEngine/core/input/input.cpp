@@ -8,6 +8,8 @@ namespace da::core {
 
 	std::unordered_map<class CWindow*, da::core::FWindowInputData> CInput::s_inputs;
 	std::unordered_map<class CWindow*, da::core::FWindowMouseData> CInput::s_mouse;
+	std::set<FInputContextData> CInput::s_inputContext;
+	std::vector<FInputContextData> CInput::s_inputContextList;
 
 	void CInput::registerWindow(class CWindow* window)
 	{
@@ -106,6 +108,11 @@ namespace da::core {
 
 	double CInput::getCursorX()
 	{
+		if (!inputContextAvailable())
+		{
+			return 0.0;
+		}
+
 		for (const std::pair<CWindow*, FWindowMouseData>& pair : s_mouse) {
 			return pair.second.XPos;
 		}
@@ -115,6 +122,11 @@ namespace da::core {
 
 	double CInput::getCursorY()
 	{
+		if (!inputContextAvailable())
+		{
+			return 0.0;
+		}
+
 		for (const std::pair<CWindow*, FWindowMouseData>& pair : s_mouse) {
 			return pair.second.YPos;
 		}
@@ -124,6 +136,11 @@ namespace da::core {
 
 	bool CInput::inputPressed(int input)
 	{
+		if (!inputContextAvailable())
+		{
+			return false;
+		}
+
 		for (const std::pair<CWindow*, FWindowInputData>& it : s_inputs) {
 			if (std::find(it.second.Inputs.begin(), it.second.Inputs.end(), input) != it.second.Inputs.end()) return true;
 		}
@@ -133,6 +150,11 @@ namespace da::core {
 
 	double CInput::getScrollY()
 	{
+		if (!inputContextAvailable())
+		{
+			return 0.0;
+		}
+
 		for (const std::pair<CWindow*, FWindowMouseData>& pair : s_mouse) {
 			return pair.second.YScroll;
 		}
@@ -142,6 +164,11 @@ namespace da::core {
 
 	double CInput::getScrollX()
 	{
+		if (!inputContextAvailable())
+		{
+			return 0.0;
+		}
+
 		for (const std::pair<CWindow*, FWindowMouseData>& pair : s_mouse) {
 			return pair.second.XScroll;
 		}
@@ -151,6 +178,11 @@ namespace da::core {
 
 	bool CInput::mouseInputPressed(int input)
 	{
+		if (!inputContextAvailable())
+		{
+			return false;
+		}
+
 		for (const std::pair<CWindow*, FWindowMouseData>& it : s_mouse) {
 			if (std::find(it.second.Inputs.begin(), it.second.Inputs.end(), input) != it.second.Inputs.end()) return true;
 		}
@@ -239,4 +271,44 @@ namespace da::core {
 		}
 	}
 
+	void CInput::pushInputContext(CHashString ctx, uint32_t priority)
+	{
+		FInputContextData data = {ctx, priority};
+		const std::vector<FInputContextData>::iterator& it = std::find(s_inputContextList.begin(), s_inputContextList.end(), ctx);
+		if (it != s_inputContextList.end())
+		{
+			return;
+		}
+
+		s_inputContext.insert({ ctx, priority });
+		s_inputContextList.push_back(data);
+	}
+
+	void CInput::popInputContext(CHashString ctx)
+	{
+		if (s_inputContext.rbegin()->Context == ctx)
+		{
+			s_inputContext.erase(*s_inputContext.rbegin());	
+		}
+		else
+		{
+			const std::set<FInputContextData>::iterator& it = std::find(s_inputContext.begin(), s_inputContext.end(), ctx);
+			if (it != s_inputContext.end())
+			{
+				s_inputContext.erase(it);
+			}
+		}
+
+		const std::vector<FInputContextData>::iterator& it = std::find(s_inputContextList.begin(), s_inputContextList.end(), ctx);
+		if (it != s_inputContextList.end())
+		{
+			s_inputContextList.erase(it);
+		}
+	}
+
+
+	bool CInput::inputContextAvailable()
+	{
+		return s_inputContext.empty() || (!s_inputContextList.empty() && s_inputContext.rbegin()->Context == s_inputContextList[s_inputContextList.size()-1]);
+	}
 }
