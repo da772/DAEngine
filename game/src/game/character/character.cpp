@@ -73,11 +73,11 @@ void CCharacter::lateUpdate(float dt)
 
 	if (!skele->getSkeletalAnimator()->getCurrentAnim()) return;
 
-	if (!skele->getSkeletalAnimator()->getBoneWorldPosition(HASHSTR("hand_r"), skele->getTransform(), position)) {
+	if (!skele->getBoneWorldPosition(HASHSTR("hand_r"), position)) {
 		return;
 	}
 
-	if (!skele->getSkeletalAnimator()->getBoneWorldRotation(HASHSTR("hand_r"), skele->getTransform(), rot)) {
+	if (!skele->getBoneWorldRotation(HASHSTR("hand_r"), rot)) {
 		return;
 	}
 
@@ -146,7 +146,7 @@ void CCharacterGui::onRender(float dt)
 	da::core::FComponentRef<da::core::CSkeletalMeshComponent> skele = m_parent->m_entity->getComponent<da::core::CSkeletalMeshComponent>();
 	if (!skele->getSkeletalAnimator()->getCurrentAnim()) return;
 
-	if (!skele->getSkeletalAnimator()->getBoneWorldPosition(HASHSTR("mixamorig:Head"), skele->getTransform(), headPos)) {
+	if (!skele->getBoneWorldPosition(HASHSTR("mixamorig:Head"), headPos)) {
 		return;
 	}
 

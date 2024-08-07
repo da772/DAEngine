@@ -27,10 +27,13 @@ namespace da::core
 		void onShutdown();
 		void setTransform(const glm::mat4& transform);
 		const glm::mat4& getTransform();
+		bool getBoneLocalTransform(CHashString name, glm::mat4& out);
+		bool getBoneWorldTransform(CHashString name,  glm::mat4& out);
+		bool getBoneWorldPosition(CHashString name, glm::vec3& out);
+		bool getBoneWorldRotation(CHashString name, glm::quat& out);
 		da::graphics::CSkeletalMesh* getSkeletalMesh() const;
 		da::graphics::CSkeletalAnimation* getSkeletalAnimation() const;
 		da::graphics::CSkeletalAnimator* getSkeletalAnimator() const;
-		bool getBoneTransform(CHashString bone, glm::mat4& transform);
 #ifdef DA_REVIEW
 		void onDebugRender();
 #endif

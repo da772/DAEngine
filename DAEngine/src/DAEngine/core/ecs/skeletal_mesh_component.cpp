@@ -114,11 +114,30 @@ namespace da::core {
 		m_finalTransform = newT * m_transform;
 	}
 
-	bool CSkeletalMeshComponent::getBoneTransform(CHashString bone, glm::mat4& transform)
+	bool CSkeletalMeshComponent::getBoneLocalTransform(CHashString name, glm::mat4& out)
 	{
 		ASSERT(m_animator);
-		return m_animator->getBoneWorldTransform(bone, getTransform(), transform);
+		return m_animator->getBoneLocalTransform(name, out);
 	}
+
+	bool CSkeletalMeshComponent::getBoneWorldTransform(CHashString name,  glm::mat4& out)
+	{
+		ASSERT(m_animator);
+		return m_animator->getBoneWorldTransform(name, getTransform(), out);
+	}
+
+	bool CSkeletalMeshComponent::getBoneWorldPosition(CHashString name,  glm::vec3& out)
+	{
+		ASSERT(m_animator);
+		return m_animator->getBoneWorldPosition(name, getTransform(), out);
+	}
+
+	bool CSkeletalMeshComponent::getBoneWorldRotation(CHashString name,  glm::quat& out)
+	{
+		ASSERT(m_animator);
+		return m_animator->getBoneWorldRotation(name, getTransform(), out);
+	}
+
 
 #ifdef DA_REVIEW
 	void CSkeletalMeshComponent::onDebugRender()
@@ -218,7 +237,6 @@ namespace da::core {
 			ImGui::Unindent();
 		}
 	}
-
 #endif
 
 }
