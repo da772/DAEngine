@@ -142,30 +142,36 @@ void CCharacter::processCamera(float dt)
 	
 	if (cam->position() != pos)
 	{
+		PROFILE("Camera Sweep")
 		glm::vec3 endPos = pos;
 
-		da::physics::FRayData ray(da::physics::ERayType::All, m_entity->getTransform().position(), endPos);
-		da::physics::CPhysics::rayCast(ray);
-		//da::graphics::CDebugRender::drawLine(m_entity->getTransform().position(), endPos, .01f, { 1.f,0.f,0.f,1.f });
-		if (ray.bHit)
-		{
-			for (size_t i = 0; i < ray.vHits.size(); i++)
-			{
-				if (ray.vHits[i].pEntity != m_entity)
-				{
-					if (ray.vHits[i].pEntity && ray.vHits[i].pEntity->getComponent<CCharacterComponent>().isValid())
-					{
-						continue;
-					}
+		static da::physics::IPhysicsShape* shape = nullptr;
+		const float probeSize = .2f;
 
-					LOG_DEBUG(da::ELogChannel::Application, "hit: %f, %f, %f", ray.vHits[i].position.x, ray.vHits[i].position.y, ray.vHits[i].position.z);
-					pos = glm::vec3(ray.vHits[i].position.x + ray.vHits[i].normal.x * -.75f, ray.vHits[i].position.y + ray.vHits[i].normal.y * -.75f, ray.vHits[i].position.z + ray.vHits[i].normal.z * -.15f);
-					//da::graphics::CDebugRender::drawLine(m_entity->getTransform().position(), pos, .01f, { 0.f,1.f,0.f,1.f });
-					break;
-				}
-			}
+		if (!shape)
+		{
+			shape = da::physics::CPhysicsShapeCube::create({ probeSize, probeSize ,probeSize });
 		}
+
+		glm::mat4 posTransform = glm::translate(glm::mat4(1.f), pos);
+
+		da::physics::FSweepData sweep(shape, m_entity->getTransform().matrix(), posTransform);
+		da::physics::CPhysics::sweepTest(sweep);
+
+		//da::graphics::CDebugRender::drawLine(m_entity->getTransform().position(), endPos, .01f, { 1.f,0.f,0.f,1.f });
+		if (sweep.bHit)
+		{
+			//LOG_DEBUG(da::ELogChannel::Application, "hit: %f, %f, %f", sweep.Hit.position.x, sweep.Hit.position.y, sweep.Hit.position.z);
+			pos = sweep.Hit.position + (sweep.Hit.normal * (probeSize/2.f));
+			//da::graphics::CDebugRender::drawLine(m_entity->getTransform().position(), pos, .01f, { 0.f,1.f,0.f,1.f });
+			//da::graphics::CDebugRender::drawCube(sweep.Hit.position, glm::quat(), { .2f,.2f,.2f }, { 0.f,1.f,0.f, 1.f });
+			pos = glm::mix(cam->position(), pos, .05f);
+		}
+
+		
 	}
+
+
 
 	if (!da::core::CInput::inputContextAvailable())
 	{

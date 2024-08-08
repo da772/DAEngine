@@ -10,6 +10,7 @@
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 #include "bullet3_debug_draw.h"
 #endif
+#include "physics_bullet3_shape.h"
 
 namespace da::physics
 {
@@ -111,7 +112,7 @@ namespace da::physics
 		{
 			btCollisionWorld::AllHitsRayResultCallback callback({ ray.endPos.x, ray.endPos.y, ray.endPos.z }, { ray.startPos.x, ray.startPos.y, ray.startPos.z });
 			m_collisionWorld->rayTest(callback.m_rayFromWorld, callback.m_rayToWorld, callback);
-
+			
 			ray.bHit = callback.hasHit();
 
 			if (ray.bHit)
@@ -158,10 +159,39 @@ namespace da::physics
 		}
 	}
 
+	void CBullet3Physics::sweepTest(FSweepData& sweep)
+	{
+		btVector3 startPos(sweep.StartTransform[3].x, sweep.StartTransform[3].y, sweep.StartTransform[3].z);
+		btVector3 endPos(sweep.EndTransform[3].x, sweep.EndTransform[3].y, sweep.EndTransform[3].z);
+		btCollisionWorld::ClosestConvexResultCallback result(startPos, endPos);
+		result.m_collisionFilterMask = btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter;
+
+		CBullet3Shape* shape = dynamic_cast<CBullet3Shape*>(sweep.Shape);
+		ASSERT(shape);
+		btConvexShape* convShape = dynamic_cast<btConvexShape*>(shape->getShape());
+		ASSERT(convShape);
+
+		btTransform startTransform, endTransform;
+		startTransform.setFromOpenGLMatrix(glm::value_ptr(sweep.StartTransform));
+		endTransform.setFromOpenGLMatrix(glm::value_ptr(sweep.EndTransform));
+
+		m_collisionWorld->convexSweepTest(convShape, startTransform, endTransform, result);
+
+		sweep.bHit = result.hasHit();
+		if (sweep.bHit)
+		{
+			sweep.Hit.position = { result.m_hitPointWorld.x(), result.m_hitPointWorld.y(), result.m_hitPointWorld.z() };
+			sweep.Hit.normal = { result.m_hitNormalWorld.x(), result.m_hitNormalWorld.y(), result.m_hitNormalWorld.z() };
+			sweep.Hit.pEntity = result.m_hitCollisionObject ? (da::core::CEntity*)result.m_hitCollisionObject->getUserPointer() : nullptr;
+		}
+	}
+
+
 	void CBullet3Physics::reset()
 	{
 		ASSERT(m_solver);
 		m_solver->reset();
 	}
+
 
 }

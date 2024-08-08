@@ -7,6 +7,8 @@ namespace da::core
 
 namespace da::physics
 {
+	class IPhysicsShape;
+
 	enum class ERayType
 	{
 		All,
@@ -30,6 +32,20 @@ namespace da::physics
 		glm::vec3 startPos, endPos;
 	};
 
+	struct FSweepData
+	{
+		inline FSweepData(IPhysicsShape* shape, const glm::mat4& startTransform, const glm::mat4& endTransform) : Shape(shape), StartTransform(startTransform), EndTransform(endTransform), bHit(false) {}
+		
+		IPhysicsShape* Shape;
+		glm::mat4 StartTransform;
+		glm::mat4 EndTransform;
+		uint32_t Channel = 0xFFFFFFFF;
+
+		bool bHit;
+		FHitData Hit;
+
+	};
+	
 	class CPhysicsType
 	{
 	public:
@@ -39,6 +55,7 @@ namespace da::physics
 
 		virtual void reset() = 0;
 		virtual void rayCast(FRayData& ray) = 0;
+		virtual void sweepTest(FSweepData& sweep) = 0;
 
 	};
 
@@ -50,6 +67,7 @@ namespace da::physics
 		static void shutdown();
 
 		static void rayCast(FRayData& ray);
+		static void sweepTest(FSweepData& sweep);
 		static CPhysicsType* getPhysicsType();
 		static double getFixedTime();
 

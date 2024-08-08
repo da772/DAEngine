@@ -54,6 +54,14 @@ namespace da::physics
 		s_physicsType->rayCast(ray);
 	}
 
+
+	void CPhysics::sweepTest(FSweepData& sweep)
+	{
+		ASSERT(s_physicsType);
+		s_physicsType->sweepTest(sweep);
+	}
+
+
 	double CPhysics::getFixedTime()
 	{
 		return s_fixedTime;

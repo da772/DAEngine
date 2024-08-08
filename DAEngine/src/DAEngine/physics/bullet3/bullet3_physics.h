@@ -19,6 +19,7 @@ namespace da::physics
 		inline btCollisionWorld* getCollisionWorld() const { return m_collisionWorld; }
 
 		void rayCast(FRayData& ray) override;
+		void sweepTest(FSweepData& sweep) override;
 
 	private:
 		btDefaultCollisionConfiguration* m_collisionConfiguration;

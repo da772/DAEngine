@@ -14,4 +14,9 @@ namespace da::core::maths
 	}
 	glm::quat calculateRotationForDirection(const glm::vec3& direction);
 	glm::vec3 calculateEulerRotationForDirection(const glm::vec3& direction);
+
+	constexpr float lerp(float a, float b, float f)
+	{
+		return a * (1.0 - f) + (b * f);
+	}
 }
