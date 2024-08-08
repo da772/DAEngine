@@ -20,12 +20,18 @@ void CAICharacterMovement::initialize()
 
 void CAICharacterMovement::update(float dt)
 {
+	if (m_pause) return;
 	processAi();
 }
 
 float CAICharacterMovement::getMoveDir() const
 {
 	return 0.f;
+}
+
+void CAICharacterMovement::setPause(bool pause)
+{
+	m_pause = pause;
 }
 
 void CAICharacterMovement::shutdown()

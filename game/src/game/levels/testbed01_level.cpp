@@ -226,7 +226,25 @@ void CTestBed01Level::lateUpdate(float dt)
 		static glm::vec2 cursorPos = { 0.f, 0.f };
 		const float camSpeed = 5.f;
 
-		da::core::CCamera* cam = da::core::CCamera::getCamera();
+		if (!m_camera)
+		{
+			m_camera = new da::core::CCamera();
+		}
+
+
+		da::core::CCamera* cam = m_camera;
+
+		if (da::core::CCamera* oldCam = da::core::CCamera::getCamera())
+		{
+			if (oldCam != cam)
+			{
+				da::core::CCamera::setCamera(cam);
+				cam->setPosition(oldCam->position());
+				cam->setRotation(oldCam->rotation());
+			}
+		}
+
+		
 
 		if (da::core::CInput::inputPressed(87)) // W
 		{
@@ -291,6 +309,8 @@ void CTestBed01Level::shutdown()
 
 	m_character->shutdown();
 	delete m_character;
+
+	delete m_camera;
 
 	da::core::CSceneManager::setScene(nullptr);
 }

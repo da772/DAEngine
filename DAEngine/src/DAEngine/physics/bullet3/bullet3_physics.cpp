@@ -109,7 +109,7 @@ namespace da::physics
 		PROFILE("")
 		if (ray.eType == ERayType::All)
 		{
-			btCollisionWorld::AllHitsRayResultCallback callback({ ray.startPos.x, ray.startPos.y, ray.startPos.z }, { ray.startPos.x, ray.endPos.y, ray.endPos.z });
+			btCollisionWorld::AllHitsRayResultCallback callback({ ray.endPos.x, ray.endPos.y, ray.endPos.z }, { ray.startPos.x, ray.startPos.y, ray.startPos.z });
 			m_collisionWorld->rayTest(callback.m_rayFromWorld, callback.m_rayToWorld, callback);
 
 			ray.bHit = callback.hasHit();
@@ -139,7 +139,7 @@ namespace da::physics
 			return;
 		}
 
-		btCollisionWorld::ClosestRayResultCallback callback({ ray.startPos.x, ray.startPos.y, ray.startPos.z }, { ray.startPos.x, ray.endPos.y, ray.endPos.z });
+		btCollisionWorld::ClosestRayResultCallback callback({ ray.endPos.x, ray.endPos.y, ray.endPos.z }, { ray.startPos.x, ray.startPos.y, ray.startPos.z });
 		m_collisionWorld->rayTest(callback.m_rayFromWorld, callback.m_rayToWorld, callback);
 
 		ray.bHit = callback.hasHit();

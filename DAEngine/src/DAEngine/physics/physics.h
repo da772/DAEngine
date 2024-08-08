@@ -22,7 +22,7 @@ namespace da::physics
 
 	struct FRayData
 	{
-		inline FRayData(ERayType type, const glm::vec3& startPos, const glm::vec3& endPos) : eType(type), startPos(startPos), endPos(endPos) {}
+		inline FRayData(ERayType type, const glm::vec3& startPos, const glm::vec3& endPos) : eType(type), startPos(startPos), endPos(endPos), bHit(false) {}
 
 		ERayType eType;
 		bool bHit;

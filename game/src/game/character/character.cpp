@@ -89,6 +89,7 @@ void CCharacter::shutdown()
 {
 	da::core::CSceneManager::getScene()->removeEntity(m_entity);
 	da::core::CSceneManager::getScene()->removeEntity(m_sword);
+	delete m_camera;
 }
 
 const da::core::CEntity* CCharacter::getEntity() const
@@ -98,9 +99,19 @@ const da::core::CEntity* CCharacter::getEntity() const
 
 void CCharacter::processCamera(float dt)
 {
+	if (!m_camera)
+	{
+		m_camera = new da::core::CCamera();
+	}
+
 	da::core::CInputContext inputCtx(HASHSTR("CharacterInput"), 0);
 
-	da::core::CCamera* cam = da::core::CCamera::getCamera();
+	if (da::core::CInput::inputContextAvailable())
+	{
+		da::core::CCamera::setCamera(m_camera);
+	}
+
+	da::core::CCamera* cam = m_camera;
 	const float xPos = da::core::CInput::getCursorX();
 	const float yPos = da::core::CInput::getCursorY();
 
@@ -127,12 +138,40 @@ void CCharacter::processCamera(float dt)
 
 	m_cursorPos = { xPos, yPos };
 
+	glm::vec3 pos = m_entity->getTransform().position() + glm::vec3(0.f, 0.f, m_camHeight) + xOff + yOff;
+	
+	if (cam->position() != pos)
+	{
+		glm::vec3 endPos = pos;
+
+		da::physics::FRayData ray(da::physics::ERayType::All, m_entity->getTransform().position(), endPos);
+		da::physics::CPhysics::rayCast(ray);
+		//da::graphics::CDebugRender::drawLine(m_entity->getTransform().position(), endPos, .01f, { 1.f,0.f,0.f,1.f });
+		if (ray.bHit)
+		{
+			for (size_t i = 0; i < ray.vHits.size(); i++)
+			{
+				if (ray.vHits[i].pEntity != m_entity)
+				{
+					if (ray.vHits[i].pEntity && ray.vHits[i].pEntity->getComponent<CCharacterComponent>().isValid())
+					{
+						continue;
+					}
+
+					LOG_DEBUG(da::ELogChannel::Application, "hit: %f, %f, %f", ray.vHits[i].position.x, ray.vHits[i].position.y, ray.vHits[i].position.z);
+					pos = glm::vec3(ray.vHits[i].position.x + ray.vHits[i].normal.x * -.75f, ray.vHits[i].position.y + ray.vHits[i].normal.y * -.75f, ray.vHits[i].position.z + ray.vHits[i].normal.z * -.15f);
+					//da::graphics::CDebugRender::drawLine(m_entity->getTransform().position(), pos, .01f, { 0.f,1.f,0.f,1.f });
+					break;
+				}
+			}
+		}
+	}
+
 	if (!da::core::CInput::inputContextAvailable())
 	{
 		return;
 	}
 
-	glm::vec3 pos = m_entity->getTransform().position() + glm::vec3(0.f, 0.f, m_camHeight) + xOff + yOff;
 	cam->setPosition(pos);
 	cam->lookAt(m_entity->getTransform().position());
 }

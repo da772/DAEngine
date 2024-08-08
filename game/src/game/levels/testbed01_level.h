@@ -3,6 +3,7 @@
 #include <daengine/core.h>
 #include <daengine/components.h>
 #include <daengine/script.h>
+#include <daengine/graphics.h>
 #include "level.h"
 
 
@@ -27,6 +28,7 @@ private:
 private:
 	da::graphics::CSkeletalAnimation* m_swordSlashAnimation;
 	da::graphics::CSkeletalAnimation* m_runAnimation;
+	da::core::CCamera* m_camera = nullptr;
 	CCharacter* m_character, *m_ai;
 	CVehicle* m_vehicle;
 	da::script::CScriptClass m_scrlevel;

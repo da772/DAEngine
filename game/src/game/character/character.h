@@ -40,6 +40,7 @@ private:
 #endif
 
 private:
+	da::core::CCamera* m_camera = nullptr;
 	da::core::CEntity* m_entity, * m_sword;
 	CCharacterGui m_gui;
 	glm::vec2 m_cursorPos = { 0.f, 0.f };

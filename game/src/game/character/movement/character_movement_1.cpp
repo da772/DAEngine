@@ -35,6 +35,11 @@ float CCharacterMovement1::getMoveDir() const
 void CCharacterMovement1::processInput(float dt)
 {
 	da::core::CInputContext inputCtx(HASHSTR("CharacterInput"), 0);
+	
+	if (!da::core::CInput::inputContextAvailable())
+	{
+		return;
+	}
 
 	da::core::FComponentRef<CCharacterMovementComponent> movement = m_character->getComponent<CCharacterMovementComponent>();
 	da::core::FComponentRef<CCharacterComponent> character = m_character->getComponent<CCharacterComponent>();
@@ -50,7 +55,12 @@ void CCharacterMovement1::processInput(float dt)
 	}
 	m_cursorPos = { xPos, 0.f };
 
-	if (character->isAttacking()) return;
+	if (character->isAttacking()) {
+		if (da::core::CInput::mouseInputPressed(0)) {
+			character->attack();
+		}
+		return;
+	}
 
 	glm::vec3 direction = glm::vec3(0);
 	float rotate = 0.f;

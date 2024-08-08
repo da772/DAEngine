@@ -13,7 +13,8 @@ enum class ECharacterAnims : uint8_t
 	JogLeft,
 	JogRight,
 	JogBack,
-	Swing2
+	Combo1,
+	Combo2
 };
 
 class CCharacterComponent
@@ -41,6 +42,7 @@ protected:
 
 private:
 	void processAnims(float dt);
+	da::graphics::FSkeletalAnimGraphNode& getAnim(ECharacterAnims anim);
 
 #ifdef DA_REVIEW
 	void onDebugRender();
@@ -53,7 +55,7 @@ private:
 	float m_camSensitivity = .1f;
 	ICharacterMovement* m_movement = nullptr;
 	const da::core::CEntity* m_weapon = nullptr;
-	bool m_attack : 1 = false;
+	uint8_t m_attack = 0;
 	bool m_isLocalPlayer : 1;
 
 
