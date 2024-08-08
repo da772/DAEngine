@@ -23,5 +23,5 @@ private:
 
 private:
 	std::vector<glm::vec3> m_path;
-	bool m_pause : 1 = false;
+	bool m_pause : 1 = true;
 };

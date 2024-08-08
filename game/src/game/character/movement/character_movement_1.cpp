@@ -111,12 +111,17 @@ void CCharacterMovement1::processInput(float dt)
 		if (!A && !D)
 		{
 			double targetDir = cam->rotationEuler().z;
+
+			if (S)
+			{
+				targetDir += 180.f;
+			}
 			double dir = da::core::maths::wrapAngle(glm::radians(targetDir)) - da::core::maths::wrapAngle(glm::radians(m_character->getTransform().rotationEuler().z));
-			if (S) dir *= -1.f;
 			double wrappedDir = da::core::maths::wrapAngle(dir);
+			
 			if (std::abs(wrappedDir) > 0.001f) {
-				if (std::abs(wrappedDir) <= .05f) {
-					movement->setRotation(targetDir);
+				if (std::abs(wrappedDir) <= .1f) {
+					movement->setRotation(targetDir, true);
 				}
 				else {
 					rotate += wrappedDir > 3.14f ? -1.f : 1.f;
