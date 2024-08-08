@@ -44,7 +44,7 @@ void CTestBed01Level::initialize()
 	// Test Bed
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::graphics::CStaticMesh* colMesh = new da::graphics::CStaticMesh("assets/prop/level/dungeon_test_col.fbx");
+		da::graphics::CStaticMesh* colMesh = da::graphics::CStaticMeshFactory::create("assets/prop/level/dungeon_test_col.fbx");
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/prop/level/dungeon_test.fbx");
 
 		for (int i = 0; i < meshComponent->getStaticMesh()->getMaterialCount(); i++) {
@@ -91,24 +91,6 @@ void CTestBed01Level::initialize()
 		helloWorldEntity->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
 	}
 
-	// Sphere
-	{
-		da::core::CEntity* sphere = da::core::CSceneManager::getScene()->createEntity();
-		da::core::FComponentRef<da::core::CSkeletalMeshComponent> c = 
-			sphere->addComponent<da::core::CSkeletalMeshComponent>(
-				  "assets/skeletons/camilla/camilla_02.fbx"
-				, "assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx");
-		for (const da::graphics::FMaterialData& mat : c->getSkeletalMesh()->getMaterials())
-		{
-			const_cast<da::graphics::FMaterialData&>(mat).metallicFactor = 0.f;
-		}
-
-		c->getSkeletalMesh()->getMaterial(10).baseColorFactor = { 0.f,0.f,0.f,0.f };
-		c->getSkeletalMesh()->getMaterial(13).baseColorFactor = { 0.f,0.f,0.f,0.25f };
-		sphere->setTag(HASHSTR("Camilla"));
-		sphere->getTransform().setPosition({ -2.f, 0.f, 1.f });
-	}
-
 	// Ramp1
 	{
 		da::core::CEntity* ramp = da::core::CSceneManager::getScene()->createEntity();
@@ -140,7 +122,7 @@ void CTestBed01Level::initialize()
 		mesh->getStaticMesh()->getMaterial(0).metallicFactor = 0.f;
 		mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
 
-		da::graphics::CStaticMesh* colMesh = new da::graphics::CStaticMesh("assets/prop/misc/target_dummy_collision.fbx", false);
+		da::graphics::CStaticMesh* colMesh = da::graphics::CStaticMeshFactory::create("assets/prop/misc/target_dummy_collision.fbx", false);
 
 		transformObj->addComponent<da::core::CRigidBodyComponent>(
 			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(colMesh)
@@ -158,7 +140,7 @@ void CTestBed01Level::initialize()
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = arena->addComponent<da::core::CSmeshComponent>("assets/prop/structure/prop_gladiator_arena.fbx");
 		meshComponent->getStaticMesh()->castShadows(false);
 
-		da::graphics::CStaticMesh* collision = new da::graphics::CStaticMesh("assets/prop/structure/prop_collision_gladiator_arena.fbx");
+		da::graphics::CStaticMesh* collision = da::graphics::CStaticMeshFactory::create("assets/prop/structure/prop_collision_gladiator_arena.fbx");
 		/*arena->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(
 			da::physics::CPhysicsShapeTriangleMesh::create(collision)
 			, da::physics::CPhysicsDefaultMotionState::create(arena->getTransform().matrix())

@@ -2,8 +2,8 @@
 
 #include "skeletal_mesh_component.h"
 #include "core/graphics/graphics_smesh.h"
-#include "platform/graphics/bgfx/bgfx_graphics_material.h"
-#include "platform/graphics/bgfx/bgfx_skeletal_mesh.h"
+#include "core/graphics/factory/factory_graphics_skmesh.h"
+
 
 
 #include <bx/bx.h>
@@ -18,14 +18,14 @@ namespace da::core {
 
 	CSkeletalMeshComponent::CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(false)
 	{
-		m_skeletalmesh = new da::platform::CBgfxSkeletalMesh(meshPath, false);
+		m_skeletalmesh = da::graphics::CSkeletalMeshFactory::create(meshPath, false);
 		m_animation = new da::graphics::CSkeletalAnimation(animPath, m_skeletalmesh);
 		m_animator = new da::graphics::CSkeletalAnimator(m_animation);
 	}
 
 	CSkeletalMeshComponent::CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, bool inverseNormals, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(inverseNormals)
 	{
-		m_skeletalmesh = new da::platform::CBgfxSkeletalMesh(meshPath, inverseNormals);
+		m_skeletalmesh = da::graphics::CSkeletalMeshFactory::create(meshPath, inverseNormals);
 		m_animation = new da::graphics::CSkeletalAnimation(animPath, m_skeletalmesh);
 		m_animator = new da::graphics::CSkeletalAnimator(m_animation);
 	}
@@ -64,12 +64,12 @@ namespace da::core {
 
 	void CSkeletalMeshComponent::render()
 	{
-		((da::platform::CBgfxSkeletalMesh*)m_skeletalmesh)->setBuffers(0, 0);
+		m_skeletalmesh->setBuffers(0, 0);
 	}
 
 	void CSkeletalMeshComponent::onShutdown()
 	{
-		if (m_skeletalmesh) delete m_skeletalmesh;
+		if (m_skeletalmesh) da::graphics::CSkeletalMeshFactory::remove(m_skeletalmesh);
 		if (m_animation) delete m_animation;
 		if (m_animator) delete m_animator;
 
@@ -225,14 +225,14 @@ namespace da::core {
 				da::graphics::CSkeletalMesh* oldMesh = m_skeletalmesh;
 				std::string path = oldMesh->getPath();
 
-				m_skeletalmesh = new da::platform::CBgfxSkeletalMesh(path, m_inverseNormals);
+				m_skeletalmesh = da::graphics::CSkeletalMeshFactory::create(path, m_inverseNormals);
 
 				for (size_t i = 0; i < m_skeletalmesh->getMaterialCount() && i < oldMesh->getMaterials().size(); i++) {
 					m_skeletalmesh->getMaterial(i) = oldMesh->getMaterial(i);
 					oldMesh->getMaterial(i) = {};
 				}
 
-				delete oldMesh;
+				da::graphics::CSkeletalMeshFactory::remove(oldMesh);
 			}
 			ImGui::Unindent();
 		}

@@ -8,6 +8,7 @@
 #include "bgfx_static_mesh.h"
 #include "bgfx_graphics_material.h"
 #include "bgfx_line_mesh.h"
+#include "DAEngine/core/graphics/factory/factory_graphics_smesh.h"
 
 namespace da::platform
 {
@@ -17,11 +18,11 @@ namespace da::platform
 		m_shader = da::graphics::CMaterialFactory::create("shaders/cluster/vs_debug_geometry.sc", "shaders/cluster/fs_debug_geometry.sc");
 		m_uniform = ::bgfx::createUniform("u_Color", ::bgfx::UniformType::Vec4);
 
-		m_shapes[EDebugShapes::Cube] = new CBgfxStaticMesh("assets/cube.fbx", false);
-		m_shapes[EDebugShapes::Sphere] = new CBgfxStaticMesh("assets/sphere.fbx", false);
-		m_shapes[EDebugShapes::Plane] = new CBgfxStaticMesh("assets/plane.fbx", false);
-		m_shapes[EDebugShapes::Cone] = new CBgfxStaticMesh("assets/cone.fbx", false);
-		m_shapes[EDebugShapes::Capsule] = new CBgfxStaticMesh("assets/capsule.fbx", false);
+		m_shapes[EDebugShapes::Cube] = da::graphics::CStaticMeshFactory::create("assets/cube.fbx", false);
+		m_shapes[EDebugShapes::Sphere] = da::graphics::CStaticMeshFactory::create("assets/sphere.fbx", false);
+		m_shapes[EDebugShapes::Plane] = da::graphics::CStaticMeshFactory::create("assets/plane.fbx", false);
+		m_shapes[EDebugShapes::Cone] = da::graphics::CStaticMeshFactory::create("assets/cone.fbx", false);
+		m_shapes[EDebugShapes::Capsule] = da::graphics::CStaticMeshFactory::create("assets/capsule.fbx", false);
 		m_shapes[EDebugShapes::Line] = new CBgfxLineMesh();
 	}
 
@@ -77,7 +78,7 @@ namespace da::platform
 	void CBgfxDebugRenderer::shutdown()
 	{
 		for (const std::pair<EDebugShapes, da::graphics::CStaticMesh*>& kv : m_shapes) {
-			delete kv.second;
+			da::graphics::CStaticMeshFactory::remove(kv.second);
 		}
 		m_shapes = {};
 

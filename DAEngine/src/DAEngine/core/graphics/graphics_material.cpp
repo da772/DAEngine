@@ -14,34 +14,22 @@
 
 namespace da::graphics
 {
-	std::unordered_map<CHashString, FMaterialInfo> CMaterialFactory::ms_materials;
-
-#ifdef DA_REVIEW
-	bool CMaterialFactory::m_debug;
-#endif
-
+	da::graphics::CMaterialFactory CMaterialFactory::ms_factory;
 
 	da::graphics::CMaterial* CMaterialFactory::create(const std::string& vsPath, const std::string& fsPath)
 	{
 		CHashString vsHash(vsPath.c_str()), fsHash(fsPath.c_str());
 		CHashString combinedHash(vsHash.hash(), fsHash.hash());
 
-		const std::unordered_map<CHashString, FMaterialInfo>::iterator& it = ms_materials.find(combinedHash);
-
-		if (it != ms_materials.end()) {
-			ASSERT(it->second.Count);
-			it->second.Count++;
-			return it->second.Material;
-		}
+#ifdef DA_REVIEW
+		//LOG_INFO(ELogChannel::Graphics, "Creating shader (%zu): %s, %s", combinedHash.hash(), vsPath.c_str(), fsPath.c_str());
+#endif
 
 #ifdef DA_GRAPHICS_BGFX
-		da::graphics::CMaterial* mat = new da::platform::CBgfxGraphicsMaterial(vsPath, fsPath);
-		mat->m_hash = combinedHash;
-		ms_materials[combinedHash] = { mat, 1 };
-
+		CMaterial* mat = ms_factory.addInstance(combinedHash, [vsPath, fsPath, combinedHash] { return new da::platform::CBgfxGraphicsMaterial(vsPath, fsPath, combinedHash); });
 #ifdef DA_REVIEW
-		if (ms_materials.size() == 1) {
-			da::debug::CDebugMenuBar::register_debug(HASHSTR("Shaders"), HASHSTR("Reload Shaders"), &m_debug, reloadShaders);
+		if (ms_factory.m_instances.size() == 1) {
+			da::debug::CDebugMenuBar::register_debug(HASHSTR("Shaders"), HASHSTR("Reload Shaders"), &ms_factory.m_debug, reloadShaders);
 		}
 #endif
 
@@ -52,42 +40,19 @@ namespace da::graphics
 	da::graphics::CMaterial* CMaterialFactory::create(const std::string& csPath)
 	{
 		CHashString csHash(csPath.c_str());
-
-		const std::unordered_map<CHashString, FMaterialInfo>::iterator& it = ms_materials.find(csHash);
-
-		if (it != ms_materials.end()) {
-			ASSERT(it->second.Count);
-			it->second.Count++;
-			return it->second.Material;
-		}
-
 #ifdef DA_GRAPHICS_BGFX
-		da::graphics::CMaterial* mat = new da::platform::CBgfxGraphicsMaterial(csPath);
-		mat->m_hash = csHash;
-		ms_materials[csHash] = { mat, 1 };
+		CMaterial* mat = ms_factory.addInstance(csHash, [csPath, csHash] {return new da::platform::CBgfxGraphicsMaterial(csPath, csHash); });
 		return mat;
 #endif
 	}
 
 	void CMaterialFactory::remove(CMaterial* material)
 	{
-		const std::unordered_map<CHashString, FMaterialInfo>::iterator& it = ms_materials.find(material->getHash());
 
-		if (it == ms_materials.end()) {
-			return;
-		}
-
-		ASSERT(it->second.Count);
-		if (--it->second.Count) {
-			return;
-		}
-
-		delete it->second.Material;
-
-		ms_materials.erase(it);
+		ms_factory.removeInstance(material->getHash());
 
 #ifdef DA_REVIEW
-		if (ms_materials.empty()) {
+		if (ms_factory.m_instances.empty()) {
 			da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Shaders"), HASHSTR("Reload"));
 		}
 #endif
@@ -96,15 +61,15 @@ namespace da::graphics
 #ifdef DA_REVIEW
 	void CMaterialFactory::reloadShaders()
 	{
-		for (const std::pair<CHashString, FMaterialInfo>& kv : ms_materials) {
-			kv.second.Material->shutdown();
+		for (const std::pair<CHashString, FInstanceInfo>& kv : ms_factory.m_instances) {
+			kv.second.Ptr->shutdown();
 		}
 
-		for (const std::pair<CHashString, FMaterialInfo>& kv : ms_materials) {
-			kv.second.Material->initialize();
+		for (const std::pair<CHashString, FInstanceInfo>& kv : ms_factory.m_instances) {
+			kv.second.Ptr->initialize();
 		}
 
-		m_debug = false;
+		ms_factory.m_debug = false;
 	}
 #endif
 }

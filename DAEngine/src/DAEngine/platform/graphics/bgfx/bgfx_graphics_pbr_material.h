@@ -26,6 +26,6 @@ namespace da::platform {
 		inline const da::graphics::FMaterialData& getMaterial() const { return m_materialData; }
 	private:
 		da::graphics::FMaterialData m_materialData;
-		da::platform::bgfx::CBgfxTexture2D* m_albedo = nullptr, * m_normal = nullptr, * m_roughness = nullptr, *m_emissive = nullptr;
+		da::graphics::CGraphicsTexture2D* m_albedo = nullptr, * m_normal = nullptr, * m_roughness = nullptr, *m_emissive = nullptr;
 	};
 }

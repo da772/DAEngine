@@ -1,6 +1,7 @@
 #pragma once
 
 #include "daengine/core/containers.h"
+#include "daengine/core/factory.h"
 #include "graphics_pipeline.h"
 #include "graphics_skeletal_vertex.h"
 #include "graphics_renderable.h"
@@ -27,9 +28,6 @@ namespace da::graphics
 	class CSkeletalMesh
 	{
 	public:
-		CSkeletalMesh(const std::string& path, bool inverseNormals = false);
-		inline CSkeletalMesh() {};
-		virtual ~CSkeletalMesh();
 
 		inline const std::vector<FSkeletalMesh>& getMeshes() const { return m_meshes; };
 		FMaterialData& getMaterial(size_t index);
@@ -47,10 +45,16 @@ namespace da::graphics
 		inline void hide(bool b) { m_hidden = b; }
 
 		inline const std::string& getPath() const { return m_path; }
+		inline virtual void setBuffers(size_t index, uint8_t stream) {};
+
+	protected:
+		CSkeletalMesh(const std::string& path, bool inverseNormals = false);
+		inline CSkeletalMesh() {};
+		virtual ~CSkeletalMesh();
 
 	private:
 		void setVertexBoneData(FSkeletalVertexBase& vertex, int boneID, float weight) const;
-		
+
 	private:
 		std::string m_path;
 
@@ -61,6 +65,8 @@ namespace da::graphics
 		std::unordered_map<CHashString, FBoneInfo> m_boneMap;
 		bool m_castShadows = true;
 		bool m_hidden = false;
+
+		friend class da::core::CFactory<CSkeletalMesh>;
 
 	};
 }

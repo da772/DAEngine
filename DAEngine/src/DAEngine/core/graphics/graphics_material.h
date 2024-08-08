@@ -1,5 +1,6 @@
 #pragma once
 #include "DAEngine/core/core.h"
+#include "Daengine/core/factory.h"
 
 namespace da::graphics
 {
@@ -27,11 +28,11 @@ namespace da::graphics
 	protected:
 		CHashString m_hash;
 
+		friend class da::core::CFactory<CMaterial>;
 		friend class CMaterialFactory;
-
 	};
 
-	class CMaterialFactory
+	class CMaterialFactory : da::core::CFactory<CMaterial>
 	{
 	public:
 		static CMaterial* create(const std::string& vsPath, const std::string& fsPath);
@@ -45,10 +46,10 @@ namespace da::graphics
 
 	private:
 #ifdef DA_REVIEW
-		static bool m_debug;
+		bool m_debug;
+		friend class da::core::CFactoryDebug;
 #endif
 
-	private:
-		static std::unordered_map<CHashString, FMaterialInfo> ms_materials;
+		static CMaterialFactory ms_factory;
 	};
 }

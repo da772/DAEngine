@@ -7,3 +7,5 @@
 #include "DAEngine/core/graphics/graphics_smesh.h"
 #include "DAEngine/core/graphics/graphics_gui.h"
 #include "DAEngine/core/graphics/factory/factory_graphics_texture2d.h"
+#include "DAEngine/core/graphics/factory/factory_graphics_smesh.h"
+#include "DAEngine/core/graphics/factory/factory_graphics_skmesh.h"

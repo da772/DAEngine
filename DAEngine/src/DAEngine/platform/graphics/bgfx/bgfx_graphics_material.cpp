@@ -12,16 +12,18 @@ namespace da::platform {
 
 	std::unordered_map<CHashString, FShaderData> CBgfxGraphicsMaterial::ms_shaderHandles;
 
-	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial(const std::string& vsPath, const std::string& fsPath) : m_vsPath(vsPath), m_fsPath(fsPath)
+	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial(const std::string& vsPath, const std::string& fsPath, CHashString hash) : m_vsPath(vsPath), m_fsPath(fsPath)
 	{
+		m_hash = hash;
 		getPlatformPath(m_vsPath);
 		getPlatformPath(m_fsPath);
 
 		initialize();
 	}
 
-	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial(const std::string& csPath) : m_csPath(csPath)
+	CBgfxGraphicsMaterial::CBgfxGraphicsMaterial(const std::string& csPath, CHashString hash) : m_csPath(csPath)
 	{
+		m_hash = hash;
 		getPlatformPath(m_csPath);
 
 		initialize();
@@ -37,7 +39,6 @@ namespace da::platform {
 		if (!m_csPath.empty()) {
 
 			CHashString csHash(m_csPath.c_str());
-
 			const std::unordered_map<CHashString, FShaderData>::iterator& it = ms_shaderHandles.find(csHash);
 
 			::bgfx::ShaderHandle handle1 = BGFX_INVALID_HANDLE;
@@ -56,8 +57,9 @@ namespace da::platform {
 		::bgfx::ShaderHandle handle1 = BGFX_INVALID_HANDLE;
 		::bgfx::ShaderHandle handle2 = BGFX_INVALID_HANDLE;
 
+		CHashString vsHash(m_vsPath.c_str()), fsHash(m_fsPath.c_str());
+
 		{
-			CHashString vsHash(m_vsPath.c_str());
 			const std::unordered_map<CHashString, FShaderData>::iterator& it = ms_shaderHandles.find(vsHash);
 
 			if (it != ms_shaderHandles.end()) {
@@ -72,7 +74,6 @@ namespace da::platform {
 		}
 
 		{
-			CHashString fsHash(m_fsPath.c_str());
 			const std::unordered_map<CHashString, FShaderData>::iterator& it = ms_shaderHandles.find(fsHash);
 
 			if (it != ms_shaderHandles.end()) {

@@ -42,7 +42,6 @@ namespace da::core
 	private:
 		da::graphics::CStaticMesh* m_staticMesh;
 		bool m_inverseNormals : 1;
-		bool m_keepMesh : 1 = false;
 		std::vector<FInstance> m_instances;
 		uint32_t m_instanceCounter = 0;
 

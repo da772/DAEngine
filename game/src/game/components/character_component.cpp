@@ -1,5 +1,6 @@
 // engine
 #include <DAEngine/core.h>
+#include <DAEngine/graphics.h>
 
 // game
 #include "character_component.h"
@@ -7,8 +8,6 @@
 #include "game/character/movement/ai_character_movement.h"
 #include "game/character/movement/character_movement_1.h"
 
-// TODO: Remove
-#include <DAEngine\platform\graphics\bgfx\bgfx_skeletal_mesh.h>
 
 #ifdef DA_REVIEW
 COMPONENT_CPP_DEBUG(CCharacterComponent)
@@ -18,16 +17,25 @@ COMPONENT_CPP(CCharacterComponent)
 
 CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGuid& guid, da::core::CEntity& parent) : m_isLocalPlayer(isLocalPlayer), m_guid(guid), m_parent(parent)
 {
-	da::platform::CBgfxSkeletalMesh* mesh = new da::platform::CBgfxSkeletalMesh("assets/skeletons/camilla/camilla_02.fbx", false);
+	da::graphics::CSkeletalMesh* mesh;
+	if (isLocalPlayer)
+	{
+		mesh = da::graphics::CSkeletalMeshFactory::create("assets/skeletons/camilla/camilla_02.fbx", false);
+		mesh->getMaterial(10).baseColorFactor = { 0.f,0.f,0.f,0.f };
+		mesh->getMaterial(13).baseColorFactor = { 0.f,0.f,0.f,0.25f };
+	} 
+	else
+	{
+		mesh = da::graphics::CSkeletalMeshFactory::create("assets/skeletons/pesant_f/pesant_f_02.fbx", false);
+		mesh->getMaterial(11).baseColorFactor = { 0.f,0.f,0.f,0.f };
+	}
 
 	for (const da::graphics::FMaterialData& mat : mesh->getMaterials())
 	{
 		const_cast<da::graphics::FMaterialData&>(mat).metallicFactor = 0.f;
 		const_cast<da::graphics::FMaterialData&>(mat).roughnessFactor = 0.45f;
 	}
-
-	mesh->getMaterial(10).baseColorFactor = { 0.f,0.f,0.f,0.f };
-	mesh->getMaterial(13).baseColorFactor = { 0.f,0.f,0.f,0.25f };
+	
 
 	// Skin
 	//mesh->getMaterial(0).metallicFactor = .200f;
@@ -221,8 +229,9 @@ void CCharacterComponent::onDebugRender()
 {
 	if (ImGui::Begin("Anim Test")) {
 		da::core::FComponentRef<da::core::CSkeletalMeshComponent> skMesh = m_parent.getComponent<da::core::CSkeletalMeshComponent>();
-		skMesh->getSkeletalAnimator()->debugRenderJoints(skMesh->getTransform());
+		//skMesh->getSkeletalAnimator()->debugRenderJoints(skMesh->getTransform());
 		std::vector<da::graphics::FSkeletalAnimGraphNode>& nodes = m_animGraph->getNodes();
+
 		for (int i = 0; i < nodes.size(); i++) {
 			ImGui::LabelText("##label", "%.2f : %s: ", nodes[i].Animator->getPlayTime(), nodes[i].Animator->getCurrentAnim()->getAnimName().c_str());
 			ImGui::InputFloat(std::to_string(i).c_str(), &nodes[i].Weight, .025, 0.f);

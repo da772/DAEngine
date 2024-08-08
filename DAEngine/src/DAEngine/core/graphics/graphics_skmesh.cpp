@@ -319,23 +319,23 @@ namespace da::graphics
 	{
 		for (size_t i = 0; i < m_materials.size(); i++) {
 			if (m_materials[i].getBaseColorTexture()) {
-				delete m_materials[i].getBaseColorTexture();
+				CTexture2DFactory::Remove(m_materials[i].getBaseColorTexture());
 			}
 
 			if (m_materials[i].getEmissiveTexture()) {
-				delete m_materials[i].getEmissiveTexture();
+				CTexture2DFactory::Remove(m_materials[i].getEmissiveTexture());	
 			}
 
 			if (m_materials[i].getMetallicRoughnessTexture()) {
-				delete m_materials[i].getMetallicRoughnessTexture();
+				CTexture2DFactory::Remove(m_materials[i].getMetallicRoughnessTexture());;
 			}
 
 			if (m_materials[i].getNormalTexture()) {
-				delete m_materials[i].getNormalTexture();
+				CTexture2DFactory::Remove(m_materials[i].getNormalTexture());
 			}
 
 			if (m_materials[i].getOcclusionTexture()) {
-				delete m_materials[i].getOcclusionTexture();
+				CTexture2DFactory::Remove(m_materials[i].getOcclusionTexture());
 			}
 		}
 	}

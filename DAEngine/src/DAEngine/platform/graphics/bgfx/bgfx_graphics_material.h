@@ -22,8 +22,8 @@ namespace da::platform {
 
 	protected:
 		CBgfxGraphicsMaterial();
-		CBgfxGraphicsMaterial(const std::string& vsPath, const std::string& fsPath);
-		CBgfxGraphicsMaterial(const std::string& csPath);
+		CBgfxGraphicsMaterial(const std::string& vsPath, const std::string& fsPath, CHashString hash);
+		CBgfxGraphicsMaterial(const std::string& csPath, CHashString hash);
 		virtual ~CBgfxGraphicsMaterial();
 		void getPlatformPath(std::string& s);
 		uint16_t createShader(const std::string& s, CHashString hash);

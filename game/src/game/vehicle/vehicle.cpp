@@ -53,7 +53,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics:
 			return;
 		}
 
-		da::graphics::CStaticMesh* collisionMesh = new da::graphics::CStaticMesh("assets/prop/veh/prop_collision_veh_sports_01a.fbx", false);
+		da::graphics::CStaticMesh* collisionMesh = da::graphics::CStaticMeshFactory::create("assets/prop/veh/prop_collision_veh_sports_01a.fbx", false);
 		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->addComponent<da::core::CRigidBodyComponent>(
 			//da::physics::IPhysicsRigidBody::create(da::physics::IPhysicsShape::createMeshConvexHull(collisionMesh)
 			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 1.f, 2.525f, .35f })
@@ -61,7 +61,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics:
 				, 1200.f
 				, { 0.f,0.f,0.f }));
 
-		delete collisionMesh;
+		da::graphics::CStaticMeshFactory::remove(collisionMesh);
 
 		m_vehicle = da::physics::VehicleFactory::create(vehicleData, rb->getPhysicsBody());
 

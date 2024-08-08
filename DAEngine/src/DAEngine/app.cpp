@@ -4,6 +4,7 @@
 #include "core/arg_handler.h"
 #include "core/ecs/components.h"
 #include "core/ecs/scene.h"
+#include "core/factory.h"
 #include "script/script_engine.h"
 #include "core/ecs/scene_manager.h"
 #include "core/threading/worker_pool.h"
@@ -194,6 +195,9 @@ namespace da
 
 	void CApp::shutdownInternal()
 	{
+#ifdef DA_REVIEW
+		core::CFactoryDebug::checkInstances();
+#endif
 		core::CArgHandler::shutdown();
 		CLogger::shutdown();
 		core::CWorkerPool::shutdown();

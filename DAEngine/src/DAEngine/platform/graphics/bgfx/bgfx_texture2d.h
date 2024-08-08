@@ -4,9 +4,21 @@
 #include "daengine/core/graphics/graphics_texture2d.h"
 #include "asset/asset.h"
 
+namespace da::graphics
+{
+	class CTexture2DFactory;
+}
+
 namespace da::platform::bgfx {
 	class CBgfxTexture2D : public da::graphics::CGraphicsTexture2D {
 	public:
+		inline const uint16_t getHandle() const { return m_handle; }
+		inline virtual void* getTextureNative() const { return (void*)&m_handle; }
+		void destroy();
+
+		friend class da::core::CFactory<CGraphicsTexture2D>;
+
+	protected:
 		CBgfxTexture2D();
 		CBgfxTexture2D(const std::string& s);
 		CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height);
@@ -14,14 +26,12 @@ namespace da::platform::bgfx {
 
 		~CBgfxTexture2D() override;
 
-		inline const uint16_t getHandle() const { return m_handle; }
-		inline virtual void* getTextureNative() const { return (void*)&m_handle; }
-		void destroy();
-
 	private:
 		da::CAsset m_fileAsset;
 		uint16_t m_handle = UINT16_MAX;
 		std::mutex* m_mutex;
+
+		friend class da::graphics::CTexture2DFactory;
 
 	};
 }

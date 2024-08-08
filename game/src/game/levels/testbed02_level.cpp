@@ -54,7 +54,7 @@ void CTestBed02Level::initialize()
 	// Test Collision
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::graphics::CStaticMesh* collision = new da::graphics::CStaticMesh("assets/prop/level/testbed.fbx");
+		da::graphics::CStaticMesh* collision = da::graphics::CStaticMeshFactory::create("assets/prop/level/testbed.fbx");
 
 		std::vector<da::physics::IPhysicsShape*> shapes;
 		std::vector<glm::mat4> shapestrans;

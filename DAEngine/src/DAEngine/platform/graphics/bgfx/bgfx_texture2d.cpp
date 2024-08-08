@@ -19,6 +19,7 @@ namespace da::platform::bgfx {
 		: da::graphics::CGraphicsTexture2D(s), m_fileAsset(s), m_mutex(new std::mutex())
 	{
 		da::core::CWorkerPool::addJob([this] {
+			PROFILE_TAG("Texture: ", m_fileAsset.path().c_str())
 			std::lock_guard<std::mutex> guard(*m_mutex);
 
 			if (m_path[m_path.size()-1] == 's' && m_path[m_path.size() - 2] == 'd' && m_path[m_path.size() - 3] == 'd')
@@ -87,6 +88,8 @@ namespace da::platform::bgfx {
 		char* d = (char*)malloc(width);
 		memcpy(d, data, width);
 		da::core::CWorkerPool::addJob([this, width, height, d] {
+			PROFILE_NAME("da::platform::bgfx::CBgfxTexture2D")
+			PROFILE_TAG("Texture: ", m_fileAsset.path().c_str())
 			std::lock_guard<std::mutex> guard(*m_mutex);
 			stbi_uc* pixels = stbi_load_from_memory((const stbi_uc*)d, width, (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);
 			m_channels = 4;

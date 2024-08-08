@@ -1,10 +1,12 @@
 #pragma once
 
 #include "daengine/core/containers.h"
+#include "daengine/core/factory.h"
 #include "graphics_pipeline.h"
 #include "graphics_vertex.h"
 #include "graphics_renderable.h"
 #include "graphics_material_data.h"
+
 
 namespace da::graphics
 {
@@ -19,10 +21,6 @@ namespace da::graphics
 	class CStaticMesh
 	{
 	public:
-		CStaticMesh(const std::string& path, bool inverseNormals = false);
-		inline CStaticMesh() {};
-		virtual ~CStaticMesh();
-
 		inline const std::vector<FMesh>& getMeshes() const { return m_meshes; };
 		FMaterialData& getMaterial(size_t index);
 		inline size_t getMaterialCount() const { return m_materials.size(); }
@@ -38,6 +36,11 @@ namespace da::graphics
 
 		inline const std::string& getPath() const { return m_path; }
 
+	protected:
+		CStaticMesh(const std::string& path, bool inverseNormals = false);
+		inline CStaticMesh() {};
+		virtual ~CStaticMesh();
+
 	private:
 		std::string m_path;
 
@@ -46,6 +49,8 @@ namespace da::graphics
 		std::vector<FMaterialData> m_materials;
 		bool m_castShadows = true;
 		bool m_hidden = false;
+
+		friend da::core::CFactory<CStaticMesh>;
 
 	};
 }

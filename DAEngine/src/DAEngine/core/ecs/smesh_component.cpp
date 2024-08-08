@@ -6,6 +6,7 @@
 #include "platform/graphics/bgfx/bgfx_static_mesh.h"
 #include "core/graphics/graphics_material_data.h"
 #include "core/graphics/graphics_texture2d.h"
+#include "core/graphics/factory/factory_graphics_smesh.h"
 #include <bx/bx.h>
 #include <bgfx/bgfx.h>
 
@@ -18,17 +19,16 @@ namespace da::core {
 
 	CSmeshComponent::CSmeshComponent(const std::string& meshPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(false)
 	{
-		m_staticMesh = new da::platform::CBgfxStaticMesh(meshPath, false);
+		m_staticMesh = da::graphics::CStaticMeshFactory::create(meshPath, false);
 	}
 
 	CSmeshComponent::CSmeshComponent(const std::string& meshPath, bool inverseNormals, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(inverseNormals)
 	{
-		m_staticMesh = new da::platform::CBgfxStaticMesh(meshPath, inverseNormals);
+		m_staticMesh = da::graphics::CStaticMeshFactory::create(meshPath, inverseNormals);
 	}
 
 	CSmeshComponent::CSmeshComponent(da::graphics::CStaticMesh* mesh, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
 	{
-		m_keepMesh = true;
 		m_staticMesh = mesh;
 		ASSERT(m_staticMesh);
 	}
@@ -40,8 +40,7 @@ namespace da::core {
 
 	void CSmeshComponent::onShutdown()
 	{
-		if (!m_keepMesh)
-			delete m_staticMesh;
+		da::graphics::CStaticMeshFactory::remove(m_staticMesh);
 	}
 
 	da::graphics::CStaticMesh* CSmeshComponent::getStaticMesh() const
@@ -143,15 +142,16 @@ namespace da::core {
 		if (ImGui::Button("Reload Mesh")) {
 			da::graphics::CStaticMesh* oldMesh = m_staticMesh;
 			std::string path = oldMesh->getPath();
-			
-			m_staticMesh = new da::platform::CBgfxStaticMesh(path, m_inverseNormals);
+
+			da::graphics::CStaticMeshFactory::remove(m_staticMesh);
+			m_staticMesh = da::graphics::CStaticMeshFactory::create(path, m_inverseNormals);
 
 			for (size_t i = 0; i < m_staticMesh->getMaterialCount() && i < oldMesh->getMaterials().size(); i++) {
 				m_staticMesh->getMaterial(i) = oldMesh->getMaterial(i);
 				oldMesh->getMaterial(i) = {};
 			}
 
-			delete oldMesh;
+			da::graphics::CStaticMeshFactory::remove(oldMesh);
 		}
 	}
 #endif
