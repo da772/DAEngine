@@ -15,10 +15,14 @@ public:
 	void lateUpdate(float dt);
 	void shutdown();
 
+private:
+	void loadScreen();
 
 private:
 	std::vector<ILevel*> m_levels;
 	uint32_t m_level = INVALID_LEVEL_ID;
+	bool m_levelInit = false;
+	uint8_t m_showLoadScreen = 0;
 	da::modules::CWindowModule& m_window;
 #ifdef DA_REVIEW
 	bool m_levelDebug = false;

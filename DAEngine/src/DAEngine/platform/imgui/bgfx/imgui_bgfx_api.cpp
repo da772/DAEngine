@@ -6,12 +6,21 @@
 #include <bx/allocator.h>
 #include "DAEngine/core/arg_handler.h"
 #include <backends/imgui_impl_glfw.cpp>
+#include <bgfx/dear-imgui/imgui_user.h>
 
 #ifdef DA_REVIEW
 #include "debug/debug_menu_bar.h"
 #endif
 
+
+
+void extern ImGui::PushLargeFont()
+{
+	ImGui::PushFont(ImGui::Font::Enum::RegularLarge);
+}
+
 namespace da::platform {
+
 
 	CImGuiBgfxApi::CImGuiBgfxApi(graphics::CGraphicsApi* graphicsApi) : CImGuiApi(graphicsApi)
 	{

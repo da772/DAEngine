@@ -6,7 +6,6 @@
 
 namespace da::platform
 {
-
 	class CImGuiBgfxApi : public core::CImGuiApi {
 	public:
 		CImGuiBgfxApi(graphics::CGraphicsApi* graphicsApi);

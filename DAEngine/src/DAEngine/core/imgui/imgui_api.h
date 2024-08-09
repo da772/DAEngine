@@ -1,8 +1,13 @@
 #pragma once
-#include "core/graphics/graphics_api.h"
-#include "core/window/window.h"
-#include "core/core.h"
+#include "daengine/core/graphics/graphics_api.h"
+#include "daengine/core/window/window.h"
+#include "daengine/core/core.h"
 
+
+namespace ImGui
+{
+	void extern PushLargeFont();
+}
 
 namespace da::core {
 

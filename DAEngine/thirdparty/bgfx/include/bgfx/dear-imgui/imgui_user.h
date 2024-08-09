@@ -9,7 +9,7 @@ namespace ImGui
         {
             Regular,
             Mono,
-
+            RegularLarge,
             Count
         };
     };

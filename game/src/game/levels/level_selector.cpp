@@ -18,9 +18,7 @@ void CLevelSelector::startLevel(uint32_t id)
 	}
 
 	m_level = id;
-
-	if (m_level == INVALID_LEVEL_ID) return;
-	m_levels[m_level]->initialize();
+	m_levelInit = false;
 
 #ifdef DA_REVIEW
 	da::debug::CDebugMenuBar::register_debug(HASHSTR("Level"), HASHSTR("End"), &m_levelDebug, [&] { m_levelDebug = false; startLevel(INVALID_LEVEL_ID); });
@@ -29,6 +27,30 @@ void CLevelSelector::startLevel(uint32_t id)
 
 void CLevelSelector::update(float dt)
 {
+	if (!m_showLoadScreen && m_level != INVALID_LEVEL_ID)
+	{
+
+		if (!m_levelInit)
+		{
+			m_levels[m_level]->initialize();
+			m_levelInit = true;
+			return;
+		}
+
+		m_levels[m_level]->update(dt);
+	}
+
+
+	if (m_showLoadScreen && m_showLoadScreen < 10)
+	{
+		loadScreen();
+		m_showLoadScreen++;
+	}
+	else
+	{
+		m_showLoadScreen = 0;
+	}
+
 #ifdef DA_REVIEW
 	if (m_level == INVALID_LEVEL_ID) {
 		const float width = m_window.getWindow()->getWindowData().Width;
@@ -63,6 +85,7 @@ void CLevelSelector::update(float dt)
 				std::string buttonId = std::string(level->getName().c_str()) + std::string("###levelSelector:") + std::to_string(i);
 				if (ImGui::Button(buttonId.c_str(), size)) {
 					startLevel(i);
+					m_showLoadScreen = 1;
 					break;
 				}
 			}
@@ -73,16 +96,12 @@ void CLevelSelector::update(float dt)
 		ImGui::End();
 	}
 #endif
-
-	if (m_level == INVALID_LEVEL_ID) return;
-
-	m_levels[m_level]->update(dt);
 }
 
 
 void CLevelSelector::lateUpdate(float dt)
 {
-	if (m_level == INVALID_LEVEL_ID) return;
+	if (m_level == INVALID_LEVEL_ID || !m_levelInit) return;
 
 	m_levels[m_level]->lateUpdate(dt);
 }
@@ -108,4 +127,30 @@ void CLevelSelector::shutdown()
 	}
 	m_levels = {};
 	m_level = INVALID_LEVEL_ID;
+}
+
+void CLevelSelector::loadScreen()
+{
+#ifdef DA_REVIEW
+	const float width = m_window.getWindow()->getWindowData().Width;
+	const float height = m_window.getWindow()->getWindowData().Height;
+	const float windowWidth = 300.f;
+	const float windowHeight = 350.f;
+	ImGui::SetNextWindowSize({ width * 1.2f, height * 1.2f });
+	ImGui::SetNextWindowPos({ width / 2.f - width * 1.2f / 2.f, height / 2.f - height * 1.2f / 2.f });
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, { 0.02f,.15f,.15f,1.f });
+	ImGui::Begin("bg", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
+
+	const char text[] = "Loading...";
+	float textWidth = ImGui::CalcTextSize(text).x;
+	da::graphics::CTexture2DFactory::Create()
+	ImGui::SetCursorPos({ width / 2.f + (textWidth/2.f), height / 2.f});
+	ImGui::PushLargeFont();
+	ImGui::Text(text);
+	ImGui::PopFont();
+	ImGui::End();
+	ImGui::PopStyleColor();
+	
+	
+#endif
 }
