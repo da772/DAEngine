@@ -143,7 +143,6 @@ void CLevelSelector::loadScreen()
 
 	const char text[] = "Loading...";
 	float textWidth = ImGui::CalcTextSize(text).x;
-	da::graphics::CTexture2DFactory::Create()
 	ImGui::SetCursorPos({ width / 2.f + (textWidth/2.f), height / 2.f});
 	ImGui::PushLargeFont();
 	ImGui::Text(text);
