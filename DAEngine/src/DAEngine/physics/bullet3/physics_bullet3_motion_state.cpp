@@ -1,12 +1,12 @@
-#include "dapch.h"
+
 #include "physics_bullet3_motion_state.h"
 
 #include "bullet3_physics.h"
-#include "DAEngine/core/ecs/entity.h"
-#include <core/ecs/rigid_body_component.h>
+#include "core/ecs/entity.h"
+#include <app/ecs/rigid_body_component.h>
 #include <core/events/event_handler.h>
 #include <glm/gtx/matrix_decompose.hpp>
-#include "DAEngine/physics/physics_rigid_body.h"
+#include "physics/physics_rigid_body.h"
 
 namespace da::physics
 {

@@ -1,8 +1,8 @@
 #pragma once
 #include <sol/sol.hpp>
-#include "daengine/script/script_engine.h"
+#include "script/script_engine.h"
 
-#include "daengine/core/graphics/graphics_material_data.h"
+#include "graphics/graphics_material_data.h"
 
 #define GET_SCRIPT_TYPE(type, obj) da::script::getSolType<type>(obj, HASHSTR(#type))
 #define CREATE_SCRIPT_TYPE(view, type, obj) da::script::createSolType<type>(view, obj, HASHSTR(#type))

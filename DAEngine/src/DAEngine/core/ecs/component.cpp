@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "component.h"
 
 namespace da::core {

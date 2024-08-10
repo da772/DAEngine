@@ -1,12 +1,12 @@
-#include "dapch.h"
+
 
 #include "bgfx_volumetric_light_shader.h"
-#include "DAEngine/platform/graphics/bgfx/bgfx_graphics_material.h"
+#include "platform/graphics/bgfx/bgfx_graphics_material.h"
 #include <platform/graphics/bgfx/bgfx_util.h>
 #include "bgfx_type_renderer.h"
 
 #ifdef DA_REVIEW
-#include "DAEngine/debug/debug_menu_bar.h"
+#include "debug/debug_menu_bar.h"
 #include <imgui.h>
 #endif
 
@@ -14,7 +14,7 @@ namespace da::platform
 {
 	void CBgfxVolumetricLightShader::initialize()
 	{
-		m_pVolLightShader = da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_vol_lighting.sc");
+		m_pVolLightShader = da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_vol_lighting.sc");
 
 		m_frameBuffer = createFrameBuffer(true);
 
@@ -55,7 +55,7 @@ namespace da::platform
 
 	void CBgfxVolumetricLightShader::shutdown()
 	{
-		da::graphics::CMaterialFactory::remove(m_pVolLightShader);
+		da::factory::CMaterialFactory::remove(m_pVolLightShader);
 
 		BGFXTRYDESTROY(m_frameBuffer);
 		BGFXTRYDESTROY(m_blurParams);

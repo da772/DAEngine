@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dastd.h"
+
 namespace da::net
 {
 	class CNetworkUtil

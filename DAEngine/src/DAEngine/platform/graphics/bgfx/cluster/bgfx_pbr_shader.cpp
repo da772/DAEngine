@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "bgfx_pbr_shader.h"
 
 #include "bgfx_material.h"
@@ -7,9 +7,10 @@
 #include <bimg/encode.h>
 #include <bx/file.h>
 #include <glm/gtc/type_ptr.hpp>
-#include "core/graphics/graphics_texture2d.h"
+#include "graphics/graphics_texture2d.h"
 #include "platform\graphics\bgfx\bgfx_graphics_material.h"
 #include "bgfx_shadow_shader.h"
+#include "graphics/factory/factory_graphics_material.h"
 
 namespace da::platform {
 
@@ -37,7 +38,7 @@ namespace da::platform {
             bgfx::TextureFormat::RGBA32F,
             BGFX_SAMPLER_UVW_CLAMP | BGFX_TEXTURE_COMPUTE_WRITE);
 
-        m_pAlbedoLUTProgram = da::graphics::CMaterialFactory::create("shaders/cluster/cs_multiple_scattering_lut.sc");
+        m_pAlbedoLUTProgram = da::factory::CMaterialFactory::create("shaders/cluster/cs_multiple_scattering_lut.sc");
     }
 
     void CBgfxPBRShader::shutdown()
@@ -71,7 +72,7 @@ namespace da::platform {
         ASSERT(::bgfx::isValid(m_uvScaleUniform));
 		bgfx::destroy(m_uvScaleUniform);
 
-        da::graphics::CMaterialFactory::remove(m_pAlbedoLUTProgram);
+        da::factory::CMaterialFactory::remove(m_pAlbedoLUTProgram);
 
         m_baseColorFactorUniform = m_metallicRoughnessNormalOcclusionFactorUniform = m_emissiveFactorUniform =
             m_hasTexturesUniform = m_multipleScatteringUniform = m_albedoLUTSampler = m_baseColorSampler =

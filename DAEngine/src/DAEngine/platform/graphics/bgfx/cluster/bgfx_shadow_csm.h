@@ -1,7 +1,9 @@
 #pragma once
 
+#include "core/core.h"
+#include "daglm.h"
 #include <bgfx/bgfx.h>
-#include "core/graphics/graphics_material.h"
+#include "graphics/graphics_material.h"
 
 namespace da::platform {
 

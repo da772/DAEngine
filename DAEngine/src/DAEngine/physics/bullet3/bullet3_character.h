@@ -1,6 +1,5 @@
 #pragma once
-
-#include "../physics_character.h"
+#include "physics/physics_character.h"
 #include <bullet3/btBulletDynamicsCommon.h>
 #include <bullet3/BulletDynamics/Character/btKinematicCharacterController.h>
 #include <bullet3/BulletCollision/CollisionDispatch/btGhostObject.h>

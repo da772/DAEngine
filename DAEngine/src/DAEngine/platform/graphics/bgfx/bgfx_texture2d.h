@@ -1,10 +1,11 @@
 #pragma once
+#include "core/core.h"
 
 #ifdef DA_GRAPHICS_BGFX
-#include "daengine/core/graphics/graphics_texture2d.h"
-#include "asset/asset.h"
+#include "graphics/graphics_texture2d.h"
+#include "core/asset/asset.h"
 
-namespace da::graphics
+namespace da::factory
 {
 	class CTexture2DFactory;
 }
@@ -31,7 +32,7 @@ namespace da::platform::bgfx {
 		uint16_t m_handle = UINT16_MAX;
 		std::mutex* m_mutex;
 
-		friend class da::graphics::CTexture2DFactory;
+		friend class da::factory::CTexture2DFactory;
 
 	};
 }

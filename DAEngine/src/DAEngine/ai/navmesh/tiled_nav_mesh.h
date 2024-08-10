@@ -1,5 +1,7 @@
 #pragma once
+#include "core/core.h"
 #include "nav_mesh.h"
+#include <recast.h>
 
 typedef unsigned int dtPolyRef;
 

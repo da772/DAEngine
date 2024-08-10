@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "vulkan_graphics_texture2d.h"
 
 

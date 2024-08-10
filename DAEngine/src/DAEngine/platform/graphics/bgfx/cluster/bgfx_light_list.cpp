@@ -1,9 +1,9 @@
-#include "dapch.h"
+
 #include "bgfx_light_list.h"
 
 #include <algorithm>
 #include <glm/gtc/type_ptr.hpp>
-#include <core/graphics/camera.h>
+#include <graphics/camera.h>
 
 namespace da::platform {
 

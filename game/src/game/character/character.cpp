@@ -158,13 +158,13 @@ void CCharacter::processCamera(float dt)
 		da::physics::FSweepData sweep(shape, m_entity->getTransform().matrix(), posTransform);
 		da::physics::CPhysics::sweepTest(sweep);
 
-		//da::graphics::CDebugRender::drawLine(m_entity->getTransform().position(), endPos, .01f, { 1.f,0.f,0.f,1.f });
+		//da::debug::CDebugRender::drawLine(m_entity->getTransform().position(), endPos, .01f, { 1.f,0.f,0.f,1.f });
 		if (sweep.bHit)
 		{
 			//LOG_DEBUG(da::ELogChannel::Application, "hit: %f, %f, %f", sweep.Hit.position.x, sweep.Hit.position.y, sweep.Hit.position.z);
 			pos = sweep.Hit.position + (sweep.Hit.normal * (probeSize/2.f));
-			//da::graphics::CDebugRender::drawLine(m_entity->getTransform().position(), pos, .01f, { 0.f,1.f,0.f,1.f });
-			//da::graphics::CDebugRender::drawCube(sweep.Hit.position, glm::quat(), { .2f,.2f,.2f }, { 0.f,1.f,0.f, 1.f });
+			//da::debug::CDebugRender::drawLine(m_entity->getTransform().position(), pos, .01f, { 0.f,1.f,0.f,1.f });
+			//da::debug::CDebugRender::drawCube(sweep.Hit.position, glm::quat(), { .2f,.2f,.2f }, { 0.f,1.f,0.f, 1.f });
 			pos = glm::mix(cam->position(), pos, .05f);
 		}
 

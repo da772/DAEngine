@@ -1,6 +1,6 @@
-#include "dapch.h"
+
 #include "vulkan_graphics_api.h"
-#include "logger.h"
+#include "core/logger.h"
 #include "core/containers.h"
 
 #include <set>
@@ -23,7 +23,7 @@
 
 #include "vulkan_graphics_texture2d.h"
 
-#include "core/graphics/graphics_smesh.h"
+#include "graphics/graphics_smesh.h"
 #include "vulkan_graphics_pipeline.h"
 
 namespace da::platform {

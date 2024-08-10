@@ -1,5 +1,6 @@
 #pragma once
-#include "scene_manager.h"
+#include "core/core.h"
+#include "dastd.h"
 
 namespace da::core
 {
@@ -15,7 +16,6 @@ namespace da::core
 #ifdef DA_REVIEW
 		static void renderDebug();
 		static void renderECSDebug();
-		static void renderCameraDebug();
 #endif
 
 	private:

@@ -1,5 +1,5 @@
 #pragma once
-#include "core/imgui/imgui_api.h"
+#include "graphics/imgui/imgui_api.h"
 
 #include "platform/platform.h"
 

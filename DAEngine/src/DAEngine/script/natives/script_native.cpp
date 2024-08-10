@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "script_native.h"
 
 #include "script_native_imgui.h"

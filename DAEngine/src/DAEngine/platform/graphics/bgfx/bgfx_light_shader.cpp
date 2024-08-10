@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #ifdef DA_GRAPHICS_BGFX
 
 #include "bgfx_light_shader.h"

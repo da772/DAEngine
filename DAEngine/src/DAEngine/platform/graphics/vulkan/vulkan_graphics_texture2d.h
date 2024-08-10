@@ -1,5 +1,5 @@
 #include "core/core.h"
-#include "core/graphics/graphics_texture2d.h"
+#include "graphics/graphics_texture2d.h"
 
 #ifdef DA_GRAPHICS_VULKAN
 #include <vulkan/vulkan.h>

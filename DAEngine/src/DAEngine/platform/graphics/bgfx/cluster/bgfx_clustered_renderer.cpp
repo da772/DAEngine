@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "bgfx_clustered_renderer.h"
 
 #include <bx/string.h>
@@ -6,26 +6,26 @@
 #include <glm/ext/matrix_relational.hpp>
 #include <platform/graphics/bgfx/bgfx_graphics_material.h>
 #include <core/ecs/scene_manager.h>
-#include <core/ecs/smesh_component.h>
+#include <app/ecs/smesh_component.h>
 #include "platform/graphics/bgfx/bgfx_static_mesh.h"
 #include "platform/graphics/bgfx/bgfx_skeletal_mesh.h"
 #include "platform/graphics/bgfx/bgfx_graphics_pbr_material.h"
-#include "core/graphics/skeletal_animator.h"
+#include "graphics/skeletal_animator.h"
 #include <random>
-#include "logger.h"
+#include "core/logger.h"
 #include "bgfx_samplers.h"
 #include <bx/bx.h>
 #include <bx/math.h>
 #include "core/maths/flags.h"
 
 #ifdef DA_REVIEW
-#include "DAEngine/platform/imgui/bgfx/bgfx_imgui.h"
+#include "platform/imgui/bgfx/bgfx_imgui.h"
 #include "debug/debug_menu_bar.h"
 #include "debug/debug_stats_window.h"
 #endif
 #include <core/time.h>
-#include <core/ecs/skeletal_mesh_component.h>
-#include <core/graphics/graphics_debug_render.h>
+#include <app/ecs/skeletal_mesh_component.h>
+#include <debug/graphics_debug_render.h>
 
 
 namespace da::platform {
@@ -50,19 +50,19 @@ namespace da::platform {
         // OpenGL backend: uniforms must be created before loading shaders
         m_clusters.initialize();
 
-        m_pClusterBuildingComputeProgram = da::graphics::CMaterialFactory::create("shaders/cluster/cs_clustered_clusterbuilding.sc");
+        m_pClusterBuildingComputeProgram = da::factory::CMaterialFactory::create("shaders/cluster/cs_clustered_clusterbuilding.sc");
 
-        m_pResetCounterComputeProgram = da::graphics::CMaterialFactory::create("shaders/cluster/cs_clustered_reset_counter.sc");
+        m_pResetCounterComputeProgram = da::factory::CMaterialFactory::create("shaders/cluster/cs_clustered_reset_counter.sc");
 
-        m_pLightCullingComputeProgram = da::graphics::CMaterialFactory::create("shaders/cluster/cs_clustered_lightculling.sc");
+        m_pLightCullingComputeProgram = da::factory::CMaterialFactory::create("shaders/cluster/cs_clustered_lightculling.sc");
 
-        m_pLightingProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered.sc");
+        m_pLightingProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered.sc");
 
-        m_pLightingInstanceProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered_instance.sc", "shaders/cluster/fs_clustered.sc");
+        m_pLightingInstanceProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_clustered_instance.sc", "shaders/cluster/fs_clustered.sc");
 
-        m_pLightingSkeletalProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sk_clustered.sc", "shaders/cluster/fs_clustered.sc");
+        m_pLightingSkeletalProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_sk_clustered.sc", "shaders/cluster/fs_clustered.sc");
 
-        m_pDebugVisProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
+        m_pDebugVisProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
 
         m_pointLights.init();
         m_pointLights.update(da::graphics::CLightManager::getLights());
@@ -72,7 +72,7 @@ namespace da::platform {
         m_ssao.initialize();
 #ifdef DA_REVIEW
         m_debugRenderer.initialize();
-        da::graphics::CDebugRender::setInstance(&m_debugRenderer);
+        da::debug::CDebugRender::setInstance(&m_debugRenderer);
 #endif
 
 		m_ambientLight.irradiance = { .25f, .25f, .25f };
@@ -326,13 +326,13 @@ namespace da::platform {
 
         da::graphics::CLightManager::unregisterOnLightEvent(BIND_EVENT_FN_2(CBgfxClusteredRenderer, onLightEvent));
 
-        da::graphics::CMaterialFactory::remove(m_pClusterBuildingComputeProgram);
-		da::graphics::CMaterialFactory::remove(m_pResetCounterComputeProgram);
-		da::graphics::CMaterialFactory::remove(m_pLightCullingComputeProgram);
-		da::graphics::CMaterialFactory::remove(m_pLightingProgram);
-		da::graphics::CMaterialFactory::remove(m_pDebugVisProgram);
-        da::graphics::CMaterialFactory::remove(m_pLightingSkeletalProgram);
-        da::graphics::CMaterialFactory::remove(m_pLightingInstanceProgram);
+        da::factory::CMaterialFactory::remove(m_pClusterBuildingComputeProgram);
+		da::factory::CMaterialFactory::remove(m_pResetCounterComputeProgram);
+		da::factory::CMaterialFactory::remove(m_pLightCullingComputeProgram);
+		da::factory::CMaterialFactory::remove(m_pLightingProgram);
+		da::factory::CMaterialFactory::remove(m_pDebugVisProgram);
+        da::factory::CMaterialFactory::remove(m_pLightingSkeletalProgram);
+        da::factory::CMaterialFactory::remove(m_pLightingInstanceProgram);
 
         m_pClusterBuildingComputeProgram = m_pResetCounterComputeProgram = m_pLightCullingComputeProgram = m_pLightingProgram =
             m_pDebugVisProgram = nullptr;

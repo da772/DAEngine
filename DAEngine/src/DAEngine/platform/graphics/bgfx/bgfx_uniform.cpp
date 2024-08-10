@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "bgfx_uniform.h"
 
 #ifdef DA_GRAPHICS_BGFX

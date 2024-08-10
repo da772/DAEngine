@@ -1,9 +1,10 @@
-#include "dapch.h"
+
 #include "vulkan_graphics_pipeline.h"
 #ifdef DA_GRAPHICS_VULKAN
 #include <fstream>
-#include "logger.h"
+#include "core/logger.h"
 #include "vulkan_graphics_material.h"
+#include "graphics/factory/factory_graphics_material.h"
 
 namespace da::platform {
 	static std::vector<char> readFile(const std::string& filename) {
@@ -352,7 +353,7 @@ namespace da::platform {
 			vkDestroyBuffer(m_vulkanGraphicsApi.getDevice(), data.IndexBuffer, &m_vulkanGraphicsApi.getAllocCallbacks());
 			vkFreeMemory(m_vulkanGraphicsApi.getDevice(), data.IndexMemory, &m_vulkanGraphicsApi.getAllocCallbacks());
 
-			da::graphics::CMaterialFactory::remove(data.Material);
+			da::factory::CMaterialFactory::remove(data.Material);
 		}
 
 		m_renderables.clear();

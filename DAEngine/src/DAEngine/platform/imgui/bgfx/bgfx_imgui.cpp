@@ -3,7 +3,7 @@
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
-#include "dapch.h"
+
 #include "bgfx_imgui.h"
 #include <bgfx/bgfx.h>
 #include <bgfx/dear-imgui/imgui_user.h>

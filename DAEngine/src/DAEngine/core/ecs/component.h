@@ -1,6 +1,6 @@
 #pragma once
-#include "DAEngine/core/ecs/scene.h"
-#include "DAEngine/core/ecs/entity.h"
+#include "core/ecs/scene.h"
+#include "core/ecs/entity.h"
 
 #define COMPONENT_H_INTERNAL(x) public: static void registerComponent(); inline static const CHashString getTypeHash() {return HASHSTR(#x);};\
 inline const da::core::CGuid& getId() const {return m_guid;}; protected: da::core::CGuid m_guid; da::core::CEntity& m_parent; public: inline void initialize() { onInitialize(); }; inline void update(float dt) { onUpdate(dt);}; \

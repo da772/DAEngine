@@ -1,11 +1,11 @@
-#include "dapch.h"
+
 #include "bullet3_physics.h"
 #include <bullet3/BulletCollision/CollisionDispatch/btGhostObject.h>
 
-#include "daengine/core/graphics/graphics_debug_render.h"
+#include "debug/graphics_debug_render.h"
 #include <glm/gtx/matrix_decompose.hpp>
 #include <imgui.h>
-#include "daengine/core/ecs/entity.h"
+#include "core/ecs/entity.h"
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 #include "bullet3_debug_draw.h"

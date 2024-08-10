@@ -1,12 +1,11 @@
-#include "dapch.h"
+
 
 #include "scene_manager.h"
 #include "entity.h"
 
 #ifdef DA_REVIEW
 #include <imgui.h>
-#include "debug/debug_menu_bar.h"
-#include "daengine/core/graphics/camera.h"
+//#include "debug/debug_menu_bar.h"
 #endif
 #include <format> 
 
@@ -24,9 +23,8 @@ namespace da::core {
 	void CSceneManager::initialize()
 	{
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"), &s_showDebug, renderDebug);
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("Component View"), &s_showECSDebug, renderECSDebug);
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Camera"), &s_showCameraDebug, renderCameraDebug);
+		//da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"), &s_showDebug, renderDebug);
+		//da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("Component View"), &s_showECSDebug, renderECSDebug);
 #endif
 		s_initialized = true;
 	}
@@ -107,34 +105,6 @@ namespace da::core {
 		}
 	}
 
-	void CSceneManager::renderCameraDebug()
-	{
-		if (da::core::CCamera* camera = CCamera::getCamera())
-		{
-			if (ImGui::Begin("Camera Debug", &s_showCameraDebug)) {
-				glm::vec3 pos = camera->position();
-				float pPos[] = { pos.x, pos.y, pos.z };
-				if (ImGui::InputFloat3("Position", pPos)) {
-					glm::vec3 newPos = { pPos[0], pPos[1], pPos[2] };
-					camera->setPosition(newPos);
-				}
-
-				glm::vec3 rot = camera->rotationEuler();
-				float pRot[] = { rot.x, rot.y, rot.z };
-				if (ImGui::InputFloat3("Rotation", pRot)) {
-					glm::vec3 newRot = { pRot[0], pRot[1], pRot[2] };
-					camera->setRotation(newRot);
-				}
-				ImGui::SliderFloat("Exposure", &camera->exposure, 0.f, 100.f);
-				ImGui::SliderFloat("FOV", &camera->fov, 1.f, 90.f);
-				ImGui::SliderFloat("NearPlane", &camera->zNear, 0.f, 100.f);
-				ImGui::SliderFloat("FarPlane", &camera->zFar, 1.f, 1000000.f);
-			}
-
-			ImGui::End();
-		}
-	}
-
 
 	void CSceneManager::renderECSDebug()
 	{
@@ -178,9 +148,8 @@ namespace da::core {
 	void CSceneManager::shutdown()
 	{
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"));
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Camera"));
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Component View"), HASHSTR("Camera"));
+		//da::debug::CDebugMenuBar::unregister_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"));
+		//da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Camera"));
 #endif
 		if (s_scene) {
 			if (s_initialized) s_scene->shutdown();

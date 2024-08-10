@@ -1,4 +1,3 @@
-#include "dapch.h"
 #include "entity.h"
 #include "scene.h"
 

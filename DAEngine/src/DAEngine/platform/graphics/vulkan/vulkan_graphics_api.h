@@ -1,12 +1,12 @@
 #pragma once
-#include "daengine/core/core.h"
+#include "core/core.h"
 
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
-#include "daengine/core/graphics/graphics_api.h"
+#include "graphics/graphics_api.h"
 #include <vulkan/vulkan.h>
 #include <optional>
 #include <memory>
-#include "daengine/core/graphics/graphics_smesh.h"
+#include "graphics/graphics_smesh.h"
 
 
 namespace da::core {

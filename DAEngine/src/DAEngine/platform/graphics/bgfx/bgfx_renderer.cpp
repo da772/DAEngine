@@ -1,7 +1,7 @@
-#include "dapch.h"
+
 #include "bgfx_renderer.h"
-#include <core/graphics/camera.h>
-#include "DAEngine/core/graphics/graphics_material.h"
+#include <graphics/camera.h>
+#include "graphics/graphics_material.h"
 
 #ifdef DA_GRAPHICS_BGFX
 
@@ -16,6 +16,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_operation.hpp>
 #include "bgfx_util.h"
+#include "graphics/factory/factory_graphics_material.h"
 
 namespace da::platform::bgfx {
 
@@ -42,7 +43,7 @@ namespace da::platform::bgfx {
 		const PosVertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
 		m_blitTriangleBuffer = ::bgfx::createVertexBuffer(::bgfx::copy(&vertices, sizeof(vertices)), PosVertex::layout);
 
-		m_blitProgram = da::graphics::CMaterialFactory::create("shaders/Cluster/vs_tonemap.sc", "shaders/Cluster/fs_tonemap.sc");
+		m_blitProgram = da::factory::CMaterialFactory::create("shaders/Cluster/vs_tonemap.sc", "shaders/Cluster/fs_tonemap.sc");
 
 		m_pbr.initialize();
 		m_pbr.generateAlbedoLUT();
@@ -81,7 +82,7 @@ namespace da::platform::bgfx {
 	{
 		onShutdown();
 
-		da::graphics::CMaterialFactory::remove(m_blitProgram);
+		da::factory::CMaterialFactory::remove(m_blitProgram);
 		m_pbr.shutdown();
 
 		BGFXDESTROY(m_blitSampler);

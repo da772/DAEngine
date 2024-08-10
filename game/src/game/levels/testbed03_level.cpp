@@ -59,8 +59,8 @@ void CTestBed03Level::initialize()
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/plane100.fbx");
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_D.dds"));
-		meshComponent->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_N.dds"));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::factory::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_D.dds"));
+		meshComponent->getStaticMesh()->getMaterial(0).setNormalTexture(da::factory::CTexture2DFactory::Create("assets/textures/surface/road/Tex_Fine_Road_N.dds"));
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = false;
 		meshComponent->getStaticMesh()->getMaterial(0).uvScale = { 75.f, 75.f };
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
@@ -139,7 +139,7 @@ void CTestBed03Level::update(float dt)
 	const std::vector<FPath> path = m_levelGen.getPath();
 #ifdef DA_REVIEW
 	for (const FPath& p : path) {
-		da::graphics::CDebugRender::drawLine({ p.Start.X, p.Start.Y, 1.f }, { p.End.X, p.End.Y, 1.f }, .1f, { 1.f, 0.f, 1.f, 1.f }, true, true);
+		da::debug::CDebugRender::drawLine({ p.Start.X, p.Start.Y, 1.f }, { p.End.X, p.End.Y, 1.f }, .1f, { 1.f, 0.f, 1.f, 1.f }, true, true);
 	}
 #endif
 }

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "daengine/platform/graphics/vulkan/vulkan_graphics_pipeline.h"
+#include "core/core.h"
+#include "platform/graphics/vulkan/vulkan_graphics_pipeline.h"
 
 #ifdef DA_GRAPHICS_VULKAN
 

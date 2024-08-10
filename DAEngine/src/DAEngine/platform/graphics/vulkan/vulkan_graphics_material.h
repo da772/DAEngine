@@ -1,10 +1,10 @@
 #pragma once
 #ifdef DA_GRAPHICS_VULKAN
-#include "DAEngine/core/graphics/graphics_material.h"
-#include "DAEngine/core/graphics/graphics_pipeline.h"
-#include "DAEngine/core/containers.h"
-#include "DAEngine/platform/graphics/vulkan/vulkan_graphics_pipeline.h"
-#include "DAEngine/platform/graphics/vulkan/vulkan_graphics_texture2d.h"
+#include "graphics/graphics_material.h"
+#include "graphics/graphics_pipeline.h"
+#include "core/containers.h"
+#include "platform/graphics/vulkan/vulkan_graphics_pipeline.h"
+#include "platform/graphics/vulkan/vulkan_graphics_texture2d.h"
 #include <glm/glm.hpp>
 
 namespace da::platform

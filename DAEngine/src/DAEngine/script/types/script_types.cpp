@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "script_types.h"
 
 namespace da::script

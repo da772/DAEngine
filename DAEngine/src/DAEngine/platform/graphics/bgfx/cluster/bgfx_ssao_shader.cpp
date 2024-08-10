@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 
 #include "bgfx_ssao_shader.h"
 #include "bgfx_type_renderer.h"
@@ -7,7 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #ifdef DA_REVIEW
-#include "DAEngine/debug/debug_menu_bar.h"
+#include "debug/debug_menu_bar.h"
 #include <imgui.h>
 #endif
 
@@ -15,8 +15,8 @@ namespace da::platform
 {
 	void CBgfxSSAOShader::initialize()
 	{
-		m_pSsaoProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_ssao.sc");
-		m_pSsaoBlurProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_blur.sc");
+		m_pSsaoProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_ssao.sc");
+		m_pSsaoBlurProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_blur.sc");
 
 		// triangle used for blitting
 		constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
@@ -65,8 +65,8 @@ namespace da::platform
 
 	void CBgfxSSAOShader::shutdown()
 	{
-		da::graphics::CMaterialFactory::remove(m_pSsaoProgram);
-		da::graphics::CMaterialFactory::remove(m_pSsaoBlurProgram);
+		da::factory::CMaterialFactory::remove(m_pSsaoProgram);
+		da::factory::CMaterialFactory::remove(m_pSsaoBlurProgram);
 
 		BGFXTRYDESTROY(m_ssaoBuffer);
 		BGFXTRYDESTROY(m_ssaoProcessedBuffer);

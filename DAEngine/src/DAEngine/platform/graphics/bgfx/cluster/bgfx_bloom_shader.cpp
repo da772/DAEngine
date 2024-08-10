@@ -1,12 +1,12 @@
-#include "dapch.h"
+
 #include "bgfx_bloom_shader.h"
-#include "DAEngine/platform/graphics/bgfx/bgfx_graphics_material.h"
+#include "platform/graphics/bgfx/bgfx_graphics_material.h"
 #include <platform/graphics/bgfx/bgfx_util.h>
 #include "bgfx_type_renderer.h"
 #include "bgfx_samplers.h">
 
 #ifdef DA_REVIEW
-#include "daengine/debug/debug_menu_bar.h"
+#include "debug/debug_menu_bar.h"
 #include <imgui.h>
 #endif
 
@@ -18,9 +18,9 @@ namespace da::platform
 		m_width = width;
 		m_height = height;
 
-		m_pBloomShader = da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom.sc");
-		m_pDownscaleShader= da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_downsample.sc");
-		m_pUpscaleShader = da::graphics::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_upsample.sc");
+		m_pBloomShader = da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom.sc");
+		m_pDownscaleShader= da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_downsample.sc");
+		m_pUpscaleShader = da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_upsample.sc");
 
 		// triangle used for blitting
 		constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
@@ -44,9 +44,9 @@ namespace da::platform
 	void CBgfxBloomShader::shutdown()
 	{
 
-		da::graphics::CMaterialFactory::remove(m_pBloomShader);
-		da::graphics::CMaterialFactory::remove(m_pDownscaleShader);
-		da::graphics::CMaterialFactory::remove(m_pUpscaleShader);
+		da::factory::CMaterialFactory::remove(m_pBloomShader);
+		da::factory::CMaterialFactory::remove(m_pDownscaleShader);
+		da::factory::CMaterialFactory::remove(m_pUpscaleShader);
 
 		BGFXTRYDESTROY(m_frameBuffer);
 		BGFXTRYDESTROY(m_blitTriangleBuffer);

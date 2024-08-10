@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "bgfx_type_renderer.h"
 
 
@@ -12,7 +12,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_operation.hpp>
 #include "platform\graphics\bgfx\bgfx_graphics_material.h"
-#include <core/graphics/camera.h>
+#include "graphics/factory/factory_graphics_material.h"
+#include <graphics/camera.h>
 #include "../bgfx_util.h"
 
 namespace da::platform {
@@ -45,11 +46,11 @@ namespace da::platform {
         const PosVertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
         m_blitTriangleBuffer = bgfx::createVertexBuffer(bgfx::copy(&vertices, sizeof(vertices)), PosVertex::layout);
 
-        m_pBlipProgram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_tonemap.sc", "shaders/cluster/fs_tonemap.sc");
+        m_pBlipProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_tonemap.sc", "shaders/cluster/fs_tonemap.sc");
 
-        m_pDepthprogram = da::graphics::CMaterialFactory::create("shaders/cluster/vs_depth.sc", "shaders/cluster/fs_depth.sc");
-        m_pDepthprogramSk = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
-        m_pDepthprogramInst = da::graphics::CMaterialFactory::create("shaders/cluster/vs_depth_inst.sc", "shaders/cluster/fs_depth.sc");
+        m_pDepthprogram = da::factory::CMaterialFactory::create("shaders/cluster/vs_depth.sc", "shaders/cluster/fs_depth.sc");
+        m_pDepthprogramSk = da::factory::CMaterialFactory::create("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
+        m_pDepthprogramInst = da::factory::CMaterialFactory::create("shaders/cluster/vs_depth_inst.sc", "shaders/cluster/fs_depth.sc");
 
         m_pbr.initialize();
         m_pbr.generateAlbedoLUT();
@@ -127,10 +128,10 @@ namespace da::platform {
         BGFXDESTROY(m_debugSamplerUniform);
 #endif
 
-        da::graphics::CMaterialFactory::remove(m_pBlipProgram);
-        da::graphics::CMaterialFactory::remove(m_pDepthprogram);
-        da::graphics::CMaterialFactory::remove(m_pDepthprogramSk);
-        da::graphics::CMaterialFactory::remove(m_pDepthprogramInst);
+        da::factory::CMaterialFactory::remove(m_pBlipProgram);
+        da::factory::CMaterialFactory::remove(m_pDepthprogram);
+        da::factory::CMaterialFactory::remove(m_pDepthprogramSk);
+        da::factory::CMaterialFactory::remove(m_pDepthprogramInst);
 
 
         if (bgfx::isValid(m_frameBuffer))

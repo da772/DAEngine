@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "physics_bullet3_rigid_body.h"
 #include "../physics.h"
 #include "bullet3_physics.h"

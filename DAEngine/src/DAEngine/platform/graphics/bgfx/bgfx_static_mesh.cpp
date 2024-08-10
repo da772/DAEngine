@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "bgfx_static_mesh.h"
 #include "bgfx_util.h"
 

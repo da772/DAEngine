@@ -1,18 +1,16 @@
 #pragma once
-#include <DAEngine/core/core.h>
-#include "DAEngine/core/containers.h"
+#include <core/core.h>
 #include <stdint.h>
 #include <string>
 #include <algorithm>
 
 #ifdef DA_REVIEW
-#define HASHSTR(x) CBasicHashString(x, CBasicHashString::generateHash(x))
+#define HASHSTR(x) CHashString(x, da::core::containers::CBasicHashString::generateHash(x))
 #else
-#define HASHSTR(x) CBasicHashString(CBasicHashString::generateHash(x))	
+#define HASHSTR(x) CHashString(da::core::containers::CBasicHashString::generateHash(x))	
 #endif
 
-#define HASH(x) CBasicHashString::generateHash(x)
-
+#define HASH(x) CHashString::generateHash(x)
 
 namespace da::core::containers
 {
@@ -165,3 +163,5 @@ namespace std
 		}
 	};
 }
+
+typedef da::core::containers::CBasicHashString CHashString;

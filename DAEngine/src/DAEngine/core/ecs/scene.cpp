@@ -1,10 +1,8 @@
-#include "dapch.h"
+#include <vector>
 
 #include "scene.h"
 #include "entity.h"
 #include "component.h"
-
-#include "test_component.h"
 
 namespace da::core {
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "DAEngine/platform/graphics/vulkan/vulkan_graphics_material.h"
+#include "platform/graphics/vulkan/vulkan_graphics_material.h"
 #ifdef DA_GRAPHICS_VULKAN
-#include "daengine/platform/graphics/vulkan/vulkan_graphics_texturecube.h"
+#include "platform/graphics/vulkan/vulkan_graphics_texturecube.h"
 
 namespace da::platform
 {

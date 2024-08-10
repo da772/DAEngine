@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #ifdef DA_GRAPHICS_VULKAN
 #include "vulkan_graphics_material.h"
 #include <chrono>

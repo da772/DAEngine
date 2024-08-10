@@ -1,24 +1,22 @@
-#include "dapch.h"
-#include "nav_mesh_manager.h"
 
+#include "nav_mesh_manager.h"
 #include "debug/debug_menu_bar.h"
+#include "nav_mesh_ctx.h"
 
 namespace da::ai
 {
 
 #ifdef DA_REVIEW
-	da::ai::CNavDrawer CNavMeshManager::s_drawer;
 	bool CNavMeshManager::s_debugRender;
 #endif
 	
 	std::vector<INavMesh*> CNavMeshManager::s_navMeshes;
-	da::ai::CNavCtx CNavMeshManager::s_ctx;
 	bool CNavMeshManager::s_initialized;
 	
 #ifdef DA_REVIEW
 	da::ai::CNavDrawer& CNavMeshManager::getDrawer()
 	{
-		return s_drawer;
+		return CNavDrawer::ms_drawer;
 	}
 #endif
 
@@ -71,7 +69,7 @@ namespace da::ai
 
 	da::ai::CNavCtx& CNavMeshManager::getCtx()
 	{
-		return s_ctx;
+		return CNavCtx::ms_ctx;
 	}
 
 	da::ai::INavMesh* CNavMeshManager::getNavMesh(uint32_t index /*= 0*/)

@@ -2,7 +2,7 @@
 #include "core/core.h"
 
 #ifdef DA_WINDOW_GLFW
-#include "core/window/window.h"
+#include "graphics/window/window.h"
 #include <GLFW/glfw3.h>
 
 namespace da::platform {

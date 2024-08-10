@@ -1,21 +1,21 @@
-#include "dapch.h"
+
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 #include "bullet3_debug_draw.h"
-#include "DAEngine/core/graphics/graphics_debug_render.h"
+#include "debug/graphics_debug_render.h"
 
 namespace da::physics
 {
 	void CBullet3DebugDraw::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 	{
-		da::graphics::CDebugRender::drawLine({ from.x(), from.y(), from.z() }, { to.x(), to.y(), to.z() }, .025f, { color.x(), color.y(), color.z(), color.w() }, false, true);
+		da::debug::CDebugRender::drawLine({ from.x(), from.y(), from.z() }, { to.x(), to.y(), to.z() }, .025f, { color.x(), color.y(), color.z(), color.w() }, false, true);
 	}
 
 	void CBullet3DebugDraw::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)
 	{
-		da::graphics::CDebugRender::drawCube({ PointOnB.x(), PointOnB.y(), PointOnB.z() }, glm::quat(), glm::vec3(.025f), {color.x(), color.y(), color.z(), color.w()}, true, true);
+		da::debug::CDebugRender::drawCube({ PointOnB.x(), PointOnB.y(), PointOnB.z() }, glm::quat(), glm::vec3(.025f), {color.x(), color.y(), color.z(), color.w()}, true, true);
 
 		btVector3 endPos = normalOnB * distance;
-		da::graphics::CDebugRender::drawLine({ PointOnB.x(), PointOnB.y(), PointOnB.z() }, { endPos.x(), endPos.y(), endPos.z() }, .025f, { color.x(), color.y(), color.z(), color.w() }, false, true);
+		da::debug::CDebugRender::drawLine({ PointOnB.x(), PointOnB.y(), PointOnB.z() }, { endPos.x(), endPos.y(), endPos.z() }, .025f, { color.x(), color.y(), color.z(), color.w() }, false, true);
 	}
 
 	void CBullet3DebugDraw::reportErrorWarning(const char* warningString)

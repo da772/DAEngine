@@ -1,0 +1,31 @@
+#pragma once
+#include "core/containers.h"
+#include "graphics/graphics_api.h"
+#include "graphics/graphics_vertex.h"
+
+namespace da::graphics {
+
+	class IRenderable;
+	class CMaterial;
+
+	class CGraphicsPipeline
+	{
+	public:
+		CGraphicsPipeline(CGraphicsApi& graphicsApi, const std::string& vertexShaderPath, const std::string& fragShaderPath, FVertexBindingDescription vertexBinding, 
+			const std::vector<FVertexInputAttributeDescription>& inputAttribDesc);
+
+		inline virtual void create() {};
+		inline virtual void destroy() {};
+		inline virtual void update(int frame) {};
+		inline virtual void addRenderable(IRenderable* renderable, CMaterial* material) {};
+
+		inline CGraphicsApi& getGraphicsApi() { return m_graphicsApi; };
+
+	protected:
+		std::string m_vertexShaderPath, m_fragShaderPath;
+		CGraphicsApi& m_graphicsApi;
+		FVertexBindingDescription m_bindingDesc;
+		std::vector<FVertexInputAttributeDescription> m_inputAttrbDesc;
+	};
+
+}

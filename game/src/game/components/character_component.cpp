@@ -20,13 +20,13 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGu
 	da::graphics::CSkeletalMesh* mesh;
 	if (isLocalPlayer)
 	{
-		mesh = da::graphics::CSkeletalMeshFactory::create("assets/skeletons/camilla/camilla_02.fbx", false);
+		mesh = da::factory::CSkeletalMeshFactory::create("assets/skeletons/camilla/camilla_02.fbx", false);
 		mesh->getMaterial(10).baseColorFactor = { 0.f,0.f,0.f,0.f };
 		mesh->getMaterial(13).baseColorFactor = { 0.f,0.f,0.f,0.25f };
 	} 
 	else
 	{
-		mesh = da::graphics::CSkeletalMeshFactory::create("assets/skeletons/pesant_f/pesant_f_02.fbx", false);
+		mesh = da::factory::CSkeletalMeshFactory::create("assets/skeletons/pesant_f/pesant_f_02.fbx", false);
 		mesh->getMaterial(11).baseColorFactor = { 0.f,0.f,0.f,0.f };
 	}
 

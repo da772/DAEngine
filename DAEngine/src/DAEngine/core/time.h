@@ -1,5 +1,8 @@
 #pragma once
 
+#include <chrono>
+#include <functional>
+
 namespace da::core
 {
 	struct FTimerDelegate {

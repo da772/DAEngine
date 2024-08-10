@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "vulkan_graphics_pipeline_cubemap.h"
 
 #ifdef DA_GRAPHICS_VULKAN

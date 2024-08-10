@@ -1,9 +1,9 @@
 #pragma once
-
+#include "core/core.h"
 #include "bgfx_light.h"
 #include <bgfx/bgfx.h>
 #include <vector>
-#include <core/graphics/graphics_light_manager.h>
+#include <graphics/graphics_light_manager.h>
 
 namespace da::platform {
 

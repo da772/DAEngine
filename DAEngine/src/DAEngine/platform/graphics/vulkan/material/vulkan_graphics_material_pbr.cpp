@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "vulkan_graphics_material_pbr.h"
 #ifdef DA_GRAPHICS_VULKAN
 

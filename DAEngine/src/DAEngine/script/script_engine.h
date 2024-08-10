@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-#include "daengine/asset/asset.h"
+#include "core/asset/asset.h"
 
 extern "C" {
 	typedef struct lua_State lua_State;

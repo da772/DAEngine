@@ -1,0 +1,207 @@
+
+#include "app.h"
+#include "core/core.h"
+#include "core/logger.h"
+#include "core/arg_handler.h"
+#include "ecs/components.h"
+#include "core/ecs/scene.h"
+#include "core/factory.h"
+#include "script/script_engine.h"
+#include "core/ecs/scene_manager.h"
+#include "core/threading/worker_pool.h"
+#include "core/time.h"
+#include "ai/navmesh/nav_mesh_manager.h"
+#include "net/network_manager.h"
+
+#include "physics/physics.h"
+
+#ifdef DA_REVIEW
+#include "debug/debug.h"
+#include "debug/debug_menu_bar.h"
+#endif
+#include <app/animation_manager.h>
+
+namespace da
+{
+
+	CApp::CApp(int argc, const char** argv) : m_running(true), m_modules() {
+		initalizeInternal(argc, argv);
+	}
+
+	CApp::~CApp() {
+		shutdownInternal();
+	}
+
+	void CApp::initialize()
+	{
+		m_initialized = true;
+#ifndef DA_TEST
+		script::CScriptEngine::initialize();
+#ifdef DA_REVIEW
+		da::debug::CDebug::initialize();
+		da::debug::CDebugMenuBar::register_debug(HASHSTR("App"), HASHSTR("Reset"), &m_reset, [&] { reset();});
+#endif
+#endif
+
+		da::net::CNetworkManager::initialize();
+		core::CSceneManager::initialize();
+		da::physics::CPhysics::initialize();
+		da::ai::CNavMeshManager::initialize();
+		for (IModule* m : m_modules) {
+			m->initialize();
+		}
+		onInitialize();
+		if (core::CScene* scene = core::CSceneManager::getScene()) {
+			scene->initialize();
+		}
+		
+	}
+	void CApp::update()
+	{
+		while (m_running)
+		{
+			PROFILE_FRAME("Main")
+			double timeStep = da::core::CTime::newFrame();
+			{
+				PROFILE("AnimManager Update Begin")
+				da::graphics::CAnimationManager::updateBegin(timeStep);
+			}
+			{
+				PROFILE("Module Update")
+				for (IModule* m : m_modules) {
+					m->update();
+				}
+			}
+#ifdef DA_REVIEW
+			{
+				PROFILE("Debug Update")
+				da::debug::CDebug::update(timeStep);
+			}
+			{
+				PROFILE("Script Debug Update")
+				da::script::CScriptEngine::update();
+			}
+#endif
+			{
+				PROFILE("App Update")
+				onUpdate(timeStep);
+			}
+
+			if (core::CScene* scene = core::CSceneManager::getScene()) {
+				PROFILE("Scene Update")
+				scene->update(timeStep);
+			}
+
+			{
+				PROFILE("WorkerPool Update")
+				da::core::CWorkerPool::update();
+			}
+
+			{
+				PROFILE("NavMesh Update")
+				da::ai::CNavMeshManager::update(timeStep);
+			}
+
+			{
+				PROFILE("Physics Update")
+				da::physics::CPhysics::update(timeStep);
+			}
+			
+			{
+				PROFILE("AnimManager Update End")
+				da::graphics::CAnimationManager::updateEnd();
+			}
+			
+			{
+				PROFILE("App Late Update")
+				onLateUpdate(timeStep);
+			}
+
+			{
+				PROFILE("Module Late Update")
+				for (IModule* m : m_modules) {
+					m->lateUpdate();
+				}
+			}
+			
+			if (m_reset) {
+				shutdown();
+				initialize();
+				m_reset = false;
+			}
+		}
+ 	}
+	void CApp::shutdown()
+	{
+		onShutdown();
+
+		if (core::CScene* scene = core::CSceneManager::getScene()) {
+			scene->shutdown();
+			delete scene;
+			core::CSceneManager::setScene(nullptr);
+		}
+
+		for (IModule* m : m_modules) {
+			m->shutdown();
+		}
+
+		for (IModule* m : m_modules) {
+			m->lateShutdown();
+			delete m;
+		}
+		m_modules = {};
+		da::ai::CNavMeshManager::shutdown();
+		da::physics::CPhysics::shutdown();
+		core::CSceneManager::shutdown();
+		da::net::CNetworkManager::shutdown();
+#ifndef DA_TEST
+		script::CScriptEngine::shutdown();
+#ifdef DA_REVIEW
+		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("App"), HASHSTR("Reset"));
+		da::debug::CDebug::shutdown();
+#endif
+#endif
+	}
+
+	void CApp::reset()
+	{
+		m_reset = true;
+	}
+
+	void CApp::addModule(IModule* module)
+	{
+		m_modules.push_back(module);
+		if (m_initialized) module->initialize();
+	}
+
+	void CApp::forceEnd()
+	{
+		m_running = false;
+	}
+
+	void CApp::initalizeInternal(int argc, const char** argv)
+	{
+		CLogger::initialize();
+		core::CWorkerPool::initialize();
+		core::CArgHandler::initialize(argc, argv);
+		std::string args = "Initialized with argc: %d\n";
+		for (size_t i = 0; i < argc; i++) {
+			args += std::string(argv[i]);
+			if (i != argc - 1)
+				args += "\n";
+		}
+		LOG_INFO(ELogChannel::Core, args, argc);
+		core::CComponents::registerComponents();
+	}
+
+	void CApp::shutdownInternal()
+	{
+#ifdef DA_REVIEW
+		core::CFactoryDebug::checkInstances();
+#endif
+		core::CArgHandler::shutdown();
+		CLogger::shutdown();
+		core::CWorkerPool::shutdown();
+	}
+
+}

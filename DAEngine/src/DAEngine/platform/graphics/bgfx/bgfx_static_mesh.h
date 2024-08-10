@@ -1,10 +1,10 @@
 #pragma once
 
 #include <bgfx/bgfx.h>
-#include "core/graphics/graphics_smesh.h"
+#include "graphics/graphics_smesh.h"
 #include "core/factory.h"
 
-namespace da::graphics
+namespace da::factory
 {
 	class CStaticMeshFactory;
 }
@@ -35,7 +35,7 @@ protected:
 		static bool s_init;
 
 		friend class da::core::CFactory<da::graphics::CStaticMesh>;
-		friend class da::graphics::CStaticMeshFactory;
+		friend class da::factory::CStaticMeshFactory;
 	
 	};
 

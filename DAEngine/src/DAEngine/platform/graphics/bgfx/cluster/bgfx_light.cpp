@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "bgfx_light.h"
 
 #include <glm/common.hpp>

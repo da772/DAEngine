@@ -1,5 +1,5 @@
 #pragma once
-#include "daengine/core/events/event.h"
+#include "core/events/event.h"
 
 namespace da::core::events {
 

@@ -1,18 +1,18 @@
-#include "dapch.h"
+
 #include "bgfx_graphics_api.h"
 
 #ifdef DA_GRAPHICS_BGFX
-#include "logger.h"
+#include "core/logger.h"
 #include <bgfx/bgfx.h>
 #include <bx/allocator.h>
-#include "DAEngine/core/arg_handler.h"
+#include "core/arg_handler.h"
 #include "cluster/bgfx_type_renderer.h"
 #include "cluster/bgfx_clustered_renderer.h"
 
 #ifdef DA_REVIEW
 #include <imgui.h>
-#include "DAEngine/debug/debug_stats_window.h"
-#include "DAEngine/debug/debug_menu_bar.h"
+#include "debug/debug_stats_window.h"
+#include "debug/debug_menu_bar.h"
 #include <src/bgfx_p.h>
 #endif
 #include <bgfx/platform.h>

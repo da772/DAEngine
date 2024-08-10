@@ -1,14 +1,14 @@
-#include "dapch.h"
+
 #include "script_native_core.h"
 
 #include "core/input/input.h"
-#include "core/graphics/camera.h"
+#include "graphics/camera.h"
 #include <core/ecs/scene_manager.h>
 #include <core/ecs/entity.h>
 #include <core/ecs/scene.h>
 #include <imgui.h>
-#include "DAEngine/physics/physics_rigid_body.h"
-#include <core/ecs/rigid_body_component.h>
+#include "physics/physics_rigid_body.h"
+#include <app/ecs/rigid_body_component.h>
 #include "script/types/script_types.h"
 
 extern "C" {
@@ -20,7 +20,7 @@ extern "C" {
 #include <sol/sol.hpp>
 #include <script/script_engine.h>
 #include <core/time.h>
-#include <core/graphics/factory/factory_graphics_texture2d.h>
+#include <graphics/factory/factory_graphics_texture2d.h>
 
 namespace da::script::core
 {
@@ -230,7 +230,7 @@ namespace da::script::core
 	static size_t lua_create_texture2d(sol::this_state state, sol::object _, std::string path)
 	{
 		if (path.empty()) return 0;
-		return reinterpret_cast<size_t>(da::graphics::CTexture2DFactory::Create(path));
+		return reinterpret_cast<size_t>(da::factory::CTexture2DFactory::Create(path));
 	}
 
 	static void lua_destroy_texture2d(sol::this_state state, sol::object _, size_t ptr)

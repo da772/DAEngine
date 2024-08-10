@@ -1,20 +1,21 @@
-#include "dapch.h"
+
 #include "bgfx_shadow_shader.h"
 
-#include "daengine/platform/graphics/bgfx/bgfx_graphics_material.h"
+#include "platform/graphics/bgfx/bgfx_graphics_material.h"
 #include "../bgfx_util.h"
 #include <bx/bx.h>
 #include <bx/math.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/ext/matrix_relational.hpp>
+#include "graphics/factory/factory_graphics_material.h"
 
 namespace da::platform {
 
 	void CBgfxShadowShader::initialize()
 	{
 		if (!useShadowSampler()) {
-			m_material = da::graphics::CMaterialFactory::create("shaders/cluster/vs_shadow.sc", "shaders/cluster/fs_shadow.sc");
-			m_skmaterial = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sk_shadow.sc", "shaders/cluster/fs_shadow.sc");
+			m_material = da::factory::CMaterialFactory::create("shaders/cluster/vs_shadow.sc", "shaders/cluster/fs_shadow.sc");
+			m_skmaterial = da::factory::CMaterialFactory::create("shaders/cluster/vs_sk_shadow.sc", "shaders/cluster/fs_shadow.sc");
 		
 			m_depthScaleOffset = bgfx::createUniform("u_depthScaleOffset", bgfx::UniformType::Vec4);
 
@@ -30,8 +31,8 @@ namespace da::platform {
 			return;
 		}
 
-		m_material =   da::graphics::CMaterialFactory::create("shaders/cluster/vs_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
-		m_skmaterial = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
+		m_material =   da::factory::CMaterialFactory::create("shaders/cluster/vs_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
+		m_skmaterial = da::factory::CMaterialFactory::create("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
 
 		m_cascadeLevels = bgfx::createUniform("u_cascadePlaneDistances", bgfx::UniformType::Vec4, SHADOW_MAP_SIZE);
 
@@ -44,8 +45,8 @@ namespace da::platform {
 	void CBgfxShadowShader::shutdown()
 	{
 
-		da::graphics::CMaterialFactory::remove(m_material);
-		da::graphics::CMaterialFactory::remove(m_skmaterial);
+		da::factory::CMaterialFactory::remove(m_material);
+		da::factory::CMaterialFactory::remove(m_skmaterial);
 
 		BGFXDESTROY(m_cascadeLevels);
 

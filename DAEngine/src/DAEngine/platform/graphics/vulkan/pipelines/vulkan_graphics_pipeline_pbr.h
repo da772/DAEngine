@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DAEngine/platform/graphics/vulkan/vulkan_graphics_pipeline.h"
+#include "platform/graphics/vulkan/vulkan_graphics_pipeline.h"
 #ifdef DA_GRAPHICS_VULKAN
 namespace da::platform
 {

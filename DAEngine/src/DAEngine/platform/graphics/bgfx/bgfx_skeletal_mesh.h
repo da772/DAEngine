@@ -1,8 +1,8 @@
 #pragma once
 #pragma once
 
-#include "daengine/core/graphics/graphics_skmesh.h"
-#include "DAEngine/core/factory.h"
+#include "graphics/graphics_skmesh.h"
+#include "core/factory.h"
 
 namespace bgfx {
 	struct VertexBufferHandle;
@@ -10,7 +10,7 @@ namespace bgfx {
 	struct VertexLayout;
 }
 
-namespace da::graphics
+namespace da::factory
 {
 	class CSkeletalMeshFactory;
 }
@@ -35,7 +35,7 @@ namespace da::platform {
 		std::vector<::bgfx::IndexBufferHandle>m_ibh;
 
 		friend class da::core::CFactory<CSkeletalMesh>;
-		friend class da::graphics::CSkeletalMeshFactory;
+		friend class da::factory::CSkeletalMeshFactory;
 
 	public:
 		static ::bgfx::VertexLayout getLayout();

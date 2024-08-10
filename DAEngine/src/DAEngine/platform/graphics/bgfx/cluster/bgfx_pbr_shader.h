@@ -1,8 +1,9 @@
 #pragma once
 
+#include "core/core.h"
 #include <bgfx/bgfx.h>
 #include <glm/glm.hpp>
-#include <core/graphics/graphics_material_data.h>
+#include <graphics/graphics_material_data.h>
 
 namespace da::graphics
 {

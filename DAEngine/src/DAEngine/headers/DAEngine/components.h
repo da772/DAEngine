@@ -1,9 +1,9 @@
 #pragma once
 
-#include <DAEngine.h>
+#include <core/core.h>
 
-#include <DAEngine/core/ecs/scene.h>
-#include <DAEngine/core/ecs/scene_manager.h>
-#include <DAEngine/core/ecs/entity.h>
-#include <DAEngine/core/ecs/component.h>
-#include "DAEngine/core/ecs/components.h"
+#include <core/ecs/scene.h>
+#include <core/ecs/scene_manager.h>
+#include <core/ecs/entity.h>
+#include <core/ecs/component.h>
+#include "app/ecs/components.h"

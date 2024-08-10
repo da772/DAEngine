@@ -1,5 +1,7 @@
 #pragma once
 
+#include "daglm.h"
+
 namespace da::core
 {
 	class CEntity;

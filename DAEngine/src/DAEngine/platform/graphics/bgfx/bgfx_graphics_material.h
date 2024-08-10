@@ -1,6 +1,7 @@
 #pragma once
 
-#include "DAEngine/core/graphics/graphics_material.h"
+#include "graphics/graphics_material.h"
+#include "graphics/factory/factory_graphics_material.h"
 
 #ifdef DA_GRAPHICS_BGFX
 
@@ -33,7 +34,7 @@ namespace da::platform {
 		uint16_t m_program;
 		static std::unordered_map<CHashString, FShaderData> ms_shaderHandles;
 
-		friend class da::graphics::CMaterialFactory;
+		friend class da::factory::CMaterialFactory;
 	};
 
 }

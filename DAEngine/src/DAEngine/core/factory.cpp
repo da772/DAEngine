@@ -1,24 +1,20 @@
-#include "dapch.h"
+
 #include "factory.h"
 
-#ifdef DA_REVIEW
-#include "DAEngine/core/graphics/factory/factory_graphics_texture2d.h"
-#include "DAEngine/core/graphics/factory/factory_graphics_smesh.h"
-#include "DAEngine/core/graphics/factory/factory_graphics_skmesh.h"
-#include "DAEngine/core/graphics/graphics_material.h"
-#endif
 
 namespace da::core
 {
 #ifdef DA_REVIEW
 	void CFactoryDebug::checkInstances()
 	{
+		/*
 		#define CHECK_FACTORY(x) if (x::ms_factory.hasInstances()) { LOG_ERROR(ELogChannel::Core, "Factory has instances: %s, Count: %d", #x, x::ms_factory.m_instances.size()); printInstances(x::ms_factory.getInstanceNames()); }
 
 		CHECK_FACTORY(da::graphics::CStaticMeshFactory);
 		CHECK_FACTORY(da::graphics::CTexture2DFactory);
 		CHECK_FACTORY(da::graphics::CMaterialFactory);
 		CHECK_FACTORY(da::graphics::CSkeletalMeshFactory);
+		*/
 
 	}
 

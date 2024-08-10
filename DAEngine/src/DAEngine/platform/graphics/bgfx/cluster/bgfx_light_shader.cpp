@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "bgfx_light_shader.h"
 
 #include "bgfx_samplers.h"

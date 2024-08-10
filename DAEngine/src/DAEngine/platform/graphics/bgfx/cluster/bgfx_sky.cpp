@@ -1,15 +1,16 @@
-#include "dapch.h"
+
 
 #include "bgfx_sky.h"
-#include "DAEngine/platform/graphics/bgfx/bgfx_graphics_material.h"
+#include "platform/graphics/bgfx/bgfx_graphics_material.h"
 #include <bx/allocator.h>
 #include <platform/graphics/bgfx/bgfx_util.h>
+#include "graphics/factory/factory_graphics_material.h"
 #include <glm/trigonometric.hpp>
 #include <glm/ext/quaternion_float.hpp>
 #include <glm/ext/quaternion_trigonometric.hpp>
 #include <bx/math.h>
 #ifdef DA_REVIEW
-#include "DAEngine/debug/debug_menu_bar.h"
+#include "debug/debug_menu_bar.h"
 #include <imgui.h>
 #endif
 
@@ -104,8 +105,8 @@ namespace da::platform
 	void CBgfxProcSky::initialize(int verticalCount, int horizontalCount, CBgfxSunController& sun) 
 	{
 		m_sun = &sun;
-		m_skyProgram =    da::graphics::CMaterialFactory::create("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky.sc");
-		m_skyProgramFix = da::graphics::CMaterialFactory::create("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky_color_banding_fix.sc");
+		m_skyProgram =    da::factory::CMaterialFactory::create("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky.sc");
+		m_skyProgramFix = da::factory::CMaterialFactory::create("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky_color_banding_fix.sc");
 
 		FScreenPosVertex::init();
 		m_sunLuminanceXYZ.SetMap(sunLuminanceXYZTable);
@@ -171,8 +172,8 @@ namespace da::platform
 
 	void CBgfxProcSky::shutdown()
 	{
-		da::graphics::CMaterialFactory::remove(m_skyProgram);
-		da::graphics::CMaterialFactory::remove(m_skyProgramFix);
+		da::factory::CMaterialFactory::remove(m_skyProgram);
+		da::factory::CMaterialFactory::remove(m_skyProgramFix);
 
 		BGFXTRYDESTROY(m_vbh);
 		BGFXTRYDESTROY(m_ibh);

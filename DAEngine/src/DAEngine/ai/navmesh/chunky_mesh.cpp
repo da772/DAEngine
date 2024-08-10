@@ -16,7 +16,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#include "dapch.h"
+
 #include "chunky_mesh.h"
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,7 +1,7 @@
-#include "dapch.h"
-#ifdef DA_GRAPHICS_BGFX
 
 #include "bgfx_texture2d.h"
+#ifdef DA_GRAPHICS_BGFX
+
 #include <stb_image.h>
 #include <bgfx/bgfx.h>
 #include "core/threading/worker_pool.h"

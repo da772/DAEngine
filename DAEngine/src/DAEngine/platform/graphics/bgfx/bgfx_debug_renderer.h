@@ -3,8 +3,8 @@
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 
 #include <bgfx/bgfx.h>
-#include "DAEngine/core/graphics/graphics_debug_render.h"
-#include <core/graphics/graphics_vertex.h>
+#include "debug/graphics_debug_render.h"
+#include <graphics/graphics_vertex.h>
 
 
 namespace da::graphics
@@ -27,7 +27,7 @@ namespace da::platform
 		Line
 	};
 
-	class CBgfxDebugRenderer : public da::graphics::IDebugRenderer
+	class CBgfxDebugRenderer : public da::debug::IDebugRenderer
 	{
 	public:
 		virtual void drawCube(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, const glm::vec4& color, bool wireFrame = true, bool xray = true) override;

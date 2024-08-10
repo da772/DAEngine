@@ -1,5 +1,5 @@
 #pragma once
-#include <daengine/core.h>
-#include <DAEngine/ai/navmesh/nav_mesh_manager.h>
-#include <DAEngine/ai/navmesh/tiled_nav_mesh.h>
-#include <DAEngine/ai/navmesh/nav_mesh.h>
+#include <core/core.h>
+#include <ai/navmesh/nav_mesh_manager.h>
+#include <ai/navmesh/tiled_nav_mesh.h>
+#include <ai/navmesh/nav_mesh.h>

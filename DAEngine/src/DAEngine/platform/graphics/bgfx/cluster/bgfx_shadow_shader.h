@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DAEngine/core/graphics/camera.h"
+#include "graphics/camera.h"
 #include <bgfx/bgfx.h>
 
 namespace da::graphics

@@ -1,9 +1,9 @@
 #pragma once
-
+#include "core/core.h"
 #ifdef DA_GRAPHICS_BGFX 
 
-#include <core/graphics/graphics_api.h>
-#include <core/window/window.h>
+#include <graphics/graphics_api.h>
+#include <graphics/window/window.h>
 #include <bgfx/bgfx.h>
 #include <glm/glm.hpp>
 #include "bgfx_graphics_material.h"

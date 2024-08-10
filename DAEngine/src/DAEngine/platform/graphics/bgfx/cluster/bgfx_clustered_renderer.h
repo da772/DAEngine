@@ -5,7 +5,7 @@
 #include "bgfx_light_list.h"
 #include "bgfx_shadow_shader.h"
 #include "bgfx_ssao_shader.h"
-#include <core/graphics/graphics_light_manager.h>
+#include <graphics/graphics_light_manager.h>
 
 namespace da::platform
 {

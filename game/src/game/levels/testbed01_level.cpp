@@ -44,7 +44,7 @@ void CTestBed01Level::initialize()
 	// Test Bed
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::graphics::CStaticMesh* colMesh = da::graphics::CStaticMeshFactory::create("assets/prop/level/dungeon_test_col.fbx");
+		da::graphics::CStaticMesh* colMesh = da::factory::CStaticMeshFactory::create("assets/prop/level/dungeon_test_col.fbx");
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/prop/level/dungeon_test.fbx");
 
 		for (int i = 0; i < meshComponent->getStaticMesh()->getMaterialCount(); i++) {
@@ -88,7 +88,7 @@ void CTestBed01Level::initialize()
 	{
 		da::core::CEntity* helloWorldEntity = da::core::CSceneManager::getScene()->createEntity();
 		helloWorldEntity->setTag(HASHSTR("helloworld"));
-		helloWorldEntity->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
+		//helloWorldEntity->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
 	}
 
 	// Ramp1
@@ -100,7 +100,7 @@ void CTestBed01Level::initialize()
 		ramp->setTag(HASHSTR("ramp1"));
 
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = ramp->addComponent<da::core::CSmeshComponent>("assets/cube.fbx");
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/tex_debug_grid_01.png"));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::factory::CTexture2DFactory::Create("assets/textures/tex_debug_grid_01.png"));
 
 		ramp->addComponent<da::core::CRigidBodyComponent>(
 			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 5.f,10.f,5.f })
@@ -117,12 +117,12 @@ void CTestBed01Level::initialize()
 		transformObj->setTag(HASHSTR("dummy"));
 
 		da::core::FComponentRef<da::core::CSmeshComponent> mesh = transformObj->addComponent<da::core::CSmeshComponent>("assets/prop/misc/target_dummy.fbx");
-		mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/prop/misc/dummy_baseColor.jpeg"));
-		mesh->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/prop/misc/dummy_normal.jpeg"));
+		mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::factory::CTexture2DFactory::Create("assets/textures/prop/misc/dummy_baseColor.jpeg"));
+		mesh->getStaticMesh()->getMaterial(0).setNormalTexture(da::factory::CTexture2DFactory::Create("assets/textures/prop/misc/dummy_normal.jpeg"));
 		mesh->getStaticMesh()->getMaterial(0).metallicFactor = 0.f;
 		mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
 
-		da::graphics::CStaticMesh* colMesh = da::graphics::CStaticMeshFactory::create("assets/prop/misc/target_dummy_collision.fbx", false);
+		da::graphics::CStaticMesh* colMesh = da::factory::CStaticMeshFactory::create("assets/prop/misc/target_dummy_collision.fbx", false);
 
 		transformObj->addComponent<da::core::CRigidBodyComponent>(
 			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(colMesh)
@@ -140,7 +140,7 @@ void CTestBed01Level::initialize()
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = arena->addComponent<da::core::CSmeshComponent>("assets/prop/structure/prop_gladiator_arena.fbx");
 		meshComponent->getStaticMesh()->castShadows(false);
 
-		da::graphics::CStaticMesh* collision = da::graphics::CStaticMeshFactory::create("assets/prop/structure/prop_collision_gladiator_arena.fbx");
+		da::graphics::CStaticMesh* collision = da::factory::CStaticMeshFactory::create("assets/prop/structure/prop_collision_gladiator_arena.fbx");
 		/*arena->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(
 			da::physics::CPhysicsShapeTriangleMesh::create(collision)
 			, da::physics::CPhysicsDefaultMotionState::create(arena->getTransform().matrix())

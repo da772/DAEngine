@@ -1,8 +1,8 @@
 #pragma once
 
-#include "daengine/core/graphics/graphics_material.h"
-#include "daengine/platform/graphics/bgfx/bgfx_graphics_material.h"
-#include <daengine/core/graphics/graphics_material_data.h>
+#include "graphics/graphics_material.h"
+#include "platform/graphics/bgfx/bgfx_graphics_material.h"
+#include <graphics/graphics_material_data.h>
 
 namespace bgfx {
 	struct TextureHandle;

@@ -1,5 +1,5 @@
 // engine
-#include <daengine/script/script_engine.h>
+#include <script/script_engine.h>
 #include <daengine/graphics.h>
 #include <daengine/debug.h>
 

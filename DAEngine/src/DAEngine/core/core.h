@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
-
+#include "core/containers.h"
+#include "core/logger.h"
 #include <assert.h>
 
 #define DA_VERSION "0.01"

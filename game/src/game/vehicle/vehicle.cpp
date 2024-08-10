@@ -1,19 +1,20 @@
 #include "vehicle.h"
 #include <DAEngine/physics.h>
 #include <DAEngine/components.h>
-#include <DAEngine/physics/physics_shape.h>
-#include <DAEngine/physics/physics_motion_state.h>
-#include <DAEngine/core/graphics/factory/factory_graphics_texture2d.h>
+#include <physics/physics_shape.h>
+#include <physics/physics_motion_state.h>
+#include <graphics/factory/factory_graphics_texture2d.h>
 
-#include <DAEngine/physics/physics.h>
-#include <DAEngine/physics/physics_shape.h>
-#include <DAEngine/physics/physics_rigid_body.h>
-#include <DAEngine/core/ecs/rigid_body_component.h>
-#include <DAEngine/core/graphics/graphics_debug_render.h>
-#include <DAEngine/core/graphics/camera.h>
-#include <DAEngine/physics/physics_vehicle.h>
-#include <DAEngine/core/input/input.h>
-#include <DAEngine/core/graphics/graphics_smesh.h>
+#include <physics/physics.h>
+#include <physics/physics_shape.h>
+#include <physics/physics_rigid_body.h>
+#include <app/ecs/rigid_body_component.h>
+#include <debug/graphics_debug_render.h>
+#include <debug/graphics_debug_render.h>
+#include <graphics/camera.h>
+#include <physics/physics_vehicle.h>
+#include <core/input/input.h>
+#include <graphics/graphics_smesh.h>
 #include <glm/gtx/vector_angle.hpp> 
 
 #ifdef DA_REVIEW
@@ -53,7 +54,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics:
 			return;
 		}
 
-		da::graphics::CStaticMesh* collisionMesh = da::graphics::CStaticMeshFactory::create("assets/prop/veh/prop_collision_veh_sports_01a.fbx", false);
+		da::graphics::CStaticMesh* collisionMesh = da::factory::CStaticMeshFactory::create("assets/prop/veh/prop_collision_veh_sports_01a.fbx", false);
 		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->addComponent<da::core::CRigidBodyComponent>(
 			//da::physics::IPhysicsRigidBody::create(da::physics::IPhysicsShape::createMeshConvexHull(collisionMesh)
 			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 1.f, 2.525f, .35f })
@@ -61,7 +62,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics:
 				, 1200.f
 				, { 0.f,0.f,0.f }));
 
-		da::graphics::CStaticMeshFactory::remove(collisionMesh);
+		da::factory::CStaticMeshFactory::remove(collisionMesh);
 
 		m_vehicle = da::physics::VehicleFactory::create(vehicleData, rb->getPhysicsBody());
 
@@ -70,9 +71,9 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics:
 			da::core::FComponentRef<da::core::CSmeshComponent> mesh = wheel->addComponent<da::core::CSmeshComponent>("assets/prop/veh/prop_veh_sedan/prop_veh_sedan_wheel_01a.FBX", false);
 			mesh->getStaticMesh()->getMaterial(0).metallicFactor = 1.f;
 			mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
-			mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_DIF.dds"));
-			mesh->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_ORM.dds"));
-			mesh->getStaticMesh()->getMaterial(0).setNormalTexture(da::graphics::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_NRM.dds"));
+			mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::factory::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_DIF.dds"));
+			mesh->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::factory::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_ORM.dds"));
+			mesh->getStaticMesh()->getMaterial(0).setNormalTexture(da::factory::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_NRM.dds"));
 #ifdef DA_REVIEW
 			wheel->setTag(CHashString((std::string("Wheel") + std::to_string(i)).c_str()));
 #endif

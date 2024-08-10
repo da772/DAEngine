@@ -1,4 +1,5 @@
 #pragma once
+#include "dastd.h"
 
 namespace da::script
 {

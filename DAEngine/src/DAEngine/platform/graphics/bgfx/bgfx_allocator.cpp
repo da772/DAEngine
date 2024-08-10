@@ -1,4 +1,5 @@
-#include "dapch.h"
+
+#include "core/core.h"
 #include "bgfx_allocator.h"
 
 #include <malloc.h>

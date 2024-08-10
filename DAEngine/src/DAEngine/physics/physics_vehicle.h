@@ -1,5 +1,7 @@
 #pragma once
-#include <daengine/core/graphics/graphics_material_data.h>
+#include <graphics/graphics_material_data.h>
+#include "dastd.h"
+#include "daglm.h"
 
 namespace da::physics
 {

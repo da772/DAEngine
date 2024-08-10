@@ -109,10 +109,10 @@ void CAICharacterMovement::debugUpdate()
 
 	for (uint32_t i = 0; i < m_path.size(); i++) {
 		if (i != m_path.size() - 1) {
-			da::graphics::CDebugRender::drawLine(m_path[i], m_path[i + 1], .1f, {1.f, 1.f, 1.f, 1.f});
+			da::debug::CDebugRender::drawLine(m_path[i], m_path[i + 1], .1f, {1.f, 1.f, 1.f, 1.f});
 		}
 		
-		da::graphics::CDebugRender::drawCube(m_path[i], glm::quat(1.f, 0.f, 0.f, 0.f), { .05f,.05f,.05f }, { 1.f,1.f,0.f,1.f }, false);
+		da::debug::CDebugRender::drawCube(m_path[i], glm::quat(1.f, 0.f, 0.f, 0.f), { .05f,.05f,.05f }, { 1.f,1.f,0.f,1.f }, false);
 	}
 	
 }

@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "transform.h"
 
 #include <glm/gtx/quaternion.hpp>

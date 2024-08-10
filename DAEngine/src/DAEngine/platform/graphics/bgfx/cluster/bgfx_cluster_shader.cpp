@@ -1,11 +1,11 @@
-#include "dapch.h"
+
 #include "bgfx_cluster_shader.h"
 
 #include "bgfx_samplers.h"
 #include <glm/common.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <cmath>
-#include <core/graphics/camera.h>
+#include <graphics/camera.h>
 #include "../bgfx_util.h"
 
 namespace da::platform {

@@ -1,7 +1,7 @@
 #pragma once
-#include "daengine/core/core.h"
+#include "core/core.h"
 #ifdef DA_GRAPHICS_BGFX
-#include "daengine/core/graphics/graphics_api.h"
+#include "graphics/graphics_api.h"
 
 
 

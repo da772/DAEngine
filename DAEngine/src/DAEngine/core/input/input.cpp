@@ -1,7 +1,7 @@
-#include "dapch.h"
+
 #include "input.h"
 
-#include "core/window/window.h"
+#include "graphics/window/window.h"
 #include "core/events/event_handler.h"
 
 namespace da::core {

@@ -1,7 +1,7 @@
-#include "dapch.h"
+
 
 #include "script_engine.h"
-#include "asset/asset.h"
+#include "core/asset/asset.h"
 #include <chrono>
 #include <algorithm>
 #include "natives/script_native.h"

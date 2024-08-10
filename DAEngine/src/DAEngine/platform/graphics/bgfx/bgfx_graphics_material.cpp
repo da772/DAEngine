@@ -1,12 +1,12 @@
-#include "dapch.h"
+
 #include "bgfx_graphics_material.h"
 
 #ifdef DA_GRAPHICS_BGFX
 #include <bgfx/bgfx.h>
 #include "bgfx_util.h"
 
-#include "DAEngine/asset/asset.h"
-#include "DAEngine/platform/graphics/bgfx/bgfx_graphics_api.h"
+#include "core/asset/asset.h"
+#include "platform/graphics/bgfx/bgfx_graphics_api.h"
 
 namespace da::platform {
 

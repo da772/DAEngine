@@ -1,15 +1,14 @@
-#include "dapch.h"
+
 #include "tiled_nav_mesh.h"
 #include "nav_mesh_manager.h"
+#include "nav_mesh_ctx.h"
 
 
 #include "chunky_mesh.h"
 #include "core/ecs/scene_manager.h"
 #include "core/ecs/scene.h"
 #include "core/ecs/entity.h"
-#include "core/graphics/graphics_debug_render.h"
-#include "core/graphics/graphics_smesh.h"
-#include "platform/graphics/bgfx/bgfx_static_mesh.h";
+#include "debug/graphics_debug_render.h"
 
 #include <DetourNavMeshBuilder.h>
 #include <DetourNavMeshQuery.h>

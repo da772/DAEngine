@@ -1,6 +1,8 @@
 #pragma once
 
 #include <bgfx/bgfx.h>
+#include "daglm.h"
+#include "dastd.h"
 
 namespace da::graphics
 {

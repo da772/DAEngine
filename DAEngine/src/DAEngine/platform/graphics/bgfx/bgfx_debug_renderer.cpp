@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "bgfx_debug_renderer.h"
 
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
@@ -8,21 +8,21 @@
 #include "bgfx_static_mesh.h"
 #include "bgfx_graphics_material.h"
 #include "bgfx_line_mesh.h"
-#include "DAEngine/core/graphics/factory/factory_graphics_smesh.h"
+#include "graphics/factory/factory_graphics_smesh.h"
 
 namespace da::platform
 {
 	void CBgfxDebugRenderer::initialize()
 	{
 		m_frameBuffer = createFrameBuffer();
-		m_shader = da::graphics::CMaterialFactory::create("shaders/cluster/vs_debug_geometry.sc", "shaders/cluster/fs_debug_geometry.sc");
+		m_shader = da::factory::CMaterialFactory::create("shaders/cluster/vs_debug_geometry.sc", "shaders/cluster/fs_debug_geometry.sc");
 		m_uniform = ::bgfx::createUniform("u_Color", ::bgfx::UniformType::Vec4);
 
-		m_shapes[EDebugShapes::Cube] = da::graphics::CStaticMeshFactory::create("assets/cube.fbx", false);
-		m_shapes[EDebugShapes::Sphere] = da::graphics::CStaticMeshFactory::create("assets/sphere.fbx", false);
-		m_shapes[EDebugShapes::Plane] = da::graphics::CStaticMeshFactory::create("assets/plane.fbx", false);
-		m_shapes[EDebugShapes::Cone] = da::graphics::CStaticMeshFactory::create("assets/cone.fbx", false);
-		m_shapes[EDebugShapes::Capsule] = da::graphics::CStaticMeshFactory::create("assets/capsule.fbx", false);
+		m_shapes[EDebugShapes::Cube] = da::factory::CStaticMeshFactory::create("assets/cube.fbx", false);
+		m_shapes[EDebugShapes::Sphere] = da::factory::CStaticMeshFactory::create("assets/sphere.fbx", false);
+		m_shapes[EDebugShapes::Plane] = da::factory::CStaticMeshFactory::create("assets/plane.fbx", false);
+		m_shapes[EDebugShapes::Cone] = da::factory::CStaticMeshFactory::create("assets/cone.fbx", false);
+		m_shapes[EDebugShapes::Capsule] = da::factory::CStaticMeshFactory::create("assets/capsule.fbx", false);
 		m_shapes[EDebugShapes::Line] = new CBgfxLineMesh();
 	}
 
@@ -78,11 +78,11 @@ namespace da::platform
 	void CBgfxDebugRenderer::shutdown()
 	{
 		for (const std::pair<EDebugShapes, da::graphics::CStaticMesh*>& kv : m_shapes) {
-			da::graphics::CStaticMeshFactory::remove(kv.second);
+			da::factory::CStaticMeshFactory::remove(kv.second);
 		}
 		m_shapes = {};
 
-		da::graphics::CMaterialFactory::remove(m_shader);
+		da::factory::CMaterialFactory::remove(m_shader);
 
 		BGFXTRYDESTROY(m_frameBuffer);
 		BGFXTRYDESTROY(m_uniform);

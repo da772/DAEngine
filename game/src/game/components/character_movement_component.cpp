@@ -1,7 +1,7 @@
 #include "character_movement_component.h"
 
 #ifdef DA_REVIEW
-#include <DAEngine/core/graphics/graphics_debug_render.h>
+#include <DAEngine/core.h>
 #include <DAEngine/graphics.h>
 COMPONENT_CPP_DEBUG(CCharacterMovementComponent)
 #else
@@ -165,7 +165,7 @@ void CCharacterMovementComponent::onDebugRender()
 	ImGui::End();
 
 	glm::quat quat = da::core::CCamera::lookAt(m_direction, glm::vec3(0.f));
-	da::graphics::CDebugRender::drawCone(m_parent.getTransform().position(), quat, {.001f, .005f, .001f}, { 1.f,0.f,1.f,1.f }, false);
+	da::debug::CDebugRender::drawCone(m_parent.getTransform().position(), quat, {.001f, .005f, .001f}, { 1.f,0.f,1.f,1.f }, false);
 
 	m_character->debugDraw();
 }

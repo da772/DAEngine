@@ -1,9 +1,9 @@
 #pragma once
 
-#include "daengine/core/containers/pair.h"
-#include "daengine/core/containers/hashstring.h"
-#include "daengine/core/guid.h"
-#include "daengine/core/maths/vector.h"
+#include "core/containers/pair.h"
+#include "core/containers/hashstring.h"
+#include "core/guid.h"
+#include "core/maths/vector.h"
 #include <string>
 #include <queue>
 #include <vector>
@@ -11,7 +11,3 @@
 #include <algorithm>
 #include <stdint.h>
 #include <array>
-
-using namespace da::core::containers;
-
-using CHashString = da::core::containers::CBasicHashString;

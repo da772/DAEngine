@@ -1,4 +1,6 @@
 #pragma once
+#include "core/core.h"
+#include "daglm.h"
 #include <platform/graphics/bgfx/bgfx_graphics_material.h>
 #include <bgfx/bgfx.h>
 

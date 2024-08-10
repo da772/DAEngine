@@ -25,6 +25,8 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 include "DAEngine"
 
+group "game"
+
 project "game"
 	location "game"
 	kind "ConsoleApp"
@@ -49,7 +51,7 @@ project "game"
 
 	includedirs 
 	{
-		"DAEngine/src",
+		"%{IncludeDir['daengine-core']}",
 		"DAEngine/src/DAEngine/headers",
 		"%{prj.name}/src",
 		"%{IncludeDir.stb}",
@@ -68,7 +70,15 @@ project "game"
 
 	links
 	{
-		"DAEngine",
+		"daengine-ai",
+		"daengine-app",
+		"daengine-core",
+		"daengine-debug",
+		"daengine-graphics",
+		"daengine-net",
+		"daengine-physics",
+		"daengine-platform",
+		"daengine-script",
 		"assimp",
 		"ImGui",
 		"bgfx",
@@ -334,3 +344,4 @@ project "game"
 				runtime "Release"
 				optimize "On"
 
+group ""

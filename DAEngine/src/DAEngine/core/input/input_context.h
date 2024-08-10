@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/core.h"
+
 namespace da::core
 {
 	class CInputContext

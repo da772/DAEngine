@@ -1,4 +1,4 @@
-#include "dapch.h"
+
 #include "script_class.h"
 
 #include "script_engine.h"

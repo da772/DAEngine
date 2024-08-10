@@ -3,6 +3,9 @@
 
 namespace da::ai
 {
+	class CNavDrawer;
+	class CNavCtx;
+
 	class CNavMeshManager
 	{
 	public:
@@ -19,11 +22,9 @@ namespace da::ai
 		
 
 	private:
-		static CNavCtx s_ctx;
 		static std::vector<INavMesh*> s_navMeshes;
 		static bool s_initialized;
 #ifdef DA_REVIEW
-		static CNavDrawer s_drawer;
 		static bool s_debugRender;
 #endif
 	};

@@ -1,6 +1,6 @@
 #pragma once
 #ifdef DA_GRAPHICS_VULKAN
-#include "DAEngine/core/graphics/graphics_texturecube.h"
+#include "graphics/graphics_texturecube.h"
 #include "vulkan_graphics_api.h"
 #include <ktx.h>
 

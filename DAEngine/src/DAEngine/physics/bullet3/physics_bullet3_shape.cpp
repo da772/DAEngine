@@ -1,8 +1,8 @@
-#include "dapch.h"
+
 
 #include "physics_bullet3_shape.h"
 #include "bullet3_physics.h"
-#include <core/graphics/graphics_smesh.h>
+#include <graphics/graphics_smesh.h>
 
 namespace da::physics
 {
