@@ -88,7 +88,7 @@ void CTestBed01Level::initialize()
 	{
 		da::core::CEntity* helloWorldEntity = da::core::CSceneManager::getScene()->createEntity();
 		helloWorldEntity->setTag(HASHSTR("helloworld"));
-		//helloWorldEntity->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
+		helloWorldEntity->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
 	}
 
 	// Ramp1
