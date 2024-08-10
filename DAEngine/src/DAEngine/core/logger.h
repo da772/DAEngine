@@ -1,16 +1,30 @@
 #pragma once
-#include "core/core.h"
-#include "core/containers.h"
-#include "core/utility.h"
-#include "core/time.h"
+#include "core.h"
+#include "dastd.h"
+#include "stl/utility.h"
+#include "stl/time.h"
 
 #include "dastd.h"
 #include <stdio.h>
 #include <fstream>
 
+
+namespace da
+{
+	class CCore {
+	public:
+		static void _assert(bool x, const char* file, long line);
+	};
+}
+
 namespace da {
 #define NAMEOF(x) #x
 
+#if !defined(DA_FINAL)
+#define ASSERT(x) da::CCore::_assert(x, __FILE__, __LINE__); assert(x);
+#else
+#define ASSERT(...)
+#endif
 #define LOG_INFO(ELogChannel, msg, ...) da::CLogger::LogInfo(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
 #define LOG_DEBUG(ELogChannel, msg, ...) da::CLogger::LogDebug(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
 #define LOG_WARN(ELogChannel, msg, ...) da::CLogger::LogWarning(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)

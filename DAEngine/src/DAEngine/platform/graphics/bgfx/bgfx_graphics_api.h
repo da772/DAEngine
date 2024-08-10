@@ -1,5 +1,5 @@
 #pragma once
-#include "core/core.h"
+#include "core.h"
 #ifdef DA_GRAPHICS_BGFX
 #include "graphics/graphics_api.h"
 

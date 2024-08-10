@@ -1,5 +1,5 @@
 #pragma once
-#include <daengine/core.h>
+#include "core.h"
 #include "level.h"
 
 #define INVALID_LEVEL_ID 0xFFFFFFFF

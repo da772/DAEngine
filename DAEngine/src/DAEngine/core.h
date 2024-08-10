@@ -1,21 +1,10 @@
 #pragma once
-#include <stdint.h>
-#include "core/containers.h"
-#include "core/logger.h"
 #include <assert.h>
 
 #define DA_VERSION "0.01"
 
-// Extra defines go here (acts as config)
-#if !defined(DA_FINAL)
-#define ASSERT(x) da::CCore::_assert(x, __FILE__, __LINE__); assert(x);
-#else
-#define ASSERT(...)
-#endif
-
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 #define DA_REVIEW
-#define DA_PROFILE
 #endif
 
 #if defined(DA_PLATFORM_WINDOWS) && defined(DA_REVIEW)
@@ -51,12 +40,3 @@
 #define PROFILE_THREAD(x) 
 #define PROFILE_TAG(...) 
 #endif
-
-namespace da
-{
-	class CCore {
-	public:
-		static void _assert(bool x, const char* file, long line);
-	};
-
-}

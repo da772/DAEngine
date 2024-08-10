@@ -1,6 +1,6 @@
 
 #include "network_client.h"
-
+#include "core/logger.h"
 #include "core/threading/worker_pool.h"
 #include "network_util.h"
 #include <enet/enet.h>

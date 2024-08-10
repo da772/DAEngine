@@ -19,7 +19,7 @@ extern "C" {
 
 #include <sol/sol.hpp>
 #include <script/script_engine.h>
-#include <core/time.h>
+#include <stl/time.h>
 #include <graphics/factory/factory_graphics_texture2d.h>
 
 namespace da::script::core

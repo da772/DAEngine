@@ -1,6 +1,7 @@
 
 #include "input.h"
 
+#include "core/logger.h"
 #include "graphics/window/window.h"
 #include "core/events/event_handler.h"
 

@@ -8,6 +8,8 @@
 #include "core/ecs/scene_manager.h"
 #include "core/ecs/scene.h"
 #include "core/ecs/entity.h"
+#include "graphics/graphics_vertex.h"
+#include "graphics/graphics_smesh.h"
 #include "debug/graphics_debug_render.h"
 
 #include <DetourNavMeshBuilder.h>

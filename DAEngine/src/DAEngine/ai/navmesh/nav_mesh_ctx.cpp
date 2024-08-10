@@ -4,7 +4,9 @@
 namespace da::ai
 {
 	da::ai::CNavCtx CNavCtx::ms_ctx;
+#ifdef DA_REVIEW
 	da::ai::CNavDrawer CNavDrawer::ms_drawer;
+#endif
 
 	void CNavCtx::doLog(const rcLogCategory category, const char* msg, const int len)
 	{

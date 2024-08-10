@@ -16,14 +16,14 @@
 #include "bgfx_samplers.h"
 #include <bx/bx.h>
 #include <bx/math.h>
-#include "core/maths/flags.h"
+#include "stl/maths/flags.h"
 
 #ifdef DA_REVIEW
 #include "platform/imgui/bgfx/bgfx_imgui.h"
 #include "debug/debug_menu_bar.h"
 #include "debug/debug_stats_window.h"
 #endif
-#include <core/time.h>
+#include <stl/time.h>
 #include <app/ecs/skeletal_mesh_component.h>
 #include <debug/graphics_debug_render.h>
 

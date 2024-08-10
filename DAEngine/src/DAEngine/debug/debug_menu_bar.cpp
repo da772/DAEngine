@@ -1,4 +1,4 @@
-#include "core/core.h"
+#include "core.h"
 #include "debug_menu_bar.h"
 
 #ifdef DA_REVIEW
@@ -7,7 +7,7 @@
 namespace da::debug
 {
 	std::map<CHashString, std::map<CHashString, std::pair<bool*, std::function<void()>>>> CDebugMenuBar::s_refs;
-	std::vector < std::pair<CHashString, CHashString>> CDebugMenuBar::s_dirty;
+	std::vector <std::pair<CHashString, CHashString>> CDebugMenuBar::s_dirty;
 	bool CDebugMenuBar::s_processing = false;
 
 	void CDebugMenuBar::initialize()

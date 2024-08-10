@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <glm/gtc/type_ptr.hpp>
 #include <graphics/camera.h>
+#include "core/logger.h"
 
 namespace da::platform {
 

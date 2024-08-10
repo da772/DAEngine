@@ -1,6 +1,6 @@
 
 #include "bgfx_light_shader.h"
-
+#include "core/logger.h"
 #include "bgfx_samplers.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <cassert>

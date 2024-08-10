@@ -1,7 +1,7 @@
 #pragma once
 #include "graphics/graphics_api.h"
 #include "graphics/window/window.h"
-#include "core/core.h"
+#include "core.h"
 
 
 namespace ImGui

@@ -1,5 +1,5 @@
 #pragma once
-#include "core/core.h"
+#include "core.h"
 #include "dastd.h"
 
 namespace da::core
@@ -13,18 +13,9 @@ namespace da::core
 		static void setScene(CScene* scene);
 		static void initialize();
 		static void shutdown();
-#ifdef DA_REVIEW
-		static void renderDebug();
-		static void renderECSDebug();
-#endif
 
 	private:
 		static CScene* s_scene;
-#ifdef DA_REVIEW
-		static bool s_showDebug;
-		static bool s_showECSDebug;
-		static bool s_showCameraDebug;
-#endif
 		static bool s_initialized;
 
 	};

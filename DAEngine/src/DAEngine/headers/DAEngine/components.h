@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/core.h>
+#include <core.h>
 
 #include <core/ecs/scene.h>
 #include <core/ecs/scene_manager.h>

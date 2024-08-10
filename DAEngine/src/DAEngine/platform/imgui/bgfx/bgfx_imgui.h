@@ -6,7 +6,7 @@
 #ifndef IMGUI_H_HEADER_GUARD
 #define IMGUI_H_HEADER_GUARD
 
-#include "core/core.h"
+#include "core.h"
 #include <bgfx/bgfx.h>
 #include <imgui.h>
 #include <bgfx/iconfontheaders/icons_kenney.h>

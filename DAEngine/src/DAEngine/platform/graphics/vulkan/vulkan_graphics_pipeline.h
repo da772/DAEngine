@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/core.h"
+#include "core.h"
 
 #ifdef DA_GRAPHICS_VULKAN
 

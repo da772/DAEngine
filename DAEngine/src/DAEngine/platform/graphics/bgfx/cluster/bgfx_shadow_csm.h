@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/core.h"
+#include "core.h"
 #include "daglm.h"
 #include <bgfx/bgfx.h>
 #include "graphics/graphics_material.h"

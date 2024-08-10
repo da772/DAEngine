@@ -1,6 +1,6 @@
 #pragma once
 #include "dastd.h"
-#include "core/core.h"
+#include "core.h"
 #include "graphics/graphics_pipeline.h"
 #include "platform/graphics/vulkan/vulkan_graphics_material.h"
 #ifdef DA_GRAPHICS_VULKAN

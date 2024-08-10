@@ -15,7 +15,8 @@ project "daengine-script"
 	
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"DA_PROFILE"
 	}
 
 	if not _OPTIONS['unit-test'] then
@@ -59,6 +60,7 @@ project "daengine-script"
 		links 
 		{
 			"daengine-core",
+			"daengine-stl",
 			"daengine-graphics",
 			"daengine-physics",
 			"daengine-debug",
@@ -109,6 +111,7 @@ project "daengine-script"
 		links
 		{
 			"daengine-core",
+			"daengine-stl",
 			"daengine-graphics",
 			"daengine-physics",
 			"daengine-debug",

@@ -1,6 +1,7 @@
 
 #include "bgfx_cluster_shader.h"
 
+#include "core/logger.h"
 #include "bgfx_samplers.h"
 #include <glm/common.hpp>
 #include <glm/gtc/type_ptr.hpp>

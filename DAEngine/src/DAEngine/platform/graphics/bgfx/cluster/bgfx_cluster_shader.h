@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core.h"
 #include <bgfx/bgfx.h>
 
 namespace da::platform {

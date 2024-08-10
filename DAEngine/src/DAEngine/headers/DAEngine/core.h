@@ -1,11 +1,11 @@
 #pragma once
 // core
-#include "core/core.h"
-#include "core/time.h"
+#include "core.h"
+#include "stl/time.h"
 #include "core/input/input.h"
 #include "core/input/input_context.h"
 #include "graphics/window/window.h"
-#include "core/maths/maths.h"
+#include "stl/maths/maths.h"
 
 // modules
 #include "app/modules/module.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/core.h"
+#include "core.h"
 #include <bgfx/bgfx.h>
 #include <glm/glm.hpp>
 #include <graphics/graphics_material_data.h>

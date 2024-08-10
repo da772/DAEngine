@@ -1,4 +1,4 @@
-project "daengine-core"
+project "daengine-stl"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++latest"
@@ -10,37 +10,20 @@ project "daengine-core"
 	files 
 	{
 		"../*.h",
-		"*.h",
-		"*.cpp",
-		"asset/**.h",
-		"asset/**.cpp",
-		"containers/**.h",
-		"containers/**.cpp",
-		"ecs/**.h",
-		"ecs/**.cpp",
-		"events/**.h",
-		"events/**.cpp",
-		"input/**.h",
-		"input/**.cpp",
-		"maths/**.h",
-		"maths/**.cpp",
-		"threading/**.h",
-		"threading/**.cpp",
+		"**.h",
+		"**.cpp",
 	}
 	
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS",
-		"DA_PROFILE"
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
 	if not _OPTIONS['unit-test'] then
 	includedirs
 	{
 		"%{IncludeDir['daengine-core']}",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.optick}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.glm}"
 	}
 	
 	else
@@ -51,7 +34,6 @@ project "daengine-core"
 	includedirs
 	{
 		"%{IncludeDir['daengine-core']}",
-		"%{IncludeDir.glm}"
 	}
 	end
 
@@ -71,9 +53,7 @@ project "daengine-core"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"daengine-stl",
-			"optick",
-			"imgui"
+			
 		}
 	
 		end
@@ -111,9 +91,7 @@ project "daengine-core"
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"daengine-stl",
-			"optick",
-			"imgui"
+			
 		}
 
 		buildoptions

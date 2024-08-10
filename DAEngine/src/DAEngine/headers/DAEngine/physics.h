@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/core.h>
+#include <core.h>
 #include <physics/physics.h>
 #include <physics/physics_shape.h>
 #include <physics/physics_rigid_body.h>

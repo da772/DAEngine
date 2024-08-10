@@ -1,5 +1,5 @@
 #pragma once
-#include "core/core.h"
+#include "core.h"
 
 #ifdef DA_WINDOW_GLFW
 #include "graphics/window/window.h"

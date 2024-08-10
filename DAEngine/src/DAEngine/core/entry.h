@@ -1,5 +1,5 @@
 #pragma once
-#include "core/core.h"
+#include "core.h"
 #include "app/app.h"
 
 #if defined(DA_PLATFORM_WINDOWS) && (defined(DA_FINAL) || defined(DA_RELEASE))

@@ -32,8 +32,9 @@ IncludeDir["optick"] = "%{wks.location}/DAEngine/thirdparty/optick/include"
 IncludeDir["daengine-core"] = "%{wks.location}/DAEngine/src/DAEngine/"
 
 
-group "da-engine"
+group "daengine"
 include "src/DAEngine/core"
+include "src/DAEngine/stl"
 include "src/DAEngine/graphics"
 include "src/DAEngine/debug"
 include "src/DAEngine/net"

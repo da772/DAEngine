@@ -1,5 +1,5 @@
 #pragma once
-#include "core/core.h"
+#include "core.h"
 
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
 #include "graphics/graphics_api.h"

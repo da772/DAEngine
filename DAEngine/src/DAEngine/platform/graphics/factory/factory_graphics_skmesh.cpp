@@ -1,5 +1,5 @@
 
-#include "core/core.h"
+#include "core.h"
 #include "graphics/factory/factory_graphics_skmesh.h"
 
 #ifdef DA_GRAPHICS_BGFX

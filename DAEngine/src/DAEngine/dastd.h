@@ -9,8 +9,9 @@
 #include <unordered_set>
 #include <array>
 #include <set>
+#include <queue>
 
-#include "core/containers/pair.h"
-#include "core/containers/hashstring.h"
-#include "core/guid.h"
-#include "core/maths/vector.h"
+#include "stl/pair.h"
+#include "stl/hashstring.h"
+#include "stl/guid.h"
+#include "stl/maths/vector.h"

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "core/containers.h"
+#include "core.h"
+#include "dastd.h"
 #include "modules/module.h"
 
 namespace da
@@ -26,12 +27,18 @@ namespace da
 	private:
 		void initalizeInternal(int argc, const char** argv);
 		void shutdownInternal();
+#ifdef DA_REVIEW
+		void renderSceneDebug();
+		void renderECSDebug();
+#endif
 
 	private:
 		bool m_running;
-		bool m_initialized = false;
+		bool m_initialized  = false;
 		std::vector<IModule*> m_modules;
 		bool m_reset = false;
+		bool m_sceneDebug = false;
+		bool m_ecsDebug = false;
 	};
 	
 	extern CApp* createApp(int argc, const char** argv);

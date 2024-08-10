@@ -1,5 +1,7 @@
 #pragma once
-#include "core/core.h"
+#include "core.h"
+#include "dastd.h"
+
 #ifdef DA_REVIEW
 
 namespace da::debug {

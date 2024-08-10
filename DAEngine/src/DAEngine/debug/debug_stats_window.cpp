@@ -5,7 +5,7 @@
 
 #include <imgui.h>
 #include "debug_menu_bar.h"
-#include <core/time.h>
+#include <stl/time.h>
 
 double da::debug::CDebugStatsWindow::s_gpuTime;
 double da::debug::CDebugStatsWindow::s_cpuTime;

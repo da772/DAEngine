@@ -15,7 +15,8 @@ project "daengine-debug"
 	
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"DA_PROFILE"
 	}
 
 	if not _OPTIONS['unit-test'] then
@@ -56,7 +57,7 @@ project "daengine-debug"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"daengine-core",
+			"daengine-stl",
 			"daengine-graphics",
 			"imgui",
 		}
@@ -96,7 +97,7 @@ project "daengine-debug"
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"daengine-core",
+			"daengine-stl",
 			"daengine-graphics",
 			"imgui",
 		}

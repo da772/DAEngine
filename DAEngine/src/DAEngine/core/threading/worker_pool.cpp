@@ -1,4 +1,5 @@
 
+#include "core/logger.h"
 #include "worker_pool.h"
 
 namespace da::core

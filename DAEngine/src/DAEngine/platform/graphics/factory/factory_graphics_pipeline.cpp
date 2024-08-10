@@ -1,5 +1,5 @@
 
-#include "core/core.h"
+#include "core.h"
 #include "graphics/factory/factory_graphics_pipeline.h"
 
 #ifdef DA_GRAPHICS_VULKAN

@@ -1,4 +1,5 @@
 #pragma once
+#include "core.h"
 #include "physics_shape.h"
 #include "dastd.h"
 

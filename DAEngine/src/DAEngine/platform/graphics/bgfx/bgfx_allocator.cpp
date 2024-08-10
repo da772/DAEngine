@@ -1,5 +1,5 @@
 
-#include "core/core.h"
+#include "core.h"
 #include "bgfx_allocator.h"
 
 #include <malloc.h>

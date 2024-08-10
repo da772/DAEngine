@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/core.h>
+#include <core.h>
 #include "debug/graphics_debug_render.h"
 #include "graphics/camera.h"
 #include "graphics/graphics_skmesh.h"

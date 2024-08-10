@@ -1,0 +1,1 @@
+#include "hashstring.h"

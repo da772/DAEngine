@@ -1,7 +1,7 @@
 
 #include "networked_transform_component.h"
 #include "net/network_manager.h"
-#include "core/time.h"
+#include "stl/time.h"
 
 #define TRANSFORM_PACKET_ID HASH("FTransformPacketInfo")
 

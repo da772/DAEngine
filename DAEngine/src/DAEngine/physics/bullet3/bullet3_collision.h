@@ -1,5 +1,5 @@
 #pragma once
-
+#include "core.h"
 #include "physics/physics_collision.h"
 #include <bullet3/BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <bullet3/BulletCollision/CollisionDispatch/btCollisionObject.h>

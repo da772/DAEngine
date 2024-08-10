@@ -15,7 +15,8 @@ project "daengine-net"
 	
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"DA_PROFILE"
 	}
 
 	if not _OPTIONS['unit-test'] then

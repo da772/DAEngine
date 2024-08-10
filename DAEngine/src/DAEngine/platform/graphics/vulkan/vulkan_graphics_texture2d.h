@@ -1,4 +1,4 @@
-#include "core/core.h"
+#include "core.h"
 #include "graphics/graphics_texture2d.h"
 
 #ifdef DA_GRAPHICS_VULKAN

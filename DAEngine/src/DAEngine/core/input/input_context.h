@@ -1,6 +1,7 @@
 #pragma once
 
-#include "core/core.h"
+#include "core.h"
+#include "stl/hashstring.h"
 
 namespace da::core
 {

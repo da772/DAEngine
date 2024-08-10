@@ -44,6 +44,7 @@ project "game"
 	
 	files 
 	{
+		"DAEngine/src/DAEngine/headers/**.h",
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.c",
 		"%{prj.name}/src/**.cpp"
@@ -79,6 +80,7 @@ project "game"
 		"daengine-physics",
 		"daengine-platform",
 		"daengine-script",
+		"daengine-stl",
 		"assimp",
 		"ImGui",
 		"bgfx",
