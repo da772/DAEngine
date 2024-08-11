@@ -100,7 +100,7 @@ void CTestBed01Level::initialize()
 		ramp->setTag(HASHSTR("ramp1"));
 
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = ramp->addComponent<da::core::CSmeshComponent>("assets/cube.fbx");
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::factory::CTexture2DFactory::Create("assets/textures/tex_debug_grid_01.png"));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::factory::CTexture2DFactory::Create("assets/textures/tex_debug_grid_01.dds"));
 
 		ramp->addComponent<da::core::CRigidBodyComponent>(
 			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 5.f,10.f,5.f })
@@ -117,8 +117,8 @@ void CTestBed01Level::initialize()
 		transformObj->setTag(HASHSTR("dummy"));
 
 		da::core::FComponentRef<da::core::CSmeshComponent> mesh = transformObj->addComponent<da::core::CSmeshComponent>("assets/prop/misc/target_dummy.fbx");
-		mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::factory::CTexture2DFactory::Create("assets/textures/prop/misc/dummy_baseColor.jpeg"));
-		mesh->getStaticMesh()->getMaterial(0).setNormalTexture(da::factory::CTexture2DFactory::Create("assets/textures/prop/misc/dummy_normal.jpeg"));
+		mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::factory::CTexture2DFactory::Create("assets/textures/prop/misc/dummy_baseColor.dds"));
+		mesh->getStaticMesh()->getMaterial(0).setNormalTexture(da::factory::CTexture2DFactory::Create("assets/textures/prop/misc/dummy_normal.dds"));
 		mesh->getStaticMesh()->getMaterial(0).metallicFactor = 0.f;
 		mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
 

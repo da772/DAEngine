@@ -51,3 +51,4 @@ Prototype/shaders/output.txt
 game/shaders/output.txt
 game/shaders/timestamp.txt
 *.hlsl
+game/assets/timestamp.txt

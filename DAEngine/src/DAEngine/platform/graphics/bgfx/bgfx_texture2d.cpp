@@ -26,7 +26,6 @@ namespace da::platform::bgfx {
 			{
 				bx::Error err;
 				::bimg::ImageContainer* imageContainer = bimg::imageParse(DefaultAllocator::Get(), (const void*)m_fileAsset.data(), (uint32_t)m_fileAsset.size());
-
 				m_width = imageContainer->m_width;
 				m_height = imageContainer->m_height;
 
