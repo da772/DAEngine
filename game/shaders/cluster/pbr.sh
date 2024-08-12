@@ -64,11 +64,11 @@ struct PBRMaterial
 
 #ifdef READ_MATERIAL
 
-vec4 pbrBaseColor(vec2 texcoord)
+vec4 pbrBaseColor(vec2 texcoord, float lod)
 {
     if(u_hasBaseColorTexture)
     {
-        return texture2DLod(s_texBaseColor, texcoord) * u_baseColorFactor;
+        return texture2DLod(s_texBaseColor, texcoord, lod) * u_baseColorFactor;
     }
     else
     {
@@ -76,11 +76,11 @@ vec4 pbrBaseColor(vec2 texcoord)
     }
 }
 
-vec2 pbrMetallicRoughness(vec2 texcoord)
+vec2 pbrMetallicRoughness(vec2 texcoord, float lod)
 {
     if(u_hasMetallicRoughnessTexture)
     {
-        return texture2D(s_texMetallicRoughness, texcoord).bg * u_metallicRoughnessFactor;
+        return texture2DLod(s_texMetallicRoughness, texcoord, lod).bg * u_metallicRoughnessFactor;
     }
     else
     {
@@ -88,13 +88,13 @@ vec2 pbrMetallicRoughness(vec2 texcoord)
     }
 }
 
-vec3 pbrNormal(vec2 texcoord)
+vec3 pbrNormal(vec2 texcoord, float lod)
 {
     if(u_hasNormalTexture)
     {
         // the normal scale can cause problems and serves no real purpose
         // normal compression and BRDF calculations assume unit length
-        return normalize((texture2D(s_texNormal, texcoord).rgb * 2.0) - 1.0); // * u_normalScale;
+        return normalize((texture2DLod(s_texNormal, texcoord, lod).rgb * 2.0) - 1.0); // * u_normalScale;
     }
     else
     {
@@ -104,12 +104,12 @@ vec3 pbrNormal(vec2 texcoord)
     }
 }
 
-float pbrOcclusion(vec2 texcoord)
+float pbrOcclusion(vec2 texcoord, float lod)
 {
     if(u_hasOcclusionTexture)
     {
         // occludedColor = lerp(color, color * <sampled occlusion texture value>, <occlusion strength>)
-        float occlusion = texture2D(s_texOcclusion, texcoord).r;
+        float occlusion = texture2DLod(s_texOcclusion, texcoord, lod).r;
         return occlusion + (1.0 - occlusion) * (1.0 - u_occlusionStrength);
     }
     else
@@ -118,11 +118,11 @@ float pbrOcclusion(vec2 texcoord)
     }
 }
 
-vec3 pbrEmissive(vec2 texcoord)
+vec3 pbrEmissive(vec2 texcoord, float lod)
 {
     if(u_hasEmissiveTexture)
     {
-        return texture2D(s_texEmissive, texcoord).rgb * u_emissiveFactor;
+        return texture2DLod(s_texEmissive, texcoord, lod).rgb * u_emissiveFactor;
     }
     else
     {
@@ -132,19 +132,19 @@ vec3 pbrEmissive(vec2 texcoord)
 
 PBRMaterial pbrInitMaterial(PBRMaterial mat);
 
-PBRMaterial pbrMaterial(vec2 texcoord)
+PBRMaterial pbrMaterial(vec2 texcoord, float lod)
 {
     PBRMaterial mat;
     texcoord *= s_uvScale;
     // Read textures/uniforms
 
-    mat.albedo = pbrBaseColor(texcoord);
-    vec2 metallicRoughness = pbrMetallicRoughness(texcoord);
+    mat.albedo = pbrBaseColor(texcoord, lod);
+    vec2 metallicRoughness = pbrMetallicRoughness(texcoord, lod);
     mat.metallic  = metallicRoughness.r;
     mat.roughness = metallicRoughness.g;
-    mat.normal = pbrNormal(texcoord);
-    mat.occlusion = pbrOcclusion(texcoord);
-    mat.emissive = pbrEmissive(texcoord);
+    mat.normal = pbrNormal(texcoord, lod);
+    mat.occlusion = pbrOcclusion(texcoord, lod);
+    mat.emissive = pbrEmissive(texcoord, lod);
 
     mat = pbrInitMaterial(mat);
 

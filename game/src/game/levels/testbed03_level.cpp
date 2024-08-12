@@ -29,9 +29,9 @@ void CTestBed03Level::initialize()
 		da::graphics::CStaticMesh* colMesh = da::factory::CStaticMeshFactory::create("assets/plane100.fbx");
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/plane.fbx");
 
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Textures::Tex_Fine_Road_D));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Textures::tex_debug_grid_01));
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
-		meshComponent->getStaticMesh()->getMaterial(0).uvScale = { 100.f,100.f };
+		meshComponent->getStaticMesh()->getMaterial(0).uvScale = { 40.f,40.f };
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = true;
 

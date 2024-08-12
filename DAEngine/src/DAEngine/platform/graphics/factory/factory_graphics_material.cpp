@@ -51,11 +51,11 @@ void da::factory::CMaterialFactory::remove(CMaterial* material)
 void da::factory::CMaterialFactory::reloadShaders()
 {
 	for (const std::pair<CHashString, FInstanceInfo>& kv : ms_factory.m_instances) {
-		//kv.second.Ptr->shutdown();
+		kv.second.Ptr->shutdown();
 	}
 
 	for (const std::pair<CHashString, FInstanceInfo>& kv : ms_factory.m_instances) {
-		//kv.second.Ptr->initialize();
+		kv.second.Ptr->initialize();
 	}
 
 	ms_factory.m_debug = false;
