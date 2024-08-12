@@ -1,7 +1,12 @@
+
+#define DA_REVIEW
 #include <iostream>
 #define HAVE_CUDA
 #include "nvtt/nvtt.h"
 #include "stl/hashstring.h"
+#include "log.hpp"
+#include "loader/texture_loader.h"
+#include "loader/model_loader.h"
 
 
 #include <filesystem>
@@ -12,41 +17,6 @@
 #include <cstdio>
 
 using recursive_directory_iterator = std::filesystem::recursive_directory_iterator;
-
-template<typename TP>
-std::time_t to_time_t(TP tp) {
-	using namespace std::chrono;
-	auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now() + system_clock::now());
-	return system_clock::to_time_t(sctp);
-}
-
-namespace da {
-
-	static const char endl[] = "\n";
-
-	class CStream {
-	public:
-		std::ofstream stream;
-		inline CStream& operator<<(const char* str) {
-			std::cout << str;
-			stream << str;
-			return *this;
-		}
-		inline CStream& operator<<(const std::string& str) {
-			std::cout << str;
-			stream << str;
-			return *this;
-		}
-		inline CStream& operator<<(const std::filesystem::path& str) {
-			std::cout << str;
-			stream << str;
-			return *this;
-		}
-	};
-
-	static CStream cout;
-}
-
 
 int main(int argc, const char* argv[])
 {
@@ -80,88 +50,57 @@ int main(int argc, const char* argv[])
 	timeStamp << std::to_string(newTime);
 	timeStamp.close();
 
+	std::string outPath = p.string();
+	auto it = outPath.find("source");
+	if (it == -1)
+	{
+		return -1;
+	}
+
+	outPath.erase(it, 7);
+
 	for (const auto& dirEntry : recursive_directory_iterator(p)) {
 		if (dirEntry.is_directory()) {
 			continue;
 		}
 
 		//da::cout << dirEntry.path() << da::endl;
-		std::string path = dirEntry.path().string();
 		std::string extStr = dirEntry.path().extension().string();
 		CHashString ext = CHashString(extStr.c_str(), extStr.size());
+		std::string name = dirEntry.path().filename().string();
+		name.erase(name.end() - extStr.size(), name.end());
 
-		auto it = path.find("source");
-		if (it == -1)
-		{
-			continue;
-		}
-
-		path.erase(it, 7);
-
-		std::string dir = path;
-		dir.erase(dir.size() - dirEntry.path().filename().string().size(), dir.size());
-		std::filesystem::create_directories(dir);
+		std::string dir = outPath;
 		switch (ext.hash())
 		{
 			case HASH(".jpg"):
 			case HASH(".jpeg"):
 			case HASH(".png"):
 			{
+				dir += std::string("Textures\\");
 				da::cout << "Found Image Asset: " << dirEntry.path().string() << da::endl;
-				int width, height, channels;
-				nvtt::Context context(true);
-				nvtt::Surface surface;
-
-				bool hasAlpha;
-				if (surface.load(dirEntry.path().string().c_str(), &hasAlpha))
+				
+				CTextureLoader texture(dirEntry.path().string(), dir, name);
+				if (texture.loadTexture())
 				{
-					path.erase(path.end() - extStr.size(), path.end());
-					path += std::string(".dds");
-					da::cout << "[Mips " << std::to_string(surface.countMipmaps()) << " ]Writing Image Asset : " << dirEntry.path().string() << " To : " << path << da::endl;
-
-					nvtt::CompressionOptions compressionOptions;
-					compressionOptions.setFormat(nvtt::Format_BC7);
-
-					nvtt::OutputOptions outputOptions;
-					outputOptions.setSrgbFlag(true);
-					outputOptions.setFileName(path.c_str());
-
-					if (!context.outputHeader(surface, surface.countMipmaps() /* number of mipmaps */, compressionOptions, outputOptions)) {
-						std::cerr << "Writing the DDS header failed!";
-						return 1;
-					}
-
-					for (int mip = 0; mip < surface.countMipmaps(); mip++) {
-						// Compress this image and write its data.
-						if (!context.compress(surface, 0 /* face */, mip, compressionOptions, outputOptions)) {
-							std::cerr << "Compressing and writing the DDS file failed!";
-							return 1;
-						}
-
-						if (mip == surface.countMipmaps() - 1) break;
-
-						// Prepare the next mip:
-
-						/*// Convert to linear premultiplied alpha. Note that toLinearFromSrgb()
-						// will clamp HDR images; consider e.g. toLinear(2.2f) instead.
-						surface.toLinearFromSrgb();
-						surface.premultiplyAlpha();*/
-
-						// Resize the image to the next mipmap size.
-						// NVTT has several mipmapping filters; Box is the lowest-quality, but
-						// also the fastest to use.
-						surface.buildNextMipmap(nvtt::MipmapFilter_Box);
-						// For general image resizing. use image.resize().
-
-						int size = context.estimateSize(surface, surface.countMipmaps(), compressionOptions);
-
-						da::cout << "[Mips " << std::to_string(surface.countMipmaps()) << " ]Writing Image Asset : " << dirEntry.path().string() << " To : " << path << " Estimated size: " << std::to_string(size) << da::endl;
-						/*// Convert back to unpremultiplied sRGB.
-						surface.demultiplyAlpha();
-						surface.toSrgb();*/
+					if (!texture.saveTexture())
+					{
+						da::cout << "Failed to save file: " << dir;
 					}
 				}
 				break;
+			}
+			case HASH(".fbx"):
+			{
+				dir += std::string("Props\\") + dirEntry.path().filename().string();
+				dir.erase(dir.end() - extStr.size(), dir.end());
+				std::filesystem::create_directories(outPath);
+				dir += std::string(".prp");
+				CModelLoader model  = CModelLoader(dirEntry.path().string(), dir, outPath, name);
+				if (model.loadModel())
+				{
+					model.saveModel();
+				}
 			}
 			default:
 			{
@@ -175,6 +114,41 @@ int main(int argc, const char* argv[])
 			continue;
 		}
 	}
+
+	std::ofstream out;
+	out.open((p.string() + std::string("map.txt")).c_str(), std::ios::out | std::ios::trunc);
+
+	out << "MATERIALS:" << std::endl;
+
+	for (const auto& kv : FMaterial::ms_materialSaved) {
+		out << kv.first.c_str() << " : " << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << std::endl;
+	}
+
+	out << "TEXTURES:" << std::endl;
+
+	for (const auto& kv : CTextureLoader::getTextures()) {
+		out << kv.first.c_str() << " : " << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << std::endl;
+	}
+
+	out.close();
+
+
+	std::ofstream outTextureEnum;
+	outTextureEnum.open((p.string() + std::string("textures.generated.h")).c_str(), std::ios::out | std::ios::trunc);
+
+	outTextureEnum << "#pragma once" << std::endl << std::endl;
+	outTextureEnum << "enum class Textures" << std::endl;
+	outTextureEnum << "{" << std::endl;
+
+	for (const auto& kv : CTextureLoader::getTextures()) {
+		outTextureEnum << "\t";
+		outTextureEnum << "/*" << kv.first.c_str() << " : " << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << "*/" << std::endl;
+		outTextureEnum << "\t" << kv.second.Name << " = " << std::to_string(kv.second.DataHash) << "," << std::endl << std::endl;
+	}
+
+	outTextureEnum << "};" << std::endl;
+
+	outTextureEnum.close();
 
 
 	return 0;

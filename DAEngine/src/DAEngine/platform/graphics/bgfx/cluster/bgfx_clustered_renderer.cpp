@@ -6,7 +6,7 @@
 #include <glm/ext/matrix_relational.hpp>
 #include <platform/graphics/bgfx/bgfx_graphics_material.h>
 #include <core/ecs/scene_manager.h>
-#include <app/ecs/smesh_component.h>
+#include "platform/app/ecs/smesh_component.h"
 #include "platform/graphics/bgfx/bgfx_static_mesh.h"
 #include "platform/graphics/bgfx/bgfx_skeletal_mesh.h"
 #include "platform/graphics/bgfx/bgfx_graphics_pbr_material.h"
@@ -24,7 +24,7 @@
 #include "debug/debug_stats_window.h"
 #endif
 #include <stl/time.h>
-#include <app/ecs/skeletal_mesh_component.h>
+#include <platform/app/ecs/skeletal_mesh_component.h>
 #include <debug/graphics_debug_render.h>
 
 

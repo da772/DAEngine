@@ -73,6 +73,7 @@ namespace da::physics
 		static void sweepTest(FSweepData& sweep);
 		static CPhysicsType* getPhysicsType();
 		static double getFixedTime();
+		static void setPhysics();
 
 	private:
 		static double s_fixedTime;

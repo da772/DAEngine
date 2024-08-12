@@ -4,7 +4,7 @@
 
 namespace da::factory {
 
-	extern class CWindowFactory
+	class CWindowFactory
 	{
 	public:
 		static da::core::CWindow* CreateWindow(const da::core::FWindowData& windowData);

@@ -1,5 +1,6 @@
 #pragma once
 #include "dastd.h"
+#include <algorithm>
 
 namespace da::core {
 
@@ -15,7 +16,7 @@ namespace da::core {
 		CGuid(const char* guid);
 
 		const unsigned char* const data() const;
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 		const char* c_str() const;
 #else
 		const char* c_str() const;
@@ -36,7 +37,7 @@ namespace da::core {
 		static CGuid Generate(uint32_t seed);
 
 	private:
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 		void genString();
 #endif
 		void genString(guid_str out) const;
@@ -47,10 +48,21 @@ namespace da::core {
 	private:
 		uint128_t m_uuid;
 		char __padding = 0;
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 		guid_str m_debugName;
 #endif
 
 	};
 
+
+}
+
+namespace std {
+	template<> struct hash<da::core::CGuid>
+	{
+		std::size_t operator()(da::core::CGuid const& hashStr) const noexcept
+		{
+			return HASHSZ((const char*)&hashStr, sizeof(da::core::CGuid));
+		}
+	};
 }

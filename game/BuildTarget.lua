@@ -52,7 +52,7 @@ project "game"
 
 	includedirs 
 	{
-		"%{IncludeDir['daengine-core']}",
+		"%{IncludeDir['da-core']}",
 		"DAEngine/src/DAEngine/headers",
 		"%{prj.name}/src",
 		"%{IncludeDir.stb}",
@@ -71,16 +71,15 @@ project "game"
 
 	links
 	{
-		"daengine-ai",
-		"daengine-app",
-		"daengine-core",
-		"daengine-debug",
-		"daengine-graphics",
-		"daengine-net",
-		"daengine-physics",
-		"daengine-platform",
-		"daengine-script",
-		"daengine-stl",
+		"da-ai",
+		"da-core",
+		"da-debug",
+		"da-graphics",
+		"da-net",
+		"da-physics",
+		"da-platform",
+		"da-script",
+		"da-stl",
 		"assimp",
 		"ImGui",
 		"bgfx",
@@ -113,13 +112,13 @@ project "game"
 		}
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 			kind "ConsoleApp"
 			
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			symbols "On"
@@ -148,12 +147,12 @@ project "game"
 		}
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 			
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			
@@ -179,12 +178,12 @@ project "game"
 		androidLibDir = ""
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			
@@ -301,14 +300,14 @@ project "game"
 		end
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 			debugger "LLDB"
 			
 			
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			
@@ -334,11 +333,11 @@ project "game"
 			}
 			
 			filter "configurations:Debug"
-				defines "DA_DEBUG"
+				defines {"DA_DEBUG", "DA_REVIEW"}
 				runtime "Debug"
 				symbols "On"
 			filter "configurations:Release"
-				defines "DA_RELEASE"
+				defines {"DA_RELEASE", "DA_REVIEW"}
 				runtime "Release"
 				optimize "On"
 			filter "configurations:Final"

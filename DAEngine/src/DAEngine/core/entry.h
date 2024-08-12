@@ -1,6 +1,6 @@
 #pragma once
 #include "core.h"
-#include "app/app.h"
+#include "platform/app/app.h"
 
 #if defined(DA_PLATFORM_WINDOWS) && (defined(DA_FINAL) || defined(DA_RELEASE))
 #include <windows.h>

@@ -10,8 +10,8 @@ workspace "tools"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["daengine-core"] = "%{wks.location}/../src/DAEngine"
-IncludeDir["glm"] = "%{wks.location}/../thirdparty/glm/include"
+IncludeDir["da-core"] = "%{wks.location}/../src/DAEngine"
+IncludeDir["glm"] = "%{wks.location}../thirdparty/glm"
 
 group "Tools"
 

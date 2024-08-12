@@ -29,7 +29,7 @@ IncludeDir["recast-detour-crowd"] = "%{wks.location}/DAEngine/thirdparty/recast/
 IncludeDir["recast-detour-tilecache"] = "%{wks.location}/DAEngine/thirdparty/recast/DetourTileCache/include"
 IncludeDir["optick"] = "%{wks.location}/DAEngine/thirdparty/optick/include"
 
-IncludeDir["daengine-core"] = "%{wks.location}/DAEngine/src/DAEngine/"
+IncludeDir["da-core"] = "%{wks.location}/DAEngine/src/DAEngine/"
 
 
 group "daengine"
@@ -42,7 +42,6 @@ include "src/DAEngine/physics"
 include "src/DAEngine/script"
 include "src/DAEngine/ai"
 include "src/DAEngine/platform"
-include "src/DAEngine/app"
 group ""
 
 group "3rdParty"

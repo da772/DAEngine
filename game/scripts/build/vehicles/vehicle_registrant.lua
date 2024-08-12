@@ -1,4 +1,6 @@
---[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+local ____lualib = require("lualib_bundle")
+local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
+__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["5"] = 1,["6"] = 1,["7"] = 4,["8"] = 4,["9"] = 6,["11"] = 10,["13"] = 10,["14"] = 13,["15"] = 14,["16"] = 15,["17"] = 16,["19"] = 12,["20"] = 10,["21"] = 21,["22"] = 22,["23"] = 23,["25"] = 20});
 local ____exports = {}
 local ____vehicle_data = require("game.vehicle_data")
 local VehicleManager = ____vehicle_data.VehicleManager

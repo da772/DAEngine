@@ -65,12 +65,12 @@ project "DAEngineTests"
 		}
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 			
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 		filter "configurations:Final"
@@ -96,12 +96,12 @@ project "DAEngineTests"
 		}
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 			
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			
@@ -127,12 +127,12 @@ project "DAEngineTests"
 		androidLibDir = ""
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			
@@ -210,13 +210,13 @@ project "DAEngineTests"
 		}
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 			
 			
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			
@@ -237,11 +237,11 @@ project "DAEngineTests"
 			}
 			
 			filter "configurations:Debug"
-				defines "DA_DEBUG"
+				defines {"DA_DEBUG", "DA_REVIEW"}
 				runtime "Debug"
 				symbols "On"
 			filter "configurations:Release"
-				defines "DA_RELEASE"
+				defines {"DA_RELEASE", "DA_REVIEW"}
 				runtime "Release"
 				optimize "On"
 			filter "configurations:Final"

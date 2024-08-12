@@ -1,4 +1,4 @@
-project "daengine-graphics"
+project "da-graphics"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++latest"
@@ -22,7 +22,7 @@ project "daengine-graphics"
 	if not _OPTIONS['unit-test'] then
 	includedirs
 	{
-		"%{IncludeDir['daengine-core']}",
+		"%{IncludeDir['da-core']}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.optick}",
 		"%{IncludeDir.ImGui}",
@@ -60,20 +60,20 @@ project "daengine-graphics"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"daengine-stl",
-			"daengine-core",
+			"da-stl",
+			"da-core",
 			"GLFW",
 		}
 	
 		end
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 		
@@ -100,8 +100,8 @@ project "daengine-graphics"
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"daengine-stl",
-			"daengine-core",
+			"da-stl",
+			"da-core",
 			"GLFW",
 		}
 
@@ -112,11 +112,11 @@ project "daengine-graphics"
 		end
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			symbols "On"
@@ -136,11 +136,11 @@ project "daengine-graphics"
 		}
 		
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			symbols "On"
@@ -165,12 +165,12 @@ project "daengine-graphics"
 		}
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 		
@@ -209,12 +209,12 @@ project "daengine-graphics"
 			system "android"
 			
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 		

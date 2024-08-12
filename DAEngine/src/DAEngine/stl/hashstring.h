@@ -4,13 +4,15 @@
 #include <string>
 #include <algorithm>
 
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 #define HASHSTR(x) CHashString(x, da::core::containers::CBasicHashString::generateHash(x))
 #else
 #define HASHSTR(x) CHashString(da::core::containers::CBasicHashString::generateHash(x))	
 #endif
 
 #define HASH(x) CHashString::generateHash(x)
+#define HASHSZ(x,y) CHashString::generateHash(x,y)
+#define HASHCOMBINE(x, y) CHashString::hashCombine(x,y)
 
 namespace da::core::containers
 {
@@ -37,30 +39,35 @@ namespace da::core::containers
 				return generateHash(str, size);
 			}
 
+			static inline constexpr const uint32_t hashCombine(uint32_t lhs, uint32_t rhs)
+			{
+				return rhs + 0x9e3779b9 + (lhs << 6) + (lhs >> 2);
+			}
+
 			inline constexpr CBasicHashString() :
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 				m_string(""), 
 #endif
 				m_hash(0) {
 
 			}
 			inline constexpr CBasicHashString(const char* str) {
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
-				m_string = str;
+#ifdef DA_REVIEW
+				m_string = std::string(str);
 #endif
 				m_hash = generateHash(str);
 			}
 
 			inline constexpr CBasicHashString(const char* str, uint32_t hash) {
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
-				m_string = str;
+#ifdef DA_REVIEW
+				m_string = std::string(str);
 #endif
 				m_hash = hash;
 			}
 
 			inline constexpr CBasicHashString(const char* str, size_t size) {
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
-				m_string = str;
+#ifdef DA_REVIEW
+				m_string = std::string(str);
 #endif
 				m_hash = generateHash(str, size);
 			}
@@ -88,7 +95,7 @@ namespace da::core::containers
 
 			inline constexpr const char* c_str() const
 			{
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 				return m_string.c_str();
 #else
 				return std::to_string(m_hash).c_str();
@@ -132,7 +139,7 @@ namespace da::core::containers
                 return generateHash(str, size);
             }
 		private:
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
+#ifdef DA_REVIEW
 			std::string m_string;
 #endif
 			uint32_t m_hash;

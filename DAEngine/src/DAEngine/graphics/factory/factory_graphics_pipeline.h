@@ -6,7 +6,7 @@ using namespace da::graphics;
 
 namespace da::factory {
 
-	extern class CGraphicsPipelineFactory
+	class CGraphicsPipelineFactory
 	{
 	public:
 		static CGraphicsPipeline* Create(CGraphicsApi& graphicsApi, const std::string& vertexShaderPath, const std::string& fragShaderPath, FVertexBindingDescription vertexBinding, const std::vector<FVertexInputAttributeDescription>& inputAttribDesc);

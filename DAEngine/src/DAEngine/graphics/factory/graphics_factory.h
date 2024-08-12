@@ -7,7 +7,7 @@ using namespace da::graphics;
 
 namespace da::factory
 {
-	extern class CGraphicsFactory
+	class CGraphicsFactory
 	{
 	public:
 		static CGraphicsApi* Create(da::core::CWindow* window);

@@ -9,7 +9,7 @@ using namespace da::graphics;
 
 namespace da::factory
 {
-	extern class CMaterialFactory : da::core::CFactory<CMaterial>
+	class CMaterialFactory : da::core::CFactory<CMaterial>
 	{
 	public:
 		static CMaterial* create(const std::string& vsPath, const std::string& fsPath);

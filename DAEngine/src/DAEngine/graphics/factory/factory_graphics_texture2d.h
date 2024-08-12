@@ -8,7 +8,7 @@ using namespace da::graphics;
 
 namespace da::factory
 {
-	extern class CTexture2DFactory : da::core::CFactory<CGraphicsTexture2D>
+	class CTexture2DFactory : da::core::CFactory<CGraphicsTexture2D>
 	{
 	public:
 		static CGraphicsTexture2D* Create(const std::string& path, CGraphicsApi& graphicsApi);

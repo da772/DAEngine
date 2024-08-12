@@ -2,8 +2,8 @@
 #include <daengine/core.h>
 #include <daengine/components.h>
 #include <daengine/script.h>
+#include <daengine/graphics.h>
 #include "level.h"
-#include "procgen/level_gen.h"
 
 
 class CCharacter;
@@ -15,20 +15,19 @@ public:
 	CTestBed03Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window);
 	void initialize();
 	void update(float dt);
+	void lateUpdate(float dt) override;
 	void shutdown();
 
 
 private:
-	void createVehicle();
-	void destroyVehicle();
+	void onKeyboardEvent(const da::core::events::CEvent& event);
 
 private:
 	da::graphics::CSkeletalAnimation* m_swordSlashAnimation;
 	da::graphics::CSkeletalAnimation* m_runAnimation;
-	CCharacter* m_character;
-	CVehicle* m_vehicle;
-	da::modules::CWindowModule& m_window;
+	da::core::CCamera* m_camera = nullptr;
+	CCharacter* m_character, * m_ai;
 	da::script::CScriptClass m_scrlevel;
-	CLevelGenerator m_levelGen;
+	bool m_freeCam = false;
 
 };

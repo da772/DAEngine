@@ -8,7 +8,7 @@
 #include <physics/physics.h>
 #include <physics/physics_shape.h>
 #include <physics/physics_rigid_body.h>
-#include <app/ecs/rigid_body_component.h>
+#include <platform/app/ecs/rigid_body_component.h>
 #include <debug/graphics_debug_render.h>
 #include <debug/graphics_debug_render.h>
 #include <graphics/camera.h>
@@ -16,6 +16,7 @@
 #include <core/input/input.h>
 #include <graphics/graphics_smesh.h>
 #include <glm/gtx/vector_angle.hpp> 
+#include "game/helpers/texture_helper.h"
 
 #ifdef DA_REVIEW
 #include <imgui.h>
@@ -71,9 +72,10 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics:
 			da::core::FComponentRef<da::core::CSmeshComponent> mesh = wheel->addComponent<da::core::CSmeshComponent>("assets/prop/veh/prop_veh_sedan/prop_veh_sedan_wheel_01a.FBX", false);
 			mesh->getStaticMesh()->getMaterial(0).metallicFactor = 1.f;
 			mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
-			mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::factory::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_DIF.dds"));
-			mesh->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(da::factory::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_ORM.dds"));
-			mesh->getStaticMesh()->getMaterial(0).setNormalTexture(da::factory::CTexture2DFactory::Create("assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_NRM.dds"));
+			
+			mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Textures::Tex_Veh_Sedan_Chassis_DIF));
+			mesh->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(CTextureHelper::create(Textures::Tex_Veh_Sedan_Chassis_ORM));
+			mesh->getStaticMesh()->getMaterial(0).setNormalTexture(CTextureHelper::create(Textures::Tex_Veh_Sedan_Chassis_NRM));
 #ifdef DA_REVIEW
 			wheel->setTag(CHashString((std::string("Wheel") + std::to_string(i)).c_str()));
 #endif

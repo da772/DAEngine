@@ -6,7 +6,7 @@ export class TestBed01 implements Level
     initialize(): void 
     {
         print("TestBed01 Initialize");
-        VehicleRegistrant.register();
+        //VehicleRegistrant.register();
     }
 
     update(dt: number): void 
@@ -17,7 +17,7 @@ export class TestBed01 implements Level
     shutdown(): void 
     {
         print("TestBed01 Shutdown");
-        VehicleRegistrant.unregister();
+        //VehicleRegistrant.unregister();
     }
 }
 

@@ -1,5 +1,4 @@
 #include "physics.h"
-#include "bullet3/bullet3_physics.h"
 
 namespace da::physics
 {
@@ -9,7 +8,7 @@ namespace da::physics
 
 	void CPhysics::initialize()
 	{
-		s_physicsType = new CBullet3Physics();
+		setPhysics();
 		s_physicsType->initialize();
 	}
 
@@ -65,5 +64,4 @@ namespace da::physics
 	{
 		return s_fixedTime;
 	}
-
 }

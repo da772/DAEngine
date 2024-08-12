@@ -2,6 +2,8 @@ local ____lualib = require("lualib_bundle")
 local __TS__Class = ____lualib.__TS__Class
 local __TS__ClassExtends = ____lualib.__TS__ClassExtends
 local __TS__New = ____lualib.__TS__New
+local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
+__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["8"] = 1,["9"] = 1,["10"] = 3,["11"] = 3,["12"] = 4,["13"] = 4,["14"] = 5,["15"] = 5,["16"] = 6,["17"] = 6,["18"] = 7,["19"] = 7,["20"] = 8,["21"] = 8,["22"] = 11,["23"] = 11,["24"] = 11,["25"] = 11,["27"] = 11,["28"] = 13,["29"] = 11,["30"] = 15,["31"] = 16,["32"] = 17,["33"] = 15,["34"] = 20,["35"] = 21,["36"] = 23,["37"] = 24,["39"] = 27,["40"] = 29,["41"] = 30,["43"] = 20,["44"] = 34,["45"] = 36,["46"] = 37,["47"] = 38,["48"] = 39,["49"] = 40,["50"] = 41,["51"] = 42,["52"] = 42,["55"] = 47,["56"] = 34,["57"] = 50,["58"] = 51,["59"] = 52,["60"] = 50,["61"] = 57});
 local ____exports = {}
 local ____lib = require("lib")
 local Employee = ____lib.Employee

@@ -68,7 +68,7 @@ vec4 pbrBaseColor(vec2 texcoord)
 {
     if(u_hasBaseColorTexture)
     {
-        return texture2D(s_texBaseColor, texcoord) * u_baseColorFactor;
+        return texture2DLod(s_texBaseColor, texcoord) * u_baseColorFactor;
     }
     else
     {

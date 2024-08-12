@@ -1,4 +1,4 @@
-project "daengine-script"
+project "da-script"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++latest"
@@ -22,7 +22,7 @@ project "daengine-script"
 	if not _OPTIONS['unit-test'] then
 	includedirs
 	{
-		"%{IncludeDir['daengine-core']}",
+		"%{IncludeDir['da-core']}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.optick}",
@@ -59,12 +59,13 @@ project "daengine-script"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"daengine-core",
-			"daengine-stl",
-			"daengine-graphics",
-			"daengine-physics",
-			"daengine-debug",
-			"daengine-net",
+			"da-core",
+			"da-stl",
+			"da-graphics",
+			"da-physics",
+			"da-platform",
+			"da-debug",
+			"da-net",
 			"imgui",
 			"lua51",
 		}
@@ -72,12 +73,12 @@ project "daengine-script"
 		end
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 		
@@ -110,12 +111,13 @@ project "daengine-script"
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"daengine-core",
-			"daengine-stl",
-			"daengine-graphics",
-			"daengine-physics",
-			"daengine-debug",
-			"daengine-net",
+			"da-core",
+			"da-stl",
+			"da-graphics",
+			"da-physics",
+			"da-platform",
+			"da-debug",
+			"da-net",
 			"imgui",
 			"luajit",
 		}
@@ -127,11 +129,11 @@ project "daengine-script"
 		end
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			symbols "On"
@@ -151,11 +153,11 @@ project "daengine-script"
 		}
 		
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 			symbols "On"
@@ -180,12 +182,12 @@ project "daengine-script"
 		}
 
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 		
@@ -224,12 +226,12 @@ project "daengine-script"
 			system "android"
 			
 		filter "configurations:Debug"
-			defines "DA_DEBUG"
+			defines {"DA_DEBUG", "DA_REVIEW"}
 			runtime "Debug"
 			symbols "On"
 
 		filter "configurations:Release"
-			defines "DA_RELEASE"
+			defines {"DA_RELEASE", "DA_REVIEW"}
 			runtime "Release"
 			optimize "On"
 		

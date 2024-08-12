@@ -4,7 +4,7 @@
 
 namespace da::factory {
 
-	extern class CImGuiFactory {
+	class CImGuiFactory {
 	public:
 		static da::core::CImGuiApi* Create(graphics::CGraphicsApi* graphicsApi);
 	};

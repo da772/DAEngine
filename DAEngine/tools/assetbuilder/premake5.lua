@@ -1,3 +1,8 @@
+group "3rdparty"
+include "../../thirdparty/assimp"
+include "../../thirdparty/zlib"
+include "../src/DAEngine/stl"
+
 group "tools"
 project "assetbuilder"
 	kind "ConsoleApp"
@@ -10,8 +15,10 @@ project "assetbuilder"
 	includedirs 
     {
 		"%{wks.location}/thirdparty/nvtt/include",
-		"%{IncludeDir['daengine-core']}",
-		"%{IncludeDir['glm']}"
+		"../../thirdparty/assimp/include",
+		"../../thirdparty/glm",
+		"%{IncludeDir['da-core']}",
+		"%{wks.location}/../thirdparty/glm/include"
 	}
 
 
@@ -23,7 +30,9 @@ project "assetbuilder"
 	links 
 	{
 		"nvtt30205",
-
+		"assimp",
+		"zlib",
+		"da-stl"
 	}
 
 	libdirs
@@ -32,7 +41,6 @@ project "assetbuilder"
 	}
 
     filter "configurations:Release"
-        
     filter "configurations:Debug"
         
 

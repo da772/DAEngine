@@ -6,7 +6,7 @@ using namespace da::graphics;
 
 namespace da::factory {
 
-	extern class CSkeletalMeshFactory : da::core::CFactory<CSkeletalMesh>
+	class CSkeletalMeshFactory : da::core::CFactory<CSkeletalMesh>
 	{
 	public:
 		static CSkeletalMesh* create(const std::string& path, bool inverseNormals = false);

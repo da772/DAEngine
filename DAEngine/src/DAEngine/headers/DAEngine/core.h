@@ -8,7 +8,7 @@
 #include "stl/maths/maths.h"
 
 // modules
-#include "app/modules/module.h"
-#include "app/modules/window/window_module.h"
-#include "app/modules/graphics/graphics_module.h"
-#include "app/modules/graphics/imgui_module.h"
+#include "platform/app/modules/module.h"
+#include "platform/app/modules/window/window_module.h"
+#include "platform/app/modules/graphics/graphics_module.h"
+#include "platform/app/modules/graphics/imgui_module.h"

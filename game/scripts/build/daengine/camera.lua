@@ -1,4 +1,6 @@
---[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+local ____lualib = require("lualib_bundle")
+local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
+__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["5"] = 1,["6"] = 1,["8"] = 3,["10"] = 3,["11"] = 5,["12"] = 4,["13"] = 3,["14"] = 9,["15"] = 8,["16"] = 3,["17"] = 13,["18"] = 12,["19"] = 3,["20"] = 17,["21"] = 16,["22"] = 3,["23"] = 21,["24"] = 20,["25"] = 3,["26"] = 25,["27"] = 24});
 local ____exports = {}
 local ____vector = require("daengine.vector")
 local Vector3 = ____vector.Vector3

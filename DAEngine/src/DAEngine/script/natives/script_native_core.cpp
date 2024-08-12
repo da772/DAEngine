@@ -8,7 +8,7 @@
 #include <core/ecs/scene.h>
 #include <imgui.h>
 #include "physics/physics_rigid_body.h"
-#include <app/ecs/rigid_body_component.h>
+#include <platform/app/ecs/rigid_body_component.h>
 #include "script/types/script_types.h"
 
 extern "C" {
