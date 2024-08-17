@@ -14,22 +14,7 @@ namespace da::ai
 	{
 
 	protected:
-		void doLog(const rcLogCategory category, const char* msg, const int len) override
-		{
-			switch (category)
-			{
-			case RC_LOG_PROGRESS:
-				LOG_DEBUG(da::ELogChannel::AI, "%s", msg);
-				break;
-			case RC_LOG_WARNING:
-				LOG_WARN(da::ELogChannel::AI, "%s", msg);
-				break;
-			case RC_LOG_ERROR:
-				LOG_ERROR(da::ELogChannel::AI, "%s", msg);
-				break;
-
-			}
-		}
+		void doLog(const rcLogCategory category, const char* msg, const int len) override;
 
 	};
 #ifdef DA_REVIEW

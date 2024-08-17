@@ -3,10 +3,6 @@
 
 #define DA_VERSION "0.01"
 
-#if defined(DA_DEBUG) || defined(DA_RELEASE)
-#define DA_REVIEW
-#endif
-
 #if defined(DA_PLATFORM_WINDOWS) && defined(DA_REVIEW)
 #define DA_COLORED_OUT
 #endif

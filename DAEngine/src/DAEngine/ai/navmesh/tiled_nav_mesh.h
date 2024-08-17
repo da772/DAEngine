@@ -2,6 +2,7 @@
 #include "core.h"
 #include "nav_mesh.h"
 #include <recast.h>
+#include "graphics/graphics_smesh.h"
 
 typedef unsigned int dtPolyRef;
 
@@ -11,12 +12,14 @@ namespace da::ai
 	class CTiledNavMesh : public INavMesh
 	{
 	public:
-		CTiledNavMesh(da::graphics::CStaticMesh* mesh);
+		CTiledNavMesh();
 
 		void initialize() override;
 		void update(float dt) override;
 		void shutdown() override;
 		std::vector<glm::vec3> findPath(const glm::vec3& startPos, const glm::vec3& endPos) override;
+		void addMesh(const glm::mat4& transform, const da::graphics::FMesh& mesh);
+		void rebuild();
 #ifdef DA_REVIEW
 		void debugRender() override;
 #endif
@@ -25,7 +28,7 @@ namespace da::ai
 		void buildTiles();
 		void setAgentPosition(const glm::vec3& pos);
 		uint8_t* buildTileMesh(const int tx, const int ty, const float* bmin, const float* bmax, int& dataSize, const float* verts, uint32_t vsize, const uint32_t* tris, uint32_t ntris);
-		void setupMesh(da::graphics::CStaticMesh* mesh);
+		void setupMesh();
 		static bool getSteerTarget(dtNavMeshQuery* navQuery, const float* startPos, const float* endPos,
 			const float minTargetDist,
 			const dtPolyRef* path, const int pathSize,
@@ -40,12 +43,13 @@ namespace da::ai
 		}
 
 	private:
+		da::graphics::FMesh m_mesh;
 		float m_lastBuiltTileBmin[3], m_lastBuiltTileBmax[3];
-		dtNavMesh* m_navMesh;
-		dtNavMeshQuery* m_navQuery;
+		dtNavMesh* m_navMesh = nullptr;
+		dtNavMeshQuery* m_navQuery = nullptr;
 		dtCrowd* m_crowd = nullptr;
-		struct ::rcPolyMesh* m_pmesh;
-		struct ::rcPolyMeshDetail* m_dmesh;
+		struct ::rcPolyMesh* m_pmesh = nullptr;
+		struct ::rcPolyMeshDetail* m_dmesh = nullptr;
 
 		float m_bmax[3] = { -1e9, -1e9, -1e9 };
 		float m_bmin[3] = { 1e9, 1e9, 1e9 };

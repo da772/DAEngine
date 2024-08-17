@@ -22,13 +22,14 @@
 
 namespace da::ai
 {
-	CTiledNavMesh ::CTiledNavMesh (da::graphics::CStaticMesh* mesh)
+	CTiledNavMesh ::CTiledNavMesh ()
 	{
-		setupMesh(mesh);
+		
 	}
 
 	void CTiledNavMesh ::initialize()
 	{
+		setupMesh();
 		m_navQuery = dtAllocNavMeshQuery();
 		m_navMesh = dtAllocNavMesh();
 		dtNavMeshParams params;
@@ -371,11 +372,36 @@ namespace da::ai
 
 	void CTiledNavMesh ::shutdown()
 	{
-		delete m_navMesh;
-		delete m_navQuery;
-		delete m_crowd;
-		delete m_dmesh;
-		delete m_pmesh;
+		if (m_navMesh)
+		{
+			delete m_navMesh;
+			m_navMesh = nullptr;
+		}
+			
+		if (m_navQuery)
+		{
+			delete m_navQuery;
+			m_navQuery = nullptr;
+		}
+
+		
+		if (m_crowd)
+		{
+			delete m_crowd;
+			m_crowd = nullptr;
+		}
+
+		if (m_dmesh)
+		{
+			delete m_dmesh;
+			m_dmesh = nullptr;
+		}
+	
+		if (m_pmesh)
+		{
+			delete m_pmesh;
+			m_pmesh = nullptr;
+		}
 	}
 
 
@@ -402,7 +428,7 @@ namespace da::ai
 	}
 #endif
 
-	void CTiledNavMesh ::setupMesh(da::graphics::CStaticMesh* mesh)
+	void CTiledNavMesh ::setupMesh()
 	{
 		m_bmax[0] = -1e9;
 		m_bmax[1] = -1e9;
@@ -411,11 +437,11 @@ namespace da::ai
 		m_bmin[1] = 1e9;
 		m_bmin[2] = 1e9;
 
-		m_nverts = mesh->getMeshes()[0].Vertices.size();
+		m_nverts = m_mesh.Vertices.size();
 		m_verts = new float[m_nverts * 3];
 
 		for (int i = 0; i < m_nverts; i++) {
-			const da::graphics::FVertexBase& v = mesh->getMeshes()[0].Vertices[i];
+			const da::graphics::FVertexBase& v = m_mesh.Vertices[i];
 			m_verts[i * 3 + 0] = v.Pos.x;
 			m_verts[i * 3 + 1] = v.Pos.z;
 			m_verts[i * 3 + 2] = v.Pos.y;
@@ -449,8 +475,8 @@ namespace da::ai
 		}
 
 
-		m_ntris = mesh->getMeshes()[0].Indices.size() / 3;
-		m_tris = (uint32_t*)mesh->getMeshes()[0].Indices.data();
+		m_ntris = m_mesh.Indices.size() / 3;
+		m_tris = (uint32_t*)m_mesh.Indices.data();
 	}
 	
 	static int fixupShortcuts(dtPolyRef* path, int npath, dtNavMeshQuery* navQuery)
@@ -748,4 +774,29 @@ namespace da::ai
 
 		return true;
 	}
+
+	void CTiledNavMesh::addMesh(const glm::mat4& transform, const da::graphics::FMesh& mesh)
+	{
+		for (uint32_t i = 0; i < mesh.Vertices.size(); i++)
+		{
+			da::graphics::FVertexBase newBase = {};
+			glm::vec3 newPos = transform * glm::vec4(mesh.Vertices[i].Pos.x, mesh.Vertices[i].Pos.y, mesh.Vertices[i].Pos.z, 1.f);
+			newBase.Pos = { newPos.x, newPos.y, newPos.z };
+			m_mesh.Vertices.push_back(newBase);
+		}
+
+		uint32_t indexOffset = m_mesh.Indices.size();
+		for (uint32_t i = 0; i < mesh.Indices.size(); i++)
+		{
+			m_mesh.Indices.push_back(mesh.Indices[i] + indexOffset);
+		}
+	}
+
+	void CTiledNavMesh::rebuild()
+	{
+		shutdown();
+		setupMesh();
+		initialize();
+	}
+
 }

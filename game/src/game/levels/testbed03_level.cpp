@@ -22,6 +22,7 @@ void CTestBed03Level::initialize()
 	m_scrlevel.setup({}, {});
 	da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid("2f94546a-a92a-4046-946a-f28c2364110b")));
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
+	da::ai::CTiledNavMesh* navMesh = new da::ai::CTiledNavMesh();
 
 	// Test Bed
 	{
@@ -44,16 +45,48 @@ void CTestBed03Level::initialize()
 				, 0.f
 				, { 0.f,0.f,0.f }));
 		testBed->setTag(HASHSTR("TestBed"));
+		
+		// Nav mesh
+		navMesh->addMesh(glm::mat4(1.f), colMesh->getMeshes()[0]);
+	}
+
+	// Ramp
+	{
+		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
+		da::graphics::CStaticMesh* colMesh = da::factory::CStaticMeshFactory::create("assets/cube.fbx");
+		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>(colMesh);
+
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Textures::tex_debug_grid_01));
+		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
+		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
+		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = true;
+		meshComponent->getStaticMesh()->castShadows(true);
+		testBed->getTransform().setPosition({ 0.f, 5.f, .5f });
+		testBed->getTransform().setScale({ 1.f, 1.f, 1.f });
+		testBed->addComponent<da::core::CRigidBodyComponent>(
+			da::physics::IPhysicsRigidBody::create(
+				da::physics::CPhysicsShapeCube::create({ 1.f, 1.f, 1.f })
+				, da::physics::CPhysicsDefaultMotionState::create(testBed->getTransform().matrix())
+				, 0.f
+				, { 0.f,0.f,0.f }));
+		testBed->setTag(HASHSTR("TestBed"));
 
 		// Nav mesh
-		da::ai::CNavMeshManager::addNavMesh(*new da::ai::CTiledNavMesh(colMesh));
+		navMesh->addMesh(testBed->getTransform().matrix(), colMesh->getMeshes()[0]);
 	}
 
 	// Character
 	m_character = new CCharacter(*m_graphicsModule.getGraphicsApi(), true);
 	m_character->initialize();
+
+	// ai
+	m_ai = new CCharacter(*m_graphicsModule.getGraphicsApi(), false);
+	m_ai->initialize();
+
 	m_scrlevel.classInitialize();
 
+
+	da::ai::CNavMeshManager::addNavMesh(*navMesh);
 	m_windowModule.getWindow()->getEventHandler().registerCallback(EEventType::InputKeyboard, BIND_EVENT_FN(CTestBed03Level, onKeyboardEvent));
 }
 
@@ -80,6 +113,7 @@ void CTestBed03Level::onKeyboardEvent(const da::core::events::CEvent& event)
 
 void CTestBed03Level::update(float dt)
 {
+
 	// R
 	if (da::core::CInput::inputPressed(82)) {
 		auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
@@ -95,6 +129,7 @@ void CTestBed03Level::update(float dt)
 	}
 
 	m_character->update(dt);
+	m_ai->update(dt);
 
 	m_scrlevel.classUpdate(dt);
 }
@@ -102,11 +137,12 @@ void CTestBed03Level::update(float dt)
 void CTestBed03Level::lateUpdate(float dt)
 {
 	m_character->lateUpdate(dt);
+	m_ai->lateUpdate(dt);
 
 	if (m_freeCam)
 	{
 		static glm::vec2 cursorPos = { 0.f, 0.f };
-		const float camSpeed = 5.f;
+		float camSpeed = 5.f;
 
 		if (!m_camera)
 		{
@@ -126,7 +162,15 @@ void CTestBed03Level::lateUpdate(float dt)
 			}
 		}
 
-		
+		if (da::core::CInput::inputPressed(340)) // LSHIFT
+		{
+			camSpeed *= 10.f;
+		}
+
+		if (da::core::CInput::inputPressed(341)) // LCTRL
+		{
+			camSpeed /= 2.f;
+		}
 
 		if (da::core::CInput::inputPressed(87)) // W
 		{

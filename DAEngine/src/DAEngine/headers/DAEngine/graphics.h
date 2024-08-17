@@ -1,7 +1,6 @@
 #pragma once
 
 #include <core.h>
-#include "debug/graphics_debug_render.h"
 #include "graphics/camera.h"
 #include "graphics/graphics_skmesh.h"
 #include "graphics/graphics_smesh.h"

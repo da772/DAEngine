@@ -93,7 +93,7 @@ namespace da::ai
 		}
 
 		for (int i = 0; i < m_vertices.size() - 1; i++) {
-			da::debug::CDebugRender::drawLine(m_vertices[i], m_vertices[i + 1], .01f, m_color, false);
+			da::debug::CDebugRender::drawLine(m_vertices[i], m_vertices[i + 1], .01f, m_color, false, false);
 		}
 
 		m_vertices = {};

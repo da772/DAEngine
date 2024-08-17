@@ -24,7 +24,8 @@ namespace da::platform
 		Capsule,
 		Cone,
 		Plane,
-		Line
+		Line,
+		LineXRay,
 	};
 
 	class CBgfxDebugRenderer : public da::debug::IDebugRenderer

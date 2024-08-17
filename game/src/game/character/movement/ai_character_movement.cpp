@@ -1,6 +1,6 @@
 #include <daengine/core.h>
 #include <daengine/ai.h>
-#include <daengine/graphics.h>
+#include <daengine/debug.h>
 
 
 #include "ai_character_movement.h"

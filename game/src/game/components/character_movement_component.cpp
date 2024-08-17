@@ -1,8 +1,9 @@
 #include "character_movement_component.h"
+#include <DAEngine/graphics.h>
 
 #ifdef DA_REVIEW
 #include <DAEngine/core.h>
-#include <DAEngine/graphics.h>
+#include <DAEngine/debug.h>
 COMPONENT_CPP_DEBUG(CCharacterMovementComponent)
 #else
 COMPONENT_CPP(CCharacterMovementComponent)

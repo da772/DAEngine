@@ -24,13 +24,14 @@ namespace da::platform
 		m_shapes[EDebugShapes::Cone] = da::factory::CStaticMeshFactory::create("assets/cone.fbx", false);
 		m_shapes[EDebugShapes::Capsule] = da::factory::CStaticMeshFactory::create("assets/capsule.fbx", false);
 		m_shapes[EDebugShapes::Line] = new CBgfxLineMesh();
+		m_shapes[EDebugShapes::LineXRay] = new CBgfxLineMesh();
 	}
 
 	void CBgfxDebugRenderer::renderXRay(::bgfx::ViewId view)
 	{
 		::bgfx::setViewFrameBuffer(view, m_frameBuffer);
 		for (int i = m_toDraw.size()-1; i >= 0; i--) {
-			uint64_t state = BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A;
+			uint64_t state = (BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK) | BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A;
 			const std::pair<std::function<bool()>, bool>& kv = m_toDraw[i];
 
 			if (!kv.second) continue;
@@ -44,20 +45,21 @@ namespace da::platform
 			m_toDraw.erase(m_toDraw.begin() + i);
 		}
 
-		CBgfxLineMesh* line = (CBgfxLineMesh*)m_shapes[EDebugShapes::Line];
-		uint64_t state = BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A;
+		CBgfxLineMesh* line = (CBgfxLineMesh*)m_shapes[EDebugShapes::LineXRay];
+		uint64_t state = (BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK) | BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A;
 		glm::vec3 color(1.f);
 		::bgfx::setUniform(m_uniform, glm::value_ptr(color));
 		line->setBufferData();
 
 		::bgfx::setState(state);
 		::bgfx::submit(view, { m_shader->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+		line->clearAll();
 	}
 
 	void CBgfxDebugRenderer::render(::bgfx::ViewId view)
 	{
 		for (int i = m_toDraw.size() - 1; i >= 0; i--) {
-			uint64_t state = BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A;
+			uint64_t state = (BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK) | BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B;
 			const std::pair<std::function<bool()>, bool>& kv = m_toDraw[i];
 
 			if (kv.second) continue;
@@ -66,12 +68,23 @@ namespace da::platform
 				state |= BGFX_STATE_PT_LINES | BGFX_STATE_LINEAA | BGFX_STATE_BLEND_ALPHA;
 			}
 
+
 			state |= BGFX_STATE_DEPTH_TEST_LESS;
 
 			::bgfx::setState(state);
 			::bgfx::submit(view, { m_shader->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
 			m_toDraw.erase(m_toDraw.begin() + i);
 		}
+
+		CBgfxLineMesh* line = (CBgfxLineMesh*)m_shapes[EDebugShapes::Line];
+		uint64_t state = (BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK) | BGFX_STATE_WRITE_R | BGFX_STATE_WRITE_G | BGFX_STATE_WRITE_B | BGFX_STATE_WRITE_A;
+		glm::vec3 color(1.f);
+		::bgfx::setUniform(m_uniform, glm::value_ptr(color));
+		line->setBufferData();
+
+		::bgfx::setState(state);
+		::bgfx::submit(view, { m_shader->getHandle() }, 0, ~BGFX_DISCARD_BINDINGS);
+		line->clearAll();
 
 	}
 
@@ -160,6 +173,12 @@ namespace da::platform
 
 	void CBgfxDebugRenderer::drawLine(const glm::vec3& startPosition, const glm::vec3& endPosition, float width, const glm::vec4& color, bool wireFrame /*= true*/, bool xray /*= true*/)
 	{
+		if (xray)
+		{
+			CBgfxLineMesh* line = (CBgfxLineMesh*)m_shapes[EDebugShapes::LineXRay];
+			line->addTransientLine(startPosition, endPosition, color, width);
+			return;
+		}
 		CBgfxLineMesh* line = (CBgfxLineMesh*)m_shapes[EDebugShapes::Line];
 		line->addTransientLine(startPosition, endPosition, color, width);
 	}

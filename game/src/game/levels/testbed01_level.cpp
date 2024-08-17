@@ -41,6 +41,7 @@ void CTestBed01Level::initialize()
 	m_scrlevel.setup({}, {});
 	da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid("2f94546a-a92a-4046-946a-f28c2364110b")));
 	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
+	da::ai::CTiledNavMesh* navMesh = new da::ai::CTiledNavMesh();
 
 	// Test Bed
 	{
@@ -76,7 +77,7 @@ void CTestBed01Level::initialize()
 		testBed->getTransform().setScale({ 1.f, 1.f, 1.f });
 
 		// Nav mesh
-		da::ai::CNavMeshManager::addNavMesh(*new da::ai::CTiledNavMesh(colMesh));
+		navMesh->addMesh(testBed->getTransform().matrix(), colMesh->getMeshes()[0]);
 	}
 
 	// Character
@@ -166,7 +167,7 @@ void CTestBed01Level::initialize()
 	m_scrlevel.classInitialize();
 
 	m_windowModule.getWindow()->getEventHandler().registerCallback(EEventType::InputKeyboard, BIND_EVENT_FN(CTestBed01Level, onKeyboardEvent));
-
+	da::ai::CNavMeshManager::addNavMesh(*navMesh);
 	// create vehicle
 	//createVehicle();
 }
