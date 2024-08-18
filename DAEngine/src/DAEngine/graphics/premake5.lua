@@ -29,6 +29,9 @@ project "da-graphics"
 		"%{IncludeDir.zlib}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.bgfx}/include",
+		"%{IncludeDir.bgfx}",
+		"%{IncludeDir.Vulkan}/include",
 	}
 	
 	else
@@ -40,7 +43,8 @@ project "da-graphics"
 	{
 		"%{wks.location}/DAEngine/src",
 		"%{wks.location}/DAEngine/src/DAEngine",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		
 	}
 	end
 
@@ -60,8 +64,6 @@ project "da-graphics"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"da-stl",
-			"da-core",
 			"GLFW",
 		}
 	
@@ -100,8 +102,6 @@ project "da-graphics"
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"da-stl",
-			"da-core",
 			"GLFW",
 		}
 

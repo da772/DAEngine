@@ -60,8 +60,6 @@ project "da-net"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"da-core",
-			"da-debug",
 			"imgui",
 			"enet",
 			"miniupnpc",
@@ -103,8 +101,6 @@ project "da-net"
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"da-core",
-			"da-debug",
 			"imgui",
 			"enet",
 			"miniupnpc",

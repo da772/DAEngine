@@ -39,7 +39,8 @@ project "da-script"
 	{
 		"%{wks.location}/DAEngine/src",
 		"%{wks.location}/DAEngine/src/DAEngine",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.bullet3}",
 	}
 	end
 
@@ -59,13 +60,6 @@ project "da-script"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"da-core",
-			"da-stl",
-			"da-graphics",
-			"da-physics",
-			"da-platform",
-			"da-debug",
-			"da-net",
 			"imgui",
 			"lua51",
 		}
@@ -106,18 +100,12 @@ project "da-script"
 		{
 			"%{IncludeDir.luajit}",
 			"%{IncludeDir.lua51}/lua",
+			"%{IncludeDir.bullet3}",
 		}
 		
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"da-core",
-			"da-stl",
-			"da-graphics",
-			"da-physics",
-			"da-platform",
-			"da-debug",
-			"da-net",
 			"imgui",
 			"luajit",
 		}

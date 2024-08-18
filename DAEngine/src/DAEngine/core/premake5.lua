@@ -71,7 +71,6 @@ project "da-core"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"da-stl",
 			"optick",
 			"imgui"
 		}
@@ -111,7 +110,6 @@ project "da-core"
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"da-stl",
 			"optick",
 			"imgui"
 		}

@@ -1,7 +1,7 @@
 
 #include "physics/physics_shape.h"
 
-#include "platform/physics/bullet3/physics_bullet3_shape.h"
+#include "physics_bullet3_shape.h"
 #include "graphics/graphics_smesh.h"
 
 namespace da::physics
@@ -19,7 +19,7 @@ namespace da::physics
 
 	da::physics::CPhysicsShapeTriangleMesh* CPhysicsShapeTriangleMesh::create(da::graphics::CStaticMesh* mesh, uint32_t index)
 	{
-		return new da::physics::CBullet3TriangleMesh(mesh, index);
+		return nullptr;
 	}
 
 	da::physics::CPhysicsShapeCapsule* CPhysicsShapeCapsule::create(float radius, float height)

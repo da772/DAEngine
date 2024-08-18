@@ -67,9 +67,6 @@ project "da-platform"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"da-core",
-			"da-debug",
-			"da-graphics",
 			"ktx",
 			"bx",
 			"bimg",
@@ -124,9 +121,6 @@ project "da-platform"
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"da-core",
-			"da-debug",
-			"da-graphics",
 			"bullet3",
 			"vulkan-1",
 			"ktx",

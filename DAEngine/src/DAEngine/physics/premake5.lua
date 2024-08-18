@@ -26,6 +26,7 @@ project "da-physics"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.optick}",
+		"%{IncludeDir.bullet3}",
 	}
 	
 	else
@@ -57,9 +58,6 @@ project "da-physics"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"da-core",
-			"da-debug",
-			"da-graphics",
 			"imgui"
 		}
 	
@@ -98,9 +96,6 @@ project "da-physics"
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"da-core",
-			"da-debug",
-			"da-graphics",
 			"imgui",
 		}
 

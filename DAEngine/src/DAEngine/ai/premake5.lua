@@ -62,10 +62,7 @@ project "da-ai"
 		if not _OPTIONS['unit-test'] then
 		links 
 		{
-			"da-core",
-			"da-debug",
 			"recast",
-			"imgui",
 		}
 		end
 
@@ -108,10 +105,7 @@ project "da-ai"
 		if not _OPTIONS['unit-test'] then
 		links
 		{
-			"da-core",
-			"da-debug",
 			"recast",
-			"imgui",
 		}
 
 		buildoptions
