@@ -53,7 +53,7 @@ void CAICharacterMovement::processAi()
 	const glm::vec3 targetPos = target->getTransform().position();
 	const glm::vec3 currentPos = m_character->getTransform().position();
 
-	if (glm::distance(currentPos, targetPos) < 1.f)
+	if (glm::distance(currentPos, targetPos) < 1.5f)
 	{
 		if (!m_path.empty())
 		{
@@ -77,7 +77,7 @@ void CAICharacterMovement::processAi()
 	const glm::vec3 pathPos = m_path[0];
 
 
-	if (glm::distance(currentPos, pathPos) < 1.f)
+	if (glm::distance(currentPos, pathPos) < 1.5f)
 	{
 		m_path.erase(m_path.begin());
 		return;

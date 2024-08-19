@@ -10,7 +10,7 @@ namespace da::factory
 	extern class CStaticMeshFactory : da::core::CFactory<CStaticMesh>
 	{
 		public:
-			static CStaticMesh* create(const std::string& path, bool inverseNormals = false);
+			static CStaticMesh* create(const std::string& path, bool process = true);
 			static void remove(CStaticMesh* mesh);
 
 		private:

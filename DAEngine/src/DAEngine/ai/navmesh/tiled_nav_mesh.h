@@ -55,8 +55,8 @@ namespace da::ai
 		float m_bmin[3] = { 1e9, 1e9, 1e9 };
 
 		float m_agentHeight = 1.5f;
-		float m_agentMaxClimb = .9f;
-		float m_agentRadius = .3f;
+		float m_agentMaxClimb = .3f;
+		float m_agentRadius = .5f;
 		float m_tileSize = 32.f;;
 		float m_cellSize = .3f;
 		float* m_verts;

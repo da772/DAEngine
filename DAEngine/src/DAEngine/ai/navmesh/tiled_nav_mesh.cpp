@@ -777,15 +777,16 @@ namespace da::ai
 
 	void CTiledNavMesh::addMesh(const glm::mat4& transform, const da::graphics::FMesh& mesh)
 	{
+		uint32_t indexOffset = m_mesh.Vertices.size();
 		for (uint32_t i = 0; i < mesh.Vertices.size(); i++)
 		{
 			da::graphics::FVertexBase newBase = {};
-			glm::vec3 newPos = transform * glm::vec4(mesh.Vertices[i].Pos.x, mesh.Vertices[i].Pos.y, mesh.Vertices[i].Pos.z, 1.f);
+			glm::vec4 newPos = transform * glm::vec4(mesh.Vertices[i].Pos.x, mesh.Vertices[i].Pos.y, mesh.Vertices[i].Pos.z, 1.f);
 			newBase.Pos = { newPos.x, newPos.y, newPos.z };
 			m_mesh.Vertices.push_back(newBase);
 		}
 
-		uint32_t indexOffset = m_mesh.Indices.size();
+		
 		for (uint32_t i = 0; i < mesh.Indices.size(); i++)
 		{
 			m_mesh.Indices.push_back(mesh.Indices[i] + indexOffset);
