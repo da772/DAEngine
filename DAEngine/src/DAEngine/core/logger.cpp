@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 #include <fstream>
+#include "platform/app/handlers/crash_handler.h"
 
 #ifdef DA_PLATFORM_WINDOWS
 #include <Windows.h>
@@ -77,4 +78,5 @@ void da::CCore::_assert(bool x, const char* file, long line)
 {
 	if (x) return;
 	CLogger::log(ELogType::Assert, ELogChannel::Core, "Assert: %s, LINE: %ld", file, line);
+	CCrashHandler::createDump();
 }

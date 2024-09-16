@@ -9,7 +9,6 @@
 // game
 #include "game/character/character.h"
 #include "game/helpers/texture_helper.h"
-#include "game/helpers/model_helper.h"
 
 
 CTestBed03Level::CTestBed03Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window) : ILevel(name, graphics, window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
@@ -31,7 +30,7 @@ void CTestBed03Level::initialize()
 		da::graphics::CStaticMesh* colMesh = da::factory::CStaticMeshFactory::create("assets/plane100.fbx");
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>(colMesh);
 
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Texture::tex_debug_grid_01));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Textures::tex_debug_grid_01));
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(0).uvScale = { 40.f,40.f };
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
@@ -54,10 +53,10 @@ void CTestBed03Level::initialize()
 	// Ramp
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::graphics::CStaticMesh* colMesh = CModelHelper::create(Model::ramp);
+		da::graphics::CStaticMesh* colMesh = da::factory::CStaticMeshFactory::create("assets/ramp.fbx");
 		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>(colMesh);
 
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Texture::tex_debug_grid_01));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Textures::tex_debug_grid_01));
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = true;

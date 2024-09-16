@@ -12,6 +12,7 @@
 #include "stl/time.h"
 #include "ai/navmesh/nav_mesh_manager.h"
 #include "net/network_manager.h"
+#include "platform/app/handlers/crash_handler.h"
 
 #include "physics/physics.h"
 
@@ -63,6 +64,7 @@ namespace da
 		while (m_running)
 		{
 			PROFILE_FRAME("Main")
+			CCrashHandler::registerCrashHandler();
 			double timeStep = da::core::CTime::newFrame();
 			{
 				PROFILE("AnimManager Update Begin")

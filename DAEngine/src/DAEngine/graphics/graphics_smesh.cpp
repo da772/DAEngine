@@ -83,9 +83,7 @@ namespace da::graphics
 					if (mesh->HasNormals())
 					{
 						glm::vec3 normals = transform * glm::vec4(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z, 0.f);//glm ::normalize(transform * glm::vec4(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z, 1.f));
-						if (inverseNormals) {
-							normals *= -1.f;
-						}
+						
 						vertex.Normal = {
 							normals.x,
 							normals.y,
@@ -96,9 +94,7 @@ namespace da::graphics
 					if (mesh->HasTangentsAndBitangents())
 					{
 						glm::vec3 tangents = transform * glm::vec4(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z, 0.f); //glm ::normalize(transform * glm::vec4(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z, 1.f));
-						if (inverseNormals) {
-							tangents *= -1.f;
-						}
+						
 						vertex.Tangent = {
 							tangents.x,
 							tangents.y,

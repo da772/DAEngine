@@ -4,6 +4,7 @@
 #include <iostream>
 #include <filesystem>
 #include <core/arg_handler.h>
+#include "platform/app/handlers/crash_handler.h"
 
 
 namespace da

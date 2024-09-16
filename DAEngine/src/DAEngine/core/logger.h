@@ -23,7 +23,7 @@ namespace da {
 #if !defined(DA_FINAL)
 #define ASSERT(x) da::CCore::_assert(x, __FILE__, __LINE__); assert(x);
 #else
-#define ASSERT(...)
+#define ASSERT(x) da::CCore::_assert(x, __FILE__, __LINE__);
 #endif
 #define LOG_INFO(ELogChannel, msg, ...) da::CLogger::LogInfo(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)
 #define LOG_DEBUG(ELogChannel, msg, ...) da::CLogger::LogDebug(ELogChannel, std::string("[%s] ") + msg, __FUNCTION__  , ##__VA_ARGS__)

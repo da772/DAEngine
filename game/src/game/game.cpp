@@ -27,7 +27,7 @@ void CGame::onInitialize()
 	m_levelSelector->addLevel(new CTestBed03Level(HASHSTR("TestBed03"), *m_graphicsModule, *m_window));
 
 #ifndef DA_REVIEW
-	m_levelSelector->startLevel(0);
+	m_levelSelector->startLevel(2);
 #endif
 }
 
