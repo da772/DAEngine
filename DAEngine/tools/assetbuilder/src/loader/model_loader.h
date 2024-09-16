@@ -4,6 +4,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <thread>
 #include <glm/glm.hpp>
 #include "stl/hashstring.h"
 #include "texture_loader.h"
@@ -48,6 +49,9 @@ public:
 
 	bool loadModel();
 	bool saveModel();
+
+	static std::unordered_map <da::core::CGuid, FAssetData> ms_modelSaved;
+	static std::mutex ms_mutex;
 
 private:
 	std::string m_path, m_targetPath, m_dir, m_materialTargetPath, m_textureTargetPath, m_modelTargetPath, m_name;

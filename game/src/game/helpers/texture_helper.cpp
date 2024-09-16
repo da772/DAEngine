@@ -1,7 +1,7 @@
 #include "texture_helper.h"
 #include "dacommon.h"
 
-da::graphics::CGraphicsTexture2D* CTextureHelper::create(Textures texture)
+da::graphics::CGraphicsTexture2D* CTextureHelper::create(Texture texture)
 {
 	da::core::CGuid guid = da::core::CGuid::Generate((uint32_t)texture);
 	const char path[] = "assets/Textures/7b280000-6062-0000-7207-0000277e0000.dds";

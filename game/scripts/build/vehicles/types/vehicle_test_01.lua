@@ -78,10 +78,10 @@ local materialData = {
         0,
         1,
         1,
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_DIF.dds",
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_NRM.dds",
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_ORM.dds",
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_EMS.dds"
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_DIF.png",
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_NRM.png",
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_ORM.png",
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_EMS.png"
     ),
     __TS__New(
         MaterialData,
@@ -98,9 +98,9 @@ local materialData = {
         0,
         1,
         1,
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_DIF.dds",
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_NRM.dds",
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_ORM.dds"
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_DIF.png",
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_NRM.png",
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_ORM.png"
     ),
     __TS__New(
         MaterialData,
@@ -117,9 +117,9 @@ local materialData = {
         0,
         1,
         1,
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_DIF.dds",
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_NRM.dds",
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_ORM.dds"
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_DIF.png",
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_NRM.png",
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_ORM.png"
     ),
     __TS__New(
         MaterialData,
@@ -136,10 +136,10 @@ local materialData = {
         0,
         1,
         1,
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_DIF.dds",
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_NRM.dds",
-        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_ORM.dds"
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_DIF.png",
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_NRM.png",
+        "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_ORM.png"
     )
 }
-____exports.test_vehicle_01 = __TS__New(VehicleData, vehicleTuningData, materialData, "assets/prop/veh/prop_veh_sedan/prop_veh_sedan_01a.FBX")
+____exports.test_vehicle_01 = __TS__New(VehicleData, vehicleTuningData, materialData, "assets/props/veh/prop_veh_sedan/prop_veh_sedan_01a.FBX")
 return ____exports

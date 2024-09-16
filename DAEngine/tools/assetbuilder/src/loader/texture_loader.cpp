@@ -5,6 +5,8 @@
 
 
 nvtt::Context CTextureLoader::ms_context(true);
+std::mutex CTextureLoader::ms_mutex;
+
 std::unordered_map<da::core::CGuid, FAssetData> CTextureLoader::ms_textureSaved;
 
 CTextureLoader::CTextureLoader(const std::string& path, const std::string& targetPath, const std::string& name) 
@@ -35,7 +37,7 @@ CTextureLoader::CTextureLoader(const std::string& path, const std::string& name,
 		}
 	}
 
-	m_dataHash = HASHSZ(name.data(), name.size());
+	m_dataHash = HASHSZ((const char*)data, width);
 	m_hash = da::core::CGuid::Generate(m_dataHash);
 
 	m_targetPath = targetPath + m_hash.c_str() + std::string(".dds");
@@ -74,7 +76,7 @@ bool CTextureLoader::loadTexture()
 
 	fclose(f);
 
-	m_dataHash = HASHSZ(m_name.data(), m_name.size());
+	m_dataHash = HASHSZ(ch, sz);
 	m_hash  = da::core::CGuid::Generate(m_dataHash);
 	std::string path = m_hash.c_str();
 
@@ -90,10 +92,13 @@ bool CTextureLoader::loadTexture()
 
 bool CTextureLoader::saveTexture()
 {
-	if (ms_textureSaved.find(m_hash) != ms_textureSaved.end())
 	{
-		da::cout << "Failed to save file: Already Exists..." << da::endl;
-		return false;
+		std::lock_guard <std::mutex> lockguard(ms_mutex);
+		if (ms_textureSaved.find(m_hash) != ms_textureSaved.end())
+		{
+			da::cout << "Failed to save file: Already Exists..." << da::endl;
+			return false;
+		}
 	}
 
 	da::cout << "[Mips " << std::to_string(m_surface.countMipmaps()) << " ]Writing Image Asset : " << m_path << " To : " << m_targetPath << da::endl;

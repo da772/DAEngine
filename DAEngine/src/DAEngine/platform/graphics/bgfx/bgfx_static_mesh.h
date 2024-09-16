@@ -23,7 +23,7 @@ namespace da::platform {
 protected:
 		std::vector<::bgfx::VertexBufferHandle> m_vbh;
 		std::vector<::bgfx::IndexBufferHandle>m_ibh;
-		CBgfxStaticMesh(const std::string& path, bool inverseNormals);
+		CBgfxStaticMesh(const std::string& path, bool process);
 		CBgfxStaticMesh();
 		virtual ~CBgfxStaticMesh();
 

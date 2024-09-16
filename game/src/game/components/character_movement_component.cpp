@@ -41,6 +41,7 @@ void CCharacterMovementComponent::processMovement(float dt)
 	float rotateSpeed = m_rotateSpeed * m_rotateDir * dt;
 
 	if (m_character->grounded() && m_jump) {
+		ASSERT(false);
 		m_character->jump({ 0.f,0.f,6.5f });
 	}
 

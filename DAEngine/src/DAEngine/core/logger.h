@@ -92,6 +92,7 @@ inline static void x(const ELogChannel& channel, const std::string& message, Arg
 			CLogger::log(ELogType::Assert, channel, message, args...);
 			fflush(stdout);
 			CLogger::logCallstack(ELogType::Assert, channel);
+			CLogger::logScriptCallstack(ELogType::Assert, channel);
 		}
 
 		static void initialize();
@@ -125,6 +126,7 @@ inline static void x(const ELogChannel& channel, const std::string& message, Arg
 	private:
 		static void logInternal(std::string&& message);
 		static void logCallstack(ELogType type, ELogChannel channel);
+		static void logScriptCallstack(ELogType type, ELogChannel channel);
 
 		inline static const char* logChannelMap[] = { "Core", "Container", "Maths", "Modules", "Platform", "Application", "Graphics", "Physics", "Window", "Script", "Net", "AI"};
 		inline static const char* logTypeMap[] = { "Info", "Debug", "Warning", "Error", "Assert" };

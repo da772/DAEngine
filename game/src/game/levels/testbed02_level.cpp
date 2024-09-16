@@ -37,7 +37,7 @@ void CTestBed02Level::initialize()
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
 		testBed->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
-		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/prop/level/testbed.fbx");
+		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/props/level/testbed.fbx", true);
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = false;
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
@@ -54,7 +54,7 @@ void CTestBed02Level::initialize()
 	// Test Collision
 	{
 		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::graphics::CStaticMesh* collision = da::factory::CStaticMeshFactory::create("assets/prop/level/testbed.fbx");
+		da::graphics::CStaticMesh* collision = da::factory::CStaticMeshFactory::create("assets/props/level/testbed.fbx", true);
 
 		std::vector<da::physics::IPhysicsShape*> shapes;
 		std::vector<glm::mat4> shapestrans;

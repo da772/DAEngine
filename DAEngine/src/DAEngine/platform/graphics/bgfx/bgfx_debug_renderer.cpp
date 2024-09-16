@@ -18,11 +18,11 @@ namespace da::platform
 		m_shader = da::factory::CMaterialFactory::create("shaders/cluster/vs_debug_geometry.sc", "shaders/cluster/fs_debug_geometry.sc");
 		m_uniform = ::bgfx::createUniform("u_Color", ::bgfx::UniformType::Vec4);
 
-		m_shapes[EDebugShapes::Cube] = da::factory::CStaticMeshFactory::create("assets/cube.fbx", false);
-		m_shapes[EDebugShapes::Sphere] = da::factory::CStaticMeshFactory::create("assets/sphere.fbx", false);
-		m_shapes[EDebugShapes::Plane] = da::factory::CStaticMeshFactory::create("assets/plane.fbx", false);
-		m_shapes[EDebugShapes::Cone] = da::factory::CStaticMeshFactory::create("assets/cone.fbx", false);
-		m_shapes[EDebugShapes::Capsule] = da::factory::CStaticMeshFactory::create("assets/capsule.fbx", false);
+		m_shapes[EDebugShapes::Cube] = da::factory::CStaticMeshFactory::create("assets/cube.fbx");
+		m_shapes[EDebugShapes::Sphere] = da::factory::CStaticMeshFactory::create("assets/sphere.fbx");
+		m_shapes[EDebugShapes::Plane] = da::factory::CStaticMeshFactory::create("assets/plane.fbx");
+		m_shapes[EDebugShapes::Cone] = da::factory::CStaticMeshFactory::create("assets/cone.fbx");
+		m_shapes[EDebugShapes::Capsule] = da::factory::CStaticMeshFactory::create("assets/capsule.fbx");
 		m_shapes[EDebugShapes::Line] = new CBgfxLineMesh();
 		m_shapes[EDebugShapes::LineXRay] = new CBgfxLineMesh();
 	}

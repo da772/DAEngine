@@ -5,6 +5,7 @@
 #include <Dbghelp.h>
 #include <tchar.h>
 #include <csignal>  
+#include <core/logger.h>
 
 typedef BOOL(WINAPI* MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType, CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam, CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam, CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
 
@@ -27,13 +28,13 @@ void create_minidump(struct _EXCEPTION_POINTERS* apExceptionInfo)
 
 void SignalHandler(int signal) {
 	
-	SetUnhandledExceptionFilter(unhandled_handler);
-	FORCE_CRASH();
+	da::CCrashHandler::createDump();
 }
 
 LONG WINAPI unhandled_handler(struct _EXCEPTION_POINTERS* apExceptionInfo)
 {
 	create_minidump(apExceptionInfo);
+	LOG_CALLSTACK(da::ELogType::Assert, da::ELogChannel::Core);
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 

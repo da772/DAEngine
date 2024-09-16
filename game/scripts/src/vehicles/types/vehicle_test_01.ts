@@ -23,28 +23,28 @@ const materialData : MaterialData[] = [
     , new Vector2(1.0,1.0)
     // (float roughness, float metallic, float ao, float opacity)
     , 0.15, 0.0, 1.0, 1.0
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_DIF.dds"
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_NRM.dds"
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_ORM.dds"
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_EMS.dds"),
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_DIF.png"
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_NRM.png"
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Body_ORM.png"
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_EMS.png"),
     // Material 1 (Glass)
     new MaterialData(new Vector4(1.0,1.0,1.0,0.0)
     , new Vector3(0.0,0.0,0.0)
     , new Vector2(1.0,1.0)
     // (float roughness, float metallic, float ao, float opacity)
     , 0.15, 0.0, 1.0, 1.0
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_DIF.dds"
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_NRM.dds"
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_ORM.dds"),
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_DIF.png"
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_NRM.png"
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Glass_ORM.png"),
     // Material 2 (Chassis)
     new MaterialData(new Vector4(1.0,1.0,1.0,1.0)
     , new Vector3(0.0,0.0,0.0)
     , new Vector2(1.0,1.0)
     // (float roughness, float metallic, float ao, float opacity)
     , 0.15, 0.0, 1.0, 1.0
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_DIF.dds"
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_NRM.dds"
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_ORM.dds"),
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_DIF.png"
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_NRM.png"
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Chassis_ORM.png"),
     // Material 3 (Interior)
     new MaterialData(new Vector4(1.0,1.0,1.0,1.0)
     // (Vector3 emissive)
@@ -53,9 +53,9 @@ const materialData : MaterialData[] = [
     , new Vector2(1.0,1.0)
     // (float roughness, float metallic, float ao, float opacity)
     , 0.15, 0.0, 1.0, 1.0
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_DIF.dds"
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_NRM.dds"
-    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_ORM.dds")
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_DIF.png"
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_NRM.png"
+    , "assets/textures/veh/prop_veh_sedan_01a/Tex_Veh_Sedan_Interior_ORM.png")
 ];
 
-export const test_vehicle_01 : VehicleData = new VehicleData(vehicleTuningData, materialData, "assets/prop/veh/prop_veh_sedan/prop_veh_sedan_01a.FBX");
+export const test_vehicle_01 : VehicleData = new VehicleData(vehicleTuningData, materialData, "assets/props/veh/prop_veh_sedan/prop_veh_sedan_01a.FBX");

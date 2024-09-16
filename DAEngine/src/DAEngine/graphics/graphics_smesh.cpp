@@ -19,8 +19,46 @@ namespace da::graphics
 {
 	using namespace da::factory;
 
-	CStaticMesh::CStaticMesh(const std::string& path, bool inverseNormals) : m_path(path)
+	CStaticMesh::CStaticMesh(const std::string& path, bool process) : m_path(path)
 	{
+		if (!process)
+		{
+			std::fstream in;
+			in.open(path.c_str(), std::ios::in| std::ios::binary);
+
+			size_t meshCount = 0;
+			size_t materialCount = 0;
+
+			in.read((char*)&meshCount, sizeof(size_t));
+			in.read((char*)&materialCount, sizeof(size_t));
+
+			m_meshes.resize(meshCount);
+			m_materials.resize(materialCount);
+
+			for (size_t i = 0; i < meshCount; i++)
+			{
+				FMesh mesh;
+				size_t vertexCount = 0;
+				size_t indexCount = 0;
+
+				in.read((char*)&mesh.MaterialIndex, sizeof(size_t));
+				// temp
+				mesh.MaterialIndex = 0;
+				in.read((char*)&vertexCount, sizeof(size_t));
+				in.read((char*)&indexCount, sizeof(size_t));
+
+				mesh.Vertices.resize(vertexCount);
+				mesh.Indices.resize(indexCount);
+
+				in.read((char*)mesh.Vertices.data(), vertexCount * sizeof(FVertexBase));
+				in.read((char*)mesh.Indices.data(), indexCount*sizeof(uint32_t));
+				m_meshes[i] = mesh;
+			}
+
+			in.close();
+			return;
+		}
+
 		CAsset file(path.c_str());
 #if !defined(DA_TEST)
 		Assimp::Importer importer;
@@ -83,7 +121,6 @@ namespace da::graphics
 					if (mesh->HasNormals())
 					{
 						glm::vec3 normals = transform * glm::vec4(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z, 0.f);//glm ::normalize(transform * glm::vec4(mesh->mNormals[v].x, mesh->mNormals[v].y, mesh->mNormals[v].z, 1.f));
-						
 						vertex.Normal = {
 							normals.x,
 							normals.y,
@@ -94,7 +131,6 @@ namespace da::graphics
 					if (mesh->HasTangentsAndBitangents())
 					{
 						glm::vec3 tangents = transform * glm::vec4(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z, 0.f); //glm ::normalize(transform * glm::vec4(mesh->mTangents[v].x, mesh->mTangents[v].y, mesh->mTangents[v].z, 1.f));
-						
 						vertex.Tangent = {
 							tangents.x,
 							tangents.y,

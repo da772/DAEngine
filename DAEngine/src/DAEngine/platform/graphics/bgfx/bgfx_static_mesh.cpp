@@ -8,7 +8,7 @@ namespace da::platform
 	bool CBgfxStaticMesh::s_init;
 	::bgfx::VertexLayout CBgfxStaticMesh::s_layout;
 
-	CBgfxStaticMesh::CBgfxStaticMesh(const std::string& path, bool inverseNormals) : CStaticMesh(path, inverseNormals)
+	CBgfxStaticMesh::CBgfxStaticMesh(const std::string& path, bool process) : CStaticMesh(path, process)
 	{
 		m_vbh.reserve(m_meshes.size());
 		m_ibh.reserve(m_meshes.size());

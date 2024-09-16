@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include "platform/app/handlers/crash_handler.h"
+#include "script/script_engine.h"
 
 #ifdef DA_PLATFORM_WINDOWS
 #include <Windows.h>
@@ -44,7 +45,7 @@ namespace da
 		std::regex_replace(std::ostream_iterator<char>(result), message.begin().get(), (char*)&message[message.size()-1], match_str, "");
 		*/
 		printf(message.c_str());
-		
+
 #ifdef DA_COLORED_OUT
 		/* Remove colored artifacts
 		for (uint8_t i = 0; i < (uint8_t)ELogColor::Invalid; i++) {
@@ -57,11 +58,11 @@ namespace da
 			fputs(message.c_str(), s_logger->m_file);
 			fflush(s_logger->m_file);
 		}
-		
+
 #ifdef DA_PLATFORM_WINDOWS
 		OutputDebugStringA(message.c_str());
 #endif
-		
+
 		//CLogger::s_outFile << result.str();
 		//CLogger::s_outFile.flush();
 	}
@@ -71,6 +72,15 @@ namespace da
 		LOG_CALLSTACK(type, channel);
 	}
 
+
+	void CLogger::logScriptCallstack(ELogType type, ELogChannel channel)
+	{
+		std::string callStack = da::script::CScriptEngine::getCallstack(da::script::CScriptEngine::getState());
+		if (!callStack.empty())
+		{
+			da::CLogger::log(type, channel, "PRINTING SCRIPT STACK: %s\n", callStack.c_str());
+		}
+	}
 
 }
 

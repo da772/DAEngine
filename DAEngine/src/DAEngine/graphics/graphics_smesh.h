@@ -37,7 +37,7 @@ namespace da::graphics
 		inline const std::string& getPath() const { return m_path; }
 
 	protected:
-		CStaticMesh(const std::string& path, bool inverseNormals = false);
+		CStaticMesh(const std::string& path, bool process = true);
 		inline CStaticMesh() {};
 		virtual ~CStaticMesh();
 

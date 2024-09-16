@@ -33,7 +33,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics:
 
 	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
 		m_entity = scene->createEntity(da::core::CGuid::Generate(m_id));
-		da::core::FComponentRef<da::core::CSmeshComponent> cc = m_entity->addComponent<da::core::CSmeshComponent>(vehicleData.VehicleMesh, false);
+		da::core::FComponentRef<da::core::CSmeshComponent> cc = m_entity->addComponent<da::core::CSmeshComponent>(vehicleData.VehicleMesh, true);
 
 
 		for (size_t i = 0; i < vehicleData.Materials.size(); i++) {
@@ -55,7 +55,7 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics:
 			return;
 		}
 
-		da::graphics::CStaticMesh* collisionMesh = da::factory::CStaticMeshFactory::create("assets/prop/veh/prop_collision_veh_sports_01a.fbx", false);
+		da::graphics::CStaticMesh* collisionMesh = da::factory::CStaticMeshFactory::create("assets/props/veh/prop_collision_veh_sports_01a.fbx", true);
 		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->addComponent<da::core::CRigidBodyComponent>(
 			//da::physics::IPhysicsRigidBody::create(da::physics::IPhysicsShape::createMeshConvexHull(collisionMesh)
 			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 1.f, 2.525f, .35f })
@@ -69,13 +69,10 @@ void CVehicle::initialize(da::modules::CWindowModule* window, const da::physics:
 
 		for (size_t i = 0; i < 4; i++) {
 			da::core::CEntity* wheel = scene->createEntity();
-			da::core::FComponentRef<da::core::CSmeshComponent> mesh = wheel->addComponent<da::core::CSmeshComponent>("assets/prop/veh/prop_veh_sedan/prop_veh_sedan_wheel_01a.FBX", false);
+			da::core::FComponentRef<da::core::CSmeshComponent> mesh = wheel->addComponent<da::core::CSmeshComponent>("assets/props/veh/prop_veh_sedan/prop_veh_sedan_wheel_01a.FBX", true);
 			mesh->getStaticMesh()->getMaterial(0).metallicFactor = 1.f;
 			mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
 			
-			mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Textures::Tex_Veh_Sedan_Chassis_DIF));
-			mesh->getStaticMesh()->getMaterial(0).setMetallicRoughnessTexture(CTextureHelper::create(Textures::Tex_Veh_Sedan_Chassis_ORM));
-			mesh->getStaticMesh()->getMaterial(0).setNormalTexture(CTextureHelper::create(Textures::Tex_Veh_Sedan_Chassis_NRM));
 #ifdef DA_REVIEW
 			wheel->setTag(CHashString((std::string("Wheel") + std::to_string(i)).c_str()));
 #endif

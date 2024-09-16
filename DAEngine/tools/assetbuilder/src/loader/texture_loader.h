@@ -38,5 +38,6 @@ private:
 	bool m_hasAlpha;
 	nvtt::Surface m_surface;
 	static nvtt::Context ms_context;
+	static std::mutex ms_mutex;
 	static std::unordered_map <da::core::CGuid , FAssetData > ms_textureSaved;
 };

@@ -14,10 +14,16 @@
 using namespace da::graphics;
 
 std::unordered_map<da::core::CGuid, FAssetData> FMaterial::ms_materialSaved;
+std::unordered_map <da::core::CGuid, FAssetData> CModelLoader::ms_modelSaved;
+std::mutex CModelLoader::ms_mutex;
+
+
+
 
 
 bool FMaterial::hasSaved(FMaterial& mat)
 {
+	std::lock_guard <std::mutex> lockguard(CModelLoader::ms_mutex);
 	da::core::CGuid guid = mat.getHash();
 	return ms_materialSaved.find(guid) != ms_materialSaved.end();
 }
@@ -250,12 +256,13 @@ bool CModelLoader::loadModel()
 
 bool CModelLoader::saveModel()
 {
+	importer.FreeScene();
 	for (uint32_t i = 0; i < m_materials.size(); i++)
 	{
-		/*if (FMaterial::hasSaved(m_materials[i]))
+		if (FMaterial::hasSaved(m_materials[i]))
 		{
 			continue;
-		}*/
+		}
 
 		CTextureLoader* textures[] = {
 			&m_materials[i].m_baseColorTexture,
@@ -301,22 +308,51 @@ bool CModelLoader::saveModel()
 		out.close();
 	}
 
-	std::ofstream out;
-	std::string path = m_modelTargetPath + "\\" + m_name + ".mdel";
-	out.open(path.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
-
-	out << m_meshes.size();
+	std::ostringstream outStream;
+	size_t meshCount = m_meshes.size();
+	size_t materialCount = m_materials.size();
+	outStream.write((const char*)&meshCount, sizeof(size_t));
+	outStream.write((const char*)&materialCount, sizeof(size_t));
 
 	for (uint32_t i = 0; i < m_meshes.size(); i++) {
-		out << m_meshes[i].MaterialIndex;
-		out << m_meshes[i].Vertices.size();
-		out << m_meshes[i].Indices.size();
-		out.write((const char*)m_meshes[i].Vertices.data(), m_meshes[i].Vertices.size() * sizeof(FVertexBase));
-		out.write((const char*)m_meshes[i].Indices.data(), m_meshes[i].Indices.size() * sizeof(uint32_t));
+		
+		size_t materialIndex = m_meshes[i].MaterialIndex;
+		size_t vertexCount = m_meshes[i].Vertices.size();
+		size_t indexCount = m_meshes[i].Indices.size();
+		outStream.write((const char*)&materialIndex, sizeof(size_t));
+		outStream.write((const char*)&vertexCount, sizeof(size_t));
+		outStream.write((const char*)&indexCount, sizeof(size_t));
+		outStream.write((const char*)m_meshes[i].Vertices.data(), m_meshes[i].Vertices.size() * sizeof(FVertexBase));
+		outStream.write((const char*)m_meshes[i].Indices.data(), m_meshes[i].Indices.size() * sizeof(uint32_t));
 	}
 
+	CHashString hash = HASHSZ(outStream.str().c_str(), outStream.str().size());
+	da::core::CGuid guid = da::core::CGuid::Generate(hash.hash());
+	std::string path = m_modelTargetPath + "\\" + guid.c_str() + ".mdel";
+
+	{
+		std::lock_guard<std::mutex> lockguard(ms_mutex);
+		if (ms_modelSaved.find(guid) == ms_modelSaved.end())
+		{
+			FAssetData assetData;
+			assetData.Path = path;
+			assetData.OgPath = m_path;
+			assetData.Name = m_name;
+			assetData.DataHash = hash.hash();
+			ms_modelSaved[guid] = assetData;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	
+	std::ofstream out;
+	out.open(path.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
+	out.write(outStream.str().c_str(), outStream.str().size());
 	out.close();
-	importer.FreeScene();
+
 	return true;
 }
 
@@ -344,7 +380,6 @@ da::core::CGuid FMaterial::getHash()
 		}
 
 		hash = HASHCOMBINE(hash, HASHSZ((const char*)&textures[x]->getHash(), sizeof(da::core::CGuid)));
-		
 	}
 
 	m_hash = hash;
