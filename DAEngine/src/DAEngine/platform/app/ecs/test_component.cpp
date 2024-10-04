@@ -3,7 +3,7 @@
 #include "core/ecs/scene.h"
 #include <core/events/event_handler.h>
 
-namespace da::core {
+namespace da {
 	
 	COMPONENT_CPP(CTestComponent);
 

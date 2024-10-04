@@ -1,7 +1,7 @@
 
 #include "script_types.h"
 
-namespace da::script
+namespace da
 {
 
 	std::unordered_map<CHashString, FScriptTypeFunc> CScriptTypes::ms_types;
@@ -22,19 +22,19 @@ namespace da::script
 			SCRIPT_TYPE(glm::vec2, x, EScriptDataType::Float),
 			SCRIPT_TYPE(glm::vec2, y, EScriptDataType::Float));
 
-		REGISTER_SCRIPT_TYPE(da::graphics::FMaterialData,
-			SCRIPT_TYPE_OBJECT(da::graphics::FMaterialData, baseColorFactor, glm::vec4),
-			SCRIPT_TYPE_OBJECT(da::graphics::FMaterialData, uvScale, glm::vec2),
-			SCRIPT_TYPE_OBJECT(da::graphics::FMaterialData, emissiveFactor, glm::vec3),
-			SCRIPT_TYPE(da::graphics::FMaterialData, roughnessFactor, EScriptDataType::Float),
-			SCRIPT_TYPE(da::graphics::FMaterialData, metallicFactor, EScriptDataType::Float),
-			SCRIPT_TYPE(da::graphics::FMaterialData, normalScale, EScriptDataType::Float),
-			SCRIPT_TYPE(da::graphics::FMaterialData, occlusionStrength, EScriptDataType::Float),
-			SCRIPT_TYPE(da::graphics::FMaterialData, m_baseColorTexture, EScriptDataType::Ptr),
-			SCRIPT_TYPE(da::graphics::FMaterialData, m_emissiveTexture, EScriptDataType::Ptr),
-			SCRIPT_TYPE(da::graphics::FMaterialData, m_occlusionTexture, EScriptDataType::Ptr),
-			SCRIPT_TYPE(da::graphics::FMaterialData, m_normalTexture, EScriptDataType::Ptr),
-			SCRIPT_TYPE(da::graphics::FMaterialData, m_metallicRoughnessTexture, EScriptDataType::Ptr),
+		REGISTER_SCRIPT_TYPE(da::FMaterialData,
+			SCRIPT_TYPE_OBJECT(da::FMaterialData, baseColorFactor, glm::vec4),
+			SCRIPT_TYPE_OBJECT(da::FMaterialData, uvScale, glm::vec2),
+			SCRIPT_TYPE_OBJECT(da::FMaterialData, emissiveFactor, glm::vec3),
+			SCRIPT_TYPE(da::FMaterialData, roughnessFactor, EScriptDataType::Float),
+			SCRIPT_TYPE(da::FMaterialData, metallicFactor, EScriptDataType::Float),
+			SCRIPT_TYPE(da::FMaterialData, normalScale, EScriptDataType::Float),
+			SCRIPT_TYPE(da::FMaterialData, occlusionStrength, EScriptDataType::Float),
+			SCRIPT_TYPE(da::FMaterialData, m_baseColorTexture, EScriptDataType::Ptr),
+			SCRIPT_TYPE(da::FMaterialData, m_emissiveTexture, EScriptDataType::Ptr),
+			SCRIPT_TYPE(da::FMaterialData, m_occlusionTexture, EScriptDataType::Ptr),
+			SCRIPT_TYPE(da::FMaterialData, m_normalTexture, EScriptDataType::Ptr),
+			SCRIPT_TYPE(da::FMaterialData, m_metallicRoughnessTexture, EScriptDataType::Ptr),
 			);
 	}
 

@@ -1,5 +1,5 @@
 #pragma once
-namespace da::core::containers {
+namespace da {
 
 	template<typename K, typename V>
 	class TPair {

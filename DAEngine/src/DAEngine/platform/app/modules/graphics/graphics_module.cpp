@@ -4,12 +4,12 @@
 
 
 
-namespace da::modules
+namespace da
 {
 
 	CGraphicsModule::CGraphicsModule(CWindowModule* windowsModule) : m_Window(windowsModule)
 	{
-		m_GraphicsApi = factory::CGraphicsFactory::Create(windowsModule->getWindow());
+		m_GraphicsApi = CGraphicsFactory::Create(windowsModule->getWindow());
 	}
 
 	CGraphicsModule::~CGraphicsModule()

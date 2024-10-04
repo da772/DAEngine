@@ -4,7 +4,7 @@
 #include "bgfx_uniform.h"
 #include <glm/glm.hpp>
 
-namespace da::platform::bgfx
+namespace da
 {
 	class CBgfxLightShader {
 

@@ -5,7 +5,7 @@ class IPhysicsRigidBody;
 struct btRaycastVehicle;
 class btVehicleRaycaster;
 
-namespace da::physics
+namespace da
 {
 	class CBullet3Vehicle : public IVehicle {
 

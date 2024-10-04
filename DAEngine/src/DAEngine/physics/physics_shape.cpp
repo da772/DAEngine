@@ -4,40 +4,40 @@
 #include "physics_bullet3_shape.h"
 #include "graphics/graphics_smesh.h"
 
-namespace da::physics
+namespace da
 {
 
-	da::physics::CPhysicsShapeCube* CPhysicsShapeCube::create(const glm::vec3& extents)
+	da::CPhysicsShapeCube* CPhysicsShapeCube::create(const glm::vec3& extents)
 	{
-		return new da::physics::CBullet3Cube(extents);
+		return new da::CBullet3Cube(extents);
 	}
 
-	da::physics::CPhysicsShapeSphere* CPhysicsShapeSphere::create(const float radius)
+	da::CPhysicsShapeSphere* CPhysicsShapeSphere::create(const float radius)
 	{
-		return new da::physics::CBullet3Sphere(radius);
+		return new da::CBullet3Sphere(radius);
 	}
 
-	da::physics::CPhysicsShapeTriangleMesh* CPhysicsShapeTriangleMesh::create(da::graphics::CStaticMesh* mesh, uint32_t index)
+	da::CPhysicsShapeTriangleMesh* CPhysicsShapeTriangleMesh::create(da::CStaticMesh* mesh, uint32_t index)
 	{
-		return new da::physics::CBullet3TriangleMesh(mesh, index);
+		return new da::CBullet3TriangleMesh(mesh, index);
 	}
 
-	da::physics::CPhysicsShapeCapsule* CPhysicsShapeCapsule::create(float radius, float height)
+	da::CPhysicsShapeCapsule* CPhysicsShapeCapsule::create(float radius, float height)
 	{
-		return new da::physics::CBullet3Capsule(radius, height);
+		return new da::CBullet3Capsule(radius, height);
 	}
 
-	da::physics::CPhysicsShapeConvexHull* CPhysicsShapeConvexHull::create(da::graphics::CStaticMesh* mesh, uint32_t index)
+	da::CPhysicsShapeConvexHull* CPhysicsShapeConvexHull::create(da::CStaticMesh* mesh, uint32_t index)
 	{
-		return new da::physics::CBullet3ConvexHullShape(mesh, index);
+		return new da::CBullet3ConvexHullShape(mesh, index);
 	}
 
-	da::physics::CPhysicsShapeCompound* CPhysicsShapeCompound::create(const std::vector<IPhysicsShape*>& shapes, const std::vector<glm::mat4>& transforms)
+	da::CPhysicsShapeCompound* CPhysicsShapeCompound::create(const std::vector<IPhysicsShape*>& shapes, const std::vector<glm::mat4>& transforms)
 	{
-		return new da::physics::CBullet3CompoundShape(shapes, transforms);
+		return new da::CBullet3CompoundShape(shapes, transforms);
 	}
 
-	da::physics::IPhysicsShape* IPhysicsShape::createTriangleMesh(da::graphics::CStaticMesh* mesh)
+	da::IPhysicsShape* IPhysicsShape::createTriangleMesh(da::CStaticMesh* mesh)
 	{
 		std::vector<IPhysicsShape*> shapes;
 		std::vector<glm::mat4> transforms;
@@ -48,7 +48,7 @@ namespace da::physics
 		return CPhysicsShapeCompound::create(shapes, transforms);
 	}
 
-	da::physics::IPhysicsShape* IPhysicsShape::createMeshConvexHull(da::graphics::CStaticMesh* mesh)
+	da::IPhysicsShape* IPhysicsShape::createMeshConvexHull(da::CStaticMesh* mesh)
 	{
 		std::vector<IPhysicsShape*> shapes;
 		std::vector<glm::mat4> transforms;

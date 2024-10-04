@@ -4,7 +4,7 @@
 #include <glm/vec4.hpp>
 #include <bgfx/bgfx.h>
 
-namespace da::platform {
+namespace da {
     // https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#metallic-roughness-material
     struct CBgfxMaterial
     {

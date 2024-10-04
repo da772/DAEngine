@@ -5,12 +5,12 @@
 #include "graphics/window/window.h"
 #include <GLFW/glfw3.h>
 
-namespace da::platform {
+namespace da {
 
-	class CGLFW_Window : public core::CWindow
+	class CGLFW_Window : public CWindow
 	{
 	public:
-		CGLFW_Window(const core::FWindowData& windowData);
+		CGLFW_Window(const FWindowData& windowData);
 
 		void initialize() override;
 		void update() override;

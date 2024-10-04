@@ -9,7 +9,7 @@
 #include <graphics/camera.h>
 #include "../bgfx_util.h"
 
-namespace da::platform {
+namespace da {
 
     bgfx::VertexLayout CBgfxClusterShader::ClusterVertex::layout;
 
@@ -59,7 +59,7 @@ namespace da::platform {
                                      std::ceil((float)screenHeight / CLUSTERS_Y) };
 
         bgfx::setUniform(m_clusterSizesVecUniform, clusterSizesVec);
-        float zNearFarVec[4] = { da::core::CCamera::getCamera()->zNear, da::core::CCamera::getCamera()->zFar };
+        float zNearFarVec[4] = { da::CCamera::getCamera()->zNear, da::CCamera::getCamera()->zFar };
         bgfx::setUniform(m_zNearFarVecUniform, zNearFarVec);
     }
 

@@ -4,9 +4,9 @@
 #include <stb_image.h>
 #include "asset/asset.h"
 
-namespace da::platform {
+namespace da {
 
-	CVulkanGraphicsTextureCube::CVulkanGraphicsTextureCube(const std::string& path, da::graphics::CGraphicsApi& graphicsApi)
+	CVulkanGraphicsTextureCube::CVulkanGraphicsTextureCube(const std::string& path, da::CGraphicsApi& graphicsApi)
 		: 
 		CGraphicsTextureCube(path, graphicsApi),
 		m_vulkanGraphicsApi(*dynamic_cast<CVulkanGraphicsApi*>(&m_graphicsApi))

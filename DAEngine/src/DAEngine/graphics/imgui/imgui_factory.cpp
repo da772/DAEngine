@@ -11,16 +11,16 @@
 #include "platform/imgui/vulkan/imgui_vulkan_api.h"
 #endif
 
-namespace da::factory
+namespace da
 {
 
-	da::core::CImGuiApi* CImGuiFactory::Create(graphics::CGraphicsApi* graphicsApi)
+	da::CImGuiApi* CImGuiFactory::Create(da::CGraphicsApi* graphicsApi)
 	{
 #if defined(DA_GRAPHICS_BGFX) && defined(DA_WINDOW_GLFW)
-		return new platform::CImGuiBgfxApi(graphicsApi);
+		return new CImGuiBgfxApi(graphicsApi);
 #endif
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
-		return new platform::CImGuiVulkanApi(graphicsApi);
+		return new CImGuiVulkanApi(graphicsApi);
 #endif
 		return nullptr;
 	}

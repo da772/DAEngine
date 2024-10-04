@@ -6,7 +6,7 @@
 #include <glm/gtx/component_wise.hpp>
 #include <bx/math.h>
 
-namespace da::platform {
+namespace da {
 
     float CBgfxPointLight::calculateRadius() const
     {

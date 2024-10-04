@@ -13,7 +13,7 @@ void CLevelSelector::startLevel(uint32_t id)
 	if (m_level != INVALID_LEVEL_ID) {
 		m_levels[m_level]->shutdown();
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Level"), HASHSTR("End"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("Level"), HASHSTR("End"));
 #endif
 	}
 
@@ -21,7 +21,7 @@ void CLevelSelector::startLevel(uint32_t id)
 	m_levelInit = false;
 
 #ifdef DA_REVIEW
-	da::debug::CDebugMenuBar::register_debug(HASHSTR("Level"), HASHSTR("End"), &m_levelDebug, [&] { m_levelDebug = false; startLevel(INVALID_LEVEL_ID); });
+	da::CDebugMenuBar::register_debug(HASHSTR("Level"), HASHSTR("End"), &m_levelDebug, [&] { m_levelDebug = false; startLevel(INVALID_LEVEL_ID); });
 #endif
 }
 
@@ -119,7 +119,7 @@ void CLevelSelector::shutdown()
 		if (i == m_level) {
 			m_levels[i]->shutdown();
 #ifdef DA_REVIEW
-			da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Level"), HASHSTR("End"));
+			da::CDebugMenuBar::unregister_debug(HASHSTR("Level"), HASHSTR("End"));
 #endif
 		}
 

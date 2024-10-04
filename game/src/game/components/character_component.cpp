@@ -15,25 +15,25 @@ COMPONENT_CPP_DEBUG(CCharacterComponent)
 COMPONENT_CPP(CCharacterComponent)
 #endif
 
-CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGuid& guid, da::core::CEntity& parent) : m_isLocalPlayer(isLocalPlayer), m_guid(guid), m_parent(parent)
+CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::CGuid& guid, da::CEntity& parent) : m_isLocalPlayer(isLocalPlayer), m_guid(guid), m_parent(parent)
 {
-	da::graphics::CSkeletalMesh* mesh;
+	da::CSkeletalMesh* mesh;
 	if (isLocalPlayer)
 	{
-		mesh = da::factory::CSkeletalMeshFactory::create("assets/skeletons/camilla/camilla_02.fbx", false);
+		mesh = da::CSkeletalMeshFactory::create("assets/skeletons/camilla/camilla_02.fbx", false);
 		mesh->getMaterial(10).baseColorFactor = { 0.f,0.f,0.f,0.f };
 		mesh->getMaterial(13).baseColorFactor = { 0.f,0.f,0.f,0.25f };
 	} 
 	else
 	{
-		mesh = da::factory::CSkeletalMeshFactory::create("assets/skeletons/pesant_f/pesant_f_02.fbx", false);
+		mesh = da::CSkeletalMeshFactory::create("assets/skeletons/pesant_f/pesant_f_02.fbx", false);
 		mesh->getMaterial(11).baseColorFactor = { 0.f,0.f,0.f,0.f };
 	}
 
-	for (const da::graphics::FMaterialData& mat : mesh->getMaterials())
+	for (const da::FMaterialData& mat : mesh->getMaterials())
 	{
-		const_cast<da::graphics::FMaterialData&>(mat).metallicFactor = 0.f;
-		const_cast<da::graphics::FMaterialData&>(mat).roughnessFactor = 0.45f;
+		const_cast<da::FMaterialData&>(mat).metallicFactor = 0.f;
+		const_cast<da::FMaterialData&>(mat).roughnessFactor = 0.45f;
 	}
 	
 
@@ -52,21 +52,21 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGu
 
 	m_anims = {
 			
-		  { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Idle_RM_01.fbx", mesh)), 1.f }// idle
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // jog
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // sprint
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/button.fbx", mesh)), 0.f } // button
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogLeft.fbx", mesh)), 0.f } // jog left
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogRight.fbx", mesh)), 0.f } // jog right
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/archer/jogBack.fbx", mesh)), 0.f } // jog back
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Combo_A1_IP_01.fbx", mesh), false), 0.f } // attack 1
-		, { new da::graphics::CSkeletalAnimator(new da::graphics::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Combo_A2_IP_01.fbx", mesh), false), 0.f } // attack 2
+		  { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Idle_RM_01.fbx", mesh)), 1.f }// idle
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // jog
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // sprint
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/archer/button.fbx", mesh)), 0.f } // button
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/archer/jogLeft.fbx", mesh)), 0.f } // jog left
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/archer/jogRight.fbx", mesh)), 0.f } // jog right
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/archer/jogBack.fbx", mesh)), 0.f } // jog back
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Combo_A1_IP_01.fbx", mesh), false), 0.f } // attack 1
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Combo_A2_IP_01.fbx", mesh), false), 0.f } // attack 2
 	};
 
 
 
-	m_animGraph = new da::graphics::CSkeletalAnimGraph(mesh, m_anims);
-	da::core::FComponentRef<da::core::CSkeletalMeshComponent> meshComponent = parent.addComponent<da::core::CSkeletalMeshComponent>(m_animGraph);
+	m_animGraph = new da::CSkeletalAnimGraph(mesh, m_anims);
+	da::FComponentRef<da::CSkeletalMeshComponent> meshComponent = parent.addComponent<da::CSkeletalMeshComponent>(m_animGraph);
 
 	glm::mat4 offset = glm::translate(glm::mat4(1.f), { 0.f,0.f, -1.00f }) * glm::toMat4(glm::quat(glm::radians(glm::vec3(0.f, 0.f, 180.f))));
 	meshComponent->setTransform(offset);
@@ -76,7 +76,7 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::core::CGu
 
 CCharacterComponent::~CCharacterComponent()
 {
-	for (const da::graphics::FSkeletalAnimGraphNode& node : m_anims) {
+	for (const da::FSkeletalAnimGraphNode& node : m_anims) {
 		delete node.Animator->getCurrentAnim();
 		delete node.Animator;
 	}
@@ -101,7 +101,7 @@ void CCharacterComponent::onUpdate(float dt)
 
 void CCharacterComponent::processAnims(float dt)
 {
-	da::core::FComponentRef<CCharacterMovementComponent> movement = m_parent.getComponent<CCharacterMovementComponent>();
+	da::FComponentRef<CCharacterMovementComponent> movement = m_parent.getComponent<CCharacterMovementComponent>();
 	const glm::vec3& direction = movement->getWalkDirection();
 	const bool isSprinting = movement->isSprinting();
 
@@ -194,7 +194,7 @@ void CCharacterComponent::processAnims(float dt)
 	if (getAnim(ECharacterAnims::Combo1).Weight > 0.f) {
 		float pTime = getAnim(ECharacterAnims::Combo1).Animator->getPlayTime();
 		if (m_weapon) {
-			da::core::FComponentRef<da::core::CCollisionComponent> colComp = m_weapon->getComponent<da::core::CCollisionComponent>();
+			da::FComponentRef<da::CCollisionComponent> colComp = m_weapon->getComponent<da::CCollisionComponent>();
 			colComp->enable(pTime >= 14.f && pTime <= 20.f);
 
 			if (pTime >= 3.f && pTime < 4.f)
@@ -211,7 +211,7 @@ void CCharacterComponent::processAnims(float dt)
 	if (getAnim(ECharacterAnims::Combo2).Weight > 0.f) {
 		float pTime = getAnim(ECharacterAnims::Combo2).Animator->getPlayTime();
 		if (m_weapon) {
-			da::core::FComponentRef<da::core::CCollisionComponent> colComp = m_weapon->getComponent<da::core::CCollisionComponent>();
+			da::FComponentRef<da::CCollisionComponent> colComp = m_weapon->getComponent<da::CCollisionComponent>();
 			colComp->enable(pTime >= 2.f && pTime <= 8.f);
 
 			if (pTime >= 5.f && pTime < 6.f)
@@ -227,7 +227,7 @@ void CCharacterComponent::processAnims(float dt)
 
 }
 
-da::graphics::FSkeletalAnimGraphNode& CCharacterComponent::getAnim(ECharacterAnims anim)
+da::FSkeletalAnimGraphNode& CCharacterComponent::getAnim(ECharacterAnims anim)
 {
 	return m_animGraph->getNodes()[(uint8_t)anim];
 }
@@ -243,11 +243,11 @@ float CCharacterComponent::getCamRot() const
 	return m_movement->getMoveDir();
 }
 
-void CCharacterComponent::setWeaponEntity(const da::core::CEntity* weapon)
+void CCharacterComponent::setWeaponEntity(const da::CEntity* weapon)
 {
 	m_weapon = weapon;
 
-	da::core::FComponentRef<da::core::CCollisionComponent> colComp = weapon->getComponent<da::core::CCollisionComponent>();
+	da::FComponentRef<da::CCollisionComponent> colComp = weapon->getComponent<da::CCollisionComponent>();
 	colComp->enable(false);
 }
 
@@ -296,9 +296,9 @@ void CCharacterComponent::onDebugRender()
 	
 
 	if (ImGui::Begin("Anim Test")) {
-		da::core::FComponentRef<da::core::CSkeletalMeshComponent> skMesh = m_parent.getComponent<da::core::CSkeletalMeshComponent>();
+		da::FComponentRef<da::CSkeletalMeshComponent> skMesh = m_parent.getComponent<da::CSkeletalMeshComponent>();
 		//skMesh->getSkeletalAnimator()->debugRenderJoints(skMesh->getTransform());
-		std::vector<da::graphics::FSkeletalAnimGraphNode>& nodes = m_animGraph->getNodes();
+		std::vector<da::FSkeletalAnimGraphNode>& nodes = m_animGraph->getNodes();
 
 		for (int i = 0; i < nodes.size(); i++) {
 			ImGui::LabelText("##label", "%.2f : %s: ", nodes[i].Animator->getPlayTime(), nodes[i].Animator->getCurrentAnim()->getAnimName().c_str());

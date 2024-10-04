@@ -6,7 +6,7 @@
 #include "graphics/skeletal_animator.h"
 #include "graphics/skeletal_anim_graph.h"
 
-namespace da::core
+namespace da
 {
 	class CSkeletalMeshComponent {
 #ifdef DA_REVIEW
@@ -17,8 +17,8 @@ namespace da::core
 
 	public:
 		CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, CEntity& parent);
-		CSkeletalMeshComponent(da::graphics::CSkeletalMesh* mesh, da::graphics::CSkeletalAnimation* anim, da::graphics::CSkeletalAnimator* animator,CEntity& parent);
-		CSkeletalMeshComponent(da::graphics::CSkeletalAnimGraph* graph, CEntity& parent);
+		CSkeletalMeshComponent(da::CSkeletalMesh* mesh, da::CSkeletalAnimation* anim, da::CSkeletalAnimator* animator,CEntity& parent);
+		CSkeletalMeshComponent(da::CSkeletalAnimGraph* graph, CEntity& parent);
 		CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, bool inverseNormals, CEntity& parent);
 
 		void onInitialize();
@@ -31,9 +31,9 @@ namespace da::core
 		bool getBoneWorldTransform(CHashString name,  glm::mat4& out);
 		bool getBoneWorldPosition(CHashString name, glm::vec3& out);
 		bool getBoneWorldRotation(CHashString name, glm::quat& out);
-		da::graphics::CSkeletalMesh* getSkeletalMesh() const;
-		da::graphics::CSkeletalAnimation* getSkeletalAnimation() const;
-		da::graphics::CSkeletalAnimator* getSkeletalAnimator() const;
+		da::CSkeletalMesh* getSkeletalMesh() const;
+		da::CSkeletalAnimation* getSkeletalAnimation() const;
+		da::CSkeletalAnimator* getSkeletalAnimator() const;
 #ifdef DA_REVIEW
 		void onDebugRender();
 #endif
@@ -41,10 +41,10 @@ namespace da::core
 	private:
 		void onTransform(const glm::mat4& oldT, const glm::mat4& newT);
 	private:
-		da::graphics::CSkeletalMesh* m_skeletalmesh = nullptr;
-		da::graphics::CSkeletalAnimation* m_animation = nullptr;
-		da::graphics::CSkeletalAnimator* m_animator = nullptr;
-		da::graphics::CSkeletalAnimGraph* m_animGraph = nullptr;
+		da::CSkeletalMesh* m_skeletalmesh = nullptr;
+		da::CSkeletalAnimation* m_animation = nullptr;
+		da::CSkeletalAnimator* m_animator = nullptr;
+		da::CSkeletalAnimGraph* m_animGraph = nullptr;
 		bool m_inverseNormals = false;
 		glm::mat4 m_transform = glm::mat4(1.f);;
 		glm::mat4 m_finalTransform;

@@ -18,7 +18,7 @@ struct FTransformPacketInfo {
 
 };
 
-namespace da::core {
+namespace da {
 	COMPONENT_CPP(CNetworkedTransformComponent)
 
 
@@ -34,7 +34,7 @@ namespace da::core {
 
 	void CNetworkedTransformComponent::onInitialize()
 	{
-		if (m_network = da::net::CNetworkManager::getNetwork()) {
+		if (m_network = da::CNetworkManager::getNetwork()) {
 
 			if (m_isOwner)
 			{
@@ -48,7 +48,7 @@ namespace da::core {
 					return;
 				}
 
-				da::maths::CTransform& transform = m_parent.getTransform();
+				da::CTransform& transform = m_parent.getTransform();
 
 				m_targetPosition = data.Position;
 				m_targetRotation = data.Rotation;
@@ -66,7 +66,7 @@ namespace da::core {
 		{
 			if (!m_hasPacket) return;
 
-			da::maths::CTransform& transform = m_parent.getTransform();
+			da::CTransform& transform = m_parent.getTransform();
 
 			if (!shouldUpdate())
 			{
@@ -85,7 +85,7 @@ namespace da::core {
 		if (m_timeSinceUpdate < m_tickSpeed) return;
 		m_timeSinceUpdate = 0.f;
 
-		da::maths::CTransform& transform = m_parent.getTransform();
+		da::CTransform& transform = m_parent.getTransform();
 		m_targetPosition = transform.position();
 		m_targetRotation = transform.rotation();
 

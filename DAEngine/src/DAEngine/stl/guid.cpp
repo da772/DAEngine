@@ -3,7 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-namespace da::core {
+namespace da {
 
 	unsigned int CGuid::sm_seed = 0;
 
@@ -145,7 +145,8 @@ namespace da::core {
 #ifdef DA_REVIEW
 		guid.genString();
 #endif
-
+		sm_seed = (unsigned int)time(NULL);
+		srand(sm_seed);
 		return guid;
 	}
 

@@ -2,7 +2,7 @@
 #include "bgfx_static_mesh.h"
 #include "bgfx_util.h"
 
-namespace da::platform
+namespace da
 {
 
 	bool CBgfxStaticMesh::s_init;
@@ -13,11 +13,11 @@ namespace da::platform
 		m_vbh.reserve(m_meshes.size());
 		m_ibh.reserve(m_meshes.size());
 		for (size_t i = 0; i < m_meshes.size(); i++) {
-			const da::graphics::FMesh& mesh = m_meshes[i];
+			const da::FMesh& mesh = m_meshes[i];
 
 			::bgfx::VertexBufferHandle vbh = ::bgfx::createVertexBuffer(
 				// Static data can be passed with ::bgfx::makeRef
-				::bgfx::makeRef(mesh.Vertices.data(), mesh.Vertices.size() * sizeof(da::graphics::FVertexBase))
+				::bgfx::makeRef(mesh.Vertices.data(), mesh.Vertices.size() * sizeof(da::FVertexBase))
 				, CBgfxStaticMesh::getLayout()
 				, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
 			);

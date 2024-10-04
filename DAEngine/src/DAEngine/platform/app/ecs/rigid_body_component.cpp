@@ -10,14 +10,14 @@
 #include <Imgui.h>
 #endif
 
-namespace da::core {
+namespace da {
 #ifdef DA_REVIEW
 	COMPONENT_CPP_NO_UPDATE_DEBUG(CRigidBodyComponent)
 #else
 	COMPONENT_CPP_NO_UPDATE(CRigidBodyComponent)
 #endif
 
-	CRigidBodyComponent::CRigidBodyComponent(da::physics::IPhysicsRigidBody* rigidBody, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_rigidBody(rigidBody)
+	CRigidBodyComponent::CRigidBodyComponent(da::IPhysicsRigidBody* rigidBody, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_rigidBody(rigidBody)
 	{
 
 	}
@@ -33,7 +33,7 @@ namespace da::core {
 
 	}
 
-	da::physics::IPhysicsRigidBody* CRigidBodyComponent::getPhysicsBody() const
+	da::IPhysicsRigidBody* CRigidBodyComponent::getPhysicsBody() const
 	{
 		return m_rigidBody;
 	}

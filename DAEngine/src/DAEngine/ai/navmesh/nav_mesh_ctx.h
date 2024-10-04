@@ -6,7 +6,7 @@
 #include <recast.h>
 #include <DebugDraw.h>
 
-namespace da::ai
+namespace da
 {
 	class CNavMeshManager;
 

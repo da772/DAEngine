@@ -4,7 +4,7 @@
 #include "daglm.h"
 #include "dastd.h"
 
-namespace da::core::maths
+namespace da
 {
 	bool IsPrime(const int& n);
 	int NextPrime(const int& n);

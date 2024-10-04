@@ -9,11 +9,11 @@
 #include "graphics/graphics_smesh.h"
 
 
-namespace da::core {
+namespace da {
 	class CMaterial;
 }
 
-namespace da::platform
+namespace da
 {
 	class CVulkanGraphicsTexture2D;
 	class CVulkanGraphicsPipeline;
@@ -48,15 +48,15 @@ namespace da::platform
 		VkDescriptorImageInfo descriptor;
 	};
 
-	class CVulkanGraphicsApi : public graphics::CGraphicsApi
+	class CVulkanGraphicsApi : public da::CGraphicsApi
 	{
 	public:
-		CVulkanGraphicsApi(da::core::CWindow* windowModule);
+		CVulkanGraphicsApi(da::CWindow* windowModule);
 		~CVulkanGraphicsApi();
 		virtual void initialize() override;
 		virtual void update() override;
 		virtual void shutdown() override;
-		virtual void submitPipeline(da::graphics::CGraphicsPipeline* pipeline);
+		virtual void submitPipeline(da::CGraphicsPipeline* pipeline);
 
 	public:
 		inline const VkInstance& getInstance() const { return m_instance; }

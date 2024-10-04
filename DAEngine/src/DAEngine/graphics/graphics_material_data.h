@@ -5,7 +5,7 @@
 #include <glm/vec4.hpp>
 #include <string>
 
-namespace da::graphics {
+namespace da {
 
     class CGraphicsTexture2D;
 

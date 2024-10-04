@@ -1,9 +1,9 @@
 
 #include "graphics_light_manager.h"
 
-namespace da::graphics
+namespace da
 {
-	da::graphics::CLightManager CLightManager::sm_instance;
+	da::CLightManager CLightManager::sm_instance;
 
 	uint32_t CLightManager::addLight(const FLightData& light)
 	{
@@ -45,7 +45,7 @@ namespace da::graphics
 		}
 	}
 
-	const std::vector<da::graphics::FLightData>& CLightManager::getLights()
+	const std::vector<da::FLightData>& CLightManager::getLights()
 	{
 		return sm_instance.m_lights;
 	}

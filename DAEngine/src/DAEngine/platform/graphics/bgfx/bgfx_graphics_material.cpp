@@ -8,7 +8,7 @@
 #include "core/asset/asset.h"
 #include "platform/graphics/bgfx/bgfx_graphics_api.h"
 
-namespace da::platform {
+namespace da {
 
 	std::unordered_map<CHashString, FShaderData> CBgfxGraphicsMaterial::ms_shaderHandles;
 

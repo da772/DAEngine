@@ -3,7 +3,7 @@
 #include "core.h"
 #include <bgfx/bgfx.h>
 
-namespace da::platform {
+namespace da {
     class CBgfxClusterShader
     {
     public:

@@ -1,6 +1,6 @@
 #pragma once
 
-class CComponents
+class CGameComponents
 {
 public:
 	static void registerComponents();

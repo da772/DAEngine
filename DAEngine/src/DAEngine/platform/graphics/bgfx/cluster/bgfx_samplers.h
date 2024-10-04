@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace da::platform {
+namespace da {
 
     class CBgfxSamplers
     {

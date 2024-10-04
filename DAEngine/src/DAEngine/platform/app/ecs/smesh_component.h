@@ -3,13 +3,13 @@
 #include "core/ecs/component.h"
 #include "core/asset/asset.h"
 
-namespace da::graphics
+namespace da
 {
 	class CStaticMesh;
 	class CMaterial;
 }
 
-namespace da::core
+namespace da
 {
 	struct FInstance
 	{
@@ -26,7 +26,7 @@ namespace da::core
 
 	public:
 		CSmeshComponent(const std::string& meshPath, CEntity& parent);
-		CSmeshComponent(da::graphics::CStaticMesh* meshPath, CEntity& parent);
+		CSmeshComponent(da::CStaticMesh* meshPath, CEntity& parent);
 		CSmeshComponent(const std::string& meshPath, bool inverseNormals, CEntity& parent);
 
 		void onInitialize();
@@ -34,13 +34,13 @@ namespace da::core
 		uint32_t addInstance(const glm::mat4& transform);
 		void removeInstance(uint32_t id);
 		const std::vector<FInstance>& getInstances() const;
-		da::graphics::CStaticMesh* getStaticMesh() const;
+		da::CStaticMesh* getStaticMesh() const;
 #ifdef DA_REVIEW
 		void onDebugRender();
 #endif
 
 	private:
-		da::graphics::CStaticMesh* m_staticMesh;
+		da::CStaticMesh* m_staticMesh;
 		bool m_inverseNormals : 1;
 		std::vector<FInstance> m_instances;
 		uint32_t m_instanceCounter = 0;

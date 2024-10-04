@@ -1,8 +1,8 @@
 #include "physics.h"
 
-namespace da::physics
+namespace da
 {
-	da::physics::CPhysicsType* CPhysics::s_physicsType;
+	da::CPhysicsType* CPhysics::s_physicsType;
 	double CPhysics::s_fixedTime = 1.0 / 144.0;
 	double CPhysics::s_lastUpdate = 0.f;
 
@@ -41,7 +41,7 @@ namespace da::physics
 	}
 
 
-	da::physics::CPhysicsType* CPhysics::getPhysicsType()
+	da::CPhysicsType* CPhysics::getPhysicsType()
 	{
 		return s_physicsType;
 	}

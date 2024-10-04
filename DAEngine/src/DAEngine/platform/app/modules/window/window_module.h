@@ -4,13 +4,13 @@
 #include "platform/app/modules/module.h"
 #include "graphics/window/window.h"
 
-using namespace da::core::events;
+using namespace da;
 
-namespace da::modules {
+namespace da {
 	class CWindowModule : public IModule
 	{
 	public:
-		CWindowModule(const core::FWindowData& windowData);
+		CWindowModule(const FWindowData& windowData);
 		virtual ~CWindowModule();
 		virtual void update() override;
 		virtual void lateUpdate() override;
@@ -20,10 +20,10 @@ namespace da::modules {
 
 		CEventHandler& getEventHandler();
 
-		core::CWindow* getWindow() const;
+		CWindow* getWindow() const;
 
 	private:
-		core::CWindow* m_Window;
+		CWindow* m_Window;
 
 	};
 }

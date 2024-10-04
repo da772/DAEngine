@@ -2,11 +2,11 @@
 #include "core/factory.h"
 #include "graphics/graphics_skmesh.h"
 
-using namespace da::graphics;
+using namespace da;
 
-namespace da::factory {
+namespace da {
 
-	class CSkeletalMeshFactory : da::core::CFactory<CSkeletalMesh>
+	class CSkeletalMeshFactory : da::CFactory<CSkeletalMesh>
 	{
 	public:
 		static CSkeletalMesh* create(const std::string& path, bool inverseNormals = false);
@@ -16,7 +16,7 @@ namespace da::factory {
 		static CSkeletalMeshFactory ms_factory;
 
 #ifdef DA_REVIEW
-		friend class da::core::CFactoryDebug;
+		friend class da::CFactoryDebug;
 #endif
 	};
 }

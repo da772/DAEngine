@@ -2,7 +2,7 @@
 
 #include "dastd.h"
 
-namespace da::net
+namespace da
 {
 	struct FNetworkInfo
 	{

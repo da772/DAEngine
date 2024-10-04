@@ -3,7 +3,7 @@
 #include "daglm.h"
 #include "dastd.h"
 
-namespace da::graphics
+namespace da
 {
 	enum class ELightType : uint8_t
 	{

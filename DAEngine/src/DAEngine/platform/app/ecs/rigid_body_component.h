@@ -2,11 +2,11 @@
 
 #include "core/ecs/component.h"
 
-namespace da::physics {
+namespace da {
 	class IPhysicsRigidBody;
 }
 
-namespace da::core {
+namespace da {
 
 	class CRigidBodyComponent
 	{
@@ -17,12 +17,12 @@ namespace da::core {
 #endif
 
 	public:
-		CRigidBodyComponent(da::physics::IPhysicsRigidBody* rigidBody, CEntity& parent);
+		CRigidBodyComponent(da::IPhysicsRigidBody* rigidBody, CEntity& parent);
 		~CRigidBodyComponent();
 
 		void onInitialize();
 		void onShutdown();
-		da::physics::IPhysicsRigidBody* getPhysicsBody() const;
+		da::IPhysicsRigidBody* getPhysicsBody() const;
 #ifdef DA_REVIEW
 		void onDebugRender();
 #endif
@@ -33,7 +33,7 @@ namespace da::core {
 #endif
 
 	private:
-		da::physics::IPhysicsRigidBody* m_rigidBody;
+		da::IPhysicsRigidBody* m_rigidBody;
 
 
 	};

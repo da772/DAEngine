@@ -2,12 +2,12 @@
 
 #include "graphics/window/window.h"
 
-namespace da::factory {
+namespace da {
 
 	class CWindowFactory
 	{
 	public:
-		static da::core::CWindow* CreateWindow(const da::core::FWindowData& windowData);
+		static da::CWindow* CreateWindow(const da::FWindowData& windowData);
 
 
 	};

@@ -31,7 +31,7 @@
 
 namespace Optick
 {
-	const char* Platform::GetName()
+	const char* GetName()
 	{
 	#if OPTICK_PC
 		return "Windows";
@@ -40,24 +40,24 @@ namespace Optick
 	#endif
 	}
 
-	ThreadID Platform::GetThreadID()
+	ThreadID GetThreadID()
 	{
 		return GetCurrentThreadId();
 	}
 
-	ProcessID Platform::GetProcessID()
+	ProcessID GetProcessID()
 	{
 		return GetCurrentProcessId();
 	}
 
-	int64 Platform::GetFrequency()
+	int64 GetFrequency()
 	{
 		LARGE_INTEGER frequency;
 		QueryPerformanceFrequency(&frequency);
 		return frequency.QuadPart;
 	}
 
-	int64 Platform::GetTime()
+	int64 GetTime()
 	{
 		LARGE_INTEGER largeInteger;
 		QueryPerformanceCounter(&largeInteger);
@@ -1388,7 +1388,7 @@ ETW::~ETW()
 	g_ETW = nullptr;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Trace* Platform::CreateTrace()
+Trace* CreateTrace()
 {
 	return Memory::New<ETW>();
 }
@@ -1726,7 +1726,7 @@ void WinSymbolEngine::Close()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-SymbolEngine* Platform::CreateSymbolEngine()
+SymbolEngine* CreateSymbolEngine()
 {
 	return Memory::New<WinSymbolEngine>();
 }

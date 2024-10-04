@@ -1,7 +1,7 @@
 
 #include "components.h"
 
-namespace da::core {
+namespace da {
 
 	void CComponents::registerComponents()
 	{

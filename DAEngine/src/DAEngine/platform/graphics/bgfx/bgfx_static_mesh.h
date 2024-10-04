@@ -4,14 +4,14 @@
 #include "graphics/graphics_smesh.h"
 #include "core/factory.h"
 
-namespace da::factory
+namespace da
 {
 	class CStaticMeshFactory;
 }
 
-namespace da::platform {
+namespace da {
 
-	class CBgfxStaticMesh : public da::graphics::CStaticMesh
+	class CBgfxStaticMesh : public da::CStaticMesh
 	{
 	public:
 		void setBuffers(size_t index, uint8_t stream);
@@ -34,8 +34,8 @@ protected:
 		static ::bgfx::VertexLayout s_layout;
 		static bool s_init;
 
-		friend class da::core::CFactory<da::graphics::CStaticMesh>;
-		friend class da::factory::CStaticMeshFactory;
+		friend class da::CFactory<da::CStaticMesh>;
+		friend class da::CStaticMeshFactory;
 	
 	};
 

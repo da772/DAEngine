@@ -7,7 +7,7 @@
 
 #include <assimp/scene.h>
 #include "debug/graphics_debug_render.h"
-namespace da::graphics
+namespace da
 {
 
 	CSkeletalAnimator::CSkeletalAnimator(CSkeletalAnimation* animation, bool looping) : m_looping(looping)
@@ -339,8 +339,8 @@ namespace da::graphics
 				glm::vec3 skew;
 				glm::vec4 perspective;
 				glm::decompose(transform, scale, rotation, translation, skew, perspective);
-				da::debug::CDebugRender::drawCone(translation, rotation, {.0001f,.0001f,.0001f}, { 1.f, 0.f, 1.f, 1.f }, false, true);
-				da::debug::CDebugRender::drawLine(baseTranslation, translation, .025f, { 1.f,0.f,0.f,1.f }, false, true);
+				da::CDebugRender::drawCone(translation, rotation, {.0001f,.0001f,.0001f}, { 1.f, 0.f, 1.f, 1.f }, false, true);
+				da::CDebugRender::drawLine(baseTranslation, translation, .025f, { 1.f,0.f,0.f,1.f }, false, true);
 
 				bones.push(&b->children[i]);
 			}
@@ -449,7 +449,7 @@ namespace da::graphics
 		return -1.f;
 	}
 
-	const da::graphics::CSkeletalAnimation* CSkeletalAnimator::getCurrentAnim() const
+	const da::CSkeletalAnimation* CSkeletalAnimator::getCurrentAnim() const
 	{
 		return m_CurrentAnimation;
 	}
@@ -465,7 +465,7 @@ namespace da::graphics
 		interpolateBoneTransformsInternal(const_cast<CSkeletalAnimation*> (animator->getCurrentAnim()), &animator->getCurrentAnim()->getRootNode(), weight, false, animator->m_BoneSelectors);
 	}
 
-	const da::graphics::FAssimpNodeData* CSkeletalAnimator::FindNodeByName(const CHashString& name)
+	const da::FAssimpNodeData* CSkeletalAnimator::FindNodeByName(const CHashString& name)
 	{
 		std::queue<const FAssimpNodeData*> nodes;
 		nodes.push(&m_CurrentAnimation->getRootNode());

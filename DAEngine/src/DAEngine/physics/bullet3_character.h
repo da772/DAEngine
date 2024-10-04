@@ -4,7 +4,7 @@
 #include <bullet3/BulletDynamics/Character/btKinematicCharacterController.h>
 #include <bullet3/BulletCollision/CollisionDispatch/btGhostObject.h>
 
-namespace da::physics
+namespace da
 {
 	class CBullet3Character : public ICharacterController
 	{

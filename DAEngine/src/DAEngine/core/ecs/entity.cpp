@@ -1,7 +1,7 @@
 #include "entity.h"
 #include "scene.h"
 
-namespace da::core {
+namespace da {
 
 	CEntity::CEntity(const CGuid& guid, CScene* scene) : m_guid(guid), m_scene(scene)
 	{
@@ -13,17 +13,17 @@ namespace da::core {
 
 	}
 
-	const da::core::CGuid& CEntity::getId() const
+	const da::CGuid& CEntity::getId() const
 	{
 		return m_guid;
 	}
 
-	const da::maths::CTransform& CEntity::getTransform() const
+	const da::CTransform& CEntity::getTransform() const
 	{
 		return m_transform;
 	}
 
-	da::maths::CTransform& CEntity::getTransform()
+	da::CTransform& CEntity::getTransform()
 	{
 		return m_transform;
 	}

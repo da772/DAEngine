@@ -10,11 +10,11 @@
 #include <imgui.h>
 #endif
 
-namespace da::platform
+namespace da
 {
 	void CBgfxVolumetricLightShader::initialize()
 	{
-		m_pVolLightShader = da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_vol_lighting.sc");
+		m_pVolLightShader = da::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_vol_lighting.sc");
 
 		m_frameBuffer = createFrameBuffer(true);
 
@@ -27,7 +27,7 @@ namespace da::platform
 		m_blitTriangleBuffer = ::bgfx::createVertexBuffer(::bgfx::copy(&vertices, sizeof(vertices)), PosVertex::layout);
 
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Volumetric Lighting"), &m_debug, [this] {renderDebug(); });
+		da::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Volumetric Lighting"), &m_debug, [this] {renderDebug(); });
 #endif
 
 	}
@@ -55,7 +55,7 @@ namespace da::platform
 
 	void CBgfxVolumetricLightShader::shutdown()
 	{
-		da::factory::CMaterialFactory::remove(m_pVolLightShader);
+		da::CMaterialFactory::remove(m_pVolLightShader);
 
 		BGFXTRYDESTROY(m_frameBuffer);
 		BGFXTRYDESTROY(m_blurParams);
@@ -66,7 +66,7 @@ namespace da::platform
 
 
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Volumetric Lighting"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Volumetric Lighting"));
 #endif
 	}
 

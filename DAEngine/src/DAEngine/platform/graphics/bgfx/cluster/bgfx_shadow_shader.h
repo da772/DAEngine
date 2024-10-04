@@ -3,12 +3,12 @@
 #include "graphics/camera.h"
 #include <bgfx/bgfx.h>
 
-namespace da::graphics
+namespace da
 {
 	class CMaterial;
 }
 
-namespace da::platform {
+namespace da {
 
 #define SHADOW_MAP_SIZE 3
 
@@ -30,9 +30,9 @@ namespace da::platform {
 		void shutdown();
 
 
-		da::graphics::CMaterial* getMaterial() const;
-		da::graphics::CMaterial* getSKMaterial() const;
-		core::CCamera& getCamera();
+		da::CMaterial* getMaterial() const;
+		da::CMaterial* getSKMaterial() const;
+		CCamera& getCamera();
 		const uint32_t getShadowMapSize() const;
 		std::vector<glm::vec4> getFrustumCornersWorldSpace(const glm::mat4& projView);
 		std::pair<glm::mat4, glm::mat4> getLightSpaceProjMatrix(const float nearPlane, const float farPlane, int index, glm::mat4 lightView);
@@ -53,9 +53,9 @@ namespace da::platform {
 		FBgfxShadowMaps m_shadowMaps;
 		glm::vec3 m_shadowDir = { 0.348f, 0.870f, 0.7f };
 
-		da::graphics::CMaterial* m_material;
-		da::graphics::CMaterial* m_skmaterial;
-		core::CCamera m_camera;
+		da::CMaterial* m_material;
+		da::CMaterial* m_skmaterial;
+		CCamera m_camera;
 		uint32_t m_shadowMapSize = 4096;
 		bool m_useShadowSampler = true;
 	};

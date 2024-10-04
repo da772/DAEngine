@@ -5,7 +5,7 @@
 class Portfwd;
 struct _ENetHost;
 
-namespace da::net
+namespace da
 {
 
 	class CNetworkServer : public INetwork

@@ -15,7 +15,7 @@
 
 
 
-namespace da::graphics
+namespace da
 {
 
 	CAnimatedBone::CAnimatedBone(CHashString name, int ID, const aiNodeAnim* channel)

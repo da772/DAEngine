@@ -3,12 +3,12 @@
 #include <bgfx/bgfx.h>
 #include "daglm.h"
 
-namespace da::graphics
+namespace da
 {
 	class CMaterial;
 }
 
-namespace da::platform
+namespace da
 {
 
 	class CBgfxVolumetricLightShader
@@ -27,7 +27,7 @@ namespace da::platform
 #endif
 
 	private:
-		da::graphics::CMaterial* m_pVolLightShader = nullptr;
+		da::CMaterial* m_pVolLightShader = nullptr;
 		::bgfx::FrameBufferHandle m_frameBuffer = BGFX_INVALID_HANDLE;
 		::bgfx::UniformHandle m_lightPos = BGFX_INVALID_HANDLE;
 		::bgfx::UniformHandle m_blurParams = BGFX_INVALID_HANDLE;

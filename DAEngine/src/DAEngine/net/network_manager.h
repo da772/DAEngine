@@ -2,7 +2,7 @@
 #include "core.h"
 #include "network_interface.h"
 
-namespace da::net
+namespace da
 {
 	class CNetworkManager
 	{

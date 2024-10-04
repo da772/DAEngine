@@ -2,7 +2,7 @@
 #include "dacommon.h"
 #include "daglm.h"
 
-namespace da::physics
+namespace da
 {
 	class IPhysicsShape;
 

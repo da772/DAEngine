@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <ctime>
 
-namespace da::utility
+namespace da
 {
 	std::string CurrentDateTime()
 	{

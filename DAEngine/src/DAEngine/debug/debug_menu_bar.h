@@ -5,7 +5,7 @@
 
 #include "dastd.h"
 
-namespace da::debug
+namespace da
 {
 	class CDebugMenuBar
 	{

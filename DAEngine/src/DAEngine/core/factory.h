@@ -2,7 +2,7 @@
 #include "core.h"
 #include "core/logger.h"
 
-namespace da::core
+namespace da
 {
 #ifdef DA_REVIEW
 	class CFactoryDebug;
@@ -34,7 +34,7 @@ namespace da::core
 
 #ifdef DA_REVIEW
 	template<typename T>
-	std::vector<std::pair<CHashString, uint32_t>> da::core::CFactory<T>::getInstanceNames()
+	std::vector<std::pair<CHashString, uint32_t>> da::CFactory<T>::getInstanceNames()
 	{
 		std::vector<std::pair<CHashString, uint32_t>> out;
 		for (const std::pair<CHashString, FInstanceInfo>& kv : m_instances)
@@ -59,7 +59,7 @@ namespace da::core
 
 #ifdef DA_REVIEW
 	template<typename T>
-	bool da::core::CFactory<T>::hasInstances()
+	bool da::CFactory<T>::hasInstances()
 	{
 		return m_instances.size();
 	}

@@ -6,7 +6,7 @@
 #include "graphics/graphics_texture2d.h"
 #include "graphics/factory/factory_graphics_smesh.h"
 
-namespace da::core {
+namespace da {
 #ifdef DA_REVIEW
 	COMPONENT_CPP_NO_UPDATE_DEBUG(CSmeshComponent);
 #else
@@ -15,15 +15,15 @@ namespace da::core {
 
 	CSmeshComponent::CSmeshComponent(const std::string& meshPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(false)
 	{
-		m_staticMesh = da::factory::CStaticMeshFactory::create(meshPath, false);
+		m_staticMesh = da::CStaticMeshFactory::create(meshPath, false);
 	}
 
 	CSmeshComponent::CSmeshComponent(const std::string& meshPath, bool inverseNormals, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(inverseNormals)
 	{
-		m_staticMesh = da::factory::CStaticMeshFactory::create(meshPath, inverseNormals);
+		m_staticMesh = da::CStaticMeshFactory::create(meshPath, inverseNormals);
 	}
 
-	CSmeshComponent::CSmeshComponent(da::graphics::CStaticMesh* mesh, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
+	CSmeshComponent::CSmeshComponent(da::CStaticMesh* mesh, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
 	{
 		m_staticMesh = mesh;
 		ASSERT(m_staticMesh);
@@ -36,15 +36,15 @@ namespace da::core {
 
 	void CSmeshComponent::onShutdown()
 	{
-		da::factory::CStaticMeshFactory::remove(m_staticMesh);
+		da::CStaticMeshFactory::remove(m_staticMesh);
 	}
 
-	da::graphics::CStaticMesh* CSmeshComponent::getStaticMesh() const
+	da::CStaticMesh* CSmeshComponent::getStaticMesh() const
 	{
 		return m_staticMesh;
 	}
 
-	const std::vector<da::core::FInstance>& CSmeshComponent::getInstances() const
+	const std::vector<da::FInstance>& CSmeshComponent::getInstances() const
 	{
 		return m_instances;
 	}
@@ -136,18 +136,18 @@ namespace da::core {
 		}
 
 		if (ImGui::Button("Reload Mesh")) {
-			da::graphics::CStaticMesh* oldMesh = m_staticMesh;
+			da::CStaticMesh* oldMesh = m_staticMesh;
 			std::string path = oldMesh->getPath();
 
-			da::factory::CStaticMeshFactory::remove(m_staticMesh);
-			m_staticMesh = da::factory::CStaticMeshFactory::create(path, m_inverseNormals);
+			da::CStaticMeshFactory::remove(m_staticMesh);
+			m_staticMesh = da::CStaticMeshFactory::create(path, m_inverseNormals);
 
 			for (size_t i = 0; i < m_staticMesh->getMaterialCount() && i < oldMesh->getMaterials().size(); i++) {
 				m_staticMesh->getMaterial(i) = oldMesh->getMaterial(i);
 				oldMesh->getMaterial(i) = {};
 			}
 
-			da::factory::CStaticMeshFactory::remove(oldMesh);
+			da::CStaticMeshFactory::remove(oldMesh);
 		}
 	}
 #endif

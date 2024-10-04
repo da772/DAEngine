@@ -10,10 +10,10 @@
 #include <imgui.h>
 #endif
 
-namespace da::net
+namespace da
 {
 #ifdef DA_REVIEW
-	da::net::INetwork* CNetworkManager::sm_network = nullptr;
+	da::INetwork* CNetworkManager::sm_network = nullptr;
 	bool CNetworkManager::sm_debug = false;
 #endif
 	std::unordered_map<uint64_t, INetwork*> CNetworkManager::sm_networks;
@@ -23,7 +23,7 @@ namespace da::net
 	{
 		enet_initialize();
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Network"), HASHSTR("Network Manager"), &sm_debug, []() {debugRender(); });
+		da::CDebugMenuBar::register_debug(HASHSTR("Network"), HASHSTR("Network Manager"), &sm_debug, []() {debugRender(); });
 #endif
 	}
 
@@ -35,7 +35,7 @@ namespace da::net
 		}
 		sm_networks = {};
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Network"), HASHSTR("Network Manager"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("Network"), HASHSTR("Network Manager"));
 #endif
 	}
 
@@ -90,7 +90,7 @@ namespace da::net
 		delete network;
 	}
 
-	da::net::INetwork* CNetworkManager::getNetwork()
+	da::INetwork* CNetworkManager::getNetwork()
 	{
 		for (const std::pair<uint64_t, INetwork*>& kv : sm_networks) {
 			return kv.second;

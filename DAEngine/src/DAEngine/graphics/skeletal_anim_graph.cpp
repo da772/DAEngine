@@ -5,7 +5,7 @@
 #include "skeletal_animator.h"
 #include "graphics_skmesh.h"
 
-namespace da::graphics
+namespace da
 {
 
 	CSkeletalAnimGraph::CSkeletalAnimGraph(CSkeletalMesh* mesh, const std::vector<FSkeletalAnimGraphNode>& nodes) : m_Mesh(mesh), m_Nodes(nodes)
@@ -53,17 +53,17 @@ namespace da::graphics
 		}
 	}
 
-	std::vector<da::graphics::FSkeletalAnimGraphNode>& CSkeletalAnimGraph::getNodes()
+	std::vector<da::FSkeletalAnimGraphNode>& CSkeletalAnimGraph::getNodes()
 	{
 		return m_Nodes;
 	}
 
-	const da::graphics::CSkeletalAnimator* CSkeletalAnimGraph::getAnim() const
+	const da::CSkeletalAnimator* CSkeletalAnimGraph::getAnim() const
 	{
 		return m_AnimBase;
 	}
 
-	da::graphics::CSkeletalMesh* CSkeletalAnimGraph::getMesh()
+	da::CSkeletalMesh* CSkeletalAnimGraph::getMesh()
 	{
 		return m_Mesh;
 	}

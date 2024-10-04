@@ -2,17 +2,17 @@
 #include "collision_component.h"
 #include <core/events/event_handler.h>
 
-namespace da::core
+namespace da
 {
 #ifdef DA_REVIEW
 	COMPONENT_CPP_DEBUG(CCollisionComponent)
 #else
 	COMPONENT_CPP(CCollisionComponent)
 #endif
-	CCollisionComponent::CCollisionComponent(const da::physics::IPhysicsShape& shape, const glm::mat4& offset, const CGuid& id, da::core::CEntity& parent) 
+	CCollisionComponent::CCollisionComponent(const da::IPhysicsShape& shape, const glm::mat4& offset, const CGuid& id, da::CEntity& parent) 
 		: m_guid(id), m_parent(parent), m_transform(offset), m_shape(&shape)
 	{
-		m_collision = da::physics::ICollisionObject::create(shape, 0);
+		m_collision = da::ICollisionObject::create(shape, 0);
 		m_collision->setTransform(m_parent.getTransform().matrix() * m_transform);
 	}
 
@@ -26,7 +26,7 @@ namespace da::core
 
 	void CCollisionComponent::onInitialize()
 	{
-		m_collision->addOverlapCallback(BIND_EVENT_FN(da::core::CCollisionComponent, onOverlap));
+		m_collision->addOverlapCallback(BIND_EVENT_FN(da::CCollisionComponent, onOverlap));
 	}
 
 	void CCollisionComponent::onUpdate(float dt)
@@ -36,17 +36,17 @@ namespace da::core
 
 	void CCollisionComponent::onShutdown()
 	{
-		m_collision->removeOverlapCallback(BIND_EVENT_FN(da::core::CCollisionComponent, onOverlap));
+		m_collision->removeOverlapCallback(BIND_EVENT_FN(da::CCollisionComponent, onOverlap));
 	}
 
-	void CCollisionComponent::onOverlap(const da::physics::FCollisionEventData& data)
+	void CCollisionComponent::onOverlap(const da::FCollisionEventData& data)
 	{
 		if (!m_enabled)
 		{	
 			return;
 		}
 
-		if (da::core::CEntity* ent = (da::core::CEntity*)data.Other) {
+		if (da::CEntity* ent = (da::CEntity*)data.Other) {
 			if (data.Overlapping && ent != &m_parent) {
 				m_func(data);
 			}
@@ -61,7 +61,7 @@ namespace da::core
 	}
 
 
-	void CCollisionComponent::setCallback(const std::function<void(const da::physics::FCollisionEventData& data)>& func)
+	void CCollisionComponent::setCallback(const std::function<void(const da::FCollisionEventData& data)>& func)
 	{
 		m_func = func;
 	}

@@ -4,11 +4,11 @@
 
 #if defined(DA_GRAPHICS_BGFX) && defined(DA_WINDOW_GLFW)
 
-namespace da::platform
+namespace da
 {
-	class CImGuiBgfxApi : public core::CImGuiApi {
+	class CImGuiBgfxApi : public CImGuiApi {
 	public:
-		CImGuiBgfxApi(graphics::CGraphicsApi* graphicsApi);
+		CImGuiBgfxApi(da::CGraphicsApi* graphicsApi);
 		~CImGuiBgfxApi();
 
 		virtual void onInitialize() override;
@@ -17,8 +17,8 @@ namespace da::platform
 		virtual void onLateUpdate() override;
 
 	private:
-		void onCursorMove(const core::CEvent& event);
-		void onMouseButton(const core::CEvent& event);
+		void onCursorMove(const CEvent& event);
+		void onMouseButton(const CEvent& event);
 	private:
 		float m_mx = 0, m_my = 0;
 		int m_mb = 0;

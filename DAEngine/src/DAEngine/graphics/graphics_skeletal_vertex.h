@@ -1,7 +1,7 @@
 #pragma once
 #include "dastd.h"
 
-namespace da::graphics
+namespace da
 {
 	struct FSkeletalVertexBindingDescription {
 		unsigned int binding, stride, inputRate;
@@ -27,9 +27,9 @@ namespace da::graphics
 }
 
 namespace std {
-	template<> struct hash<da::graphics::FSkeletalVertexBase> {
-		size_t operator()(da::graphics::FSkeletalVertexBase const& vertex) const {
-			return CHashString((const char*)&vertex, sizeof(da::graphics::FSkeletalVertexBase)).hash();
+	template<> struct hash<da::FSkeletalVertexBase> {
+		size_t operator()(da::FSkeletalVertexBase const& vertex) const {
+			return CHashString((const char*)&vertex, sizeof(da::FSkeletalVertexBase)).hash();
 		}
 	};
 };

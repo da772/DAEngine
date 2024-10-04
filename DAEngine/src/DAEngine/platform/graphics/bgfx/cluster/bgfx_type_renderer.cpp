@@ -16,7 +16,7 @@
 #include <graphics/camera.h>
 #include "../bgfx_util.h"
 
-namespace da::platform {
+namespace da {
 
     bgfx::VertexLayout PosVertex::layout;
 
@@ -46,11 +46,11 @@ namespace da::platform {
         const PosVertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
         m_blitTriangleBuffer = bgfx::createVertexBuffer(bgfx::copy(&vertices, sizeof(vertices)), PosVertex::layout);
 
-        m_pBlipProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_tonemap.sc", "shaders/cluster/fs_tonemap.sc");
+        m_pBlipProgram = da::CMaterialFactory::create("shaders/cluster/vs_tonemap.sc", "shaders/cluster/fs_tonemap.sc");
 
-        m_pDepthprogram = da::factory::CMaterialFactory::create("shaders/cluster/vs_depth.sc", "shaders/cluster/fs_depth.sc");
-        m_pDepthprogramSk = da::factory::CMaterialFactory::create("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
-        m_pDepthprogramInst = da::factory::CMaterialFactory::create("shaders/cluster/vs_depth_inst.sc", "shaders/cluster/fs_depth.sc");
+        m_pDepthprogram = da::CMaterialFactory::create("shaders/cluster/vs_depth.sc", "shaders/cluster/fs_depth.sc");
+        m_pDepthprogramSk = da::CMaterialFactory::create("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
+        m_pDepthprogramInst = da::CMaterialFactory::create("shaders/cluster/vs_depth_inst.sc", "shaders/cluster/fs_depth.sc");
 
         m_pbr.initialize();
         m_pbr.generateAlbedoLUT();
@@ -90,7 +90,7 @@ namespace da::platform {
         m_time += dt;
 
 
-        glm::vec4 camPos = glm::vec4(da::core::CCamera::getCamera()->position(), 1.0f);
+        glm::vec4 camPos = glm::vec4(da::CCamera::getCamera()->position(), 1.0f);
         bgfx::setUniform(m_camPosUniform, glm::value_ptr(camPos));
 
         glm::vec3 linear = m_pbr.m_whiteFurnaceEnabled
@@ -128,10 +128,10 @@ namespace da::platform {
         BGFXDESTROY(m_debugSamplerUniform);
 #endif
 
-        da::factory::CMaterialFactory::remove(m_pBlipProgram);
-        da::factory::CMaterialFactory::remove(m_pDepthprogram);
-        da::factory::CMaterialFactory::remove(m_pDepthprogramSk);
-        da::factory::CMaterialFactory::remove(m_pDepthprogramInst);
+        da::CMaterialFactory::remove(m_pBlipProgram);
+        da::CMaterialFactory::remove(m_pDepthprogram);
+        da::CMaterialFactory::remove(m_pDepthprogramSk);
+        da::CMaterialFactory::remove(m_pDepthprogramInst);
 
 
         if (bgfx::isValid(m_frameBuffer))
@@ -183,7 +183,7 @@ namespace da::platform {
     {
         PROFILE()
         // view matrix
-        da::core::CCamera* cam = da::core::CCamera::getCamera();
+        da::CCamera* cam = da::CCamera::getCamera();
 
         bx::Vec3 pos(cam->position().x, cam->position().y, cam->position().z);
         glm::vec3 _at = cam->position() + cam->forward();
@@ -192,10 +192,10 @@ namespace da::platform {
         bx::mtxLookAt(glm::value_ptr(m_viewMat), pos, at, up, rightHanded ? ::bx::Handedness::Right : ::bx::Handedness::Left);
         // projection matrix
         bx::mtxProj(glm::value_ptr(m_projMat),
-            da::core::CCamera::getCamera()->fov,
+            da::CCamera::getCamera()->fov,
             float(m_width) / m_height,
-            da::core::CCamera::getCamera()->zNear,
-            da::core::CCamera::getCamera()->zFar,
+            da::CCamera::getCamera()->zNear,
+            da::CCamera::getCamera()->zFar,
             bgfx::getCaps()->homogeneousDepth,
             rightHanded ? ::bx::Handedness::Right : ::bx::Handedness::Left);
         bgfx::setViewTransform(view, glm::value_ptr(m_viewMat), glm::value_ptr(m_projMat));
@@ -279,7 +279,7 @@ namespace da::platform {
         bgfx::TextureHandle debugTexture = bgfx::getTexture(m_debugRenderer.getFrameBuffer(), 0);
 		bgfx::setTexture(3, m_debugSamplerUniform, debugTexture);
 #endif
-        float exposureVec[4] = { da::core::CCamera::getCamera()->exposure };
+        float exposureVec[4] = { da::CCamera::getCamera()->exposure };
         bgfx::setUniform(m_exposureVecUniform, exposureVec);
         float tonemappingModeVec[4] = { (float)m_tonemappingMode };
         bgfx::setUniform(m_tonemappingModeVecUniform, tonemappingModeVec);

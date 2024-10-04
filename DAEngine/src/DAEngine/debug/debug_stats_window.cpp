@@ -7,23 +7,23 @@
 #include "debug_menu_bar.h"
 #include <stl/time.h>
 
-double da::debug::CDebugStatsWindow::s_gpuTime;
-double da::debug::CDebugStatsWindow::s_cpuTime;
-uint64_t da::debug::CDebugStatsWindow::s_drawCalls;
-double da::debug::CDebugStatsWindow::s_waitTime;
-uint64_t da::debug::CDebugStatsWindow::s_gpuMemMax;
-uint64_t da::debug::CDebugStatsWindow::s_gpuMem;
-std::unordered_map<CHashString, double> da::debug::CDebugStatsWindow::s_viewTimes;
-bool da::debug::CDebugStatsWindow::s_showing = true;
-bool da::debug::CDebugStatsWindow::s_showViewTimes = false;
+double da::CDebugStatsWindow::s_gpuTime;
+double da::CDebugStatsWindow::s_cpuTime;
+uint64_t da::CDebugStatsWindow::s_drawCalls;
+double da::CDebugStatsWindow::s_waitTime;
+uint64_t da::CDebugStatsWindow::s_gpuMemMax;
+uint64_t da::CDebugStatsWindow::s_gpuMem;
+std::unordered_map<CHashString, double> da::CDebugStatsWindow::s_viewTimes;
+bool da::CDebugStatsWindow::s_showing = true;
+bool da::CDebugStatsWindow::s_showViewTimes = false;
 
 
-void da::debug::CDebugStatsWindow::initialize()
+void da::CDebugStatsWindow::initialize()
 {
-	da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Toggle Stats"), &s_showing, update);
+	da::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Toggle Stats"), &s_showing, update);
 }
 
-void da::debug::CDebugStatsWindow::update()
+void da::CDebugStatsWindow::update()
 {
 	ImGui::SetNextWindowBgAlpha(.5f);
 	ImGui::SetNextWindowPos({ 0.f, 24.5f });
@@ -36,9 +36,9 @@ void da::debug::CDebugStatsWindow::update()
 		ImGui::SameLine();
 		ImGui::Checkbox("##viewStates", &s_showViewTimes);
 		ImGui::Separator();
-		ImGui::Text("%d FPS", da::core::CTime::getFps());
-		ImGui::Text("App   Time:    %f ms", 1000.0/(double)da::core::CTime::getFps());
-		ImGui::Text("Cpu   Time:    %f ms", std::abs(1000.0 / (double)da::core::CTime::getFps() - s_gpuTime / 1000.0));
+		ImGui::Text("%d FPS", da::CTime::getFps());
+		ImGui::Text("App   Time:    %f ms", 1000.0/(double)da::CTime::getFps());
+		ImGui::Text("Cpu   Time:    %f ms", std::abs(1000.0 / (double)da::CTime::getFps() - s_gpuTime / 1000.0));
 		ImGui::Text("Gpu   Time:    %f ms", s_gpuTime/1000.0);
 		ImGui::Text("Wait  Time:    %f ms", s_waitTime/1000.0);
 
@@ -59,9 +59,9 @@ void da::debug::CDebugStatsWindow::update()
 	ImGui::End();
 }
 
-void da::debug::CDebugStatsWindow::shutdown()
+void da::CDebugStatsWindow::shutdown()
 {
-	da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Toggle Stats"));
+	da::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Toggle Stats"));
 }
 
 

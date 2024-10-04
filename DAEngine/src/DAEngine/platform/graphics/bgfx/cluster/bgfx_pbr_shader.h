@@ -5,12 +5,12 @@
 #include <glm/glm.hpp>
 #include <graphics/graphics_material_data.h>
 
-namespace da::graphics
+namespace da
 {
     class CMaterial;
 }
 
-namespace da::platform
+namespace da
 {
     struct CBgfxMaterial;
 
@@ -22,7 +22,7 @@ namespace da::platform
 
         void generateAlbedoLUT();
 
-        uint64_t bindMaterial(const da::graphics::FMaterialData& materialData);
+        uint64_t bindMaterial(const da::FMaterialData& materialData);
         void bindAlbedoLUT(bool compute = false);
 
         static constexpr float WHITE_FURNACE_RADIANCE = 1.0f;
@@ -50,7 +50,7 @@ namespace da::platform
         ::bgfx::TextureHandle m_albedoLUTTexture = BGFX_INVALID_HANDLE;
         ::bgfx::TextureHandle m_defaultTexture = BGFX_INVALID_HANDLE;
 
-        da::graphics::CMaterial* m_pAlbedoLUTProgram;
+        da::CMaterial* m_pAlbedoLUTProgram;
     };
 
 }

@@ -3,13 +3,13 @@
 #include "core/events/event.h"
 #include "dastd.h"
 
-namespace da::core {
+namespace da {
 
 	struct FWindowInputData
 	{
 		class CWindow* Window;
 		std::vector<int> Inputs;
-		std::function<void(const events::CEvent&)> Func;
+		std::function<void(const CEvent&)> Func;
 	};
 
 	struct FWindowMouseData
@@ -18,7 +18,7 @@ namespace da::core {
 		float XPos, YPos;
 		float XScroll, YScroll;
 		std::vector<int> Inputs;
-		std::function<void(const events::CEvent&)> Func;
+		std::function<void(const CEvent&)> Func;
 	};
 
 	struct FInputContextData
@@ -54,8 +54,8 @@ namespace da::core {
 		static bool inputContextAvailable();
 
 	private:
-		static void handleKeyInput(class CWindow* window, const events::CEvent& e);
-		static void handleMouseInput(class CWindow* window, const events::CEvent& e);
+		static void handleKeyInput(class CWindow* window, const CEvent& e);
+		static void handleMouseInput(class CWindow* window, const CEvent& e);
 		static void registerKeyboardInput(CWindow* window);
 		static void registerMouseInput(CWindow* window);
 		static void unregisterMouseInput(CWindow* window);

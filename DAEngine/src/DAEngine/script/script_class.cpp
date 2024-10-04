@@ -14,7 +14,7 @@ extern "C" {
 #endif
 #include <sol/sol.hpp>
 
-namespace da::script
+namespace da
 {
 
 	int getRef(lua_State* L, sol::object obj)
@@ -31,7 +31,7 @@ namespace da::script
 
 	}
 
-	void CScriptClass::setup(const da::core::CGuid& parent, const da::core::CGuid& guid)
+	void CScriptClass::setup(const da::CGuid& parent, const da::CGuid& guid)
 	{
 		m_state = CScriptEngine::getState();
 		ASSERT(m_state);
@@ -81,7 +81,7 @@ namespace da::script
 		sol::table guidIndex = base[m_objName.c_str()]["Id"];
 		sol::table entityIndex = base[m_objName.c_str()]["Entity"]["Id"];
 
-		da::core::guid_str compGuid, entityGuid;
+		da::guid_str compGuid, entityGuid;
 		guid.c_str(compGuid);
 		parent.c_str(entityGuid);
 

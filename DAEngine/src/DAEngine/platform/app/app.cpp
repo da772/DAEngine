@@ -37,24 +37,24 @@ namespace da
 	{
 		m_initialized = true;
 #ifndef DA_TEST
-		script::CScriptEngine::initialize();
+		CScriptEngine::initialize();
 #ifdef DA_REVIEW
-		da::debug::CDebug::initialize();
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("App"), HASHSTR("Reset"), &m_reset, [&] { reset();});
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"), &m_sceneDebug, [&] { renderSceneDebug();  });
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("ECSDebug"), &m_ecsDebug, [&] { renderECSDebug();  });
+		da::CDebug::initialize();
+		da::CDebugMenuBar::register_debug(HASHSTR("App"), HASHSTR("Reset"), &m_reset, [&] { reset();});
+		da::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"), &m_sceneDebug, [&] { renderSceneDebug();  });
+		da::CDebugMenuBar::register_debug(HASHSTR("ECS"), HASHSTR("ECSDebug"), &m_ecsDebug, [&] { renderECSDebug();  });
 #endif
 #endif
 
-		da::net::CNetworkManager::initialize();
-		core::CSceneManager::initialize();
-		da::physics::CPhysics::initialize();
-		da::ai::CNavMeshManager::initialize();
+		da::CNetworkManager::initialize();
+		CSceneManager::initialize();
+		da::CPhysics::initialize();
+		da::CNavMeshManager::initialize();
 		for (IModule* m : m_modules) {
 			m->initialize();
 		}
 		onInitialize();
-		if (core::CScene* scene = core::CSceneManager::getScene()) {
+		if (CScene* scene = CSceneManager::getScene()) {
 			scene->initialize();
 		}
 		
@@ -65,10 +65,10 @@ namespace da
 		{
 			PROFILE_FRAME("Main")
 			CCrashHandler::registerCrashHandler();
-			double timeStep = da::core::CTime::newFrame();
+			double timeStep = da::CTime::newFrame();
 			{
 				PROFILE("AnimManager Update Begin")
-				da::graphics::CAnimationManager::updateBegin(timeStep);
+				da::CAnimationManager::updateBegin(timeStep);
 			}
 			{
 				PROFILE("Module Update")
@@ -79,11 +79,11 @@ namespace da
 #ifdef DA_REVIEW
 			{
 				PROFILE("Debug Update")
-				da::debug::CDebug::update(timeStep);
+				da::CDebug::update(timeStep);
 			}
 			{
 				PROFILE("Script Debug Update")
-				da::script::CScriptEngine::update();
+				da::CScriptEngine::update();
 			}
 #endif
 			{
@@ -91,29 +91,29 @@ namespace da
 				onUpdate(timeStep);
 			}
 
-			if (core::CScene* scene = core::CSceneManager::getScene()) {
+			if (CScene* scene = CSceneManager::getScene()) {
 				PROFILE("Scene Update")
 				scene->update(timeStep);
 			}
 
 			{
 				PROFILE("WorkerPool Update")
-				da::core::CWorkerPool::update();
+				da::CWorkerPool::update();
 			}
 
 			{
 				PROFILE("NavMesh Update")
-				da::ai::CNavMeshManager::update(timeStep);
+				da::CNavMeshManager::update(timeStep);
 			}
 
 			{
 				PROFILE("Physics Update")
-				da::physics::CPhysics::update(timeStep);
+				da::CPhysics::update(timeStep);
 			}
 			
 			{
 				PROFILE("AnimManager Update End")
-				da::graphics::CAnimationManager::updateEnd();
+				da::CAnimationManager::updateEnd();
 			}
 			
 			{
@@ -139,10 +139,10 @@ namespace da
 	{
 		onShutdown();
 
-		if (core::CScene* scene = core::CSceneManager::getScene()) {
+		if (CScene* scene = CSceneManager::getScene()) {
 			scene->shutdown();
 			delete scene;
-			core::CSceneManager::setScene(nullptr);
+			CSceneManager::setScene(nullptr);
 		}
 
 		for (IModule* m : m_modules) {
@@ -154,17 +154,17 @@ namespace da
 			delete m;
 		}
 		m_modules = {};
-		da::ai::CNavMeshManager::shutdown();
-		da::physics::CPhysics::shutdown();
-		core::CSceneManager::shutdown();
-		da::net::CNetworkManager::shutdown();
+		da::CNavMeshManager::shutdown();
+		da::CPhysics::shutdown();
+		CSceneManager::shutdown();
+		da::CNetworkManager::shutdown();
 #ifndef DA_TEST
-		script::CScriptEngine::shutdown();
+		CScriptEngine::shutdown();
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("App"), HASHSTR("Reset"));
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"));
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("ECS"), HASHSTR("ECSDebug"));
-		da::debug::CDebug::shutdown();
+		da::CDebugMenuBar::unregister_debug(HASHSTR("App"), HASHSTR("Reset"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("ECS"), HASHSTR("CSceneManager"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("ECS"), HASHSTR("ECSDebug"));
+		da::CDebug::shutdown();
 #endif
 #endif
 	}
@@ -188,8 +188,8 @@ namespace da
 	void CApp::initalizeInternal(int argc, const char** argv)
 	{
 		CLogger::initialize();
-		core::CWorkerPool::initialize();
-		core::CArgHandler::initialize(argc, argv);
+		CWorkerPool::initialize();
+		CArgHandler::initialize(argc, argv);
 		std::string args = "Initialized with argc: %d\n";
 		for (size_t i = 0; i < argc; i++) {
 			args += std::string(argv[i]);
@@ -197,23 +197,23 @@ namespace da
 				args += "\n";
 		}
 		LOG_INFO(ELogChannel::Core, args, argc);
-		core::CComponents::registerComponents();
+		CComponents::registerComponents();
 	}
 
 	void CApp::shutdownInternal()
 	{
 #ifdef DA_REVIEW
-		core::CFactoryDebug::checkInstances();
+		CFactoryDebug::checkInstances();
 #endif
-		core::CArgHandler::shutdown();
+		CArgHandler::shutdown();
 		CLogger::shutdown();
-		core::CWorkerPool::shutdown();
+		CWorkerPool::shutdown();
 	}
 
 #ifdef DA_REVIEW
 	void CApp::renderSceneDebug()
 	{
-		using namespace da::core;
+		using namespace da;
 		if (CScene* scene = CSceneManager::getScene()) {
 
 			if (ImGui::Begin("Scene Debug", &m_sceneDebug)) {
@@ -272,7 +272,7 @@ namespace da
 
 	void CApp::renderECSDebug()
 	{
-		using namespace da::core;
+		using namespace da;
 		if (CScene* scene = CSceneManager::getScene()) {
 
 			if (ImGui::Begin("ECS Debug", &m_ecsDebug)) {

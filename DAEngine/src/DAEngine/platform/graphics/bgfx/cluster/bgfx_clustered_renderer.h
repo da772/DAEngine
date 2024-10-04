@@ -7,7 +7,7 @@
 #include "bgfx_ssao_shader.h"
 #include <graphics/graphics_light_manager.h>
 
-namespace da::platform
+namespace da
 {
     class CBgfxGraphicsMaterial;
 
@@ -31,8 +31,8 @@ namespace da::platform
     protected:
         virtual void onReset(size_t width, size_t height) override;
     private:
-        void onLightEvent(const da::graphics::FLightData& light, bool added);
-        void renderFunc(uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* instanceMat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState, ERenderFlags useMaterials);
+        void onLightEvent(const da::FLightData& light, bool added);
+        void renderFunc(uint8_t view, da::CMaterial* mat, da::CMaterial* instanceMat, da::CMaterial* skMat, da::RenderState renderState, ERenderFlags useMaterials);
 
 #ifdef DA_REVIEW
         void renderLightDebug();
@@ -40,13 +40,13 @@ namespace da::platform
     private:
         glm::mat4 m_oldProjMat = glm::mat4(0.0f);
 
-        da::graphics::CMaterial* m_pClusterBuildingComputeProgram;
-        da::graphics::CMaterial* m_pResetCounterComputeProgram;
-        da::graphics::CMaterial* m_pLightCullingComputeProgram;
-        da::graphics::CMaterial* m_pLightingProgram;
-        da::graphics::CMaterial* m_pLightingInstanceProgram;
-        da::graphics::CMaterial* m_pLightingSkeletalProgram;
-        da::graphics::CMaterial* m_pDebugVisProgram;
+        da::CMaterial* m_pClusterBuildingComputeProgram;
+        da::CMaterial* m_pResetCounterComputeProgram;
+        da::CMaterial* m_pLightCullingComputeProgram;
+        da::CMaterial* m_pLightingProgram;
+        da::CMaterial* m_pLightingInstanceProgram;
+        da::CMaterial* m_pLightingSkeletalProgram;
+        da::CMaterial* m_pDebugVisProgram;
 
         CBgfxAmbientLight m_ambientLight;
         CBgfxPointLightList m_pointLights;

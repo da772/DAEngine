@@ -2,7 +2,7 @@
 #include "logger.h"
 
 
-namespace da::core
+namespace da
 {
 	std::vector<CHashString> CArgHandler::s_args;
 	int CArgHandler::s_argc = 0;

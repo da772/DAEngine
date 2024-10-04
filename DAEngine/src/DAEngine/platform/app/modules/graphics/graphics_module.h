@@ -3,12 +3,12 @@
 #include "platform/app/modules/module.h"
 #include "platform/app/modules/window/window_module.h"
 
-namespace da::graphics
+namespace da
 {
 	class CGraphicsApi;
 }
 
-namespace da::modules
+namespace da
 {
 	class CGraphicsModule : public IModule
 	{
@@ -21,13 +21,13 @@ namespace da::modules
 		void lateShutdown() override;
 		void update() override;
 
-		inline da::graphics::CGraphicsApi* getGraphicsApi() const {
+		inline da::CGraphicsApi* getGraphicsApi() const {
 			return m_GraphicsApi;
 		}
 
 	private:
 		CWindowModule* m_Window;
-		graphics::CGraphicsApi* m_GraphicsApi;
+		da::CGraphicsApi* m_GraphicsApi;
 
 
 	};

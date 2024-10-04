@@ -5,7 +5,7 @@
 #include "core/threading/worker_pool.h"
 #include "graphics/skeletal_animator.h"
 
-namespace da::graphics
+namespace da
 {
 	std::mutex CAnimationManager::s_mutex;
 	std::unordered_map<void*, bool> CAnimationManager::s_animators;
@@ -14,21 +14,21 @@ namespace da::graphics
 	{
 		PROFILE()
 		
-		//const da::core::FComponentContainer& skeletalMeshcontainer = da::core::CSceneManager::getScene()->getComponents<da::core::CSkeletalMeshComponent>();
+		//const da::FComponentContainer& skeletalMeshcontainer = da::CSceneManager::getScene()->getComponents<da::CSkeletalMeshComponent>();
 		
-		if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
-			//da::core::CWorkerPool::addJob([deltaTime] {
+		if (da::CScene* scene = da::CSceneManager::getScene()) {
+			//da::CWorkerPool::addJob([deltaTime] {
 			CAnimationManager::s_mutex.lock();
-			if (!da::core::CSceneManager::getScene()->hasComponents<da::core::CSkeletalMeshComponent>()) {
+			if (!da::CSceneManager::getScene()->hasComponents<da::CSkeletalMeshComponent>()) {
 				CAnimationManager::s_mutex.unlock();
 				return;
 			}
 
-			const da::core::FComponentContainer& skeletalMeshcontainer = da::core::CSceneManager::getScene()->getComponents<da::core::CSkeletalMeshComponent>();
+			const da::FComponentContainer& skeletalMeshcontainer = da::CSceneManager::getScene()->getComponents<da::CSkeletalMeshComponent>();
 			PROFILE_TAG("Count: ", skeletalMeshcontainer.getCount())
 			for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
-				da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
-				da::graphics::CSkeletalAnimator* animator = meshComponent->getSkeletalAnimator();
+				da::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::CSkeletalMeshComponent>(x);
+				da::CSkeletalAnimator* animator = meshComponent->getSkeletalAnimator();
 
 				if (s_animators.find((void*)animator) != s_animators.end()) {
 					continue;

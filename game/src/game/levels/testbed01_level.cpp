@@ -31,7 +31,7 @@ glm::vec4 hexToVec(uint32_t i) {
 	return glm::vec4(rf, gf, bf, af);
 }
 
-CTestBed01Level::CTestBed01Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window) : ILevel(name, graphics, window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
+CTestBed01Level::CTestBed01Level(CHashString name, da::CGraphicsModule& graphics, da::CWindowModule& window) : ILevel(name, graphics, window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
 {
 
 }
@@ -40,15 +40,15 @@ void CTestBed01Level::initialize()
 {
 	m_windowModule.getWindow()->lockCursor(true);
 	m_scrlevel.setup({}, {});
-	da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid("2f94546a-a92a-4046-946a-f28c2364110b")));
-	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
-	da::ai::CTiledNavMesh* navMesh = new da::ai::CTiledNavMesh();
+	da::CSceneManager::setScene(new da::CScene(da::CGuid("2f94546a-a92a-4046-946a-f28c2364110b")));
+	da::CCamera::getCamera()->setPosition({ 0,0,1 });
+	da::CTiledNavMesh* navMesh = new da::CTiledNavMesh();
 
 	// Test Bed
 	{
-		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::graphics::CStaticMesh* colMesh = da::factory::CStaticMeshFactory::create("assets/prop/level/dungeon_test_col.fbx");
-		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/prop/level/dungeon_test.fbx");
+		da::CEntity* testBed = da::CSceneManager::getScene()->createEntity();
+		da::CStaticMesh* colMesh = da::CStaticMeshFactory::create("assets/prop/level/dungeon_test_col.fbx");
+		da::FComponentRef<da::CSmeshComponent> meshComponent = testBed->addComponent<da::CSmeshComponent>("assets/prop/level/dungeon_test.fbx");
 
 		for (int i = 0; i < meshComponent->getStaticMesh()->getMaterialCount(); i++) {
 			meshComponent->getStaticMesh()->getMaterial(i).metallicFactor = 0.0;
@@ -58,20 +58,20 @@ void CTestBed01Level::initialize()
 
 		meshComponent->getStaticMesh()->castShadows(true);
 
-		std::vector<da::physics::IPhysicsShape*> shapes;
+		std::vector<da::IPhysicsShape*> shapes;
 		std::vector<glm::mat4> transforms;
 
 		for (int i = 0; i < colMesh->getMeshes().size(); i++) {
-			shapes.push_back(da::physics::CPhysicsShapeTriangleMesh::create(colMesh, i));
+			shapes.push_back(da::CPhysicsShapeTriangleMesh::create(colMesh, i));
 			transforms.push_back(testBed->getTransform().matrix());
 		}
 
-		da::physics::CPhysicsShapeCompound* compoundCollision = da::physics::CPhysicsShapeCompound::create(shapes, transforms);
+		da::CPhysicsShapeCompound* compoundCollision = da::CPhysicsShapeCompound::create(shapes, transforms);
 
-		testBed->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(
+		testBed->addComponent<da::CRigidBodyComponent>(
+			da::IPhysicsRigidBody::create(
 				compoundCollision
-				, da::physics::CPhysicsDefaultMotionState::create(testBed->getTransform().matrix())
+				, da::CPhysicsDefaultMotionState::create(testBed->getTransform().matrix())
 				, 0.f
 				, { 0.f,0.f,0.f }));
 		testBed->setTag(HASHSTR("TestBed"));
@@ -89,64 +89,64 @@ void CTestBed01Level::initialize()
 
 	// Hello World
 	{
-		da::core::CEntity* helloWorldEntity = da::core::CSceneManager::getScene()->createEntity();
+		da::CEntity* helloWorldEntity = da::CSceneManager::getScene()->createEntity();
 		helloWorldEntity->setTag(HASHSTR("helloworld"));
-		helloWorldEntity->addComponent<da::core::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
+		helloWorldEntity->addComponent<da::CScriptComponent>("scripts/build/helloworld.lua", "MyComponent");
 	}
 
 	// Ramp1
 	{
-		da::core::CEntity* ramp = da::core::CSceneManager::getScene()->createEntity();
+		da::CEntity* ramp = da::CSceneManager::getScene()->createEntity();
 		ramp->getTransform().setPosition({ 0,30,-3 });
 		ramp->getTransform().setRotation({ 15,0,0 });
 		ramp->getTransform().setScale({ 5,10,5.f });
 		ramp->setTag(HASHSTR("ramp1"));
 
-		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = ramp->addComponent<da::core::CSmeshComponent>("assets/cube.fbx");
+		da::FComponentRef<da::CSmeshComponent> meshComponent = ramp->addComponent<da::CSmeshComponent>("assets/cube.fbx");
 		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Texture::tex_debug_grid_01));
 
-		ramp->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeCube::create({ 5.f,10.f,5.f })
-				, da::physics::CPhysicsDefaultMotionState::create(ramp->getTransform().matrix())
+		ramp->addComponent<da::CRigidBodyComponent>(
+			da::IPhysicsRigidBody::create(da::CPhysicsShapeCube::create({ 5.f,10.f,5.f })
+				, da::CPhysicsDefaultMotionState::create(ramp->getTransform().matrix())
 				, 0.f
 				, { 0.f,0.f,0.f }));
 	}
 
 	// Dummy obj
 	{
-		da::core::CEntity* transformObj = da::core::CSceneManager::getScene()->createEntity();
+		da::CEntity* transformObj = da::CSceneManager::getScene()->createEntity();
 		transformObj->getTransform().setPosition({ -10.000,-13.000,6.000 });
 		transformObj->getTransform().setRotation({ 0,0,0 });
 		transformObj->setTag(HASHSTR("dummy"));
 
-		da::core::FComponentRef<da::core::CSmeshComponent> mesh = transformObj->addComponent<da::core::CSmeshComponent>("assets/prop/misc/target_dummy.fbx");
+		da::FComponentRef<da::CSmeshComponent> mesh = transformObj->addComponent<da::CSmeshComponent>("assets/prop/misc/target_dummy.fbx");
 		mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Texture::dummy_baseColor));
 		mesh->getStaticMesh()->getMaterial(0).setNormalTexture(CTextureHelper::create(Texture::dummy_normal));
 		mesh->getStaticMesh()->getMaterial(0).metallicFactor = 0.f;
 		mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
 
-		da::graphics::CStaticMesh* colMesh = da::factory::CStaticMeshFactory::create("assets/prop/misc/target_dummy_collision.fbx", false);
+		da::CStaticMesh* colMesh = da::CStaticMeshFactory::create("assets/prop/misc/target_dummy_collision.fbx", false);
 
-		transformObj->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(da::physics::CPhysicsShapeTriangleMesh::create(colMesh)
-				, da::physics::CPhysicsDefaultMotionState::create(transformObj->getTransform().matrix())
+		transformObj->addComponent<da::CRigidBodyComponent>(
+			da::IPhysicsRigidBody::create(da::CPhysicsShapeTriangleMesh::create(colMesh)
+				, da::CPhysicsDefaultMotionState::create(transformObj->getTransform().matrix())
 				, 0.f
 				, { 0.f,0.f,0.f }));
 	}
 
 	{
-		da::core::CEntity* arena = da::core::CSceneManager::getScene()->createEntity();
+		da::CEntity* arena = da::CSceneManager::getScene()->createEntity();
 		arena->getTransform().setPosition({ 0,0,0.f });
 		arena->getTransform().setRotation({ 0,0,0 });
 		arena->setTag(HASHSTR("arena"));
 
-		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = arena->addComponent<da::core::CSmeshComponent>("assets/prop/structure/prop_gladiator_arena.fbx");
+		da::FComponentRef<da::CSmeshComponent> meshComponent = arena->addComponent<da::CSmeshComponent>("assets/prop/structure/prop_gladiator_arena.fbx");
 		meshComponent->getStaticMesh()->castShadows(false);
 
-		da::graphics::CStaticMesh* collision = da::factory::CStaticMeshFactory::create("assets/prop/structure/prop_collision_gladiator_arena.fbx");
-		/*arena->addComponent<da::core::CRigidBodyComponent>(da::physics::IPhysicsRigidBody::create(
-			da::physics::CPhysicsShapeTriangleMesh::create(collision)
-			, da::physics::CPhysicsDefaultMotionState::create(arena->getTransform().matrix())
+		da::CStaticMesh* collision = da::CStaticMeshFactory::create("assets/prop/structure/prop_collision_gladiator_arena.fbx");
+		/*arena->addComponent<da::CRigidBodyComponent>(da::IPhysicsRigidBody::create(
+			da::CPhysicsShapeTriangleMesh::create(collision)
+			, da::CPhysicsDefaultMotionState::create(arena->getTransform().matrix())
 			, 0.f
 			, { 0.f,0.f,0.f }));
 */
@@ -168,14 +168,14 @@ void CTestBed01Level::initialize()
 	m_scrlevel.classInitialize();
 
 	m_windowModule.getWindow()->getEventHandler().registerCallback(EEventType::InputKeyboard, BIND_EVENT_FN(CTestBed01Level, onKeyboardEvent));
-	da::ai::CNavMeshManager::addNavMesh(*navMesh);
+	da::CNavMeshManager::addNavMesh(*navMesh);
 	// create vehicle
 	//createVehicle();
 }
 
-void CTestBed01Level::onKeyboardEvent(const da::core::events::CEvent& event)
+void CTestBed01Level::onKeyboardEvent(const da::CEvent& event)
 {
-	const da::core::events::CInputKeyboardEvent& kb = (da::core::events::CInputKeyboardEvent&)event;
+	const da::CInputKeyboardEvent& kb = (da::CInputKeyboardEvent&)event;
 
 	if (kb.getBtn() != 290 || kb.getType() != EInputType::RELEASED) // F1
 	{
@@ -184,11 +184,11 @@ void CTestBed01Level::onKeyboardEvent(const da::core::events::CEvent& event)
 
 	if (!m_freeCam)
 	{
-		da::core::CInput::pushInputContext(HASHSTR("FreeCam"), 1e9);
+		da::CInput::pushInputContext(HASHSTR("FreeCam"), 1e9);
 	}
 	else
 	{
-		da::core::CInput::popInputContext(HASHSTR("FreeCam"));
+		da::CInput::popInputContext(HASHSTR("FreeCam"));
 	}
 	m_freeCam = !m_freeCam;
 	m_windowModule.getWindow()->lockCursor(!m_freeCam);
@@ -197,11 +197,11 @@ void CTestBed01Level::onKeyboardEvent(const da::core::events::CEvent& event)
 void CTestBed01Level::update(float dt)
 {
 	// R
-	if (da::core::CInput::inputPressed(82)) {
-		auto& components = da::core::CSceneManager::getScene()->getComponents<da::core::CScriptComponent>();
-		da::script::CScriptEngine::clearAll();
+	if (da::CInput::inputPressed(82)) {
+		auto& components = da::CSceneManager::getScene()->getComponents<da::CScriptComponent>();
+		da::CScriptEngine::clearAll();
 		for (size_t i = 0; i < components.getCount(); i++) {
-			da::core::CScriptComponent* c = (da::core::CScriptComponent*)components.getComponentAtIndex(i);
+			da::CScriptComponent* c = (da::CScriptComponent*)components.getComponentAtIndex(i);
 			c->reload(false);
 		}
 		m_scrlevel.classShutdown();
@@ -231,17 +231,17 @@ void CTestBed01Level::lateUpdate(float dt)
 
 		if (!m_camera)
 		{
-			m_camera = new da::core::CCamera();
+			m_camera = new da::CCamera();
 		}
 
 
-		da::core::CCamera* cam = m_camera;
+		da::CCamera* cam = m_camera;
 
-		if (da::core::CCamera* oldCam = da::core::CCamera::getCamera())
+		if (da::CCamera* oldCam = da::CCamera::getCamera())
 		{
 			if (oldCam != cam)
 			{
-				da::core::CCamera::setCamera(cam);
+				da::CCamera::setCamera(cam);
 				cam->setPosition(oldCam->position());
 				cam->setRotation(oldCam->rotation());
 			}
@@ -249,38 +249,38 @@ void CTestBed01Level::lateUpdate(float dt)
 
 		
 
-		if (da::core::CInput::inputPressed(87)) // W
+		if (da::CInput::inputPressed(87)) // W
 		{
 			cam->offsetPosition(cam->forward() * camSpeed * dt);
 		}
 
-		if (da::core::CInput::inputPressed(83)) // S
+		if (da::CInput::inputPressed(83)) // S
 		{
 			cam->offsetPosition(-cam->forward() * camSpeed * dt);
 		}
 
-		if (da::core::CInput::inputPressed(65)) // A
+		if (da::CInput::inputPressed(65)) // A
 		{
 			cam->offsetPosition(-cam->right() * camSpeed * dt);
 		}
 
-		if (da::core::CInput::inputPressed(68)) // D
+		if (da::CInput::inputPressed(68)) // D
 		{
 			cam->offsetPosition(cam->right() * camSpeed * dt);
 		}
 
-		if (da::core::CInput::inputPressed(69)) // E
+		if (da::CInput::inputPressed(69)) // E
 		{
 			cam->offsetPosition(-cam->up() * camSpeed * dt);
 		}
 
-		if (da::core::CInput::inputPressed(81)) // Q
+		if (da::CInput::inputPressed(81)) // Q
 		{
 			cam->offsetPosition(cam->up() * camSpeed * dt);
 		}
 
-		glm::vec2 pos = { da::core::CInput::getCursorX(), da::core::CInput::getCursorY() };
-		if (da::core::CInput::mouseInputPressed(1))
+		glm::vec2 pos = { da::CInput::getCursorX(), da::CInput::getCursorY() };
+		if (da::CInput::mouseInputPressed(1))
 		{
 			if (cursorPos.x >= 0.0 && cursorPos.y >= 0.0)
 			{
@@ -299,7 +299,7 @@ void CTestBed01Level::shutdown()
 
 	if (m_freeCam)
 	{
-		da::core::CInput::popInputContext(HASHSTR("FreeCam"));
+		da::CInput::popInputContext(HASHSTR("FreeCam"));
 		m_windowModule.getWindow()->lockCursor(false);
 		m_freeCam = false;
 	}
@@ -315,14 +315,14 @@ void CTestBed01Level::shutdown()
 
 	delete m_camera;
 
-	da::core::CSceneManager::setScene(nullptr);
+	da::CSceneManager::setScene(nullptr);
 }
 
 void CTestBed01Level::createVehicle()
 {
 	// Vehicle
 	m_vehicle = new CVehicle(m_graphicsModule);
-	m_vehicle->initialize(const_cast<da::modules::CWindowModule*>(&m_windowModule), CVehicleManager::getVehicleTypes().begin()->second);
+	m_vehicle->initialize(const_cast<da::CWindowModule*>(&m_windowModule), CVehicleManager::getVehicleTypes().begin()->second);
 }
 
 void CTestBed01Level::destroyVehicle()

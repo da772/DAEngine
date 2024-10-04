@@ -12,7 +12,7 @@ class CVehicle;
 class CTestBed03Level : public ILevel {
 
 public:
-	CTestBed03Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window);
+	CTestBed03Level(CHashString name, da::CGraphicsModule& graphics, da::CWindowModule& window);
 	void initialize();
 	void update(float dt);
 	void lateUpdate(float dt) override;
@@ -20,14 +20,14 @@ public:
 
 
 private:
-	void onKeyboardEvent(const da::core::events::CEvent& event);
+	void onKeyboardEvent(const da::CEvent& event);
 
 private:
-	da::graphics::CSkeletalAnimation* m_swordSlashAnimation;
-	da::graphics::CSkeletalAnimation* m_runAnimation;
-	da::core::CCamera* m_camera = nullptr;
+	da::CSkeletalAnimation* m_swordSlashAnimation;
+	da::CSkeletalAnimation* m_runAnimation;
+	da::CCamera* m_camera = nullptr;
 	CCharacter* m_character, * m_ai;
-	da::script::CScriptClass m_scrlevel;
+	da::CScriptClass m_scrlevel;
 	bool m_freeCam = false;
 
 };

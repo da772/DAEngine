@@ -3,7 +3,7 @@
 #include "core/ecs/component.h"
 #include "script/script_class.h"
 
-namespace da::core {
+namespace da {
 
 	class CScriptComponent {
 
@@ -28,7 +28,7 @@ namespace da::core {
 
 	private:
 		std::string m_script;
-		da::script::CScriptClass m_scriptClass;
+		da::CScriptClass m_scriptClass;
 
 	};
 }

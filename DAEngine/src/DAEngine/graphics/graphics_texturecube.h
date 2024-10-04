@@ -3,7 +3,7 @@
 #include "dastd.h"
 #include "graphics/graphics_api.h"
 
-namespace da::graphics
+namespace da
 {
 	class CGraphicsTextureCube
 	{

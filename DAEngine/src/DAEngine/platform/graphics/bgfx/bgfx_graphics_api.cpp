@@ -22,7 +22,7 @@
 
 #define RESET_FLAGS BGFX_RESET_MSAA_X8 | ENABLE_VSYNC | BGFX_RESET_DEPTH_CLAMP
 
-namespace da::platform {
+namespace da {
 
 
 	ERenderApis CbgfxGraphicsApi::s_renderer = ERenderApis::NOOP;
@@ -159,7 +159,7 @@ namespace da::platform {
 		bool m_trace = false;
 	};
 
-	CbgfxGraphicsApi::CbgfxGraphicsApi(core::CWindow* windowModule) : CGraphicsApi(windowModule)
+	CbgfxGraphicsApi::CbgfxGraphicsApi(CWindow* windowModule) : CGraphicsApi(windowModule)
 	{	
 		m_allocator = new FDAllocator();
 		m_callbacks = new FDACallbacks();
@@ -189,7 +189,7 @@ namespace da::platform {
         pd.ndt = m_nativeWindow->getPlatformDisplay();
         
 		init.platformData = pd;
-		const da::core::FWindowData& data = m_nativeWindow->getWindowData();
+		const da::FWindowData& data = m_nativeWindow->getWindowData();
 		init.resolution.width = data.Width;
 		init.resolution.height = data.Height;
 		init.resolution.reset = data.RefreshRate;
@@ -198,7 +198,7 @@ namespace da::platform {
 		//init.allocator = (bx::AllocatorI*)m_allocator;
 		#endif
 		#ifdef DA_REVIEW
-		if (da::core::CArgHandler::contains("debugGpu"))
+		if (da::CArgHandler::contains("debugGpu"))
 		{
 			((FDACallbacks*)m_callbacks)->m_trace = true;
 			init.callback = (::bgfx::CallbackI*)m_callbacks;
@@ -220,7 +220,7 @@ namespace da::platform {
 
 		m_initialized = true;
 
-		m_nativeWindow->getEventHandler().registerCallback(da::core::events::EEventType::WindowResize, BIND_EVENT_FN(CbgfxGraphicsApi, windowResize));
+		m_nativeWindow->getEventHandler().registerCallback(da::EEventType::WindowResize, BIND_EVENT_FN(CbgfxGraphicsApi, windowResize));
 
 		uint32_t debug = BGFX_DEBUG_PROFILER;
 
@@ -242,7 +242,7 @@ namespace da::platform {
 		m_renderer->reset(data.Width, data.Height);
 
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Info"), &s_showDebugTitle, renderDebugTitle);
+		da::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Info"), &s_showDebugTitle, renderDebugTitle);
 #endif
 
 	}
@@ -262,12 +262,12 @@ namespace da::platform {
 
 #ifdef DA_REVIEW
 		const ::bgfx::Stats* stats = ::bgfx::getStats();
-		da::debug::CDebugStatsWindow::s_gpuTime = ((stats->gpuTimeEnd - stats->gpuTimeBegin)/ 1000.0);
-		da::debug::CDebugStatsWindow::s_cpuTime = ((stats->cpuTimeEnd - stats->cpuTimeBegin) / 1000.0);
-		da::debug::CDebugStatsWindow::s_waitTime = stats->waitRender / 1000.0;
-		da::debug::CDebugStatsWindow::s_drawCalls = stats->numDraw;
-		da::debug::CDebugStatsWindow::s_gpuMem = stats->gpuMemoryUsed;
-		da::debug::CDebugStatsWindow::s_gpuMemMax = stats->gpuMemoryMax;
+		da::CDebugStatsWindow::s_gpuTime = ((stats->gpuTimeEnd - stats->gpuTimeBegin)/ 1000.0);
+		da::CDebugStatsWindow::s_cpuTime = ((stats->cpuTimeEnd - stats->cpuTimeBegin) / 1000.0);
+		da::CDebugStatsWindow::s_waitTime = stats->waitRender / 1000.0;
+		da::CDebugStatsWindow::s_drawCalls = stats->numDraw;
+		da::CDebugStatsWindow::s_gpuMem = stats->gpuMemoryUsed;
+		da::CDebugStatsWindow::s_gpuMemMax = stats->gpuMemoryMax;
 #endif
 	}
 
@@ -283,7 +283,7 @@ namespace da::platform {
 	void CbgfxGraphicsApi::shutdown()
 	{
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Info"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Info"));
 #endif
 		m_renderer->shutdown();
 #ifdef DA_DEBUG
@@ -293,17 +293,17 @@ namespace da::platform {
 		m_initialized = false;
 	}
 
-	void CbgfxGraphicsApi::submitPipeline(da::graphics::CGraphicsPipeline* pipeline)
+	void CbgfxGraphicsApi::submitPipeline(da::CGraphicsPipeline* pipeline)
 	{
 
 	}
 
-	void CbgfxGraphicsApi::windowResize(const da::core::events::CEvent& event)
+	void CbgfxGraphicsApi::windowResize(const da::CEvent& event)
 	{
         m_dirtyWindow = true;
 	}
 
-	void CbgfxGraphicsApi::setClearColor(uint32_t target, da::graphics::EGraphicsClear clear, Vector4u8 color)
+	void CbgfxGraphicsApi::setClearColor(uint32_t target, da::EGraphicsClear clear, Vector4u8 color)
 	{
 		ASSERT(m_initialized);
 		uint32_t c = 0;
@@ -315,7 +315,7 @@ namespace da::platform {
 		::bgfx::setViewClear(target, (uint16_t)clear, c	, 1.0f, 0);
 	}
 
-	da::platform::ERenderApis CbgfxGraphicsApi::getRendererApi()
+	da::ERenderApis CbgfxGraphicsApi::getRendererApi()
 	{
 		return s_renderer;
 	}

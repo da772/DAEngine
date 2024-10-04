@@ -33,7 +33,7 @@ struct FPlayerLeavePacketInfo {
 class CTestBed02Level : public ILevel {
 
 public:
-	CTestBed02Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window);
+	CTestBed02Level(CHashString name, da::CGraphicsModule& graphics, da::CWindowModule& window);
 	void initialize();
 	void update(float dt);
 	void shutdown();
@@ -42,12 +42,12 @@ public:
 private:
 	std::unordered_map<uint64_t, CVehicle*> m_vehicles;
 	CVehicle* m_vehicle;
-	da::core::CEntity* m_cube;
-	da::modules::CWindowModule& m_window;
-	da::net::INetwork* m_network;
+	da::CEntity* m_cube;
+	da::CWindowModule& m_window;
+	da::INetwork* m_network;
 	float m_timePassed = 0.f;
 	uint64_t m_playerId;
 	bool m_pushPlayerId = false;
-	da::script::CScriptClass m_scrlevel;
+	da::CScriptClass m_scrlevel;
 
 };

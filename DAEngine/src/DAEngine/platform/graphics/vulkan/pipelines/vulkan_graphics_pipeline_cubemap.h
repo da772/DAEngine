@@ -5,12 +5,12 @@
 
 #ifdef DA_GRAPHICS_VULKAN
 
-namespace da::platform
+namespace da
 {
 	class CVulkanGraphicsPipelineCubemap : public CVulkanGraphicsPipeline
 	{
 	public:
-		CVulkanGraphicsPipelineCubemap(da::graphics::CGraphicsApi& pipeline);
+		CVulkanGraphicsPipelineCubemap(da::CGraphicsApi& pipeline);
 
 	protected:
 		std::vector<VkDescriptorSetLayoutBinding> addDescriptorSets() override;

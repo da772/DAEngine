@@ -2,13 +2,13 @@
 #include "daglm.h"
 #include "dastd.h"
 
-namespace da::graphics
+namespace da
 {
 	class CStaticMesh;
 }
 
 
-namespace da::physics {
+namespace da {
 
 	enum class EPhysicsShapeType
 	{
@@ -25,8 +25,8 @@ namespace da::physics {
 	public:
 		virtual EPhysicsShapeType getType() const = 0;
 
-		static IPhysicsShape* createTriangleMesh(da::graphics::CStaticMesh* mesh);
-		static IPhysicsShape* createMeshConvexHull(da::graphics::CStaticMesh* mesh);
+		static IPhysicsShape* createTriangleMesh(da::CStaticMesh* mesh);
+		static IPhysicsShape* createMeshConvexHull(da::CStaticMesh* mesh);
 
 	public:
 		inline virtual ~IPhysicsShape() {};
@@ -61,31 +61,31 @@ namespace da::physics {
 	{
 	public:
 		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::TriangleMesh; }
-		inline virtual da::graphics::CStaticMesh* getMesh() const { return nullptr; }
+		inline virtual da::CStaticMesh* getMesh() const { return nullptr; }
 
-		static CPhysicsShapeTriangleMesh* create(da::graphics::CStaticMesh* mesh, uint32_t index = 0);
+		static CPhysicsShapeTriangleMesh* create(da::CStaticMesh* mesh, uint32_t index = 0);
 		inline virtual ~CPhysicsShapeTriangleMesh() {};
 	protected:
-		inline CPhysicsShapeTriangleMesh(da::graphics::CStaticMesh* mesh, uint32_t index) {};
+		inline CPhysicsShapeTriangleMesh(da::CStaticMesh* mesh, uint32_t index) {};
 	};
 
 	class CPhysicsShapeConvexHull: public IPhysicsShape
 	{
 	public:
 		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::ConvexHull; }
-		inline virtual da::graphics::CStaticMesh* getMesh() const { return nullptr; }
+		inline virtual da::CStaticMesh* getMesh() const { return nullptr; }
 
-		static CPhysicsShapeConvexHull* create(da::graphics::CStaticMesh* mesh, uint32_t index = 0);
+		static CPhysicsShapeConvexHull* create(da::CStaticMesh* mesh, uint32_t index = 0);
 		inline virtual ~CPhysicsShapeConvexHull() {};
 	protected:
-		inline CPhysicsShapeConvexHull(da::graphics::CStaticMesh* mesh, uint32_t index) {};
+		inline CPhysicsShapeConvexHull(da::CStaticMesh* mesh, uint32_t index) {};
 	};
 
 	class CPhysicsShapeCapsule : public IPhysicsShape
 	{
 	public:
 		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::Capsule; }
-		inline virtual da::graphics::CStaticMesh* getMesh() const { return nullptr; }
+		inline virtual da::CStaticMesh* getMesh() const { return nullptr; }
 
 		static CPhysicsShapeCapsule* create(float radius, float height);
 		inline virtual ~CPhysicsShapeCapsule() {};

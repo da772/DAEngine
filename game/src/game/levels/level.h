@@ -4,7 +4,7 @@
 
 class ILevel {
 public:
-	inline ILevel(CHashString name, const da::modules::CGraphicsModule& graphicsModule, const da::modules::CWindowModule& windowModule) 
+	inline ILevel(CHashString name, const da::CGraphicsModule& graphicsModule, const da::CWindowModule& windowModule) 
 		: m_name(name), m_graphicsModule(graphicsModule), m_windowModule(windowModule) {}
 
 	virtual void initialize() = 0;
@@ -15,8 +15,8 @@ public:
 	inline CHashString getName() const { return m_name; }
 
 protected:
-	const da::modules::CGraphicsModule& m_graphicsModule;
-	const da::modules::CWindowModule& m_windowModule;
+	const da::CGraphicsModule& m_graphicsModule;
+	const da::CWindowModule& m_windowModule;
 
 private:
 	CHashString m_name;

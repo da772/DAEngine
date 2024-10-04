@@ -8,7 +8,7 @@
 #include "platform/graphics/bgfx/bgfx_texture2d.h"
 #endif
 
-namespace da::factory
+namespace da
 {
 	CTexture2DFactory CTexture2DFactory::ms_factory;
 
@@ -17,26 +17,26 @@ namespace da::factory
 		CHashString hash(path.c_str(), path.size());
 
 #ifdef DA_GRAPHICS_BGFX
-		return ms_factory.addInstance(hash, [path] {return new da::platform::bgfx::CBgfxTexture2D(path); });
+		return ms_factory.addInstance(hash, [path] {return new da::CBgfxTexture2D(path); });
 #elif defined(DA_GRAPHICS_VULKAN)
-		return ms_factory.addInstance(hash, [path] {return new da::platform::bgfx::CVulkanGraphicsTexture2D(path, graphicsApi); });
+		return ms_factory.addInstance(hash, [path] {return new da::CVulkanGraphicsTexture2D(path, graphicsApi); });
 #endif
 	}
 
-	da::graphics::CGraphicsTexture2D* CTexture2DFactory::Create(const std::string& path)
+	da::CGraphicsTexture2D* CTexture2DFactory::Create(const std::string& path)
 	{
 		CHashString hash(path.c_str(), path.size());
 
 #ifdef DA_GRAPHICS_BGFX
-		return ms_factory.addInstance(hash, [path] {return new da::platform::bgfx::CBgfxTexture2D(path); });
+		return ms_factory.addInstance(hash, [path] {return new da::CBgfxTexture2D(path); });
 #endif
 	}
 
-	da::graphics::CGraphicsTexture2D* CTexture2DFactory::Create(const std::string& name, size_t width, size_t height, char* data)
+	da::CGraphicsTexture2D* CTexture2DFactory::Create(const std::string& name, size_t width, size_t height, char* data)
 	{
 		CHashString hash(name.c_str(), name.size());
 #ifdef DA_GRAPHICS_BGFX
-		return ms_factory.addInstance(hash, [name, width, height, data] {return new da::platform::bgfx::CBgfxTexture2D(name, width, height, data); });;
+		return ms_factory.addInstance(hash, [name, width, height, data] {return new da::CBgfxTexture2D(name, width, height, data); });;
 #endif
 	}
 

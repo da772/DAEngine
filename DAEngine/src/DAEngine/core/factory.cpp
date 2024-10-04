@@ -2,7 +2,7 @@
 #include "factory.h"
 
 
-namespace da::core
+namespace da
 {
 #ifdef DA_REVIEW
 	void CFactoryDebug::checkInstances()
@@ -10,10 +10,10 @@ namespace da::core
 		/*
 		#define CHECK_FACTORY(x) if (x::ms_factory.hasInstances()) { LOG_ERROR(ELogChannel::Core, "Factory has instances: %s, Count: %d", #x, x::ms_factory.m_instances.size()); printInstances(x::ms_factory.getInstanceNames()); }
 
-		CHECK_FACTORY(da::graphics::CStaticMeshFactory);
-		CHECK_FACTORY(da::graphics::CTexture2DFactory);
-		CHECK_FACTORY(da::graphics::CMaterialFactory);
-		CHECK_FACTORY(da::graphics::CSkeletalMeshFactory);
+		CHECK_FACTORY(da::CStaticMeshFactory);
+		CHECK_FACTORY(da::CTexture2DFactory);
+		CHECK_FACTORY(da::CMaterialFactory);
+		CHECK_FACTORY(da::CSkeletalMeshFactory);
 		*/
 
 	}

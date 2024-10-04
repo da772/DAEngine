@@ -4,12 +4,12 @@
 #include "dastd.h"
 #include "daglm.h"
 
-namespace da::graphics
+namespace da
 {
 	class CMaterial;
 }
 
-namespace da::platform
+namespace da
 {
 
 	class CBgfxBloomShader
@@ -31,9 +31,9 @@ namespace da::platform
 
 	private:
 		::bgfx::VertexBufferHandle m_blitTriangleBuffer = BGFX_INVALID_HANDLE;
-		da::graphics::CMaterial* m_pBloomShader;
-		da::graphics::CMaterial* m_pDownscaleShader;
-		da::graphics::CMaterial* m_pUpscaleShader;
+		da::CMaterial* m_pBloomShader;
+		da::CMaterial* m_pDownscaleShader;
+		da::CMaterial* m_pUpscaleShader;
 		::bgfx::UniformHandle m_textureUniform = BGFX_INVALID_HANDLE;
 		::bgfx::UniformHandle m_bloomParamsUniform = BGFX_INVALID_HANDLE;
 		::bgfx::UniformHandle m_pixelSizeUniform = BGFX_INVALID_HANDLE;

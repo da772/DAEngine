@@ -9,13 +9,13 @@
 
 
 
-namespace da::net
+namespace da
 {
 	CNetworkServer::CNetworkServer(uint64_t id, const FNetworkSettings& settings, const std::function<void(bool)>& callback) : INetwork(id), m_settings(settings)
 	{
 		m_thread = std::thread([this, callback] {
 			setupServer();
-			da::core::CWorkerPool::addMainJob([callback, this] { callback(m_isValid); });
+			da::CWorkerPool::addMainJob([callback, this] { callback(m_isValid); });
 			serverListen();
 			});
 	}
@@ -94,7 +94,7 @@ namespace da::net
 						const std::unordered_map<uint32_t, std::function<void(const char*, size_t)>>::iterator& it = m_funcs.find(id);
 						if (it != m_funcs.end()) {
 							std::function<void(const char*, size_t)> func = it->second;
-							da::core::CWorkerPool::addMainJob([func, event] {
+							da::CWorkerPool::addMainJob([func, event] {
 								func((const char*)event.packet->data, event.packet->dataLength);
 							});
 						}

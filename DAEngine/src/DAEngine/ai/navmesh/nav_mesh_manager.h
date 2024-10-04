@@ -1,7 +1,7 @@
 #pragma once
 #include "nav_mesh.h"
 
-namespace da::ai
+namespace da
 {
 	class CNavDrawer;
 	class CNavCtx;

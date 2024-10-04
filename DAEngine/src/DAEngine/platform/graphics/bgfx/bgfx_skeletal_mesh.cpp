@@ -5,7 +5,7 @@
 #include "bgfx_skeletal_mesh.h"
 #include "bgfx_util.h"
 
-namespace da::platform
+namespace da
 {
 	bool CBgfxSkeletalMesh::s_init;
 	::bgfx::VertexLayout CBgfxSkeletalMesh::s_layout;
@@ -15,11 +15,11 @@ namespace da::platform
 		m_vbh.reserve(m_meshes.size());
 		m_ibh.reserve(m_meshes.size());
 		for (size_t i = 0; i < m_meshes.size(); i++) {
-			const da::graphics::FSkeletalMesh& mesh = m_meshes[i];
+			const da::FSkeletalMesh& mesh = m_meshes[i];
 
 			::bgfx::VertexBufferHandle vbh = ::bgfx::createVertexBuffer(
 				// Static data can be passed with ::bgfx::makeRef
-				::bgfx::makeRef(mesh.Vertices.data(), mesh.Vertices.size() * sizeof(da::graphics::FSkeletalVertexBase))
+				::bgfx::makeRef(mesh.Vertices.data(), mesh.Vertices.size() * sizeof(da::FSkeletalVertexBase))
 				, CBgfxSkeletalMesh::getLayout()
 				, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
 			);

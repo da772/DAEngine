@@ -5,12 +5,12 @@
 #include "script_native_core.h"
 #include "script_native_debug.h"
 
-namespace da::script
+namespace da
 {
 	void registerNatives(lua_State* L, void* stateView)
 	{
 		imgui::registerNatives(L);
-		core::registerNatives(L, stateView);
-		debug::registerNatives(L);
+		da::core::registerNatives(L, stateView);
+		da::debug::registerNatives(L);
 	}
 }

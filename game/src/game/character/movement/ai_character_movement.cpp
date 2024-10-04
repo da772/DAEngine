@@ -8,7 +8,7 @@
 #include "game/components/character_component.h"
 
 
-CAICharacterMovement::CAICharacterMovement(const da::core::CEntity& entity) : ICharacterMovement(entity)
+CAICharacterMovement::CAICharacterMovement(const da::CEntity& entity) : ICharacterMovement(entity)
 {
 
 }
@@ -42,14 +42,14 @@ void CAICharacterMovement::shutdown()
 void CAICharacterMovement::processAi()
 {
 
-	da::core::FComponentRef<CCharacterComponent> character = m_character->getComponent<CCharacterComponent>();
+	da::FComponentRef<CCharacterComponent> character = m_character->getComponent<CCharacterComponent>();
 
 	if (character->isAttacking())
 	{
 		return;
 	}
 
-	const da::core::CEntity* target = da::core::CSceneManager::getScene()->getEntityFromTag(HASHSTR("Character"));
+	const da::CEntity* target = da::CSceneManager::getScene()->getEntityFromTag(HASHSTR("Character"));
 	const glm::vec3 targetPos = target->getTransform().position();
 	const glm::vec3 currentPos = m_character->getTransform().position();
 
@@ -66,7 +66,7 @@ void CAICharacterMovement::processAi()
 
 	if (m_path.empty())
 	{
-		if (da::ai::INavMesh* navMesh = da::ai::CNavMeshManager::getNavMesh())
+		if (da::INavMesh* navMesh = da::CNavMeshManager::getNavMesh())
 		{
 			m_path = navMesh->findPath(currentPos, targetPos);
 			if (!m_path.empty()) m_path.erase(m_path.begin());
@@ -83,7 +83,7 @@ void CAICharacterMovement::processAi()
 		return;
 	}
 
-	da::core::FComponentRef<CCharacterMovementComponent> movement = m_character->getComponent<CCharacterMovementComponent>();
+	da::FComponentRef<CCharacterMovementComponent> movement = m_character->getComponent<CCharacterMovementComponent>();
 	glm::vec3 dir = glm::vec3(pathPos.x, pathPos.y, 0.f) - glm::vec3(currentPos.x, currentPos.y, 0.f);
 	if (glm::length(dir) == 0.0f) {
 		m_path = {};
@@ -92,7 +92,7 @@ void CAICharacterMovement::processAi()
 	dir = glm::normalize(dir);
 	movement->setWalkDirection(dir);
 
-	glm::vec3 rot = da::core::maths::calculateEulerRotationForDirection(dir);
+	glm::vec3 rot = da::calculateEulerRotationForDirection(dir);
 	movement->setRotationSpeed(360.f);
 	movement->setRotation(rot.z, false);
 }
@@ -109,10 +109,10 @@ void CAICharacterMovement::debugUpdate()
 
 	for (uint32_t i = 0; i < m_path.size(); i++) {
 		if (i != m_path.size() - 1) {
-			da::debug::CDebugRender::drawLine(m_path[i], m_path[i + 1], .1f, {1.f, 1.f, 1.f, 1.f});
+			da::CDebugRender::drawLine(m_path[i], m_path[i + 1], .1f, {1.f, 1.f, 1.f, 1.f});
 		}
 		
-		da::debug::CDebugRender::drawCube(m_path[i], glm::quat(1.f, 0.f, 0.f, 0.f), { .05f,.05f,.05f }, { 1.f,1.f,0.f,1.f }, false);
+		da::CDebugRender::drawCube(m_path[i], glm::quat(1.f, 0.f, 0.f, 0.f), { .05f,.05f,.05f }, { 1.f,1.f,0.f,1.f }, false);
 	}
 	
 }

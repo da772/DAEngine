@@ -1,7 +1,7 @@
 
 #include "graphics_pipeline.h"
 
-namespace da::graphics
+namespace da
 {
 
 	CGraphicsPipeline::CGraphicsPipeline(CGraphicsApi& graphicsApi, const std::string& vertexShaderPath, const std::string& fragShaderPath, FVertexBindingDescription vertexBinding, 

@@ -12,7 +12,7 @@
 #endif
 #include "physics_bullet3_shape.h"
 
-namespace da::physics
+namespace da
 {
 	void CPhysics::setPhysics()
 	{
@@ -57,7 +57,7 @@ namespace da::physics
 
 				if (body && body->getMotionState())
 				{
-					if (da::core::CEntity* e = (da::core::CEntity*)body->getUserPointer()) {
+					if (da::CEntity* e = (da::CEntity*)body->getUserPointer()) {
 						if (e->getTransform().isDirty()) {
 							e->getTransform().matrix();
 						}
@@ -68,7 +68,7 @@ namespace da::physics
 		
 		{
 			PROFILE("CBullet3Physics::update::stepSimulation")
-			m_dynamicsWorld->stepSimulation(dt, 10, da::physics::CPhysics::getFixedTime());
+			m_dynamicsWorld->stepSimulation(dt, 10, da::CPhysics::getFixedTime());
 		}
 		//m_dynamicsWorld->debugDrawWorld();
 	}
@@ -123,7 +123,7 @@ namespace da::physics
 			{
 				for (int i = 0; i < callback.m_collisionObjects.size(); i++) {
 					FHitData hitData;
-					hitData.pEntity = (da::core::CEntity*)callback.m_collisionObjects[i]->getUserPointer();
+					hitData.pEntity = (da::CEntity*)callback.m_collisionObjects[i]->getUserPointer();
 
 					std::vector<FHitData>::iterator it = std::find_if(ray.vHits.begin(), ray.vHits.end(), [hitData](const FHitData& d) {
 						return d.pEntity == hitData.pEntity;
@@ -152,7 +152,7 @@ namespace da::physics
 		if (ray.bHit)
 		{
 			FHitData hitData;
-			hitData.pEntity = (da::core::CEntity*)callback.m_collisionObject->getUserPointer();
+			hitData.pEntity = (da::CEntity*)callback.m_collisionObject->getUserPointer();
 			btVector3 hitPos = callback.m_hitPointWorld;
 			hitData.position = { hitPos.x(), hitPos.y(), hitPos.z() };
 			btVector3 hitNormal = callback.m_hitNormalWorld;
@@ -186,7 +186,7 @@ namespace da::physics
 		{
 			sweep.Hit.position = { result.m_hitPointWorld.x(), result.m_hitPointWorld.y(), result.m_hitPointWorld.z() };
 			sweep.Hit.normal = { result.m_hitNormalWorld.x(), result.m_hitNormalWorld.y(), result.m_hitNormalWorld.z() };
-			sweep.Hit.pEntity = result.m_hitCollisionObject ? (da::core::CEntity*)result.m_hitCollisionObject->getUserPointer() : nullptr;
+			sweep.Hit.pEntity = result.m_hitCollisionObject ? (da::CEntity*)result.m_hitCollisionObject->getUserPointer() : nullptr;
 		}
 	}
 

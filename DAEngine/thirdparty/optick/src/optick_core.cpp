@@ -173,17 +173,17 @@ string base64_decode(string const& encoded_string) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int64 GetTimeMilliSeconds()
 {
-	return Platform::GetTime() * 1000 / Platform::GetFrequency();
+	return GetTime() * 1000 / GetFrequency();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int64 TicksToMs(int64 ticks)
 {
-	return ticks * 1000 / Platform::GetFrequency();
+	return ticks * 1000 / GetFrequency();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int64 TicksToUs(int64 ticks)
 {
-	return ticks * 1000000 / Platform::GetFrequency();
+	return ticks * 1000000 / GetFrequency();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<class T>
@@ -528,13 +528,13 @@ ThreadDescription::ThreadDescription(const char* threadName, ThreadID tid, Proce
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int64_t GetHighPrecisionTime()
 {
-	return Platform::GetTime();
+	return GetTime();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int64_t GetHighPrecisionFrequency()
 {
-	return Platform::GetFrequency();
+	return GetFrequency();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1127,7 +1127,7 @@ void Core::DumpSummary()
 	stream << boardNumber;
 
 	// Frames
-	double frequency = (double)Platform::GetFrequency();
+	double frequency = (double)GetFrequency();
 	stream << (uint32_t)frames[FrameType::CPU].m_Frames.Size();
 	for (const EventTime& frame : frames[FrameType::CPU].m_Frames)
 	{
@@ -1174,7 +1174,7 @@ void Core::DumpBoard(uint32 mode, EventTime timeSlice)
 	OutputDataStream boardStream;
 
 	boardStream << boardNumber;
-	boardStream << Platform::GetFrequency();
+	boardStream << GetFrequency();
 	boardStream << (uint64)0; // Origin
 	boardStream << (uint32)0; // Precision
 	boardStream << timeSlice;
@@ -1189,7 +1189,7 @@ void Core::DumpBoard(uint32 mode, EventTime timeSlice)
 	boardStream << mode; // Mode
 	boardStream << processDescs;
 	boardStream << threadDescs;
-	boardStream << (uint32)Platform::GetProcessID();
+	boardStream << (uint32)GetProcessID();
 	boardStream << (uint32)std::thread::hardware_concurrency();
 	Server::Get().Send(DataResponse::FrameDescriptionBoard, boardStream);
 
@@ -1200,7 +1200,7 @@ void Core::DumpBoard(uint32 mode, EventTime timeSlice)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Core::GenerateCommonSummary()
 {
-	AttachSummary("Platform", Platform::GetName());
+	AttachSummary("Platform", GetName());
 	AttachSummary("CPU", GetCPUName().c_str());
 	if (gpuProfiler)
 		AttachSummary("GPU", gpuProfiler->GetName().c_str());
@@ -1367,7 +1367,7 @@ void Core::Activate(Mode::Type mode)
 			if (mode & Mode::TRACER)
 			{
 				if (tracer == nullptr)
-					tracer = Platform::CreateTrace();
+					tracer = CreateTrace();
 
 				if (tracer)
 				{
@@ -1385,7 +1385,7 @@ void Core::Activate(Mode::Type mode)
 
 			if (mode & Mode::AUTOSAMPLING)
 				if (symbolEngine == nullptr)
-					symbolEngine = Platform::CreateSymbolEngine();
+					symbolEngine = CreateSymbolEngine();
 #endif
 
 			if (gpuProfiler && (mode & Mode::GPU))
@@ -1433,7 +1433,7 @@ void Core::SendHandshakeResponse(CaptureStatus::Type status)
 {
 	OutputDataStream stream;
 	stream << (uint32)status;
-	stream << Platform::GetName();
+	stream << GetName();
 	stream << Server::Get().GetHostName();
 	Server::Get().Send(DataResponse::Handshake, stream);
 }
@@ -1748,12 +1748,12 @@ OPTICK_API void Update()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 OPTICK_API uint32_t BeginFrame(Optick::FrameType::Type frameType, int64_t timestamp, uint64_t threadID)
 {
-	return Core::BeginFrame(frameType, timestamp != EventTime::INVALID_TIMESTAMP ? timestamp : Optick::GetHighPrecisionTime(), threadID != INVALID_THREAD_ID ? threadID : Platform::GetThreadID());
+	return Core::BeginFrame(frameType, timestamp != EventTime::INVALID_TIMESTAMP ? timestamp : Optick::GetHighPrecisionTime(), threadID != INVALID_THREAD_ID ? threadID : GetThreadID());
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 OPTICK_API uint32_t EndFrame(Optick::FrameType::Type frameType, int64_t timestamp, uint64_t threadID)
 {
-	return Core::EndFrame(frameType, timestamp != EventTime::INVALID_TIMESTAMP ? timestamp : Optick::GetHighPrecisionTime(), threadID != INVALID_THREAD_ID ? threadID : Platform::GetThreadID());
+	return Core::EndFrame(frameType, timestamp != EventTime::INVALID_TIMESTAMP ? timestamp : Optick::GetHighPrecisionTime(), threadID != INVALID_THREAD_ID ? threadID : GetThreadID());
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 OPTICK_API bool IsActive(Mode::Type mode /*= Mode::INSTRUMENTATION_EVENTS*/)
@@ -1773,7 +1773,7 @@ OPTICK_API bool IsFiberStorage(EventStorage* fiberStorage)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 OPTICK_API bool RegisterThread(const char* name)
 {
-	return Core::Get().RegisterThread(ThreadDescription(name, Platform::GetThreadID(), Platform::GetProcessID()), &Core::storage) != nullptr;
+	return Core::Get().RegisterThread(ThreadDescription(name, GetThreadID(), GetProcessID()), &Core::storage) != nullptr;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 OPTICK_API bool RegisterThread(const wchar_t* name)
@@ -1782,12 +1782,12 @@ OPTICK_API bool RegisterThread(const wchar_t* name)
 	char mbName[THREAD_NAME_LENGTH];
 	wcstombs_s(mbName, name, THREAD_NAME_LENGTH);
 
-	return Core::Get().RegisterThread(ThreadDescription(mbName, Platform::GetThreadID(), Platform::GetProcessID()), &Core::storage) != nullptr;
+	return Core::Get().RegisterThread(ThreadDescription(mbName, GetThreadID(), GetProcessID()), &Core::storage) != nullptr;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 OPTICK_API bool UnRegisterThread(bool keepAlive)
 {
-	return Core::Get().UnRegisterThread(Platform::GetThreadID(), keepAlive);
+	return Core::Get().UnRegisterThread(GetThreadID(), keepAlive);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 OPTICK_API bool RegisterFiber(uint64 fiberId, EventStorage** slot)
@@ -1797,7 +1797,7 @@ OPTICK_API bool RegisterFiber(uint64 fiberId, EventStorage** slot)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 OPTICK_API EventStorage* RegisterStorage(const char* name, uint64_t threadID, ThreadMask::Type type)
 {
-	ThreadEntry* entry = Core::Get().RegisterThread(ThreadDescription(name, threadID, Platform::GetProcessID(), 1, 0, type), nullptr);
+	ThreadEntry* entry = Core::Get().RegisterThread(ThreadDescription(name, threadID, GetProcessID(), 1, 0, type), nullptr);
 	return entry ? &entry->storage : nullptr;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1840,7 +1840,7 @@ OPTICK_API bool StartCapture(Mode::Type mode /*= Mode::DEFAULT*/, int samplingFr
 	Core& core = Core::Get();
 	core.SetSettings(settings);
 
-	if (!core.IsRegistredThread(Platform::GetThreadID()))
+	if (!core.IsRegistredThread(GetThreadID()))
 		RegisterThread("MainThread");
 
 	core.StartCapture();
@@ -1848,8 +1848,8 @@ OPTICK_API bool StartCapture(Mode::Type mode /*= Mode::DEFAULT*/, int samplingFr
 	if (force)
 	{
 		core.Update();
-		core.SetMainThreadID(Platform::GetThreadID());
-		core.BeginFrame(FrameType::CPU, GetHighPrecisionTime(), Platform::GetThreadID());
+		core.SetMainThreadID(GetThreadID());
+		core.BeginFrame(FrameType::CPU, GetHighPrecisionTime(), GetThreadID());
 	}
 	
 	return true;
@@ -1865,7 +1865,7 @@ OPTICK_API bool StopCapture(bool force /*= true*/)
 
 	if (force)
 	{
-		core.EndFrame(FrameType::CPU, GetHighPrecisionTime(), Platform::GetThreadID());
+		core.EndFrame(FrameType::CPU, GetHighPrecisionTime(), GetThreadID());
 		core.Update();
 	}
 

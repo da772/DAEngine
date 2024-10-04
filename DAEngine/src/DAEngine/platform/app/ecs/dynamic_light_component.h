@@ -2,7 +2,7 @@
 
 #include "core/ecs/component.h"
 
-namespace da::core {
+namespace da {
 	class CDynamicLightComponent {
 		COMPONENT_H_NO_UPDATE(CDynamicLightComponent);
 	public:

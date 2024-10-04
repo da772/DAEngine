@@ -7,7 +7,7 @@
 #include <imgui.h>
 #endif
 
-namespace da::core {
+namespace da {
 
 #ifdef DA_REVIEW
 	COMPONENT_CPP_DEBUG(CScriptComponent)

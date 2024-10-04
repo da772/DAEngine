@@ -3,7 +3,7 @@
 #include "physics/physics.h"
 #include <bullet3/btBulletDynamicsCommon.h>
 
-namespace da::physics
+namespace da
 {
 	class CBullet3DebugDraw;
 

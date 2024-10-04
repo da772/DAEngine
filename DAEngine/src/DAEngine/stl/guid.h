@@ -2,7 +2,7 @@
 #include "dastd.h"
 #include <algorithm>
 
-namespace da::core {
+namespace da {
 
 	using uint128_t = unsigned char[16];
 	using guid_str = char[37];
@@ -58,11 +58,11 @@ namespace da::core {
 }
 
 namespace std {
-	template<> struct hash<da::core::CGuid>
+	template<> struct hash<da::CGuid>
 	{
-		std::size_t operator()(da::core::CGuid const& hashStr) const noexcept
+		std::size_t operator()(da::CGuid const& hashStr) const noexcept
 		{
-			return HASHSZ((const char*)&hashStr, sizeof(da::core::CGuid));
+			return HASHSZ((const char*)&hashStr, sizeof(da::CGuid));
 		}
 	};
 }

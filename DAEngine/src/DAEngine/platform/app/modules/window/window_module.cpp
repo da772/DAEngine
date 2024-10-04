@@ -4,11 +4,11 @@
 #include "core/input/input.h"
 
 
-namespace da::modules
+namespace da
 {
-	CWindowModule::CWindowModule(const core::FWindowData& windowData)
+	CWindowModule::CWindowModule(const FWindowData& windowData)
 	{
-		m_Window = factory::CWindowFactory::CreateWindow(windowData);
+		m_Window = CWindowFactory::CreateWindow(windowData);
 	}
 
 
@@ -25,7 +25,7 @@ namespace da::modules
 	void CWindowModule::initialize()
 	{
 		m_Window->initialize();
-		da::core::CInput::registerWindow(m_Window);
+		da::CInput::registerWindow(m_Window);
 	}
 
 	void CWindowModule::update()
@@ -36,10 +36,10 @@ namespace da::modules
 
 	void CWindowModule::shutdown()
 	{
-		da::core::CInput::unregisterWindow(m_Window);
+		da::CInput::unregisterWindow(m_Window);
 	}
 
-	da::core::CWindow* CWindowModule::getWindow() const
+	da::CWindow* CWindowModule::getWindow() const
 	{
 		return m_Window;
 	}
@@ -50,7 +50,7 @@ namespace da::modules
 		delete m_Window;
 	}
 
-	da::core::events::CEventHandler& CWindowModule::getEventHandler()
+	da::CEventHandler& CWindowModule::getEventHandler()
 	{
 		return m_Window->getEventHandler();
 	}

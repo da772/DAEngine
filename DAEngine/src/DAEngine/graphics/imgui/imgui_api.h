@@ -9,7 +9,7 @@ namespace ImGui
 	void extern PushLargeFont();
 }
 
-namespace da::core {
+namespace da {
 
 	class CImGuiApi
 	{
@@ -28,8 +28,8 @@ namespace da::core {
 		virtual void setupStyle();
 
 	protected:
-		inline CImGuiApi(graphics::CGraphicsApi* graphicsApi) : m_graphicsApi(graphicsApi), m_window(m_graphicsApi->getWindow()) {};
-		graphics::CGraphicsApi* m_graphicsApi;
+		inline CImGuiApi(da::CGraphicsApi* graphicsApi) : m_graphicsApi(graphicsApi), m_window(m_graphicsApi->getWindow()) {};
+		da::CGraphicsApi* m_graphicsApi;
 		CWindow* m_window;
 	};
 

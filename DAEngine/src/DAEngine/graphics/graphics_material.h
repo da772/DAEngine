@@ -3,12 +3,12 @@
 #include "core/factory.h"
 #include "dacommon.h"
 
-namespace da::factory
+namespace da
 {
 	class CMaterialFactory;
 }
 
-namespace da::graphics
+namespace da
 {
 	class CMaterial;
 
@@ -33,7 +33,7 @@ namespace da::graphics
 	protected:
 		CHashString m_hash;
 
-		friend class da::core::CFactory<CMaterial>;
-		friend class da::factory::CMaterialFactory;
+		friend class da::CFactory<CMaterial>;
+		friend class da::CMaterialFactory;
 	};
 }

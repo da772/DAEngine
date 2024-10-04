@@ -8,7 +8,7 @@
 #	define BX_CONFIG_ALLOCATOR_NATURAL_ALIGNMENT 8
 #endif // BX_CONFIG_ALLOCATOR_NATURAL_ALIGNMENT
 
-namespace da::platform {
+namespace da {
 	DefaultAllocator DefaultAllocator::ms_defaultAllocator;
 
 	DefaultAllocator::DefaultAllocator()

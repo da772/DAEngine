@@ -1,6 +1,6 @@
 #pragma once
 
-namespace da::graphics {
+namespace da {
 
 	class IRenderable
 	{

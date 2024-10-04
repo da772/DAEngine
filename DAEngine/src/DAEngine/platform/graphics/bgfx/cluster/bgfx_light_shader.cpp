@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <cassert>
 
-namespace da::platform {
+namespace da {
 
     void CBgfxLightShader::initialize()
     {
@@ -33,7 +33,7 @@ namespace da::platform {
     {
         // a 32-bit IEEE 754 float can represent all integers up to 2^24 (~16.7 million) correctly
         // should be enough for this use case (comparison in for loop)
-        float lightCountVec[4] = { (float)da::graphics::CLightManager::getLights().size() };
+        float lightCountVec[4] = { (float)da::CLightManager::getLights().size() };
         bgfx::setUniform(m_lightCountVecUniform, lightCountVec);
 
         glm::vec4 sunLightDirection(glm::normalize(sunLightDir), 0.0f);

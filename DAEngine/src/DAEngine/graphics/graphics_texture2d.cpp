@@ -1,7 +1,7 @@
 
 #include "graphics_texture2d.h"
 
-namespace da::graphics
+namespace da
 {
 	CGraphicsTexture2D::CGraphicsTexture2D(const std::string& path) : m_path(path), m_textureNative(nullptr)
 	{

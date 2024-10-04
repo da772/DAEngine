@@ -5,12 +5,12 @@
 #include "core/events/window_event.h"
 #include <GLFW/glfw3native.h>
 
-using namespace da::core;
+using namespace da;
 
-namespace da::platform {
+namespace da {
 	bool CGLFW_Window::s_initialized = 0;
 
-	CGLFW_Window::CGLFW_Window(const core::FWindowData& windowData) : core::CWindow(windowData), m_Window(nullptr)
+	CGLFW_Window::CGLFW_Window(const FWindowData& windowData) : CWindow(windowData), m_Window(nullptr)
 	{
 		if (s_initialized)
 		{

@@ -6,7 +6,7 @@ class CAICharacterMovement : public ICharacterMovement
 {
 
 public:
-	CAICharacterMovement(const da::core::CEntity& entity);
+	CAICharacterMovement(const da::CEntity& entity);
 	void initialize() override;
 	void update(float dt) override;
 	void shutdown() override;

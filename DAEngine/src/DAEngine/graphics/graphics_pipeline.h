@@ -3,7 +3,7 @@
 #include "graphics/graphics_api.h"
 #include "graphics/graphics_vertex.h"
 
-namespace da::graphics {
+namespace da {
 
 	class IRenderable;
 	class CMaterial;

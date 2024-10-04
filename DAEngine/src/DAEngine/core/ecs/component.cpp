@@ -1,7 +1,7 @@
 
 #include "component.h"
 
-namespace da::core {
+namespace da {
 	CComponent::CComponent(const CGuid& guid, CEntity& parent) : m_guid(guid), m_parent(parent)
 	{
 
@@ -13,7 +13,7 @@ namespace da::core {
 		return CHashString();
 	}
 
-	const da::core::CGuid& CComponent::getId() const
+	const da::CGuid& CComponent::getId() const
 	{
 		return m_guid;
 	}

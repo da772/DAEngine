@@ -8,7 +8,7 @@
 #include "graphics_material_data.h"
 
 
-namespace da::graphics
+namespace da
 {
 
 	struct FMesh
@@ -50,7 +50,7 @@ namespace da::graphics
 		bool m_castShadows = true;
 		bool m_hidden = false;
 
-		friend da::core::CFactory<CStaticMesh>;
+		friend da::CFactory<CStaticMesh>;
 
 	};
 }

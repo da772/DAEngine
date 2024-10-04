@@ -10,15 +10,15 @@
 #include "platform/graphics/bgfx/bgfx_graphics_api.h"
 #endif
 
-namespace da::factory
+namespace da
 {
 
-	CGraphicsApi* CGraphicsFactory::Create(da::core::CWindow* window)
+	CGraphicsApi* CGraphicsFactory::Create(da::CWindow* window)
 	{
 #ifdef DA_GRAPHICS_BGFX
-		return new platform::CbgfxGraphicsApi(window);
+		return new CbgfxGraphicsApi(window);
 		#elif defined(DA_GRAPHICS_VULKAN)
-		return new platform::CVulkanGraphicsApi(window);
+		return new CVulkanGraphicsApi(window);
 #endif
 		return nullptr;
 

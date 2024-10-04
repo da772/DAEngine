@@ -4,11 +4,11 @@
 #include "vulkan_graphics_api.h"
 #include <ktx.h>
 
-namespace da::platform {
-	class CVulkanGraphicsTextureCube : public da::graphics::CGraphicsTextureCube
+namespace da {
+	class CVulkanGraphicsTextureCube : public da::CGraphicsTextureCube
 	{
 	public:
-		CVulkanGraphicsTextureCube(const std::string& path, da::graphics::CGraphicsApi& graphicsApi);
+		CVulkanGraphicsTextureCube(const std::string& path, da::CGraphicsApi& graphicsApi);
 		void initialize();
 		void shutdown();
 

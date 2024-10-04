@@ -5,7 +5,7 @@
 #include "physics_bullet3_motion_state.h"
 #include "physics_bullet3_shape.h"
 
-namespace da::physics
+namespace da
 {
 	CBullet3RigidBody::CBullet3RigidBody(IPhysicsShape* shape, IPhysicsMotionState* state, float mass, const glm::vec3& inertia)
 		: IPhysicsRigidBody(shape, state, mass, inertia), m_linearFactor(1.f), m_angularFactor(1.f), m_gravityFactor(1.f)

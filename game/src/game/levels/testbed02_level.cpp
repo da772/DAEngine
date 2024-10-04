@@ -14,7 +14,7 @@
 #include "game/vehicle/vehicle_manager.h"
 
 
-CTestBed02Level::CTestBed02Level(CHashString name, da::modules::CGraphicsModule& graphics, da::modules::CWindowModule& window) : ILevel(name, graphics, window), m_window(window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
+CTestBed02Level::CTestBed02Level(CHashString name, da::CGraphicsModule& graphics, da::CWindowModule& window) : ILevel(name, graphics, window), m_window(window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
 {
 
 }
@@ -22,22 +22,22 @@ CTestBed02Level::CTestBed02Level(CHashString name, da::modules::CGraphicsModule&
 void CTestBed02Level::initialize()
 {
 	m_scrlevel.setup({}, {});
-	da::core::CSceneManager::setScene(new da::core::CScene(da::core::CGuid("9059cedf-5978-4a51-991b-36d4804d55d7")));
-	da::core::CCamera::getCamera()->setPosition({ 0,0,1 });
+	da::CSceneManager::setScene(new da::CScene(da::CGuid("9059cedf-5978-4a51-991b-36d4804d55d7")));
+	da::CCamera::getCamera()->setPosition({ 0,0,1 });
 
 	m_scrlevel.classInitialize();
 
 	// Vehicle
-	m_playerId = da::core::CTime::getEpochTimeNS();
+	m_playerId = da::CTime::getEpochTimeNS();
 
 	m_vehicle = new CVehicle(m_graphicsModule, m_playerId);
 	m_vehicle->initialize(&m_window, CVehicleManager::getVehicleTypes().begin()->second, { -144.f, -80.f, -4.f });
 
 	// Test Bed
 	{
-		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		testBed->addComponent<da::core::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
-		da::core::FComponentRef<da::core::CSmeshComponent> meshComponent = testBed->addComponent<da::core::CSmeshComponent>("assets/props/level/testbed.fbx", true);
+		da::CEntity* testBed = da::CSceneManager::getScene()->createEntity();
+		testBed->addComponent<da::CScriptComponent>("scripts/build/camera_component.lua", "CameraComponent");
+		da::FComponentRef<da::CSmeshComponent> meshComponent = testBed->addComponent<da::CSmeshComponent>("assets/props/level/testbed.fbx", true);
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = false;
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
@@ -53,27 +53,27 @@ void CTestBed02Level::initialize()
 
 	// Test Collision
 	{
-		da::core::CEntity* testBed = da::core::CSceneManager::getScene()->createEntity();
-		da::graphics::CStaticMesh* collision = da::factory::CStaticMeshFactory::create("assets/props/level/testbed.fbx", true);
+		da::CEntity* testBed = da::CSceneManager::getScene()->createEntity();
+		da::CStaticMesh* collision = da::CStaticMeshFactory::create("assets/props/level/testbed.fbx", true);
 
-		std::vector<da::physics::IPhysicsShape*> shapes;
+		std::vector<da::IPhysicsShape*> shapes;
 		std::vector<glm::mat4> shapestrans;
 
 		for (size_t i = 0; i < collision->getMeshes().size(); i++) {
-			shapes.push_back(da::physics::CPhysicsShapeTriangleMesh::create(collision, i));
+			shapes.push_back(da::CPhysicsShapeTriangleMesh::create(collision, i));
 			shapestrans.push_back(glm::mat4(1.f));
 		}
 
-		testBed->addComponent<da::core::CRigidBodyComponent>(
-			da::physics::IPhysicsRigidBody::create(
-				da::physics::CPhysicsShapeCompound::create(shapes, shapestrans)
-				, da::physics::CPhysicsDefaultMotionState::create(testBed->getTransform().matrix())
+		testBed->addComponent<da::CRigidBodyComponent>(
+			da::IPhysicsRigidBody::create(
+				da::CPhysicsShapeCompound::create(shapes, shapestrans)
+				, da::CPhysicsDefaultMotionState::create(testBed->getTransform().matrix())
 				, 0.f
 				, { 0.f,0.f,0.f }));
 		testBed->setTag(HASHSTR("TestBedCollision"));
 	}
 
-	if (m_network = da::net::CNetworkManager::getNetwork()) {
+	if (m_network = da::CNetworkManager::getNetwork()) {
 		m_network->getPacket<FPlayerJoinPacketInfo>(PLAYER_JOIN_PACKET_ID, [this](FPlayerJoinPacketInfo data) {
 
 			const std::unordered_map<uint64_t, CVehicle*>::iterator& it = m_vehicles.find(data.PlayerId);
@@ -141,5 +141,5 @@ void CTestBed02Level::shutdown()
 
 	
 	m_scrlevel.classShutdown();
-	da::core::CSceneManager::setScene(nullptr);
+	da::CSceneManager::setScene(nullptr);
 }

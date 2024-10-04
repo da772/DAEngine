@@ -3,7 +3,7 @@
 #include "core/ecs/component.h"
 #include <functional>
 
-namespace da::core
+namespace da
 {
 	class CTestComponent  {
 		COMPONENT_H(CTestComponent);

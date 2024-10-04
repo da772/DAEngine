@@ -3,7 +3,7 @@
 #include "physics/physics_rigid_body.h"
 #include "physics_bullet3_rigid_body.h"
 
-namespace da::physics
+namespace da
 {
 
 	IPhysicsRigidBody::IPhysicsRigidBody(IPhysicsShape* shape, IPhysicsMotionState* state, float mass, const glm::vec3& inertia) : m_shape(shape)
@@ -11,7 +11,7 @@ namespace da::physics
 
 	}
 
-	da::physics::IPhysicsShape* IPhysicsRigidBody::getShape() const
+	da::IPhysicsShape* IPhysicsRigidBody::getShape() const
 	{
 		return m_shape;
 	}

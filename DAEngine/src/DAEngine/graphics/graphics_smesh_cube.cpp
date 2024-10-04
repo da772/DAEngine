@@ -1,7 +1,7 @@
 
 #include "graphics_smesh_cube.h"
 
-namespace da::graphics
+namespace da
 {
 
 	CStaticMeshCube::CStaticMeshCube()

@@ -36,7 +36,7 @@
 
 namespace Optick
 {
-	const char* Platform::GetName() 
+	const char* GetName() 
 	{
 #if defined(__ANDROID__)
 	    return "Android";
@@ -45,22 +45,22 @@ namespace Optick
 #endif
 	}
 
-	ThreadID Platform::GetThreadID()
+	ThreadID GetThreadID()
 	{
 		return syscall(SYS_gettid);
 	}
 
-	ProcessID Platform::GetProcessID()
+	ProcessID GetProcessID()
 	{
 		return (ProcessID)getpid();
 	}
 
-	int64 Platform::GetFrequency()
+	int64 GetFrequency()
 	{
 		return 1000000000;
 	}
 
-	int64 Platform::GetTime()
+	int64 GetTime()
 	{
 		struct timespec ts;
 		clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -430,12 +430,12 @@ FTrace::~FTrace()
 	Stop();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Trace* Platform::CreateTrace()
+Trace* CreateTrace()
 {
 	return Memory::New<FTrace>();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-SymbolEngine* Platform::CreateSymbolEngine()
+SymbolEngine* CreateSymbolEngine()
 {
 	return nullptr;
 }

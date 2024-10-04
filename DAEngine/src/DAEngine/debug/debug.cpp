@@ -5,7 +5,7 @@
 #include "debug_stats_window.h"
 #include <debug/graphics_debug_render.h>
 
-namespace da::debug
+namespace da
 {
 
 	void CDebug::initialize()
@@ -16,7 +16,7 @@ namespace da::debug
 
 	void CDebug::update(float dt)
 	{
-		da::debug::CDebugRender::clear();
+		da::CDebugRender::clear();
 		CDebugMenuBar::update();
 	}
 

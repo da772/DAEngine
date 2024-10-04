@@ -10,15 +10,15 @@
 #include <bx/error.h>
 #include "bgfx_allocator.h"
 
-namespace da::platform::bgfx {
+namespace da {
 
 	#define INVALID_HANDLE UINT16_MAX 
 
 
 	CBgfxTexture2D::CBgfxTexture2D(const std::string& s) 
-		: da::graphics::CGraphicsTexture2D(s), m_fileAsset(s), m_mutex(new std::mutex())
+		: da::CGraphicsTexture2D(s), m_fileAsset(s), m_mutex(new std::mutex())
 	{
-		da::core::CWorkerPool::addJob([this] {
+		da::CWorkerPool::addJob([this] {
 			PROFILE_TAG("Texture: ", m_fileAsset.path().c_str())
 			std::lock_guard<std::mutex> guard(*m_mutex);
 
@@ -66,7 +66,7 @@ namespace da::platform::bgfx {
 	}
 
 	CBgfxTexture2D::CBgfxTexture2D(const std::string& name, uint32_t width, uint32_t height) 
-		: da::graphics::CGraphicsTexture2D(name, width, height),m_fileAsset(name, width*height*4), m_mutex(new std::mutex())
+		: da::CGraphicsTexture2D(name, width, height),m_fileAsset(name, width*height*4), m_mutex(new std::mutex())
 	{
 		memset((void*)m_fileAsset.data(), 0xff, width * height * 4);
 		m_channels = 4;
@@ -86,8 +86,8 @@ namespace da::platform::bgfx {
 	{
 		char* d = (char*)malloc(width);
 		memcpy(d, data, width);
-		da::core::CWorkerPool::addJob([this, width, height, d] {
-			PROFILE_NAME("da::platform::bgfx::CBgfxTexture2D")
+		da::CWorkerPool::addJob([this, width, height, d] {
+			PROFILE_NAME("da::CBgfxTexture2D")
 			PROFILE_TAG("Texture: ", m_fileAsset.path().c_str())
 			std::lock_guard<std::mutex> guard(*m_mutex);
 			stbi_uc* pixels = stbi_load_from_memory((const stbi_uc*)d, width, (int*)&m_width, (int*)&m_height, (int*)&m_channels, STBI_rgb_alpha);

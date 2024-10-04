@@ -8,7 +8,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include "physics/physics_rigid_body.h"
 
-namespace da::physics
+namespace da
 {
 	btMotionState* CBullet3MotionState::getMotionState() const
 	{
@@ -41,7 +41,7 @@ namespace da::physics
 		delete m_motionState;
 	}
 
-	CBullet3EntityMotionState::CBullet3EntityMotionState(da::core::CEntity* entity) : CPhysicsEntityMotionState(entity)
+	CBullet3EntityMotionState::CBullet3EntityMotionState(da::CEntity* entity) : CPhysicsEntityMotionState(entity)
 	{
 		ASSERT(m_entity);
 		m_motionState = this;
@@ -75,7 +75,7 @@ namespace da::physics
 		btTransform transform;
 		transform.setFromOpenGLMatrix(glm::value_ptr(newTransform));
 		m_motionState->setWorldTransform(transform);
-		da::core::FComponentRef<da::core::CRigidBodyComponent> rb = m_entity->getComponent<da::core::CRigidBodyComponent>();
+		da::FComponentRef<da::CRigidBodyComponent> rb = m_entity->getComponent<da::CRigidBodyComponent>();
 
 		if (!rb.isValid())
 		{

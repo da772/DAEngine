@@ -6,7 +6,7 @@
 
 class CLevelSelector {
 public:
-	inline CLevelSelector(da::modules::CWindowModule& window) : m_window(window) {}
+	inline CLevelSelector(da::CWindowModule& window) : m_window(window) {}
 	void initialize();
 	uint32_t addLevel(ILevel* level);
 	void startLevel(uint32_t id);
@@ -23,7 +23,7 @@ private:
 	uint32_t m_level = INVALID_LEVEL_ID;
 	bool m_levelInit = false;
 	uint8_t m_showLoadScreen = 0;
-	da::modules::CWindowModule& m_window;
+	da::CWindowModule& m_window;
 #ifdef DA_REVIEW
 	bool m_levelDebug = false;
 #endif

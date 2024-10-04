@@ -8,10 +8,10 @@
 
 
 
-da::core::CWindow* da::factory::CWindowFactory::CreateWindow(const da::core::FWindowData& windowData)
+da::CWindow* da::CWindowFactory::CreateWindow(const da::FWindowData& windowData)
 {
 #ifdef DA_WINDOW_GLFW
-	return new platform::CGLFW_Window(windowData);
+	return new CGLFW_Window(windowData);
 #endif
 	return nullptr;
 }

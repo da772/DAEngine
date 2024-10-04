@@ -8,14 +8,14 @@
 #include "platform/graphics/vulkan/pipelines/vulkan_graphics_pipeline_cubemap.h"
 #endif
 
-namespace da::factory {
+namespace da {
 
-	std::vector<CGraphicsPipeline*> da::factory::CGraphicsPipelineFactory::s_pipelines;
+	std::vector<CGraphicsPipeline*> da::CGraphicsPipelineFactory::s_pipelines;
 
-	da::graphics::CGraphicsPipeline* CGraphicsPipelineFactory::Create(CGraphicsApi& graphicsApi, const std::string& vertexShaderPath, const std::string& fragShaderPath, FVertexBindingDescription vertexBinding, const std::vector<FVertexInputAttributeDescription>& inputAttribDesc)
+	da::CGraphicsPipeline* CGraphicsPipelineFactory::Create(CGraphicsApi& graphicsApi, const std::string& vertexShaderPath, const std::string& fragShaderPath, FVertexBindingDescription vertexBinding, const std::vector<FVertexInputAttributeDescription>& inputAttribDesc)
 	{
 #ifdef DA_GRAPHICS_VULKAN
-		s_pipelines.push_back(new da::platform::CVulkanGraphicsPipeline(graphicsApi, vertexShaderPath, fragShaderPath, vertexBinding, inputAttribDesc));
+		s_pipelines.push_back(new da::CVulkanGraphicsPipeline(graphicsApi, vertexShaderPath, fragShaderPath, vertexBinding, inputAttribDesc));
 		return s_pipelines[s_pipelines.size()-1];
 #endif
 		return nullptr;
@@ -26,20 +26,20 @@ namespace da::factory {
 		return s_pipelines;
 	}
 
-	da::graphics::CGraphicsPipeline* CGraphicsPipelineFactory::CreatePBR(CGraphicsApi& graphicsApi)
+	da::CGraphicsPipeline* CGraphicsPipelineFactory::CreatePBR(CGraphicsApi& graphicsApi)
 	{
 
 #ifdef DA_GRAPHICS_VULKAN
-		s_pipelines.push_back(new da::platform::CVulkanGraphicsPipelinePBR(graphicsApi));
+		s_pipelines.push_back(new da::CVulkanGraphicsPipelinePBR(graphicsApi));
 		return s_pipelines[s_pipelines.size() - 1];
 #endif
 		return nullptr;
 	}
 
-	da::graphics::CGraphicsPipeline* CGraphicsPipelineFactory::CreateCubeMap(CGraphicsApi& graphicsApi)
+	da::CGraphicsPipeline* CGraphicsPipelineFactory::CreateCubeMap(CGraphicsApi& graphicsApi)
 	{
 #ifdef DA_GRAPHICS_VULKAN
-		s_pipelines.push_back(new da::platform::CVulkanGraphicsPipelineCubemap(graphicsApi));
+		s_pipelines.push_back(new da::CVulkanGraphicsPipelineCubemap(graphicsApi));
 		return s_pipelines[s_pipelines.size() - 1];
 #endif
 		return nullptr;

@@ -3,7 +3,7 @@
 #include "physics/physics_motion_state.h"
 #include "bullet3_physics.h"
 
-namespace da::physics
+namespace da
 {
 	class CBullet3MotionState : public IPhysicsMotionState
 	{
@@ -25,7 +25,7 @@ namespace da::physics
 	class CBullet3EntityMotionState : public CBullet3MotionState, public CPhysicsEntityMotionState, public btMotionState
 	{
 	public:
-		CBullet3EntityMotionState(da::core::CEntity* entity);
+		CBullet3EntityMotionState(da::CEntity* entity);
 		virtual ~CBullet3EntityMotionState();
 
 		void getWorldTransform(btTransform& worldTrans) const override;

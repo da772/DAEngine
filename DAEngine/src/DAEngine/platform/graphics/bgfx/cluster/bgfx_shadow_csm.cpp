@@ -14,7 +14,7 @@
 #include "debug/debug_menu_bar.h"
 #endif
 
-namespace da::platform {
+namespace da {
 
 
 #define RENDERVIEW_SHADOWMAP_1_ID 0 + viewId
@@ -514,7 +514,7 @@ namespace da::platform {
 		m_uniforms.submitConstUniforms();
 
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Shadows"), &m_showDebug, []() {});
+		da::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Shadows"), &m_showDebug, []() {});
 #endif
 
 		// Settings.
@@ -728,7 +728,7 @@ namespace da::platform {
 
 			const bgfx::Caps* caps = bgfx::getCaps();
 
-			da::core::CCamera* cam = da::core::CCamera::getCamera();
+			da::CCamera* cam = da::CCamera::getCamera();
 
 			// Set view and projection matrices.
 			const float camFovy = cam->fov;
@@ -1326,12 +1326,12 @@ namespace da::platform {
 		m_uniforms.destroy();
 
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Shadows"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Shadows"));
 #endif
 
 	}
 
-	void CBgfxShadowCsm::setRenderFunc(const std::function<void(uint8_t, da::graphics::CMaterial*, da::graphics::CMaterial*, da::graphics::CMaterial*, RenderState)>& func)
+	void CBgfxShadowCsm::setRenderFunc(const std::function<void(uint8_t, da::CMaterial*, da::CMaterial*, da::CMaterial*, RenderState)>& func)
 	{
 		m_renderFunc = func;
 	}
@@ -1352,38 +1352,38 @@ namespace da::platform {
 	void CBgfxShadowCsm::FPrograms::init()
 	{
 		// Misc.
-		m_black = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_color.sc", "shaders/csm/fs_shadowMaps_color_black.sc");
-		m_texture = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_texture.sc", "shaders/csm/fs_shadowMaps_texture.sc");
-		m_colorTexture = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_color_texture.sc", "shaders/csm/fs_shadowMaps_color_texture.sc");
+		m_black = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_color.sc", "shaders/csm/fs_shadowMaps_color_black.sc");
+		m_texture = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_texture.sc", "shaders/csm/fs_shadowMaps_texture.sc");
+		m_colorTexture = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_color_texture.sc", "shaders/csm/fs_shadowMaps_color_texture.sc");
 
 		// Blur.
-		m_vBlur[PackDepth::RGBA] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_vblur.sc", "shaders/csm/fs_shadowMaps_vblur.sc");
-		m_hBlur[PackDepth::RGBA] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_hblur.sc", "shaders/csm/fs_shadowMaps_hblur.sc");
-		m_vBlur[PackDepth::VSM] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_vblur.sc", "shaders/csm/fs_shadowMaps_vblur_vsm.sc");
-		m_hBlur[PackDepth::VSM] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_hblur.sc", "shaders/csm/fs_shadowMaps_hblur_vsm.sc");
+		m_vBlur[PackDepth::RGBA] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_vblur.sc", "shaders/csm/fs_shadowMaps_vblur.sc");
+		m_hBlur[PackDepth::RGBA] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_hblur.sc", "shaders/csm/fs_shadowMaps_hblur.sc");
+		m_vBlur[PackDepth::VSM] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_vblur.sc", "shaders/csm/fs_shadowMaps_vblur_vsm.sc");
+		m_hBlur[PackDepth::VSM] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_hblur.sc", "shaders/csm/fs_shadowMaps_hblur_vsm.sc");
 
 		// Draw depth.
-		m_drawDepth[PackDepth::RGBA] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_unpackdepth.sc", "shaders/csm/fs_shadowMaps_unpackdepth.sc");
-		m_drawDepth[PackDepth::VSM] =  da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_unpackdepth.sc", "shaders/csm/fs_shadowMaps_unpackdepth_vsm.sc");
+		m_drawDepth[PackDepth::RGBA] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_unpackdepth.sc", "shaders/csm/fs_shadowMaps_unpackdepth.sc");
+		m_drawDepth[PackDepth::VSM] =  da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_unpackdepth.sc", "shaders/csm/fs_shadowMaps_unpackdepth_vsm.sc");
 
 		// Pack depth.
-		m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth.sc");
-		m_packDepth[DepthImpl::InvZ][PackDepth::VSM] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm.sc");
+		m_packDepth[DepthImpl::InvZ][PackDepth::RGBA] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth.sc");
+		m_packDepth[DepthImpl::InvZ][PackDepth::VSM] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm.sc");
 
-		m_packDepthSk[DepthImpl::InvZ][PackDepth::RGBA] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_sk_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth.sc");
-		m_packDepthSk[DepthImpl::InvZ][PackDepth::VSM] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_sk_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm.sc");
+		m_packDepthSk[DepthImpl::InvZ][PackDepth::RGBA] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_sk_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth.sc");
+		m_packDepthSk[DepthImpl::InvZ][PackDepth::VSM] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_sk_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm.sc");
 		
-		m_packDepthInstance[DepthImpl::InvZ][PackDepth::RGBA] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_instance_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth.sc");
-		m_packDepthInstance[DepthImpl::InvZ][PackDepth::VSM] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_instance_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm.sc");
+		m_packDepthInstance[DepthImpl::InvZ][PackDepth::RGBA] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_instance_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth.sc");
+		m_packDepthInstance[DepthImpl::InvZ][PackDepth::VSM] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_instance_packdepth.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm.sc");
 
-		m_packDepth[DepthImpl::Linear][PackDepth::RGBA] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
-		m_packDepth[DepthImpl::Linear][PackDepth::VSM] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
+		m_packDepth[DepthImpl::Linear][PackDepth::RGBA] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
+		m_packDepth[DepthImpl::Linear][PackDepth::VSM] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
 
-		m_packDepthSk[DepthImpl::Linear][PackDepth::RGBA] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
-		m_packDepthSk[DepthImpl::Linear][PackDepth::VSM] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
+		m_packDepthSk[DepthImpl::Linear][PackDepth::RGBA] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
+		m_packDepthSk[DepthImpl::Linear][PackDepth::VSM] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
 
-		m_packDepthInstance[DepthImpl::Linear][PackDepth::RGBA] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
-		m_packDepthInstance[DepthImpl::Linear][PackDepth::VSM] = da::factory::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
+		m_packDepthInstance[DepthImpl::Linear][PackDepth::RGBA] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_linear.sc");
+		m_packDepthInstance[DepthImpl::Linear][PackDepth::VSM] = da::CMaterialFactory::create("shaders/csm/vs_shadowMaps_packdepth_linear.sc", "shaders/csm/fs_shadowMaps_packdepth_vsm_linear.sc");
 	}
 
 	void CBgfxShadowCsm::FPrograms::destroy()
@@ -1393,34 +1393,34 @@ namespace da::platform {
 		{
 			for (uint8_t jj = 0; jj < PackDepth::Count; ++jj)
 			{
-				da::factory::CMaterialFactory::remove(m_packDepth[ii][jj]);
-				da::factory::CMaterialFactory::remove(m_packDepthSk[ii][jj]);
-				da::factory::CMaterialFactory::remove(m_packDepthInstance[ii][jj]);
+				da::CMaterialFactory::remove(m_packDepth[ii][jj]);
+				da::CMaterialFactory::remove(m_packDepthSk[ii][jj]);
+				da::CMaterialFactory::remove(m_packDepthInstance[ii][jj]);
 			}
 		}
 
 		// Draw depth.
 		for (uint8_t ii = 0; ii < PackDepth::Count; ++ii)
 		{
-			da::factory::CMaterialFactory::remove(m_drawDepth[ii]);
+			da::CMaterialFactory::remove(m_drawDepth[ii]);
 		}
 
 		// Hblur.
 		for (uint8_t ii = 0; ii < PackDepth::Count; ++ii)
 		{
-			da::factory::CMaterialFactory::remove(m_hBlur[ii]);
+			da::CMaterialFactory::remove(m_hBlur[ii]);
 		}
 
 		// Vblur.
 		for (uint8_t ii = 0; ii < PackDepth::Count; ++ii)
 		{
-			da::factory::CMaterialFactory::remove(m_vBlur[ii]);
+			da::CMaterialFactory::remove(m_vBlur[ii]);
 		}
 
 		// Misc.
-		da::factory::CMaterialFactory::remove(m_colorTexture);
-		da::factory::CMaterialFactory::remove(m_texture);
-		da::factory::CMaterialFactory::remove(m_black);
+		da::CMaterialFactory::remove(m_colorTexture);
+		da::CMaterialFactory::remove(m_texture);
+		da::CMaterialFactory::remove(m_black);
 	}
 
 	void CBgfxShadowCsm::FUniforms::init()

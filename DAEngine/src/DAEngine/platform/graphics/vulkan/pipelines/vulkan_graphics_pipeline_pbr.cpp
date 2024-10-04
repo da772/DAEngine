@@ -1,12 +1,12 @@
 
 #include "vulkan_graphics_pipeline_pbr.h"
 #ifdef DA_GRAPHICS_VULKAN
-namespace da::platform
+namespace da
 {
-	std::vector<da::graphics::FVertexInputAttributeDescription> getAttributeDescription();
-	da::graphics::FVertexBindingDescription getBindingDescription();
+	std::vector<da::FVertexInputAttributeDescription> getAttributeDescription();
+	da::FVertexBindingDescription getBindingDescription();
 
-	CVulkanGraphicsPipelinePBR::CVulkanGraphicsPipelinePBR(da::graphics::CGraphicsApi& pipeline) :
+	CVulkanGraphicsPipelinePBR::CVulkanGraphicsPipelinePBR(da::CGraphicsApi& pipeline) :
 		CVulkanGraphicsPipeline(pipeline
 			, "shaders/pbr_shader.vert.spv"
 			, "shaders/pbr_shader.frag.spv"
@@ -17,53 +17,53 @@ namespace da::platform
 
 	}
 
-	da::graphics::FVertexBindingDescription getBindingDescription()
+	da::FVertexBindingDescription getBindingDescription()
 	{
-		da::graphics::FVertexBindingDescription result;
+		da::FVertexBindingDescription result;
 		result.binding = 0;
-		result.stride = sizeof(da::graphics::FVertexBase);
+		result.stride = sizeof(da::FVertexBase);
 		result.inputRate = 0;
 		return result;
 	}
 
-	std::vector<da::graphics::FVertexInputAttributeDescription> getAttributeDescription()
+	std::vector<da::FVertexInputAttributeDescription> getAttributeDescription()
 	{
-		std::vector<da::graphics::FVertexInputAttributeDescription> attributeDescriptions(6);
+		std::vector<da::FVertexInputAttributeDescription> attributeDescriptions(6);
 		// Position
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;
 		attributeDescriptions[0].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106,
-		attributeDescriptions[0].offset = offsetof(da::graphics::FVertexBase, Pos);
+		attributeDescriptions[0].offset = offsetof(da::FVertexBase, Pos);
 
 		// Color
 		attributeDescriptions[1].binding = 0;
 		attributeDescriptions[1].location = 1;
 		attributeDescriptions[1].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106
-		//attributeDescriptions[1].offset = offsetof(da::core::FVertexBase, Color);
+		//attributeDescriptions[1].offset = offsetof(da::FVertexBase, Color);
 
 		// Tex Coord
 		attributeDescriptions[2].binding = 0;
 		attributeDescriptions[2].location = 2;
 		attributeDescriptions[2].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106,
-		attributeDescriptions[2].offset = offsetof(da::graphics::FVertexBase, TexCoord);
+		attributeDescriptions[2].offset = offsetof(da::FVertexBase, TexCoord);
 
 		// Normal
 		attributeDescriptions[3].binding = 0;
 		attributeDescriptions[3].location = 3;
 		attributeDescriptions[3].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106,
-		attributeDescriptions[3].offset = offsetof(da::graphics::FVertexBase, Normal);
+		attributeDescriptions[3].offset = offsetof(da::FVertexBase, Normal);
 
 		// Tangent
 		attributeDescriptions[4].binding = 0;
 		attributeDescriptions[4].location = 4;
 		attributeDescriptions[4].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106,
-		attributeDescriptions[4].offset = offsetof(da::graphics::FVertexBase, Tangent);
+		attributeDescriptions[4].offset = offsetof(da::FVertexBase, Tangent);
 
 		// BitTangent
 		attributeDescriptions[5].binding = 0;
 		attributeDescriptions[5].location = 5;
 		attributeDescriptions[5].format = 106; // VK_FORMAT_R32G32B32_SFLOAT = 106,
-		//attributeDescriptions[5].offset = offsetof(da::core::FVertexBase, BitTangent);
+		//attributeDescriptions[5].offset = offsetof(da::FVertexBase, BitTangent);
 
 		return attributeDescriptions;
 	}

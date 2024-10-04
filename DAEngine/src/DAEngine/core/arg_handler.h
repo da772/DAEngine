@@ -2,7 +2,7 @@
 
 #include "dastd.h"
 
-namespace da::core {
+namespace da {
 
 	class CArgHandler
 	{

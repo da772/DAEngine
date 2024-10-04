@@ -6,11 +6,11 @@
 #if defined(DA_GRAPHICS_VULKAN) && defined(DA_WINDOW_GLFW)
 #include "platform/graphics/vulkan/vulkan_graphics_api.h"
 
-namespace da::platform
+namespace da
 {
-	class CImGuiVulkanApi : public core::CImGuiApi {
+	class CImGuiVulkanApi : public CImGuiApi {
 	public:
-		CImGuiVulkanApi(graphics::CGraphicsApi* graphicsApi);
+		CImGuiVulkanApi(da::CGraphicsApi* graphicsApi);
 
 		virtual void onInitialize() override;
 		virtual void onUpdate() override;

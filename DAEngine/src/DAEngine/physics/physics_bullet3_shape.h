@@ -3,7 +3,7 @@
 #include "physics/physics_shape.h"
 #include "bullet3_physics.h"
 
-namespace da::physics
+namespace da
 {
 	class CBullet3Shape :public IPhysicsShape
 	{
@@ -34,13 +34,13 @@ namespace da::physics
 	class CBullet3TriangleMesh : public CBullet3Shape, public  CPhysicsShapeTriangleMesh
 	{
 	public:
-		CBullet3TriangleMesh(da::graphics::CStaticMesh* mesh, uint32_t index);
+		CBullet3TriangleMesh(da::CStaticMesh* mesh, uint32_t index);
 		virtual ~CBullet3TriangleMesh();
 		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::TriangleMesh; }
-		virtual da::graphics::CStaticMesh* getMesh() const override;
+		virtual da::CStaticMesh* getMesh() const override;
 	private:
 		btTriangleIndexVertexArray* m_vertexArray;
-		da::graphics::CStaticMesh* m_mesh;
+		da::CStaticMesh* m_mesh;
 
 	};
 
@@ -56,12 +56,12 @@ namespace da::physics
 	class CBullet3ConvexHullShape : public CBullet3Shape, public  CPhysicsShapeConvexHull
 	{
 	public:
-		CBullet3ConvexHullShape(da::graphics::CStaticMesh* mesh, uint32_t index);
+		CBullet3ConvexHullShape(da::CStaticMesh* mesh, uint32_t index);
 		virtual ~CBullet3ConvexHullShape();
 		inline virtual EPhysicsShapeType getType() const override { return EPhysicsShapeType::ConvexHull; }
-		virtual da::graphics::CStaticMesh* getMesh() const override;
+		virtual da::CStaticMesh* getMesh() const override;
 	private:
-		da::graphics::CStaticMesh* m_mesh;
+		da::CStaticMesh* m_mesh;
 
 	};
 

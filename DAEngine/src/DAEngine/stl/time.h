@@ -3,7 +3,7 @@
 #include <chrono>
 #include <functional>
 
-namespace da::core
+namespace da
 {
 	struct FTimerDelegate {
 		size_t TimeMS;

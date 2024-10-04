@@ -65,7 +65,7 @@ extern "C" static int lua_imgui_same_line(lua_State * L)
 	return 0;
 }
 
-namespace da::script::imgui
+namespace da::imgui
 {
 	void registerNatives(lua_State* L)
 	{

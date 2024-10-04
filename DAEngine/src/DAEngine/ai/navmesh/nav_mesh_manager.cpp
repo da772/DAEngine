@@ -3,7 +3,7 @@
 #include "debug/debug_menu_bar.h"
 #include "nav_mesh_ctx.h"
 
-namespace da::ai
+namespace da
 {
 
 #ifdef DA_REVIEW
@@ -14,7 +14,7 @@ namespace da::ai
 	bool CNavMeshManager::s_initialized;
 	
 #ifdef DA_REVIEW
-	da::ai::CNavDrawer& CNavMeshManager::getDrawer()
+	da::CNavDrawer& CNavMeshManager::getDrawer()
 	{
 		return CNavDrawer::ms_drawer;
 	}
@@ -25,7 +25,7 @@ namespace da::ai
 		s_initialized = true;
 		
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Ai"), HASHSTR("NavMesh"), &s_debugRender, []() { });
+		da::CDebugMenuBar::register_debug(HASHSTR("Ai"), HASHSTR("NavMesh"), &s_debugRender, []() { });
 #endif
 
 		for (INavMesh* m : s_navMeshes)
@@ -43,7 +43,7 @@ namespace da::ai
 	void CNavMeshManager::shutdown()
 	{
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Ai"), HASHSTR("NavMesh"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("Ai"), HASHSTR("NavMesh"));
 #endif
 
 		for (INavMesh* m : s_navMeshes)
@@ -67,12 +67,12 @@ namespace da::ai
 		}
 	}
 
-	da::ai::CNavCtx& CNavMeshManager::getCtx()
+	da::CNavCtx& CNavMeshManager::getCtx()
 	{
 		return CNavCtx::ms_ctx;
 	}
 
-	da::ai::INavMesh* CNavMeshManager::getNavMesh(uint32_t index /*= 0*/)
+	da::INavMesh* CNavMeshManager::getNavMesh(uint32_t index /*= 0*/)
 	{
 		ASSERT(index < s_navMeshes.size())
 		return s_navMeshes[index];

@@ -5,7 +5,7 @@
 #include <vector>
 #include <graphics/graphics_light_manager.h>
 
-namespace da::platform {
+namespace da {
 
     struct CBgfxLightList
     {
@@ -40,7 +40,7 @@ namespace da::platform {
         void shutdown();
 
         // upload changes to GPU
-        void update(const std::vector<da::graphics::FLightData>& lights);
+        void update(const std::vector<da::FLightData>& lights);
         inline const ::bgfx::DynamicVertexBufferHandle getBuffer() const { return m_buffer; };
 
 

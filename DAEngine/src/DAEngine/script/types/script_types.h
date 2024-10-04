@@ -4,17 +4,17 @@
 
 #include "graphics/graphics_material_data.h"
 
-#define GET_SCRIPT_TYPE(type, obj) da::script::getSolType<type>(obj, HASHSTR(#type))
-#define CREATE_SCRIPT_TYPE(view, type, obj) da::script::createSolType<type>(view, obj, HASHSTR(#type))
-#define REGISTER_SCRIPT_TYPE(type, ...) da::script::registerSolType<type>(HASHSTR(#type), { __VA_ARGS__ })
+#define GET_SCRIPT_TYPE(type, obj) da::getSolType<type>(obj, HASHSTR(#type))
+#define CREATE_SCRIPT_TYPE(view, type, obj) da::createSolType<type>(view, obj, HASHSTR(#type))
+#define REGISTER_SCRIPT_TYPE(type, ...) da::registerSolType<type>(HASHSTR(#type), { __VA_ARGS__ })
 
-#define SCRIPT_TYPE(type, name, solType) da::script::FScriptType(#name, da::script::CScriptTypes::offsetOf(&type::name), solType, CHashString())
-#define SCRIPT_ARR_TYPE(type, name, solType) da::script::FScriptType(#name, da::script::CScriptTypes::offsetOf(&type::name),  da::script::EScriptDataType::Vector, CHashString(), solType)
-#define SCRIPT_TYPE_OBJECT(type, name, objType)  da::script::FScriptType(#name, da::script::CScriptTypes::offsetOf(&type::name), da::script::EScriptDataType::Object, HASHSTR(#objType))
-#define SCRIPT_ARR_TYPE_OBJECT(type, name, objType)  da::script::FScriptType(#name, da::script::CScriptTypes::offsetOf(&type::name), da::script::EScriptDataType::Vector, HASHSTR(#objType), da::script::EScriptDataType::Object, sizeof(objType))
+#define SCRIPT_TYPE(type, name, solType) da::FScriptType(#name, da::CScriptTypes::offsetOf(&type::name), solType, CHashString())
+#define SCRIPT_ARR_TYPE(type, name, solType) da::FScriptType(#name, da::CScriptTypes::offsetOf(&type::name),  da::EScriptDataType::Vector, CHashString(), solType)
+#define SCRIPT_TYPE_OBJECT(type, name, objType)  da::FScriptType(#name, da::CScriptTypes::offsetOf(&type::name), da::EScriptDataType::Object, HASHSTR(#objType))
+#define SCRIPT_ARR_TYPE_OBJECT(type, name, objType)  da::FScriptType(#name, da::CScriptTypes::offsetOf(&type::name), da::EScriptDataType::Vector, HASHSTR(#objType), da::EScriptDataType::Object, sizeof(objType))
 
 
-namespace da::script
+namespace da
 {
 	enum class EScriptDataType {
 		Invalid,

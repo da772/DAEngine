@@ -5,7 +5,7 @@
 
 #define LIGHTS_POINTLIGHTS 6
 
-namespace da::platform::bgfx {
+namespace da {
 
 	void CBgfxLightShader::initialize()
 	{

@@ -24,7 +24,7 @@
 #endif
 
 
-namespace da::net
+namespace da
 {
 
 	std::string CNetworkUtil::IPV4ToString(uint32_t ip)

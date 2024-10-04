@@ -1,7 +1,7 @@
 #pragma once
 #include "dastd.h"
 
-namespace da::graphics
+namespace da
 {
 
 	class CSkeletalAnimator;

@@ -2,9 +2,9 @@
 
 #include "graphics/graphics_pipeline.h"
 
-using namespace da::graphics;
+using namespace da;
 
-namespace da::factory {
+namespace da {
 
 	class CGraphicsPipelineFactory
 	{

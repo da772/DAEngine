@@ -4,7 +4,7 @@
 #include <platform/graphics/bgfx/bgfx_graphics_material.h>
 #include <bgfx/bgfx.h>
 
-namespace da::platform
+namespace da
 {
 	class CBgfxSSAOShader
 	{
@@ -22,8 +22,8 @@ namespace da::platform
 		::bgfx::FrameBufferHandle createFrameBuffer(bool hdr);
 
 	private:
-		da::graphics::CMaterial* m_pSsaoProgram = nullptr;
-		da::graphics::CMaterial* m_pSsaoBlurProgram = nullptr;
+		da::CMaterial* m_pSsaoProgram = nullptr;
+		da::CMaterial* m_pSsaoBlurProgram = nullptr;
 		::bgfx::FrameBufferHandle m_ssaoBuffer = BGFX_INVALID_HANDLE;
 		::bgfx::FrameBufferHandle m_ssaoProcessedBuffer = BGFX_INVALID_HANDLE;
 		::bgfx::VertexBufferHandle m_blitTriangleBuffer = BGFX_INVALID_HANDLE;

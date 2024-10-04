@@ -6,7 +6,7 @@
 
 typedef unsigned int dtPolyRef;
 
-namespace da::ai
+namespace da
 {
 	
 	class CTiledNavMesh : public INavMesh
@@ -18,7 +18,7 @@ namespace da::ai
 		void update(float dt) override;
 		void shutdown() override;
 		std::vector<glm::vec3> findPath(const glm::vec3& startPos, const glm::vec3& endPos) override;
-		void addMesh(const glm::mat4& transform, const da::graphics::FMesh& mesh);
+		void addMesh(const glm::mat4& transform, const da::FMesh& mesh);
 		void rebuild();
 #ifdef DA_REVIEW
 		void debugRender() override;
@@ -43,7 +43,7 @@ namespace da::ai
 		}
 
 	private:
-		da::graphics::FMesh m_mesh;
+		da::FMesh m_mesh;
 		float m_lastBuiltTileBmin[3], m_lastBuiltTileBmax[3];
 		dtNavMesh* m_navMesh = nullptr;
 		dtNavMeshQuery* m_navQuery = nullptr;

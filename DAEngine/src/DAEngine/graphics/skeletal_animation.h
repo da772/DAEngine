@@ -5,7 +5,7 @@
 class aiAnimation;
 class aiNode;
 
-namespace da::graphics
+namespace da
 {
 	struct FAssimpNodeData
 	{

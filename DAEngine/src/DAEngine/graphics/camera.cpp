@@ -4,9 +4,9 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace da::core
+namespace da
 {
-	da::core::CCamera* CCamera::s_camera;
+	da::CCamera* CCamera::s_camera;
 
 
 	CCamera::CCamera()
@@ -99,7 +99,7 @@ namespace da::core
 		return glm::quat_cast(rotationMatrix);
 	}
 
-	da::core::CCamera* CCamera::getCamera()
+	da::CCamera* CCamera::getCamera()
 	{
 		return s_camera;
 	}

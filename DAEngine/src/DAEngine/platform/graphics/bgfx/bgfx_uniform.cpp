@@ -6,7 +6,7 @@
 
 #include "logger.h"
 
-namespace da::platform::bgfx
+namespace da
 {
 	
 }

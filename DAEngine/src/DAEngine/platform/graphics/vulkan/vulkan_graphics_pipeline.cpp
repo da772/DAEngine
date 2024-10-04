@@ -6,7 +6,7 @@
 #include "vulkan_graphics_material.h"
 #include "graphics/factory/factory_graphics_material.h"
 
-namespace da::platform {
+namespace da {
 	static std::vector<char> readFile(const std::string& filename) {
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
@@ -26,9 +26,9 @@ namespace da::platform {
 	}
 
 
-	CVulkanGraphicsPipeline::CVulkanGraphicsPipeline(graphics::CGraphicsApi& graphicsApi, const std::string& vertexShader, const std::string& fragShader, graphics::FVertexBindingDescription vertexBinding,
-		const std::vector<graphics::FVertexInputAttributeDescription>& inputAttribDesc) :
-		graphics::CGraphicsPipeline(graphicsApi, vertexShader, fragShader, vertexBinding, inputAttribDesc), m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
+	CVulkanGraphicsPipeline::CVulkanGraphicsPipeline(da::CGraphicsApi& graphicsApi, const std::string& vertexShader, const std::string& fragShader, da::FVertexBindingDescription vertexBinding,
+		const std::vector<da::FVertexInputAttributeDescription>& inputAttribDesc) :
+		da::CGraphicsPipeline(graphicsApi, vertexShader, fragShader, vertexBinding, inputAttribDesc), m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&m_graphicsApi))
 	{
 		
 	}
@@ -287,7 +287,7 @@ namespace da::platform {
 		}
 	}
 
-	da::platform::FVulkanMeshData CVulkanGraphicsPipeline::createMeshData(da::graphics::IRenderable* renderable, da::graphics::CMaterial* material) const
+	da::FVulkanMeshData CVulkanGraphicsPipeline::createMeshData(da::IRenderable* renderable, da::CMaterial* material) const
 	{
 		FVulkanMeshData meshData;
 		ASSERT(renderable);
@@ -296,7 +296,7 @@ namespace da::platform {
 		meshData.Renderable = renderable;
 
 		{
-			VkDeviceSize bufferSize = sizeof(graphics::FVertexBase) * renderable->getVertices().size();
+			VkDeviceSize bufferSize = sizeof(da::FVertexBase) * renderable->getVertices().size();
 
 			VkBuffer stagingBuffer;
 			VkDeviceMemory stagingBufferMemory;
@@ -353,7 +353,7 @@ namespace da::platform {
 			vkDestroyBuffer(m_vulkanGraphicsApi.getDevice(), data.IndexBuffer, &m_vulkanGraphicsApi.getAllocCallbacks());
 			vkFreeMemory(m_vulkanGraphicsApi.getDevice(), data.IndexMemory, &m_vulkanGraphicsApi.getAllocCallbacks());
 
-			da::factory::CMaterialFactory::remove(data.Material);
+			da::CMaterialFactory::remove(data.Material);
 		}
 
 		m_renderables.clear();

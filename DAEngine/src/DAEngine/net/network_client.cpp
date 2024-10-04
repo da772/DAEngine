@@ -5,14 +5,14 @@
 #include "network_util.h"
 #include <enet/enet.h>
 
-namespace da::net
+namespace da
 {
 
 	CNetworkClient::CNetworkClient(uint64_t id, const FConnectionSettings& settings, const std::function<void(bool)>& callback) : INetwork(id), m_settings(settings)
 	{
 		m_thread = std::thread([this, callback]() {
 			m_isValid = createClient();
-			da::core::CWorkerPool::addMainJob([callback, this] { callback(m_isValid); });
+			da::CWorkerPool::addMainJob([callback, this] { callback(m_isValid); });
 			clientListen();
 		});
 	}
@@ -90,7 +90,7 @@ namespace da::net
 					size_t dataSize = event.packet->dataLength;
 					if (it != m_funcs.end()) {
 						std::function<void(const char*, size_t)> func = it->second;
-						da::core::CWorkerPool::addMainJob([func, data, dataSize] {
+						da::CWorkerPool::addMainJob([func, data, dataSize] {
 							func(data, dataSize);
 							delete data;
 						});

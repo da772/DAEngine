@@ -10,14 +10,14 @@ namespace bgfx {
 	struct VertexLayout;
 }
 
-namespace da::factory
+namespace da
 {
 	class CSkeletalMeshFactory;
 }
 
-namespace da::platform {
+namespace da {
 
-	class CBgfxSkeletalMesh : public da::graphics::CSkeletalMesh
+	class CBgfxSkeletalMesh : public da::CSkeletalMesh
 	{
 	public:
 		virtual void setBuffers(size_t index, uint8_t stream) override;
@@ -34,8 +34,8 @@ namespace da::platform {
 		std::vector<::bgfx::VertexBufferHandle> m_vbh;
 		std::vector<::bgfx::IndexBufferHandle>m_ibh;
 
-		friend class da::core::CFactory<CSkeletalMesh>;
-		friend class da::factory::CSkeletalMeshFactory;
+		friend class da::CFactory<CSkeletalMesh>;
+		friend class da::CSkeletalMeshFactory;
 
 	public:
 		static ::bgfx::VertexLayout getLayout();

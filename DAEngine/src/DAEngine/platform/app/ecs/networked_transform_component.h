@@ -2,11 +2,11 @@
 
 #include "core/ecs/component.h"
 
-namespace da::net {
+namespace da {
 	class INetwork;
 }
 
-namespace da::core
+namespace da
 {
 	class CNetworkedTransformComponent {
 		COMPONENT_H(CNetworkedTransformComponent)
@@ -22,7 +22,7 @@ namespace da::core
 		bool shouldUpdate();
 
 	private:
-		da::net::INetwork* m_network = nullptr;
+		da::INetwork* m_network = nullptr;
 		const float m_tickSpeed = 1.f/30.f;
 		float m_timeSinceUpdate = 0.f;
 		float m_lerpSpeed = 10.f;

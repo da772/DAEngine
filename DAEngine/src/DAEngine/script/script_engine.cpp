@@ -20,7 +20,7 @@ extern "C" {
 #endif
 #include <sol/sol.hpp>
 
-namespace da::script
+namespace da
 {
 	CScriptEngine* CScriptEngine::s_instance = nullptr;
 	std::unordered_map<uint32_t, int> CScriptEngine::s_scriptMap;
@@ -163,7 +163,7 @@ namespace da::script
 		s_instance->m_stateView->set_exception_handler(&my_exception_handler);
 
 
-		da::script::CScriptTypes::registerTypes();
+		da::CScriptTypes::registerTypes();
 		registerFunctions();
 		registerNatives(s_instance->m_state, s_instance->m_stateView);
 

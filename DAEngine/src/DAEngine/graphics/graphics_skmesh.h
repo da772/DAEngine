@@ -10,7 +10,7 @@
 #include "daglm.h"
 #include "dacommon.h"
 
-namespace da::graphics
+namespace da
 {
 
 #define MAX_BONE_INFLUENCE 4
@@ -69,7 +69,7 @@ namespace da::graphics
 		bool m_castShadows = true;
 		bool m_hidden = false;
 
-		friend class da::core::CFactory<CSkeletalMesh>;
+		friend class da::CFactory<CSkeletalMesh>;
 
 	};
 }

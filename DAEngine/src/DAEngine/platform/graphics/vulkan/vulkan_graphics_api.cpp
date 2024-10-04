@@ -26,7 +26,7 @@
 #include "graphics/graphics_smesh.h"
 #include "vulkan_graphics_pipeline.h"
 
-namespace da::platform {
+namespace da {
 
 #if DA_DEBUG || DA_RELEASE
 #define VK_CHECK(x, y) ASSERT(x == y)
@@ -97,7 +97,7 @@ namespace da::platform {
 		}
 	}
 
-	CVulkanGraphicsApi::CVulkanGraphicsApi(core::CWindow* windowModule) : graphics::CGraphicsApi(windowModule)
+	CVulkanGraphicsApi::CVulkanGraphicsApi(CWindow* windowModule) : da::CGraphicsApi(windowModule)
 	{
 		m_allocCallbacks = {
 	   nullptr,
@@ -1145,7 +1145,7 @@ namespace da::platform {
 		vkBindBufferMemory(m_device, buffer, bufferMemory, 0);
 	}
 
-	da::platform::QueueFamilyIndices CVulkanGraphicsApi::findQueueFamilies(VkPhysicalDevice device, std::optional<VkSurfaceKHR> surface)
+	da::QueueFamilyIndices CVulkanGraphicsApi::findQueueFamilies(VkPhysicalDevice device, std::optional<VkSurfaceKHR> surface)
 	{
 		QueueFamilyIndices indices;
 
@@ -1455,7 +1455,7 @@ namespace da::platform {
 			m_renderFunctions.erase(it);
 	}
 
-	void CVulkanGraphicsApi::submitPipeline(da::graphics::CGraphicsPipeline* pipeline)
+	void CVulkanGraphicsApi::submitPipeline(da::CGraphicsPipeline* pipeline)
 	{
 		CVulkanGraphicsPipeline* vkPipeline = dynamic_cast<CVulkanGraphicsPipeline*>(pipeline);
 		LOG_ASSERT(vkPipeline, ELogChannel::Graphics, "Failed to cast CGraphicsPipeline to CVulkangraphicsPipeline");

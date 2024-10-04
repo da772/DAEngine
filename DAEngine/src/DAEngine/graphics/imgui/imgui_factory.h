@@ -2,11 +2,11 @@
 
 #include "imgui_api.h"
 
-namespace da::factory {
+namespace da {
 
 	class CImGuiFactory {
 	public:
-		static da::core::CImGuiApi* Create(graphics::CGraphicsApi* graphicsApi);
+		static da::CImGuiApi* Create(da::CGraphicsApi* graphicsApi);
 	};
 
 }

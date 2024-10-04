@@ -2,7 +2,7 @@
 #include "dynamic_light_component.h"
 #include <graphics/graphics_light_manager.h>
 
-namespace da::core {
+namespace da {
 
 	COMPONENT_CPP_NO_UPDATE(CDynamicLightComponent)
 
@@ -19,7 +19,7 @@ namespace da::core {
 	void CDynamicLightComponent::onShutdown()
 	{
 		for (size_t i = 0; i < m_lights.size(); i++) {
-			da::graphics::CLightManager::removeLight(m_lights[i]);
+			da::CLightManager::removeLight(m_lights[i]);
 		}
 
 
@@ -30,7 +30,7 @@ namespace da::core {
 	{
 		for (size_t i = 0; i < m_lights.size(); i++) {
 			if (m_lights[i] == id) {
-				da::graphics::CLightManager::removeLight(id);
+				da::CLightManager::removeLight(id);
 				m_lights.erase(m_lights.begin() + i);
 				return;
 			}
@@ -40,13 +40,13 @@ namespace da::core {
 
 	uint32_t CDynamicLightComponent::addSpotLight(const glm::vec3& position, const glm::vec3& intensity, const glm::vec3& direction, float radius, float falloffAngle)
 	{
-		da::graphics::FLightData lightData;
+		da::FLightData lightData;
 		lightData.position = position;
 		lightData.intensity = intensity;
 		lightData.radius = radius;
 		lightData.direction = direction;
 		lightData.angle = falloffAngle;
-		uint32_t index = da::graphics::CLightManager::addLight(lightData);
+		uint32_t index = da::CLightManager::addLight(lightData);
 		ASSERT(index);
 		m_lights.push_back(index);
 		return index;
@@ -55,13 +55,13 @@ namespace da::core {
 
 	uint32_t CDynamicLightComponent::addPointLight(const glm::vec3& position, const glm::vec3& intensity, float radius)
 	{
-		da::graphics::FLightData lightData;
+		da::FLightData lightData;
 		lightData.position = position;
 		lightData.intensity = intensity;
 		lightData.radius = radius;
 		lightData.direction = glm::vec3(0.f);
 		lightData.angle = -1.f;
-		uint32_t index = da::graphics::CLightManager::addLight(lightData);
+		uint32_t index = da::CLightManager::addLight(lightData);
 		ASSERT(index);
 		m_lights.push_back(index);
 		return index;
@@ -69,12 +69,12 @@ namespace da::core {
 
 	void CDynamicLightComponent::updateLight(uint32_t id, const glm::vec3& position)
 	{
-		da::graphics::CLightManager::updateLight(id, position);
+		da::CLightManager::updateLight(id, position);
 	}
 
 	void CDynamicLightComponent::updateLight(uint32_t id, const glm::vec3& position, const glm::vec3& direction)
 	{
-		da::graphics::CLightManager::updateLight(id, position, direction);
+		da::CLightManager::updateLight(id, position, direction);
 	}
 
 }

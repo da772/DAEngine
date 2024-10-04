@@ -2,7 +2,7 @@
 #include "core/logger.h"
 #include "worker_pool.h"
 
-namespace da::core
+namespace da
 {
 	std::vector < std::thread > CWorkerPool::ms_threads;
 	std::queue <std::function<void()>> CWorkerPool::ms_jobQueue;

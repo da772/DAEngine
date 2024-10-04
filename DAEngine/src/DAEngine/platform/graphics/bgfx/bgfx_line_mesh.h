@@ -1,7 +1,7 @@
 #pragma once
 #include "bgfx_static_mesh.h"
 
-namespace da::platform
+namespace da
 {
 
 #define MAX_LINES 100000
@@ -29,7 +29,7 @@ namespace da::platform
 	private:
 		::bgfx::DynamicVertexBufferHandle m_vbh = BGFX_INVALID_HANDLE;
 		::bgfx::DynamicIndexBufferHandle m_ibh = BGFX_INVALID_HANDLE;
-		std::array<da::graphics::FVertexBase, VERTEX_COUNT> m_dynamicMeshes;
+		std::array<da::FVertexBase, VERTEX_COUNT> m_dynamicMeshes;
 		std::array<uint32_t, INDEX_COUNT> m_dynamicIndices;
 		uint32_t m_vertexCount = 0;
 		uint32_t m_indexCount = 0;

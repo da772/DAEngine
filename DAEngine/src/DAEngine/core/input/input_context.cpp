@@ -1,7 +1,7 @@
 #include "input_context.h"
 #include "input.h"
 
-namespace da::core
+namespace da
 {
 	CInputContext::CInputContext(CHashString ctx, uint32_t priority) : m_ctx(ctx), m_priority(priority)
 	{

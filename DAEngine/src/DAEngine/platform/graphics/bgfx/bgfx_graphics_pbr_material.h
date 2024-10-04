@@ -8,11 +8,11 @@ namespace bgfx {
 	struct TextureHandle;
 }
 
-namespace da::platform::bgfx {
+namespace da {
 	class CBgfxTexture2D;
 }
 
-namespace da::platform {
+namespace da {
 
 	class CBgfxPbrMaterial 
 	{
@@ -23,9 +23,9 @@ namespace da::platform {
 		virtual void initialize();
 		virtual void shutdown();
 
-		inline const da::graphics::FMaterialData& getMaterial() const { return m_materialData; }
+		inline const da::FMaterialData& getMaterial() const { return m_materialData; }
 	private:
-		da::graphics::FMaterialData m_materialData;
-		da::graphics::CGraphicsTexture2D* m_albedo = nullptr, * m_normal = nullptr, * m_roughness = nullptr, *m_emissive = nullptr;
+		da::FMaterialData m_materialData;
+		da::CGraphicsTexture2D* m_albedo = nullptr, * m_normal = nullptr, * m_roughness = nullptr, *m_emissive = nullptr;
 	};
 }

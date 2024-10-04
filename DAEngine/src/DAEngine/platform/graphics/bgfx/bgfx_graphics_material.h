@@ -5,14 +5,14 @@
 
 #ifdef DA_GRAPHICS_BGFX
 
-namespace da::platform {
+namespace da {
 
 	struct FShaderData {
 		uint16_t Handle;
 		uint16_t Count;
 	};
 
-	class CBgfxGraphicsMaterial : public graphics::CMaterial
+	class CBgfxGraphicsMaterial : public da::CMaterial
 	{
 	public:
 		virtual uint16_t getHandle() const override;
@@ -34,7 +34,7 @@ namespace da::platform {
 		uint16_t m_program;
 		static std::unordered_map<CHashString, FShaderData> ms_shaderHandles;
 
-		friend class da::factory::CMaterialFactory;
+		friend class da::CMaterialFactory;
 	};
 
 }

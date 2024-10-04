@@ -7,7 +7,7 @@
 #include "platform/graphics/vulkan/vulkan_graphics_texture2d.h"
 #include <glm/glm.hpp>
 
-namespace da::platform
+namespace da
 {
 	struct UniformBufferObject {
 		glm::mat4 model;
@@ -26,10 +26,10 @@ namespace da::platform
 		uint32_t count;
 	};
 
-	class CVulkanGraphicsMaterial : public da::graphics::CMaterial
+	class CVulkanGraphicsMaterial : public da::CMaterial
 	{
 	public:
-		CVulkanGraphicsMaterial(da::graphics::CGraphicsPipeline& pipeline);
+		CVulkanGraphicsMaterial(da::CGraphicsPipeline& pipeline);
 		virtual void initialize() override;
 		virtual void update(int frame);
 		virtual void shutdown() override;

@@ -20,7 +20,7 @@ public:
 	}
 
 	void createModules();
-	void windowEvent(const da::core::events::CEvent& e);
+	void windowEvent(const da::CEvent& e);
 
 protected:
 	virtual void onInitialize() override;
@@ -33,9 +33,9 @@ protected:
 
 private:
 	CLevelSelector* m_levelSelector;
-	da::modules::CGraphicsModule* m_graphicsModule;
-	da::modules::CGraphicsModule* m_graphicsModule2;
-	da::modules::CWindowModule* m_window = 0;
+	da::CGraphicsModule* m_graphicsModule;
+	da::CGraphicsModule* m_graphicsModule2;
+	da::CWindowModule* m_window = 0;
 	
 	bool m_showScriptDebug = false;
 	bool m_showScriptDebugHard = false;

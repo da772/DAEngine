@@ -1,13 +1,13 @@
 #pragma once
 #include "dastd.h"
 
-namespace da::script
+namespace da
 {
 	class CScriptClass {
 	public:
 		CScriptClass(const std::string& path, const std::string& classType, const std::string& objName, bool component = true);
 
-		void setup(const da::core::CGuid& parent, const da::core::CGuid& guid);
+		void setup(const da::CGuid& parent, const da::CGuid& guid);
 		void cleanup(bool keepObj = false);
 
 		void classInitialize();

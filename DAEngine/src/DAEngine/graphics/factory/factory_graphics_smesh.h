@@ -3,11 +3,11 @@
 #include "core/factory.h"
 #include "graphics/graphics_smesh.h"
 
-using namespace da::graphics;
+using namespace da;
 
-namespace da::factory
+namespace da
 {
-	extern class CStaticMeshFactory : da::core::CFactory<CStaticMesh>
+	extern class CStaticMeshFactory : da::CFactory<CStaticMesh>
 	{
 		public:
 			static CStaticMesh* create(const std::string& path, bool process = true);
@@ -16,7 +16,7 @@ namespace da::factory
 		private:
 			static CStaticMeshFactory ms_factory;
 #ifdef DA_REVIEW
-			friend class da::core::CFactoryDebug;
+			friend class da::CFactoryDebug;
 #endif
 
 	};

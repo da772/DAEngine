@@ -3,11 +3,11 @@
 #include "platform/app/modules/module.h"
 #include "platform/app/modules/graphics/graphics_module.h"
 
-namespace da::core {
+namespace da {
 	class CImGuiApi;
 }
 
-namespace da::modules
+namespace da
 {
 	class CImGuiModule : public IModule
 	{
@@ -22,7 +22,7 @@ namespace da::modules
 
 	private:
 		CGraphicsModule* m_GraphicsModule;
-		core::CImGuiApi* m_imGuiApi;
+		CImGuiApi* m_imGuiApi;
 
 	};
 }

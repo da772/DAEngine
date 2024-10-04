@@ -3,12 +3,12 @@
 #include "daglm.h"
 #include "dastd.h"
 
-namespace da::core
+namespace da
 {
 	class CEntity;
 }
 
-namespace da::physics
+namespace da
 {
 	class IPhysicsShape;
 
@@ -20,7 +20,7 @@ namespace da::physics
 
 	struct FHitData
 	{
-		da::core::CEntity* pEntity;
+		da::CEntity* pEntity;
 		glm::vec3 normal;
 		glm::vec3 position;
 	};

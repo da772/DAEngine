@@ -6,7 +6,7 @@
 #include <graphics/camera.h>
 #include "core/logger.h"
 
-namespace da::platform {
+namespace da {
 
     bgfx::VertexLayout CBgfxLightList::PointLightVertex::layout;
 
@@ -24,7 +24,7 @@ namespace da::platform {
         m_buffer = BGFX_INVALID_HANDLE;
     }
 
-    void CBgfxPointLightList::update(const std::vector<da::graphics::FLightData>& lights)
+    void CBgfxPointLightList::update(const std::vector<da::FLightData>& lights)
     {
         size_t stride = PointLightVertex::layout.getStride();
         const bgfx::Memory* mem = bgfx::alloc(uint32_t(stride * std::max(lights.size(), (size_t)1)));

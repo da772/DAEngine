@@ -6,20 +6,20 @@
 #include "platform/graphics/bgfx/bgfx_skeletal_mesh.h"
 #endif
 
-namespace da::factory
+namespace da
 {
 
-	CSkeletalMeshFactory da::factory::CSkeletalMeshFactory::ms_factory;
+	CSkeletalMeshFactory da::CSkeletalMeshFactory::ms_factory;
 
-	da::graphics::CSkeletalMesh* da::factory::CSkeletalMeshFactory::create(const std::string& path, bool inverseNormals /*= false*/)
+	da::CSkeletalMesh* da::CSkeletalMeshFactory::create(const std::string& path, bool inverseNormals /*= false*/)
 	{
 		CHashString hash(path.c_str(), path.size());
 #ifdef DA_GRAPHICS_BGFX
-		return ms_factory.addInstance(hash, [path, inverseNormals] { return new da::platform::CBgfxSkeletalMesh(path, inverseNormals); });
+		return ms_factory.addInstance(hash, [path, inverseNormals] { return new da::CBgfxSkeletalMesh(path, inverseNormals); });
 #endif
 	}
 
-	void da::factory::CSkeletalMeshFactory::remove(CSkeletalMesh* mesh)
+	void da::CSkeletalMeshFactory::remove(CSkeletalMesh* mesh)
 	{
 		CHashString hash(mesh->getPath().c_str(), mesh->getPath().size());
 		ms_factory.removeInstance(hash);

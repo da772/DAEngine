@@ -4,7 +4,7 @@
 #include "bullet3_physics.h"
 #include <graphics/graphics_smesh.h>
 
-namespace da::physics
+namespace da
 {
 	CBullet3Cube::CBullet3Cube(const glm::vec3& extents) : CBullet3Shape(), CPhysicsShapeCube(extents)
 	{
@@ -23,10 +23,10 @@ namespace da::physics
 		delete m_shape;
 	}
 
-	CBullet3TriangleMesh::CBullet3TriangleMesh(da::graphics::CStaticMesh* mesh, uint32_t index) : CBullet3Shape(), CPhysicsShapeTriangleMesh(mesh, index)
+	CBullet3TriangleMesh::CBullet3TriangleMesh(da::CStaticMesh* mesh, uint32_t index) : CBullet3Shape(), CPhysicsShapeTriangleMesh(mesh, index)
 	{
 		m_mesh = mesh;
-		const da::graphics::FMesh& m = mesh->getMeshes()[index];
+		const da::FMesh& m = mesh->getMeshes()[index];
 		m_vertexArray = new btTriangleIndexVertexArray
 		(
 			m.Indices.size()/3,
@@ -34,7 +34,7 @@ namespace da::physics
 			sizeof(uint32_t)*3,
 			m.Vertices.size(),
 			(btScalar*)m.Vertices.data(),
-			sizeof(da::graphics::FVertexBase)
+			sizeof(da::FVertexBase)
 		);
 		m_shape = new btBvhTriangleMeshShape(m_vertexArray, true);
 	}
@@ -44,7 +44,7 @@ namespace da::physics
 		delete m_vertexArray;
 	}
 
-	da::graphics::CStaticMesh* CBullet3TriangleMesh::getMesh() const
+	da::CStaticMesh* CBullet3TriangleMesh::getMesh() const
 	{
 		return m_mesh;
 	}
@@ -59,15 +59,15 @@ namespace da::physics
 
 	}
 
-	da::graphics::CStaticMesh* CBullet3ConvexHullShape::getMesh() const
+	da::CStaticMesh* CBullet3ConvexHullShape::getMesh() const
 	{
 		return m_mesh;
 	}
 
-	CBullet3ConvexHullShape::CBullet3ConvexHullShape(da::graphics::CStaticMesh* mesh, uint32_t index) : CPhysicsShapeConvexHull(mesh, index)
+	CBullet3ConvexHullShape::CBullet3ConvexHullShape(da::CStaticMesh* mesh, uint32_t index) : CPhysicsShapeConvexHull(mesh, index)
 	{
 		m_mesh = mesh;
-		const da::graphics::FMesh& m = mesh->getMeshes()[index];
+		const da::FMesh& m = mesh->getMeshes()[index];
 
 		btConvexHullShape* convexHull = new btConvexHullShape(0, 0, sizeof(btVector3));
 

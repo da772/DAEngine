@@ -14,16 +14,16 @@
 #include <platform/graphics/bgfx/bgfx_debug_renderer.h>
 #include "bgfx_shadow_csm.h"
 
-namespace da::core {
+namespace da {
     class CCamera;
 }
 
-namespace da::graphics
+namespace da
 {
     class CMaterial;
 }
 
-namespace da::platform
+namespace da
 {
     class CBgfxGraphicsMaterial;
 
@@ -135,9 +135,9 @@ namespace da::platform
         glm::mat4 m_projMat = glm::mat4(1.0);
 
         ::bgfx::VertexBufferHandle m_blitTriangleBuffer = BGFX_INVALID_HANDLE;
-        da::graphics::CMaterial* m_pDepthprogram;
-        da::graphics::CMaterial* m_pDepthprogramSk;
-        da::graphics::CMaterial* m_pDepthprogramInst;
+        da::CMaterial* m_pDepthprogram;
+        da::CMaterial* m_pDepthprogramSk;
+        da::CMaterial* m_pDepthprogramInst;
 
         ::bgfx::UniformHandle m_bonesUniform = BGFX_INVALID_HANDLE;
     private:
@@ -152,7 +152,7 @@ namespace da::platform
         
         ::bgfx::UniformHandle m_exposureVecUniform = BGFX_INVALID_HANDLE;
         ::bgfx::UniformHandle m_tonemappingModeVecUniform = BGFX_INVALID_HANDLE;
-        da::graphics::CMaterial* m_pBlipProgram;
+        da::CMaterial* m_pBlipProgram;
         
     };
 }

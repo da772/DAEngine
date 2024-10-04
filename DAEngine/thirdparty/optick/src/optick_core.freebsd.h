@@ -35,39 +35,39 @@
 
 namespace Optick
 {
-	const char* Platform::GetName()
+	const char* GetName()
 	{
 		return "PS4";
 	}
 
-	ThreadID Platform::GetThreadID()
+	ThreadID GetThreadID()
 	{
 		return (uint64_t)pthread_self();
 	}
 
-	ProcessID Platform::GetProcessID()
+	ProcessID GetProcessID()
 	{
 		return (ProcessID)getpid();
 	}
 
-	int64 Platform::GetFrequency()
+	int64 GetFrequency()
 	{
 		return 1000000000;
 	}
 
-	int64 Platform::GetTime()
+	int64 GetTime()
 	{
 		struct timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
 		return ts.tv_sec * 1000000000LL + ts.tv_nsec;
 	}
 
-	Trace* Platform::CreateTrace()
+	Trace* CreateTrace()
 	{
 		return nullptr;
 	}
 
-	SymbolEngine* Platform::CreateSymbolEngine()
+	SymbolEngine* CreateSymbolEngine()
 	{
 		return nullptr;
 	}

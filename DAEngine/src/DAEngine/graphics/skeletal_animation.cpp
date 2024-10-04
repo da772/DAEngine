@@ -15,7 +15,7 @@
 #endif
 #include <core/asset/asset.h>
 
-namespace da::graphics
+namespace da
 {
 
 	CSkeletalAnimation::CSkeletalAnimation(const std::string& animationPath, CSkeletalMesh* model) : m_AnimName(animationPath.c_str())

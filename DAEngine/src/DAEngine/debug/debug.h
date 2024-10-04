@@ -2,7 +2,7 @@
 #include "core.h"
 #ifdef DA_REVIEW
 
-namespace da::debug
+namespace da
 {
 	class CDebug {
 	public:

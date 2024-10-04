@@ -9,7 +9,7 @@
 #include "bgfx_graphics_material.h"
 #include "cluster/bgfx_pbr_shader.h"
 
-namespace da::platform::bgfx {
+namespace da {
 
 	#define INVALID_HANDLE UINT16_MAX 
 
@@ -87,7 +87,7 @@ namespace da::platform::bgfx {
 		CBgfxPBRShader m_pbr;
 
 	private:
-		da::graphics::CMaterial* m_blitProgram;
+		da::CMaterial* m_blitProgram;
         ::bgfx::UniformHandle m_blitSampler = {INVALID_HANDLE};
         ::bgfx::UniformHandle m_skySampler = {INVALID_HANDLE};
         ::bgfx::UniformHandle m_camPosUniform = {INVALID_HANDLE};

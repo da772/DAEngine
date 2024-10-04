@@ -3,12 +3,12 @@
 #include "graphics/imgui/imgui_factory.h"
 
 
-namespace da::modules
+namespace da
 {
 
 	CImGuiModule::CImGuiModule(CGraphicsModule* graphicsModule) : m_GraphicsModule(graphicsModule)
 	{
-		m_imGuiApi = factory::CImGuiFactory::Create(graphicsModule->getGraphicsApi());
+		m_imGuiApi = CImGuiFactory::Create(graphicsModule->getGraphicsApi());
 	}
 
 

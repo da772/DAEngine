@@ -3,7 +3,7 @@
 #include "daglm.h"
 #include "dastd.h"
 
-namespace da::graphics
+namespace da
 {
 	class CStaticMesh;
 }
@@ -12,7 +12,7 @@ class dtNavMeshQuery;
 class dtNavMesh;
 class dtCrowd;
 
-namespace da::ai
+namespace da
 {
 	class INavMesh
 	{

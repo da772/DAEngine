@@ -4,7 +4,7 @@
 #include <bullet3/BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <bullet3/BulletCollision/CollisionDispatch/btCollisionObject.h>
 
-namespace da::physics
+namespace da
 {
 	class CBullet3GhostObject : public btPairCachingGhostObject
 	{

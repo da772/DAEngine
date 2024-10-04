@@ -1,6 +1,6 @@
 #include "time.h"
 
-namespace da::core
+namespace da
 {
 	double CTime::ms_timeStep = 0.0;
 	uint64_t CTime::ms_lastFrameTime = 0;
@@ -8,7 +8,7 @@ namespace da::core
 	uint64_t CTime::ms_fps = 0;
 	uint64_t CTime::ms_totalFrameCount = 0;
 	double CTime::ms_timer = 0.0;
-	std::vector<da::core::FTimerDelegate> CTime::ms_timers;
+	std::vector<da::FTimerDelegate> CTime::ms_timers;
 
 
 	uint64_t CTime::getEpochTimeNS()

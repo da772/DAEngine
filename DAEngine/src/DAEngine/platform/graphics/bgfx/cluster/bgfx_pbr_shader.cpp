@@ -12,7 +12,7 @@
 #include "bgfx_shadow_shader.h"
 #include "graphics/factory/factory_graphics_material.h"
 
-namespace da::platform {
+namespace da {
 
     void CBgfxPBRShader::initialize()
     {
@@ -38,7 +38,7 @@ namespace da::platform {
             bgfx::TextureFormat::RGBA32F,
             BGFX_SAMPLER_UVW_CLAMP | BGFX_TEXTURE_COMPUTE_WRITE);
 
-        m_pAlbedoLUTProgram = da::factory::CMaterialFactory::create("shaders/cluster/cs_multiple_scattering_lut.sc");
+        m_pAlbedoLUTProgram = da::CMaterialFactory::create("shaders/cluster/cs_multiple_scattering_lut.sc");
     }
 
     void CBgfxPBRShader::shutdown()
@@ -72,7 +72,7 @@ namespace da::platform {
         ASSERT(::bgfx::isValid(m_uvScaleUniform));
 		bgfx::destroy(m_uvScaleUniform);
 
-        da::factory::CMaterialFactory::remove(m_pAlbedoLUTProgram);
+        da::CMaterialFactory::remove(m_pAlbedoLUTProgram);
 
         m_baseColorFactorUniform = m_metallicRoughnessNormalOcclusionFactorUniform = m_emissiveFactorUniform =
             m_hasTexturesUniform = m_multipleScatteringUniform = m_albedoLUTSampler = m_baseColorSampler =
@@ -86,7 +86,7 @@ namespace da::platform {
         bgfx::dispatch(0, {m_pAlbedoLUTProgram->getHandle()}, ALBEDO_LUT_SIZE / ALBEDO_LUT_THREADS, ALBEDO_LUT_SIZE / ALBEDO_LUT_THREADS, 1);
     }
 
-    uint64_t CBgfxPBRShader::bindMaterial(const da::graphics::FMaterialData& material)
+    uint64_t CBgfxPBRShader::bindMaterial(const da::FMaterialData& material)
     {
         PROFILE()
         float factorValues[4] = {
@@ -101,7 +101,7 @@ namespace da::platform {
 
         float hasTexturesValues[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-        auto setTextureOrDefault = [&](uint8_t stage, bgfx::UniformHandle uniform, da::graphics::CGraphicsTexture2D* texture2d) -> bool {
+        auto setTextureOrDefault = [&](uint8_t stage, bgfx::UniformHandle uniform, da::CGraphicsTexture2D* texture2d) -> bool {
             bgfx::TextureHandle texture = m_defaultTexture;
 
             if (!texture2d) {

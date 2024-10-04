@@ -9,7 +9,7 @@
 #include <bullet3/Bullet3Common/b3Transform.h>
 #include <core/events/event_handler.h>
 
-namespace da::physics
+namespace da
 {
 
 	CBullet3Collision::CBullet3Collision(IPhysicsShape* shape, uint32_t flags) : ICollisionObject(shape, flags)

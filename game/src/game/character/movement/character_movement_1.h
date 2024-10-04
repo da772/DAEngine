@@ -5,7 +5,7 @@
 class CCharacterMovement1 : public ICharacterMovement
 {
 public:
-	CCharacterMovement1(const da::core::CEntity& entity);
+	CCharacterMovement1(const da::CEntity& entity);
 	virtual void initialize() override;
 	virtual void update(float dt) override;
 	virtual void shutdown() override;

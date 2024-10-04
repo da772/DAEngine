@@ -28,7 +28,7 @@
 #include <debug/graphics_debug_render.h>
 
 
-namespace da::platform {
+namespace da {
 
     CBgfxClusteredRenderer::CBgfxClusteredRenderer()
     {
@@ -50,29 +50,29 @@ namespace da::platform {
         // OpenGL backend: uniforms must be created before loading shaders
         m_clusters.initialize();
 
-        m_pClusterBuildingComputeProgram = da::factory::CMaterialFactory::create("shaders/cluster/cs_clustered_clusterbuilding.sc");
+        m_pClusterBuildingComputeProgram = da::CMaterialFactory::create("shaders/cluster/cs_clustered_clusterbuilding.sc");
 
-        m_pResetCounterComputeProgram = da::factory::CMaterialFactory::create("shaders/cluster/cs_clustered_reset_counter.sc");
+        m_pResetCounterComputeProgram = da::CMaterialFactory::create("shaders/cluster/cs_clustered_reset_counter.sc");
 
-        m_pLightCullingComputeProgram = da::factory::CMaterialFactory::create("shaders/cluster/cs_clustered_lightculling.sc");
+        m_pLightCullingComputeProgram = da::CMaterialFactory::create("shaders/cluster/cs_clustered_lightculling.sc");
 
-        m_pLightingProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered.sc");
+        m_pLightingProgram = da::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered.sc");
 
-        m_pLightingInstanceProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_clustered_instance.sc", "shaders/cluster/fs_clustered.sc");
+        m_pLightingInstanceProgram = da::CMaterialFactory::create("shaders/cluster/vs_clustered_instance.sc", "shaders/cluster/fs_clustered.sc");
 
-        m_pLightingSkeletalProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_sk_clustered.sc", "shaders/cluster/fs_clustered.sc");
+        m_pLightingSkeletalProgram = da::CMaterialFactory::create("shaders/cluster/vs_sk_clustered.sc", "shaders/cluster/fs_clustered.sc");
 
-        m_pDebugVisProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
+        m_pDebugVisProgram = da::CMaterialFactory::create("shaders/cluster/vs_clustered.sc", "shaders/cluster/fs_clustered_debug_vis.sc");
 
         m_pointLights.init();
-        m_pointLights.update(da::graphics::CLightManager::getLights());
-        da::graphics::CLightManager::registerOnLightEvent(BIND_EVENT_FN_2(CBgfxClusteredRenderer, onLightEvent));
+        m_pointLights.update(da::CLightManager::getLights());
+        da::CLightManager::registerOnLightEvent(BIND_EVENT_FN_2(CBgfxClusteredRenderer, onLightEvent));
 
 
         m_ssao.initialize();
 #ifdef DA_REVIEW
         m_debugRenderer.initialize();
-        da::debug::CDebugRender::setInstance(&m_debugRenderer);
+        da::CDebugRender::setInstance(&m_debugRenderer);
 #endif
 
 		m_ambientLight.irradiance = { .25f, .25f, .25f };
@@ -80,13 +80,13 @@ namespace da::platform {
         m_bloom.initialize(m_width, m_height);
         m_volumetricLight.initialize();
         m_csm.initialize();
-		m_csm.setRenderFunc([this](uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* instanceMat,da::graphics::CMaterial* skMat, da::platform::RenderState renderState) {
+		m_csm.setRenderFunc([this](uint8_t view, da::CMaterial* mat, da::CMaterial* instanceMat,da::CMaterial* skMat, da::RenderState renderState) {
 			renderFunc(view, mat, instanceMat, skMat, renderState, ERenderFlags::ShadowPass);
 		});
 
 #ifdef DA_REVIEW
-        da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
-        da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"), &m_lightDebugVis, [&] { renderLightDebug(); });
+        da::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"), &m_clusterDebugVis, [&] {});
+        da::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"), &m_lightDebugVis, [&] { renderLightDebug(); });
 #endif
     }
 
@@ -113,32 +113,32 @@ namespace da::platform {
 
 #ifdef DA_REVIEW
         {
-            if (da::core::CTime::getFrameCount() % 100 == 0) {
-                da::debug::CDebugStatsWindow::s_viewTimes = {};
+            if (da::CTime::getFrameCount() % 100 == 0) {
+                da::CDebugStatsWindow::s_viewTimes = {};
                 for (size_t i = 0; i < ::bgfx::getStats()->numViews; i++) {
                     const ::bgfx::ViewStats& stats = ::bgfx::getStats()->viewStats[i];
 
                     double time = (stats.cpuTimeEnd - stats.cpuTimeBegin) / 1000.0;
 
                     switch (stats.view) {
-                    case vDepth: da::debug::CDebugStatsWindow::s_viewTimes["vDepth"] = time; break;
-                    case vDebug: da::debug::CDebugStatsWindow::s_viewTimes["vDebug"] = time; break;
-                    case vSSAO: da::debug::CDebugStatsWindow::s_viewTimes["vSSAO"] = time; break;
-                    case vSSAOBlur: da::debug::CDebugStatsWindow::s_viewTimes["vSSAOBlur"] = time; break;
-                    case vShadow: da::debug::CDebugStatsWindow::s_viewTimes["vShadow"] += time; break;
-                    case vLightCulling: da::debug::CDebugStatsWindow::s_viewTimes["vLightCulling"] = time; break;
-                    case vLighting: da::debug::CDebugStatsWindow::s_viewTimes["vLighting"] = time; break;
-                    case vVolumetricLight: da::debug::CDebugStatsWindow::s_viewTimes["vVolumetricLight"] = time; break;
-                    case vBloom: da::debug::CDebugStatsWindow::s_viewTimes["vBloom"] = time; break;
-                    case vBloomBlur: da::debug::CDebugStatsWindow::s_viewTimes["vBloomBlur"] += time; break;
+                    case vDepth: da::CDebugStatsWindow::s_viewTimes["vDepth"] = time; break;
+                    case vDebug: da::CDebugStatsWindow::s_viewTimes["vDebug"] = time; break;
+                    case vSSAO: da::CDebugStatsWindow::s_viewTimes["vSSAO"] = time; break;
+                    case vSSAOBlur: da::CDebugStatsWindow::s_viewTimes["vSSAOBlur"] = time; break;
+                    case vShadow: da::CDebugStatsWindow::s_viewTimes["vShadow"] += time; break;
+                    case vLightCulling: da::CDebugStatsWindow::s_viewTimes["vLightCulling"] = time; break;
+                    case vLighting: da::CDebugStatsWindow::s_viewTimes["vLighting"] = time; break;
+                    case vVolumetricLight: da::CDebugStatsWindow::s_viewTimes["vVolumetricLight"] = time; break;
+                    case vBloom: da::CDebugStatsWindow::s_viewTimes["vBloom"] = time; break;
+                    case vBloomBlur: da::CDebugStatsWindow::s_viewTimes["vBloomBlur"] += time; break;
                     }
 
                     if (stats.view > vBloomBlur) {
-                        da::debug::CDebugStatsWindow::s_viewTimes["vBloomBlur"] += time;
+                        da::CDebugStatsWindow::s_viewTimes["vBloomBlur"] += time;
                     }
 
                     if (stats.view > vShadow && stats.view < vLightCulling) {
-                        da::debug::CDebugStatsWindow::s_viewTimes["vShadow"] += time;
+                        da::CDebugStatsWindow::s_viewTimes["vShadow"] += time;
                     }
                 }
             }
@@ -146,7 +146,7 @@ namespace da::platform {
         
 #endif
 
-		da::core::CScene* scene = da::core::CSceneManager::getScene();
+		da::CScene* scene = da::CSceneManager::getScene();
 
 		::bgfx::setViewName(vDepth, "Depth pass");
 		::bgfx::setViewClear(vDepth, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xFFFFFF00, 1.0f, 0);
@@ -182,8 +182,8 @@ namespace da::platform {
 
         setViewProjection(vDepth);
 
-		const da::core::FComponentContainer* staticMeshcontainer = scene ? &scene->getComponents<da::core::CSmeshComponent>() : nullptr;
-		const da::core::FComponentContainer* skeletalMeshcontainer = scene ? &scene->getComponents<da::core::CSkeletalMeshComponent>() : nullptr;
+		const da::FComponentContainer* staticMeshcontainer = scene ? &scene->getComponents<da::CSmeshComponent>() : nullptr;
+		const da::FComponentContainer* skeletalMeshcontainer = scene ? &scene->getComponents<da::CSkeletalMeshComponent>() : nullptr;
 
         // Depth pass
         {
@@ -257,9 +257,9 @@ namespace da::platform {
             CBgfxClusterShader::CLUSTERS_Z / CBgfxClusterShader::CLUSTERS_Z_THREADS);
         // lighting
 #ifdef DA_REVIEW
-        da::graphics::CMaterial* program = m_clusterDebugVis ? m_pDebugVisProgram : m_pLightingProgram;
+        da::CMaterial* program = m_clusterDebugVis ? m_pDebugVisProgram : m_pLightingProgram;
 #else
-        da::graphics::CMaterial* program =  m_pLightingProgram;
+        da::CMaterial* program =  m_pLightingProgram;
 #endif
 
 		uint64_t state = BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK;
@@ -324,22 +324,22 @@ namespace da::platform {
         m_debugRenderer.shutdown();
 #endif
 
-        da::graphics::CLightManager::unregisterOnLightEvent(BIND_EVENT_FN_2(CBgfxClusteredRenderer, onLightEvent));
+        da::CLightManager::unregisterOnLightEvent(BIND_EVENT_FN_2(CBgfxClusteredRenderer, onLightEvent));
 
-        da::factory::CMaterialFactory::remove(m_pClusterBuildingComputeProgram);
-		da::factory::CMaterialFactory::remove(m_pResetCounterComputeProgram);
-		da::factory::CMaterialFactory::remove(m_pLightCullingComputeProgram);
-		da::factory::CMaterialFactory::remove(m_pLightingProgram);
-		da::factory::CMaterialFactory::remove(m_pDebugVisProgram);
-        da::factory::CMaterialFactory::remove(m_pLightingSkeletalProgram);
-        da::factory::CMaterialFactory::remove(m_pLightingInstanceProgram);
+        da::CMaterialFactory::remove(m_pClusterBuildingComputeProgram);
+		da::CMaterialFactory::remove(m_pResetCounterComputeProgram);
+		da::CMaterialFactory::remove(m_pLightCullingComputeProgram);
+		da::CMaterialFactory::remove(m_pLightingProgram);
+		da::CMaterialFactory::remove(m_pDebugVisProgram);
+        da::CMaterialFactory::remove(m_pLightingSkeletalProgram);
+        da::CMaterialFactory::remove(m_pLightingInstanceProgram);
 
         m_pClusterBuildingComputeProgram = m_pResetCounterComputeProgram = m_pLightCullingComputeProgram = m_pLightingProgram =
             m_pDebugVisProgram = nullptr;
 
 #ifdef DA_REVIEW
-        da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"));
-        da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"));
+        da::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ClusteredLightView"));
+        da::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Light Debug"));
 #endif
     }
 
@@ -354,42 +354,42 @@ namespace da::platform {
 	}
 
 
-	void CBgfxClusteredRenderer::onLightEvent(const da::graphics::FLightData& data, bool added)
+	void CBgfxClusteredRenderer::onLightEvent(const da::FLightData& data, bool added)
 	{
-		m_pointLights.update(da::graphics::CLightManager::getLights());
+		m_pointLights.update(da::CLightManager::getLights());
 	}
 
-	void CBgfxClusteredRenderer::renderFunc(uint8_t view, da::graphics::CMaterial* mat, da::graphics::CMaterial* instanceMat, da::graphics::CMaterial* skMat, da::platform::RenderState renderState, ERenderFlags flags)
+	void CBgfxClusteredRenderer::renderFunc(uint8_t view, da::CMaterial* mat, da::CMaterial* instanceMat, da::CMaterial* skMat, da::RenderState renderState, ERenderFlags flags)
 	{
-        if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
+        if (da::CScene* scene = da::CSceneManager::getScene()) {
 
-            if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
+            if (da::CFlag::hasFlag(flags, ERenderFlags::PBR))
             {
                 PROFILE_NAME("bind")
                     m_ssao.bindSSAO();
                 m_csm.bindTextures();
             }
 
-            const da::core::FComponentContainer& staticMeshcontainer = scene->getComponents<da::core::CSmeshComponent>();
-            const da::core::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::core::CSkeletalMeshComponent>();
+            const da::FComponentContainer& staticMeshcontainer = scene->getComponents<da::CSmeshComponent>();
+            const da::FComponentContainer& skeletalMeshcontainer = scene->getComponents<da::CSkeletalMeshComponent>();
             {
                     PROFILE_NAME("staticMeshPass")
                     for (size_t x = 0; x < staticMeshcontainer.getCount(); x++) {
-                        da::core::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::core::CSmeshComponent>(x);
+                        da::CSmeshComponent* meshComponent = staticMeshcontainer.getComponentAtIndex<da::CSmeshComponent>(x);
                         glm::mat4 model = meshComponent->getParent().getTransform().matrix();
-                        da::graphics::CStaticMesh* mesh = meshComponent->getStaticMesh();
+                        da::CStaticMesh* mesh = meshComponent->getStaticMesh();
                         ASSERT(mesh);
-                        const std::vector<da::graphics::FMesh>& meshes = mesh->getMeshes();
+                        const std::vector<da::FMesh>& meshes = mesh->getMeshes();
                         PROFILE_TAG("meshes", meshes.size())
                         for (size_t z = 0; z < meshes.size(); z++) {
-                            if (da::maths::CFlag::hasFlag(flags, ERenderFlags::ShadowPass) && !mesh->getCastShadows()) continue;
+                            if (da::CFlag::hasFlag(flags, ERenderFlags::ShadowPass) && !mesh->getCastShadows()) continue;
                             if (mesh->getHidden()) continue;
 
                             ::bgfx::setTransform(glm::value_ptr(model));
 
                             uint64_t materialState = 0;
 
-                            if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
+                            if (da::CFlag::hasFlag(flags, ERenderFlags::PBR))
                             {
                                 PROFILE("pbr")
                                 m_csm.submitUniforms();
@@ -398,7 +398,7 @@ namespace da::platform {
                             }
 
 
-                            const std::vector<da::core::FInstance>& instances = meshComponent->getInstances();
+                            const std::vector<da::FInstance>& instances = meshComponent->getInstances();
 
                             if (instances.empty() || !instanceMat) {
                                 ::bgfx::setVertexBuffer(0, *((::bgfx::VertexBufferHandle*)mesh->getNativeVBIndex(z)));
@@ -439,11 +439,11 @@ namespace da::platform {
                 PROFILE_NAME("skeletalMeshPass")
                 for (size_t x = 0; x < skeletalMeshcontainer.getCount(); x++) {
 
-                    da::core::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::core::CSkeletalMeshComponent>(x);
+                    da::CSkeletalMeshComponent* meshComponent = skeletalMeshcontainer.getComponentAtIndex<da::CSkeletalMeshComponent>(x);
                     const glm::mat4& model = meshComponent->getTransform();
-                    da::graphics::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
+                    da::CSkeletalMesh* mesh = meshComponent->getSkeletalMesh();
                     ASSERT(mesh);
-                    const std::vector<da::graphics::FSkeletalMesh>& meshes = mesh->getMeshes();
+                    const std::vector<da::FSkeletalMesh>& meshes = mesh->getMeshes();
                     PROFILE_TAG("meshes", meshes.size())
                     for (size_t z = 0; z < meshes.size(); z++) {
                         ::bgfx::setUniform(m_bonesUniform, meshComponent->getSkeletalAnimator()->getFinalBoneMatrices().data(), 128);
@@ -453,7 +453,7 @@ namespace da::platform {
 
                         uint64_t materialState = 0;
 
-                        if (da::maths::CFlag::hasFlag(flags, ERenderFlags::PBR))
+                        if (da::CFlag::hasFlag(flags, ERenderFlags::PBR))
                         {
                             PROFILE("pbr")
                             m_csm.submitUniforms();

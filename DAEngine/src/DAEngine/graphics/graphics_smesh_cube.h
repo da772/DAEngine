@@ -2,7 +2,7 @@
 
 #include "graphics_smesh.h"
 
-namespace da::graphics {
+namespace da {
 
 	class CStaticMeshCube : public CStaticMesh
 	{

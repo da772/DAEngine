@@ -7,6 +7,6 @@
 
 void CGameScriptNative::registerNatives()
 {
-	sol::state_view lua(da::script::CScriptEngine::getState());
+	sol::state_view lua(da::CScriptEngine::getState());
 	CVehicleScriptNative::registerNatives(&lua);
 }

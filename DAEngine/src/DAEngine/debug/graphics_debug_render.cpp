@@ -1,9 +1,9 @@
 
 #include "graphics_debug_render.h"
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
-namespace da::debug
+namespace da
 {
-	da::debug::IDebugRenderer* CDebugRender::s_renderer;
+	da::IDebugRenderer* CDebugRender::s_renderer;
 
 	void CDebugRender::setInstance(IDebugRenderer* renderer)
 	{
@@ -40,7 +40,7 @@ namespace da::debug
 		s_renderer->drawPlane(position, rot, scale, color, wireFrame, xray);
 	}
 
-	void CDebugRender::drawMesh(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, da::graphics::CStaticMesh* mesh, const glm::vec4& color, bool wireFrame /*= true*/, bool xray /*= true*/)
+	void CDebugRender::drawMesh(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, da::CStaticMesh* mesh, const glm::vec4& color, bool wireFrame /*= true*/, bool xray /*= true*/)
 	{
 		ASSERT(s_renderer);
 		s_renderer->drawMesh(position, rot, scale, mesh, color, wireFrame, xray);

@@ -26,11 +26,11 @@ class CCharacterComponent
 #endif
 
 public:
-	CCharacterComponent(bool isLocalPlayer, const da::core::CGuid& guid, da::core::CEntity& parent);
+	CCharacterComponent(bool isLocalPlayer, const da::CGuid& guid, da::CEntity& parent);
 	~CCharacterComponent();
 
 	float getCamRot() const;
-	void setWeaponEntity(const da::core::CEntity* weapon);
+	void setWeaponEntity(const da::CEntity* weapon);
 	inline float getCamSensitivity() const { return m_camSensitivity; }
 	void attack();
 	bool isAttacking() const;
@@ -42,19 +42,19 @@ protected:
 
 private:
 	void processAnims(float dt);
-	da::graphics::FSkeletalAnimGraphNode& getAnim(ECharacterAnims anim);
+	da::FSkeletalAnimGraphNode& getAnim(ECharacterAnims anim);
 
 #ifdef DA_REVIEW
 	void onDebugRender();
 #endif
 
 private:
-	std::vector<da::graphics::FSkeletalAnimGraphNode> m_anims;
-	da::graphics::CSkeletalAnimGraph* m_animGraph;
+	std::vector<da::FSkeletalAnimGraphNode> m_anims;
+	da::CSkeletalAnimGraph* m_animGraph;
 	glm::vec2 m_cursorPos = { 0.f, 0.f };
 	float m_camSensitivity = .1f;
 	ICharacterMovement* m_movement = nullptr;
-	const da::core::CEntity* m_weapon = nullptr;
+	const da::CEntity* m_weapon = nullptr;
 	uint8_t m_attack = 0;
 	bool m_isLocalPlayer : 1;
 

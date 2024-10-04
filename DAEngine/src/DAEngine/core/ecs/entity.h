@@ -8,7 +8,7 @@
 #include <imgui.h>
 #endif
 
-namespace da::core
+namespace da
 {
 	class CScene;
 
@@ -56,8 +56,8 @@ namespace da::core
 		const CGuid& getId() const;
 		CHashString getTag() const;
 		void setTag(CHashString tag);
-		const da::maths::CTransform& getTransform() const;
-		da::maths::CTransform& getTransform();
+		const da::CTransform& getTransform() const;
+		da::CTransform& getTransform();
 		
 		template <typename T, typename... Args>
 		FComponentRef<T> addComponent(Args&&... args)
@@ -124,7 +124,7 @@ namespace da::core
 		std::unordered_map<CHashString, FComponentInfo> m_components;
 		CGuid m_guid;
 		CScene* m_scene;
-		da::maths::CTransform m_transform;
+		da::CTransform m_transform;
 		CHashString m_tag;
 
 			

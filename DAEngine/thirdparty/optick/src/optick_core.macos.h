@@ -36,29 +36,29 @@
 
 namespace Optick
 {
-	const char* Platform::GetName()
+	const char* GetName()
 	{
 		return "MacOS";
 	}
 
-	ThreadID Platform::GetThreadID()
+	ThreadID GetThreadID()
 	{
 		uint64_t tid;
 		pthread_threadid_np(pthread_self(), &tid);
 		return tid;
 	}
 
-	ProcessID Platform::GetProcessID()
+	ProcessID GetProcessID()
 	{
 		return (ProcessID)getpid();
 	}
 
-	int64 Platform::GetFrequency()
+	int64 GetFrequency()
 	{
 		return 1000000000;
 	}
 
-	int64 Platform::GetTime()
+	int64 GetTime()
 	{
 		struct timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
@@ -156,7 +156,7 @@ bool DTrace::Stop()
 		return false;
 	}
 
-	timeout = Platform::GetTime();
+	timeout = GetTime();
 	processThread.join();
 	state = STATE_IDLE;
 
@@ -293,12 +293,12 @@ void DTrace::AsyncProcess(DTrace *trace) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Trace* Platform::CreateTrace()
+Trace* CreateTrace()
 {
 	return Memory::New<DTrace>();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-SymbolEngine* Platform::CreateSymbolEngine()
+SymbolEngine* CreateSymbolEngine()
 {
 	return nullptr;
 }

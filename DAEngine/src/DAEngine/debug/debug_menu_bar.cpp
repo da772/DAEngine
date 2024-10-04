@@ -4,7 +4,7 @@
 #ifdef DA_REVIEW
 #include <imgui.h>
 
-namespace da::debug
+namespace da
 {
 	std::map<CHashString, std::map<CHashString, std::pair<bool*, std::function<void()>>>> CDebugMenuBar::s_refs;
 	std::vector <std::pair<CHashString, CHashString>> CDebugMenuBar::s_dirty;

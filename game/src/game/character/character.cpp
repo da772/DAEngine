@@ -6,14 +6,14 @@
 #include <game/components/health_component.h>
 #include "game/helpers/model_helper.h"
 
-CCharacter::CCharacter(const da::graphics::CGraphicsApi& graphics, bool isLocalPlayer) : m_gui(graphics, this), m_isLocalPlayer(isLocalPlayer)
+CCharacter::CCharacter(const da::CGraphicsApi& graphics, bool isLocalPlayer) : m_gui(graphics, this), m_isLocalPlayer(isLocalPlayer)
 {
 
 }
 
 void CCharacter::initialize()
 {
-	if (da::core::CScene* scene = da::core::CSceneManager::getScene()) {
+	if (da::CScene* scene = da::CSceneManager::getScene()) {
 		m_entity = scene->createEntity();
 		if (m_isLocalPlayer) {
 			m_entity->setTag(HASHSTR("Character"));
@@ -22,22 +22,22 @@ void CCharacter::initialize()
 			m_entity->setTag(HASHSTR("AiCharacter"));
 		}
 
-		m_entity->addComponent<CCharacterMovementComponent>(da::core::CGuid::Generate());
-		m_entity->addComponent<CHealthComponent>(da::core::CGuid::Generate());
-		da::core::FComponentRef<CCharacterComponent> characterRef = m_entity->addComponent<CCharacterComponent>(m_isLocalPlayer, da::core::CGuid::Generate());
+		m_entity->addComponent<CCharacterMovementComponent>(da::CGuid::Generate());
+		m_entity->addComponent<CHealthComponent>(da::CGuid::Generate());
+		da::FComponentRef<CCharacterComponent> characterRef = m_entity->addComponent<CCharacterComponent>(m_isLocalPlayer, da::CGuid::Generate());
 
 		m_sword = scene->createEntity();
 		m_sword->setTag(HASHSTR("Sword"));
-		m_sword->addComponent<da::core::CSmeshComponent>(CModelHelper::create(Model::prop_weap_sword));
-		da::physics::IPhysicsShape* shape = da::physics::CPhysicsShapeCube::create({ .017f, .057f, .598f });
-		da::core::FComponentRef<da::core::CCollisionComponent> colComp =
-			m_sword->addComponent<da::core::CCollisionComponent>(*shape, glm::translate(glm::mat4(1.f), { 0.f, 0.f, 1.f }), da::core::CGuid::Generate());
+		m_sword->addComponent<da::CSmeshComponent>(CModelHelper::create(Model::prop_weap_sword));
+		da::IPhysicsShape* shape = da::CPhysicsShapeCube::create({ .017f, .057f, .598f });
+		da::FComponentRef<da::CCollisionComponent> colComp =
+			m_sword->addComponent<da::CCollisionComponent>(*shape, glm::translate(glm::mat4(1.f), { 0.f, 0.f, 1.f }), da::CGuid::Generate());
 
-		colComp->setCallback([colComp, this](const da::physics::FCollisionEventData& data) {
+		colComp->setCallback([colComp, this](const da::FCollisionEventData& data) {
 			if (!data.Overlapping) return;
 			LOG_DEBUG(da::ELogChannel::Application, "Collision Event: %s, Overlapping: %d", m_entity->getTag().c_str(), data.Overlapping);
-			if (da::core::CEntity* other = (da::core::CEntity*)data.Other) {
-				da::core::FComponentRef<CHealthComponent> healthComp = other->getComponent<CHealthComponent>();
+			if (da::CEntity* other = (da::CEntity*)data.Other) {
+				da::FComponentRef<CHealthComponent> healthComp = other->getComponent<CHealthComponent>();
 				if (healthComp.isValid()) {
 					healthComp->damage(1.f);
 				}
@@ -67,7 +67,7 @@ void CCharacter::lateUpdate(float dt)
 
 	m_gui.render(dt);
 
-	da::core::FComponentRef<da::core::CSkeletalMeshComponent> skele = m_entity->getComponent<da::core::CSkeletalMeshComponent>();
+	da::FComponentRef<da::CSkeletalMeshComponent> skele = m_entity->getComponent<da::CSkeletalMeshComponent>();
 	glm::mat4 transform;
 	glm::vec3 position;
 	glm::quat rot;
@@ -88,12 +88,12 @@ void CCharacter::lateUpdate(float dt)
 
 void CCharacter::shutdown()
 {
-	da::core::CSceneManager::getScene()->removeEntity(m_entity);
-	da::core::CSceneManager::getScene()->removeEntity(m_sword);
+	da::CSceneManager::getScene()->removeEntity(m_entity);
+	da::CSceneManager::getScene()->removeEntity(m_sword);
 	delete m_camera;
 }
 
-const da::core::CEntity* CCharacter::getEntity() const
+const da::CEntity* CCharacter::getEntity() const
 {
 	return m_entity;
 }
@@ -102,23 +102,23 @@ void CCharacter::processCamera(float dt)
 {
 	if (!m_camera)
 	{
-		m_camera = new da::core::CCamera();
+		m_camera = new da::CCamera();
 	}
 
-	da::core::CInputContext inputCtx(HASHSTR("CharacterInput"), 0);
+	da::CInputContext inputCtx(HASHSTR("CharacterInput"), 0);
 
-	if (da::core::CInput::inputContextAvailable())
+	if (da::CInput::inputContextAvailable())
 	{
-		da::core::CCamera::setCamera(m_camera);
+		da::CCamera::setCamera(m_camera);
 	}
 
-	da::core::CCamera* cam = m_camera;
-	const float xPos = da::core::CInput::getCursorX();
-	const float yPos = da::core::CInput::getCursorY();
+	da::CCamera* cam = m_camera;
+	const float xPos = da::CInput::getCursorX();
+	const float yPos = da::CInput::getCursorY();
 
-	da::core::FComponentRef<CCharacterComponent> character = m_entity->getComponent<CCharacterComponent>();
+	da::FComponentRef<CCharacterComponent> character = m_entity->getComponent<CCharacterComponent>();
 
-	if (true/*da::core::CInput::mouseInputPressed(1)*/)
+	if (true/*da::CInput::mouseInputPressed(1)*/)
 	{
 		float yDiff = yPos - m_cursorPos.y;
 		m_camHeight += glm::radians(yDiff) * m_camSensitivity;
@@ -129,7 +129,7 @@ void CCharacter::processCamera(float dt)
 
 	glm::vec3 xOff = (m_camDist * std::cos(m_camRot)) * glm::vec3(1.f, 0.f, 0.f);
 	glm::vec3 yOff = (m_camDist * std::sin(m_camRot)) * glm::vec3(0.f, 1.f, 0.f);
-	double yScroll = da::core::CInput::getScrollY();
+	double yScroll = da::CInput::getScrollY();
 
 	if (m_scrollY != yScroll) {
 		m_camDist -= 5.f * dt * yScroll;
@@ -146,26 +146,26 @@ void CCharacter::processCamera(float dt)
 		PROFILE("Camera Sweep")
 		glm::vec3 endPos = pos;
 
-		static da::physics::IPhysicsShape* shape = nullptr;
+		static da::IPhysicsShape* shape = nullptr;
 		const float probeSize = .2f;
 
 		if (!shape)
 		{
-			shape = da::physics::CPhysicsShapeCube::create({ probeSize, probeSize ,probeSize });
+			shape = da::CPhysicsShapeCube::create({ probeSize, probeSize ,probeSize });
 		}
 
 		glm::mat4 posTransform = glm::translate(glm::mat4(1.f), pos);
 
-		da::physics::FSweepData sweep(shape, m_entity->getTransform().matrix(), posTransform);
-		da::physics::CPhysics::sweepTest(sweep);
+		da::FSweepData sweep(shape, m_entity->getTransform().matrix(), posTransform);
+		da::CPhysics::sweepTest(sweep);
 
-		//da::debug::CDebugRender::drawLine(m_entity->getTransform().position(), endPos, .01f, { 1.f,0.f,0.f,1.f });
+		//da::CDebugRender::drawLine(m_entity->getTransform().position(), endPos, .01f, { 1.f,0.f,0.f,1.f });
 		if (sweep.bHit)
 		{
 			//LOG_DEBUG(da::ELogChannel::Application, "hit: %f, %f, %f", sweep.Hit.position.x, sweep.Hit.position.y, sweep.Hit.position.z);
 			pos = sweep.Hit.position + (sweep.Hit.normal * (probeSize/2.f));
-			//da::debug::CDebugRender::drawLine(m_entity->getTransform().position(), pos, .01f, { 0.f,1.f,0.f,1.f });
-			//da::debug::CDebugRender::drawCube(sweep.Hit.position, glm::quat(), { .2f,.2f,.2f }, { 0.f,1.f,0.f, 1.f });
+			//da::CDebugRender::drawLine(m_entity->getTransform().position(), pos, .01f, { 0.f,1.f,0.f,1.f });
+			//da::CDebugRender::drawCube(sweep.Hit.position, glm::quat(), { .2f,.2f,.2f }, { 0.f,1.f,0.f, 1.f });
 			pos = glm::mix(cam->position(), pos, .05f);
 		}
 
@@ -174,7 +174,7 @@ void CCharacter::processCamera(float dt)
 
 
 
-	if (!da::core::CInput::inputContextAvailable())
+	if (!da::CInput::inputContextAvailable())
 	{
 		return;
 	}
@@ -189,7 +189,7 @@ void CCharacterGui::onRender(float dt)
 #ifdef DA_REVIEW
 	return;
 	glm::vec3 headPos;
-	da::core::FComponentRef<da::core::CSkeletalMeshComponent> skele = m_parent->m_entity->getComponent<da::core::CSkeletalMeshComponent>();
+	da::FComponentRef<da::CSkeletalMeshComponent> skele = m_parent->m_entity->getComponent<da::CSkeletalMeshComponent>();
 	if (!skele->getSkeletalAnimator()->getCurrentAnim()) return;
 
 	if (!skele->getBoneWorldPosition(HASHSTR("mixamorig:Head"), headPos)) {
@@ -199,7 +199,7 @@ void CCharacterGui::onRender(float dt)
 	glm::vec3 worldSpace = m_parent->m_entity->getTransform().position() + glm::vec3(0.f, 0.f, 1.5f);
 
 	glm::vec2 pos = worldPosToScreenSpace(headPos + glm::vec3(0.f, 0.f, .25f));
-	float dist = std::abs(glm::distance(headPos, da::core::CCamera::getCamera()->position()));
+	float dist = std::abs(glm::distance(headPos, da::CCamera::getCamera()->position()));
 
 	if (dist < 1.0f) {
 		dist = 1.0f;
@@ -215,7 +215,7 @@ void CCharacterGui::onRender(float dt)
 	ImGui::PushStyleColor(ImGuiCol_PlotHistogram, { 0.f,1.f,0.f,1.f });
 	if (ImGui::Begin((std::string("###hp") + std::string(m_parent->m_entity->getId().c_str())).c_str(), nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
-		da::core::FComponentRef<CHealthComponent> healthComp = m_parent->m_entity->getComponent<CHealthComponent>();
+		da::FComponentRef<CHealthComponent> healthComp = m_parent->m_entity->getComponent<CHealthComponent>();
 		//auto windowWidth = ImGui::GetWindowSize().x;
 		//auto textWidth = ImGui::CalcTextSize("00 Health").x;
 		//

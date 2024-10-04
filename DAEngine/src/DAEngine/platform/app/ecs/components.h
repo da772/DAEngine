@@ -8,7 +8,7 @@
 #include "networked_transform_component.h"
 #include "collision_component.h"
 
-namespace da::core {
+namespace da {
 	class CComponents {
 	public:
 		static void registerComponents();

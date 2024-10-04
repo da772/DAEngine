@@ -5,7 +5,7 @@
 #include <bgfx/bgfx.h>
 #include "graphics/graphics_material.h"
 
-namespace da::platform {
+namespace da {
 
 
 	struct ViewState
@@ -204,10 +204,10 @@ namespace da::platform {
 		IMGUI_FLOAT_PARAM(m_xOffset);
 		IMGUI_FLOAT_PARAM(m_yOffset);
 		bool m_doBlur;
-		da::graphics::CMaterial* m_progPack;
-		da::graphics::CMaterial* m_progPackSk;
-		da::graphics::CMaterial* m_progPackInstance;
-		da::graphics::CMaterial* m_progDraw;
+		da::CMaterial* m_progPack;
+		da::CMaterial* m_progPackSk;
+		da::CMaterial* m_progPackInstance;
+		da::CMaterial* m_progDraw;
 #undef IMGUI_FLOAT_PARAM
 	};
 
@@ -237,7 +237,7 @@ namespace da::platform {
 		void update(uint8_t viewId, glm::vec3& lightDir, uint16_t width, uint16_t height);
 		void shutdown();
 		
-		void setRenderFunc(const std::function<void(uint8_t, da::graphics::CMaterial*, da::graphics::CMaterial*, da::graphics::CMaterial*, RenderState)>& func);
+		void setRenderFunc(const std::function<void(uint8_t, da::CMaterial*, da::CMaterial*, da::CMaterial*, RenderState)>& func);
 		void submitUniforms();
 		void bindTextures();
 
@@ -248,16 +248,16 @@ namespace da::platform {
 			void destroy();
 
 		
-			da::graphics::CMaterial* m_black;
-			da::graphics::CMaterial* m_texture;
-			da::graphics::CMaterial* m_colorTexture;
-			da::graphics::CMaterial* m_vBlur[PackDepth::Count];
-			da::graphics::CMaterial* m_hBlur[PackDepth::Count];
-			da::graphics::CMaterial* m_drawDepth[PackDepth::Count];
-			da::graphics::CMaterial* m_packDepth[DepthImpl::Count][PackDepth::Count];
-			da::graphics::CMaterial* m_packDepthSk[DepthImpl::Count][PackDepth::Count];
-			da::graphics::CMaterial* m_packDepthInstance[DepthImpl::Count][PackDepth::Count];
-			da::graphics::CMaterial* m_colorLighting[SmType::Count][DepthImpl::Count][SmImpl::Count];
+			da::CMaterial* m_black;
+			da::CMaterial* m_texture;
+			da::CMaterial* m_colorTexture;
+			da::CMaterial* m_vBlur[PackDepth::Count];
+			da::CMaterial* m_hBlur[PackDepth::Count];
+			da::CMaterial* m_drawDepth[PackDepth::Count];
+			da::CMaterial* m_packDepth[DepthImpl::Count][PackDepth::Count];
+			da::CMaterial* m_packDepthSk[DepthImpl::Count][PackDepth::Count];
+			da::CMaterial* m_packDepthInstance[DepthImpl::Count][PackDepth::Count];
+			da::CMaterial* m_colorLighting[SmType::Count][DepthImpl::Count][SmImpl::Count];
 		};
 
 		struct FUniforms
@@ -392,7 +392,7 @@ namespace da::platform {
 
 		static RenderState s_renderStates[RenderState::Count];
 
-		std::function<void(uint8_t, da::graphics::CMaterial*, da::graphics::CMaterial*, da::graphics::CMaterial*, RenderState)> m_renderFunc;
+		std::function<void(uint8_t, da::CMaterial*, da::CMaterial*, da::CMaterial*, RenderState)> m_renderFunc;
 	};
 
 }

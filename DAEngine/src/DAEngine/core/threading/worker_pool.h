@@ -2,7 +2,7 @@
 #include "core.h"
 #include "dastd.h"
 
-namespace da::core
+namespace da
 {
 	class CWorkerPool {
 	public:

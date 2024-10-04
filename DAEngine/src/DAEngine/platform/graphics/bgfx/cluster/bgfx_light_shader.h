@@ -4,7 +4,7 @@
 #include "bgfx_light.h"
 #include "bgfx_light_list.h"
 
-namespace da::platform {
+namespace da {
 
     class CBgfxLightShader
     {

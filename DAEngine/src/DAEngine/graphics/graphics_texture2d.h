@@ -3,7 +3,7 @@
 #include "graphics/graphics_api.h"
 #include "core/factory.h"
 
-namespace da::graphics
+namespace da
 {
 	class CGraphicsTexture2D
 	{
@@ -19,7 +19,7 @@ namespace da::graphics
 		void* m_textureNative;
 		uint32_t m_width, m_height, m_channels;
 
-		friend class da::core::CFactory<CGraphicsTexture2D>;
+		friend class da::CFactory<CGraphicsTexture2D>;
 	};
 
 

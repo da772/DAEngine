@@ -4,11 +4,11 @@
 #include "dastd.h"
 #include "graphics/graphics_api.h"
 
-using namespace da::graphics;
+using namespace da;
 
-namespace da::factory
+namespace da
 {
-	class CTexture2DFactory : da::core::CFactory<CGraphicsTexture2D>
+	class CTexture2DFactory : da::CFactory<CGraphicsTexture2D>
 	{
 	public:
 		static CGraphicsTexture2D* Create(const std::string& path, CGraphicsApi& graphicsApi);
@@ -19,7 +19,7 @@ namespace da::factory
 	private:
 		static CTexture2DFactory ms_factory;
 #ifdef DA_REVIEW
-		friend class da::core::CFactoryDebug;
+		friend class da::CFactoryDebug;
 #endif
 	};
 }

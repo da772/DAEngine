@@ -3,7 +3,7 @@
 #include "daglm.h"
 #include "dastd.h"
 
-namespace da::maths
+namespace da
 {
 
 	class CTransform {

@@ -13,9 +13,9 @@
 #define VK_CHECK(x, y) x
 #endif
 
-namespace da::platform
+namespace da
 {
-	CVulkanGraphicsMaterial::CVulkanGraphicsMaterial(da::graphics::CGraphicsPipeline& pipeline) :
+	CVulkanGraphicsMaterial::CVulkanGraphicsMaterial(da::CGraphicsPipeline& pipeline) :
 		m_vulkanPipeline(*dynamic_cast<CVulkanGraphicsPipeline*>(&pipeline)),
 		m_vulkanApi(*dynamic_cast<CVulkanGraphicsApi*>(&m_vulkanPipeline.getGraphicsApi()))
 	{

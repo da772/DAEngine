@@ -5,12 +5,12 @@
 #include <vulkan/vulkan.h>
 #include "vulkan_graphics_api.h"
 
-namespace da::platform
+namespace da
 {
-	class CVulkanGraphicsTexture2D : public graphics::CGraphicsTexture2D
+	class CVulkanGraphicsTexture2D : public da::CGraphicsTexture2D
 	{
 	public:
-		CVulkanGraphicsTexture2D(const std::string& path, graphics::CGraphicsApi& graphicsApi);
+		CVulkanGraphicsTexture2D(const std::string& path, da::CGraphicsApi& graphicsApi);
 		~CVulkanGraphicsTexture2D();
 
 		void initialize();

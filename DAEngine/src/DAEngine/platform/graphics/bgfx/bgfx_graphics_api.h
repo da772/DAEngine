@@ -5,7 +5,7 @@
 
 
 
-namespace da::platform {
+namespace da {
 
 	class CBgfxTypeRenderer;
 
@@ -24,10 +24,10 @@ namespace da::platform {
 		Web,
 	};
 
-	class CbgfxGraphicsApi : public da::graphics::CGraphicsApi
+	class CbgfxGraphicsApi : public da::CGraphicsApi
 	{
 	public:
-		CbgfxGraphicsApi(core::CWindow* windowModule);
+		CbgfxGraphicsApi(CWindow* windowModule);
 		~CbgfxGraphicsApi();
 		virtual void initialize() override;
 		virtual void update() override;
@@ -38,10 +38,10 @@ namespace da::platform {
 		virtual glm::vec2 worldPosToScreenSpace(const glm::vec3& pos) const override;
 
 	public:
-		virtual void setClearColor(uint32_t target, da::graphics::EGraphicsClear clear, Vector4u8 color) override;
-		virtual void submitPipeline(da::graphics::CGraphicsPipeline* pipeline);
+		virtual void setClearColor(uint32_t target, da::EGraphicsClear clear, Vector4u8 color) override;
+		virtual void submitPipeline(da::CGraphicsPipeline* pipeline);
 	private:
-		void windowResize(const da::core::events::CEvent& event);
+		void windowResize(const da::CEvent& event);
 #ifdef DA_REVIEW
 		static void renderDebugTitle();
 		static bool s_showDebugTitle;

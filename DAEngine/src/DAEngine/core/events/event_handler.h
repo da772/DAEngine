@@ -5,7 +5,7 @@
 #include <functional>
 #include "dastd.h"
 
-namespace da::core::events
+namespace da
 {
 #define BIND_EVENT_FN(x,y) std::bind(&x::y, this, std::placeholders::_1)
 #define BIND_EVENT_FN_2(x,y) std::bind(&x::y, this, std::placeholders::_1, std::placeholders::_2)

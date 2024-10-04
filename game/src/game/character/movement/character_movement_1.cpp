@@ -7,7 +7,7 @@
 #include "game/components/character_movement_component.h"
 #include "game/components/character_component.h"
 
-CCharacterMovement1::CCharacterMovement1(const da::core::CEntity& entity) : ICharacterMovement(entity)
+CCharacterMovement1::CCharacterMovement1(const da::CEntity& entity) : ICharacterMovement(entity)
 {
 
 }
@@ -34,29 +34,29 @@ float CCharacterMovement1::getMoveDir() const
 
 void CCharacterMovement1::processInput(float dt)
 {
-	da::core::CInputContext inputCtx(HASHSTR("CharacterInput"), 0);
+	da::CInputContext inputCtx(HASHSTR("CharacterInput"), 0);
 	
-	if (!da::core::CInput::inputContextAvailable())
+	if (!da::CInput::inputContextAvailable())
 	{
 		return;
 	}
 
-	da::core::FComponentRef<CCharacterMovementComponent> movement = m_character->getComponent<CCharacterMovementComponent>();
-	da::core::FComponentRef<CCharacterComponent> character = m_character->getComponent<CCharacterComponent>();
-	da::core::CCamera* cam = da::core::CCamera::getCamera();
+	da::FComponentRef<CCharacterMovementComponent> movement = m_character->getComponent<CCharacterMovementComponent>();
+	da::FComponentRef<CCharacterComponent> character = m_character->getComponent<CCharacterComponent>();
+	da::CCamera* cam = da::CCamera::getCamera();
 
-	const float xPos = da::core::CInput::getCursorX();
+	const float xPos = da::CInput::getCursorX();
 
-	if (true/*da::core::CInput::mouseInputPressed(1)*/)
+	if (true/*da::CInput::mouseInputPressed(1)*/)
 	{
 		float xDiff = xPos - m_cursorPos.x;
 		m_camRot -= glm::radians(xDiff) * character->getCamSensitivity();
-		m_camRot = da::core::maths::wrapAngle(m_camRot);
+		m_camRot = da::wrapAngle(m_camRot);
 	}
 	m_cursorPos = { xPos, 0.f };
 
 	if (character->isAttacking()) {
-		if (da::core::CInput::mouseInputPressed(0)) {
+		if (da::CInput::mouseInputPressed(0)) {
 			character->attack();
 		}
 		return;
@@ -68,19 +68,19 @@ void CCharacterMovement1::processInput(float dt)
 	bool sprint = false;
 
 	// Space
-	jump = da::core::CInput::inputPressed(32);
+	jump = da::CInput::inputPressed(32);
 	// LShift
-	sprint = da::core::CInput::inputPressed(340);
+	sprint = da::CInput::inputPressed(340);
 
-	bool S = da::core::CInput::inputPressed(83);
-	bool W = da::core::CInput::inputPressed(87);
+	bool S = da::CInput::inputPressed(83);
+	bool W = da::CInput::inputPressed(87);
 
 	if (S || W) {
 		direction = (float)(-S + W) * glm::normalize(glm::vec3(cam->forward().x, cam->forward().y, 0.f));
 	}
 
-	bool A = da::core::CInput::inputPressed(65);
-	bool D = da::core::CInput::inputPressed(68);
+	bool A = da::CInput::inputPressed(65);
+	bool D = da::CInput::inputPressed(68);
 
 	if (A && D)
 	{
@@ -116,8 +116,8 @@ void CCharacterMovement1::processInput(float dt)
 			{
 				targetDir += 180.f;
 			}
-			double dir = da::core::maths::wrapAngle(glm::radians(targetDir)) - da::core::maths::wrapAngle(glm::radians(m_character->getTransform().rotationEuler().z));
-			double wrappedDir = da::core::maths::wrapAngle(dir);
+			double dir = da::wrapAngle(glm::radians(targetDir)) - da::wrapAngle(glm::radians(m_character->getTransform().rotationEuler().z));
+			double wrappedDir = da::wrapAngle(dir);
 			
 			if (std::abs(wrappedDir) > 0.001f) {
 				if (std::abs(wrappedDir) <= .1f) {
@@ -134,7 +134,7 @@ void CCharacterMovement1::processInput(float dt)
 		movement->jump();
 	}
 
-	if (da::core::CInput::mouseInputPressed(0)) {
+	if (da::CInput::mouseInputPressed(0)) {
 		character->attack();
 		sprint = false;
 		direction = glm::vec3(0.f);

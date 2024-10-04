@@ -2,7 +2,7 @@
 #if defined(DA_DEBUG) || defined(DA_RELEASE)
 #include <bullet3/btBulletDynamicsCommon.h>
 
-namespace da::physics
+namespace da
 {
 	class CBullet3DebugDraw : public btIDebugDraw
 	{

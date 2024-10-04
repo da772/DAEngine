@@ -3,7 +3,7 @@
 #include "daglm.h"
 #include "dacommon.h"
 
-namespace da::graphics
+namespace da
 {
 	class CGraphicsPipeline;
 
@@ -24,7 +24,7 @@ namespace da::graphics
 	class CGraphicsApi
 	{
 	public:
-		CGraphicsApi(da::core::CWindow* nativeWindow);
+		CGraphicsApi(da::CWindow* nativeWindow);
 		virtual ~CGraphicsApi();
 
 		inline virtual void initialize() {};
@@ -38,10 +38,10 @@ namespace da::graphics
 		virtual void submitPipeline(CGraphicsPipeline* pipeline) = 0;
 
 	public:
-		inline da::core::CWindow* getWindow() const { return m_nativeWindow; }
+		inline da::CWindow* getWindow() const { return m_nativeWindow; }
 
 	protected:
-		da::core::CWindow* m_nativeWindow;
+		da::CWindow* m_nativeWindow;
 
 	};
 }

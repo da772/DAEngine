@@ -5,7 +5,7 @@
 #include <format> 
 
 
-namespace da::core {
+namespace da {
 
 	CScene* CSceneManager::s_scene;
 	bool CSceneManager::s_initialized = false;

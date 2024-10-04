@@ -5,11 +5,11 @@
 #include "graphics/graphics_material.h"
 #include "dacommon.h"
 
-using namespace da::graphics;
+using namespace da;
 
-namespace da::factory
+namespace da
 {
-	class CMaterialFactory : da::core::CFactory<CMaterial>
+	class CMaterialFactory : da::CFactory<CMaterial>
 	{
 	public:
 		static CMaterial* create(const std::string& vsPath, const std::string& fsPath);
@@ -24,7 +24,7 @@ namespace da::factory
 	private:
 #ifdef DA_REVIEW
 		bool m_debug;
-		friend class da::core::CFactoryDebug;
+		friend class da::CFactoryDebug;
 #endif
 
 		static CMaterialFactory ms_factory;

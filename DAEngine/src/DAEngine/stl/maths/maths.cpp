@@ -2,7 +2,7 @@
 #include "maths.h"
 #include <math.h> 
 
-namespace da::core::maths
+namespace da
 {
 	bool IsPrime(const int& n)
 	{

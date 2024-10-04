@@ -3,9 +3,9 @@
 #include "graphics_texture2d.h"
 #include "graphics/factory/factory_graphics_texture2d.h"
 
-namespace da::graphics
+namespace da
 {
-	using namespace da::factory;
+	using namespace da;
 
 	void FMaterialData::setNormalTexture(CGraphicsTexture2D* texture)
 	{
@@ -45,27 +45,27 @@ namespace da::graphics
 		m_metallicRoughnessTexture = texture;
 	}
 
-	da::graphics::CGraphicsTexture2D* FMaterialData::getBaseColorTexture() const
+	da::CGraphicsTexture2D* FMaterialData::getBaseColorTexture() const
 	{
 		return m_baseColorTexture;
 	}
 
-	da::graphics::CGraphicsTexture2D* FMaterialData::getEmissiveTexture() const
+	da::CGraphicsTexture2D* FMaterialData::getEmissiveTexture() const
 	{
 		return m_emissiveTexture;
 	}
 
-	da::graphics::CGraphicsTexture2D* FMaterialData::getOcclusionTexture() const
+	da::CGraphicsTexture2D* FMaterialData::getOcclusionTexture() const
 	{
 		return m_occlusionTexture;
 	}
 
-	da::graphics::CGraphicsTexture2D* FMaterialData::getMetallicRoughnessTexture() const
+	da::CGraphicsTexture2D* FMaterialData::getMetallicRoughnessTexture() const
 	{
 		return m_metallicRoughnessTexture;
 	}
 
-	da::graphics::CGraphicsTexture2D* FMaterialData::getNormalTexture() const
+	da::CGraphicsTexture2D* FMaterialData::getNormalTexture() const
 	{
 		return m_normalTexture;
 	}

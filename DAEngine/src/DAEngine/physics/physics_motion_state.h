@@ -2,12 +2,12 @@
 
 #include "daglm.h"
 
-namespace da::core
+namespace da
 {
 	class CEntity;
 }
 
-namespace da::physics
+namespace da
 {
 	class IPhysicsMotionState
 	{
@@ -30,11 +30,11 @@ namespace da::physics
 	class CPhysicsEntityMotionState : public IPhysicsMotionState
 	{
 	public:
-		static CPhysicsEntityMotionState* create(da::core::CEntity* entity);
+		static CPhysicsEntityMotionState* create(da::CEntity* entity);
 	protected:
-		inline CPhysicsEntityMotionState(da::core::CEntity* entity) : m_entity(entity){};
+		inline CPhysicsEntityMotionState(da::CEntity* entity) : m_entity(entity){};
 		inline virtual ~CPhysicsEntityMotionState() {};
-		da::core::CEntity* m_entity = nullptr;
+		da::CEntity* m_entity = nullptr;
 
 
 	};

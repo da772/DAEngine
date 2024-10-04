@@ -4,9 +4,9 @@
 #include <glm/gtc/quaternion.hpp>
 #include "stl/maths/transform.h"
 
-namespace da::core
+namespace da
 {
-	class CCamera : public da::maths::CTransform{
+	class CCamera : public da::CTransform{
 
 	public:
 

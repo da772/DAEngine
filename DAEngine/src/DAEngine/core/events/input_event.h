@@ -1,7 +1,7 @@
 #pragma once
 #include "core/events/event.h"
 
-namespace da::core::events
+namespace da
 {
 
 	class CInputEvent : public CEvent {

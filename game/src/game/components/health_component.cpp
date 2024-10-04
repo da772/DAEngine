@@ -2,7 +2,7 @@
 
 COMPONENT_CPP_NO_UPDATE(CHealthComponent);
 
-CHealthComponent::CHealthComponent(const da::core::CGuid& id, da::core::CEntity& parent) : m_guid(id), m_parent(parent)
+CHealthComponent::CHealthComponent(const da::CGuid& id, da::CEntity& parent) : m_guid(id), m_parent(parent)
 {
 
 }

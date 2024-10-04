@@ -14,7 +14,7 @@
 #include <imgui.h>
 #endif
 
-namespace da::platform
+namespace da
 {
 	static constexpr glm::vec3 ABCDE_t[] =
 	{
@@ -105,8 +105,8 @@ namespace da::platform
 	void CBgfxProcSky::initialize(int verticalCount, int horizontalCount, CBgfxSunController& sun) 
 	{
 		m_sun = &sun;
-		m_skyProgram =    da::factory::CMaterialFactory::create("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky.sc");
-		m_skyProgramFix = da::factory::CMaterialFactory::create("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky_color_banding_fix.sc");
+		m_skyProgram =    da::CMaterialFactory::create("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky.sc");
+		m_skyProgramFix = da::CMaterialFactory::create("shaders/cluster/vs_sky.sc", "shaders/cluster/fs_sky_color_banding_fix.sc");
 
 		FScreenPosVertex::init();
 		m_sunLuminanceXYZ.SetMap(sunLuminanceXYZTable);
@@ -157,7 +157,7 @@ namespace da::platform
 		m_sun->Update();
 
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Sky"), &m_debug, [this] {renderDebug(); });
+		da::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Sky"), &m_debug, [this] {renderDebug(); });
 #endif
 	}
 
@@ -172,8 +172,8 @@ namespace da::platform
 
 	void CBgfxProcSky::shutdown()
 	{
-		da::factory::CMaterialFactory::remove(m_skyProgram);
-		da::factory::CMaterialFactory::remove(m_skyProgramFix);
+		da::CMaterialFactory::remove(m_skyProgram);
+		da::CMaterialFactory::remove(m_skyProgramFix);
 
 		BGFXTRYDESTROY(m_vbh);
 		BGFXTRYDESTROY(m_ibh);
@@ -185,7 +185,7 @@ namespace da::platform
 		BGFXTRYDESTROY(u_sunLuminance);
 
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Sky"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Sky"));
 #endif
 	}
 

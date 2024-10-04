@@ -1,7 +1,7 @@
 #pragma once
 #include "dastd.h"
 
-namespace da::core::events {
+namespace da {
 
 	enum class EEventType : uint32_t {
 		None,

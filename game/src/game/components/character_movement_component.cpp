@@ -9,15 +9,15 @@ COMPONENT_CPP_DEBUG(CCharacterMovementComponent)
 COMPONENT_CPP(CCharacterMovementComponent)
 #endif
 
-CCharacterMovementComponent::CCharacterMovementComponent(const da::core::CGuid& guid, da::core::CEntity& parent) : m_guid(guid), m_parent(parent)
+CCharacterMovementComponent::CCharacterMovementComponent(const da::CGuid& guid, da::CEntity& parent) : m_guid(guid), m_parent(parent)
 {
 	
 }
 
 void CCharacterMovementComponent::onInitialize()
 {
-	m_shape = da::physics::CPhysicsShapeCapsule::create(.3f, 1.5f);
-	m_character = da::physics::CharacterControllerFactory::create(m_tuning, *m_shape);
+	m_shape = da::CPhysicsShapeCapsule::create(.3f, 1.5f);
+	m_character = da::CharacterControllerFactory::create(m_tuning, *m_shape);
 	m_character->setUserData((void*)&m_parent);
 }
 
@@ -37,11 +37,10 @@ void CCharacterMovementComponent::processMovement(float dt)
 		walkVelocity *= 1.5f;
 	}
 
-	float walkSpeed = walkVelocity * da::physics::CPhysics::getFixedTime();
+	float walkSpeed = walkVelocity * da::CPhysics::getFixedTime();
 	float rotateSpeed = m_rotateSpeed * m_rotateDir * dt;
 
 	if (m_character->grounded() && m_jump) {
-		ASSERT(false);
 		m_character->jump({ 0.f,0.f,6.5f });
 	}
 
@@ -51,7 +50,7 @@ void CCharacterMovementComponent::processMovement(float dt)
 		}
 		else {
 			float z = glm::radians(m_parent.getTransform().rotationEuler().z);
-			double angle = da::core::maths::wrapAngle(m_setRotate - z);
+			double angle = da::wrapAngle(m_setRotate - z);
 			if (std::abs(angle) <= .15f) {
 				m_parent.getTransform().setRotation({ 0.f, 0.f, glm::degrees(m_setRotate) });
 				m_rotateInstant = true;
@@ -156,7 +155,7 @@ void CCharacterMovementComponent::onShutdown()
 void CCharacterMovementComponent::onDebugRender()
 {
 	if (ImGui::Begin("walk direction")) {
-		float walkSpeed = m_sprint * da::physics::CPhysics::getFixedTime();
+		float walkSpeed = m_sprint * da::CPhysics::getFixedTime();
 		ImGui::LabelText("##for", "FORWARD: %f, %f, %f", m_parent.getTransform().forward().x, m_parent.getTransform().forward().y, m_parent.getTransform().forward().z);
 		ImGui::LabelText("##right", "RIGHT: %f, %f, %f", m_parent.getTransform().right().x, m_parent.getTransform().right().y, m_parent.getTransform().right().z);
 		ImGui::LabelText("##dir", "DIR: %f, %f, %f", m_direction.x, m_direction.y, m_direction.z);
@@ -166,8 +165,8 @@ void CCharacterMovementComponent::onDebugRender()
 
 	ImGui::End();
 
-	glm::quat quat = da::core::CCamera::lookAt(m_direction, glm::vec3(0.f));
-	da::debug::CDebugRender::drawCone(m_parent.getTransform().position(), quat, {.001f, .005f, .001f}, { 1.f,0.f,1.f,1.f }, false);
+	glm::quat quat = da::CCamera::lookAt(m_direction, glm::vec3(0.f));
+	da::CDebugRender::drawCone(m_parent.getTransform().position(), quat, {.001f, .005f, .001f}, { 1.f,0.f,1.f,1.f }, false);
 
 	m_character->debugDraw();
 }

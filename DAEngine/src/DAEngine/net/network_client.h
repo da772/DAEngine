@@ -5,7 +5,7 @@
 struct _ENetPeer;
 struct _ENetHost;
 
-namespace da::net
+namespace da
 {
 
 	class CNetworkClient : public INetwork {

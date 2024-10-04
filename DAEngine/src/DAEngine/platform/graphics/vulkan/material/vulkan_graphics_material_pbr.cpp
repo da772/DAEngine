@@ -7,9 +7,9 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <chrono>
 
-namespace da::platform
+namespace da
 {
-	CVulkanGraphicsMaterialPBR::CVulkanGraphicsMaterialPBR(da::graphics::CGraphicsPipeline& pipeline
+	CVulkanGraphicsMaterialPBR::CVulkanGraphicsMaterialPBR(da::CGraphicsPipeline& pipeline
 		, const std::string& albedo
 		, const std::string& normal
 		, const std::string& roughness

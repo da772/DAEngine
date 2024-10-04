@@ -6,7 +6,7 @@
 #include "physics_bullet3_shape.h"
 
 
-namespace da::physics
+namespace da
 {
 	CBullet3Character::CBullet3Character(const FCharacterTuning& data, IPhysicsShape& shape) : ICharacterController(data, shape), m_characterController(0, 0, 0), m_ghost()
 	{

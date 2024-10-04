@@ -4,21 +4,21 @@
 #include "entity.h"
 #include "component.h"
 
-namespace da::core {
+namespace da {
 
-	std::vector<std::pair<CHashString, da::core::FECSLifeCycle>> CScene::m_componentLifeCycle;
+	std::vector<std::pair<CHashString, da::FECSLifeCycle>> CScene::m_componentLifeCycle;
 
 	CScene::CScene(const CGuid& guid) : m_guid(guid)
 	{
 
 	}
 
-	const da::core::CGuid& CScene::getId() const
+	const da::CGuid& CScene::getId() const
 	{
 		return m_guid;
 	}
 
-	da::core::CEntity* CScene::createEntity(const CGuid& guid /*= CGuid::Generate()*/)
+	da::CEntity* CScene::createEntity(const CGuid& guid /*= CGuid::Generate()*/)
 	{
 		CEntity* entity = new CEntity(guid, this);
 		m_entities.push_back(entity);
@@ -77,7 +77,7 @@ namespace da::core {
 		}
 	}
 
-	const da::core::CEntity* CScene::getEntityFromTag(CHashString tag) const
+	const da::CEntity* CScene::getEntityFromTag(CHashString tag) const
 	{
 		for (const CEntity* e : m_entities) {
 			if (e->getTag() == tag) {

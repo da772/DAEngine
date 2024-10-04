@@ -7,9 +7,9 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <chrono>
 
-namespace da::platform
+namespace da
 {
-	CVulkanGraphicsMaterialCubeMap::CVulkanGraphicsMaterialCubeMap(da::graphics::CGraphicsPipeline& pipeline
+	CVulkanGraphicsMaterialCubeMap::CVulkanGraphicsMaterialCubeMap(da::CGraphicsPipeline& pipeline
 		, const std::string& texture)
 		: CVulkanGraphicsMaterial(pipeline)
 		, m_texture(CVulkanGraphicsTextureCube(texture, pipeline.getGraphicsApi()))

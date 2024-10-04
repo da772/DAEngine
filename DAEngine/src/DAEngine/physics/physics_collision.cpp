@@ -3,7 +3,7 @@
 
 #include "bullet3_collision.h"
 
-namespace da::physics {
+namespace da {
 
 	ICollisionObject::ICollisionObject(IPhysicsShape* shape, uint32_t flags) : m_shape(shape), m_flags(flags), m_enabled(true)
 	{

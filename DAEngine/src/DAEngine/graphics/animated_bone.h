@@ -4,7 +4,7 @@
 
 struct aiNodeAnim;
 
-namespace da::graphics {
+namespace da {
 
     struct FKeyPosition
     {

@@ -7,7 +7,7 @@
 #include <imgui.h>
 #include "core/logger.h"
 
-namespace da::core
+namespace da
 {
 	void* imguiAllocate(size_t sz, void* user_data)
 	{

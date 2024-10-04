@@ -1,11 +1,11 @@
 #include "nav_mesh_ctx.h"
 #include <debug/graphics_debug_render.h>
 
-namespace da::ai
+namespace da
 {
-	da::ai::CNavCtx CNavCtx::ms_ctx;
+	da::CNavCtx CNavCtx::ms_ctx;
 #ifdef DA_REVIEW
-	da::ai::CNavDrawer CNavDrawer::ms_drawer;
+	da::CNavDrawer CNavDrawer::ms_drawer;
 #endif
 
 	void CNavCtx::doLog(const rcLogCategory category, const char* msg, const int len)
@@ -93,7 +93,7 @@ namespace da::ai
 		}
 
 		for (int i = 0; i < m_vertices.size() - 1; i++) {
-			da::debug::CDebugRender::drawLine(m_vertices[i], m_vertices[i + 1], .01f, m_color, false, false);
+			da::CDebugRender::drawLine(m_vertices[i], m_vertices[i + 1], .01f, m_color, false, false);
 		}
 
 		m_vertices = {};

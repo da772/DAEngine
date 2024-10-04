@@ -2,7 +2,7 @@
 
 #include <bx/allocator.h>
 
-namespace da::platform {
+namespace da {
 
 	///
 	class DefaultAllocator : public bx::AllocatorI

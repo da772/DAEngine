@@ -3,7 +3,7 @@
 #include "dastd.h"
 #include "daglm.h"
 
-namespace da::physics
+namespace da
 {
 	class CVehicleTuning;
 	class IPhysicsRigidBody;
@@ -43,8 +43,8 @@ namespace da::physics
 
 	struct FVehicleData
 	{
-		da::physics::FVehicleTuningData TuningData;
-		std::vector<da::graphics::FMaterialData> Materials;
+		da::FVehicleTuningData TuningData;
+		std::vector<da::FMaterialData> Materials;
 		std::string VehicleMesh;
 	};
 

@@ -19,10 +19,10 @@ void extern ImGui::PushLargeFont()
 	ImGui::PushFont(ImGui::Font::Enum::RegularLarge);
 }
 
-namespace da::platform {
+namespace da {
 
 
-	CImGuiBgfxApi::CImGuiBgfxApi(graphics::CGraphicsApi* graphicsApi) : CImGuiApi(graphicsApi)
+	CImGuiBgfxApi::CImGuiBgfxApi(da::CGraphicsApi* graphicsApi) : CImGuiApi(graphicsApi)
 	{
 		
 	}
@@ -34,16 +34,16 @@ namespace da::platform {
 
 	void CImGuiBgfxApi::onInitialize()
 	{
-		m_window->getEventHandler().registerCallback(da::core::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));
-		m_window->getEventHandler().registerCallback(da::core::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));
+		m_window->getEventHandler().registerCallback(da::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));
+		m_window->getEventHandler().registerCallback(da::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));
 		imguiCreate();
 
 		ImGui_ImplGlfw_InitForOther((GLFWwindow*)m_window->getNativeWindow(), true);
 
-		m_enableDemo = da::core::CArgHandler::contains(HASHSTR("imguidemo"));
+		m_enableDemo = da::CArgHandler::contains(HASHSTR("imguidemo"));
 
 #ifdef DA_REVIEW
-		debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ImGuiDemo"), &m_enableDemo, [&] {ImGui::ShowDemoWindow(&m_enableDemo); });
+		CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("ImGuiDemo"), &m_enableDemo, [&] {ImGui::ShowDemoWindow(&m_enableDemo); });
 #endif
 	}
 
@@ -65,25 +65,25 @@ namespace da::platform {
 	void CImGuiBgfxApi::onShutdown()
 	{
 #ifdef DA_REVIEW
-		debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ImGuiDemo"));
+		CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("ImGuiDemo"));
 #endif
-		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));
-		m_window->getEventHandler().unregisterCallback(da::core::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));
+		m_window->getEventHandler().unregisterCallback(da::EEventType::InputCursorMove, BIND_EVENT_FN(CImGuiBgfxApi, onCursorMove));
+		m_window->getEventHandler().unregisterCallback(da::EEventType::InputMouseButton, BIND_EVENT_FN(CImGuiBgfxApi, onMouseButton));
 		imguiDestroy();
 	}
 
 
-	void CImGuiBgfxApi::onCursorMove(const core::CEvent& event)
+	void CImGuiBgfxApi::onCursorMove(const CEvent& event)
 	{
-		core::CInputCursorMoveEvent* ms = (core::CInputCursorMoveEvent*)&event;
+		CInputCursorMoveEvent* ms = (CInputCursorMoveEvent*)&event;
 		m_mx = ms->getX();
 		m_my = ms->getY();
 	}
 
-	void CImGuiBgfxApi::onMouseButton(const core::CEvent& event)
+	void CImGuiBgfxApi::onMouseButton(const CEvent& event)
 	{
-		core::CInputMouseButtonEvent* btn = (core::CInputMouseButtonEvent*)&event;
-		if (btn->getType() == core::EInputType::PRESSED)
+		CInputMouseButtonEvent* btn = (CInputMouseButtonEvent*)&event;
+		if (btn->getType() == EInputType::PRESSED)
 		{
 			m_mb = 0x1 << btn->getBtn();
 			return;

@@ -4,7 +4,7 @@
 class ICharacterMovement
 {
 public:
-	inline ICharacterMovement(const da::core::CEntity& entity) : m_character((da::core::CEntity*)&entity) {};
+	inline ICharacterMovement(const da::CEntity& entity) : m_character((da::CEntity*)&entity) {};
 	virtual void initialize() = 0;
 	virtual void update(float dt) = 0;
 	virtual void shutdown() = 0;
@@ -15,5 +15,5 @@ public:
 #endif
 
 protected:
-	da::core::CEntity* m_character;
+	da::CEntity* m_character;
 };

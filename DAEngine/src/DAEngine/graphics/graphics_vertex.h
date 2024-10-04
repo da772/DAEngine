@@ -2,7 +2,7 @@
 #include "dastd.h"
 
 
-namespace da::graphics
+namespace da
 {
 	struct FVertexBindingDescription {
 		unsigned int binding, stride, inputRate;
@@ -83,9 +83,9 @@ namespace da::graphics
 }
 
 namespace std {
-	template<> struct hash<da::graphics::FVertexBase> {
-		size_t operator()(da::graphics::FVertexBase const& vertex) const {
-			return CHashString((const char*)&vertex, sizeof(da::graphics::FVertexBase)).hash();
+	template<> struct hash<da::FVertexBase> {
+		size_t operator()(da::FVertexBase const& vertex) const {
+			return HASHSZ((const char*)&vertex, sizeof(da::FVertexBase));
 		}
 	};
 };

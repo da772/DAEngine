@@ -5,41 +5,47 @@
 #include <algorithm>
 
 #ifdef DA_REVIEW
-#define HASHSTR(x) CHashString(x, da::core::containers::CBasicHashString::generateHash(x))
+#define HASHSTR(x) CHashString(da::CBasicHashString::generateHash(x), x)
 #else
-#define HASHSTR(x) CHashString(da::core::containers::CBasicHashString::generateHash(x))	
+#define HASHSTR(x) CHashString(da::CBasicHashString::generateHash(x))	
 #endif
 
 #define HASH(x) CHashString::generateHash(x)
 #define HASHSZ(x,y) CHashString::generateHash(x,y)
 #define HASHCOMBINE(x, y) CHashString::hashCombine(x,y)
 
-namespace da::core::containers
+namespace da
 {
 	class CBasicHashString
 	{
 		public:
 
-			static inline constexpr const uint32_t generateHash(const char* str, const size_t& size) {
-				uint32_t hash = 0xAAAAAAAA;
-				uint32_t i = 0;
-				if (!size) return 0;
-				for (i = 0; i < size; ++str, ++i)
-				{
-					hash ^= ((i & 1) == 0) ? ((hash << 7) ^ (*str) * (hash >> 3)) :
-						(~((hash << 11) + ((*str) ^ (hash >> 5))));
+			static inline constexpr const uint64_t generateHash(const char* data, const size_t& len) {
+				uint64_t h = 0xCBF29CE484222325;  // Initial hash value (from FNV-1a algorithm)
+				const uint64_t prime = 0x100000001B3;  // Prime multiplier
+
+				for (uint32_t i = 0; i < len; ++i) {
+					h ^= static_cast<uint64_t>(data[i]);  // XOR the input byte into the hash
+					h *= prime;  // Multiply by prime (FNV-1a step)
 				}
 
-				return hash;
+				// Optionally, we can add further mixing steps for better hash quality
+				h ^= h >> 33;
+				h *= 0xff51afd7ed558ccd;
+				h ^= h >> 33;
+				h *= 0xc4ceb9fe1a85ec53;
+				h ^= h >> 33;
+
+				return h;
 			}
 
-			static inline constexpr const uint32_t generateHash(const char* str)
+			static inline constexpr const uint64_t generateHash(const char* str)
 			{
 				size_t size = std::char_traits<char>::length(str);
 				return generateHash(str, size);
 			}
 
-			static inline constexpr const uint32_t hashCombine(uint32_t lhs, uint32_t rhs)
+			static inline constexpr const uint64_t hashCombine(uint64_t lhs, uint64_t rhs)
 			{
 				return rhs + 0x9e3779b9 + (lhs << 6) + (lhs >> 2);
 			}
@@ -58,7 +64,7 @@ namespace da::core::containers
 				m_hash = generateHash(str);
 			}
 
-			inline constexpr CBasicHashString(const char* str, uint32_t hash) {
+			inline constexpr CBasicHashString(uint64_t hash, const char* str) {
 #ifdef DA_REVIEW
 				m_string = std::string(str);
 #endif
@@ -72,14 +78,14 @@ namespace da::core::containers
 				m_hash = generateHash(str, size);
 			}
 
-			inline constexpr CBasicHashString(uint32_t lhs, uint32_t rhs) {
+			inline constexpr CBasicHashString(uint64_t lhs, uint64_t rhs) {
 				m_hash ^= rhs + 0x9e3779b9 + (lhs << 6) + (lhs >> 2);
 #ifdef DA_REVIEW
 				m_string = std::to_string(m_hash);
 #endif
 			}
 
-			inline constexpr CBasicHashString(const uint32_t hash) : m_hash(hash) {
+			inline constexpr CBasicHashString(const uint64_t hash) : m_hash(hash) {
 
 			}
 
@@ -88,7 +94,7 @@ namespace da::core::containers
 
 			}
 
-			inline const uint32_t hash() const
+			inline const uint64_t hash() const
 			{
 				return m_hash;
 			}
@@ -126,7 +132,7 @@ namespace da::core::containers
 			/// </summary>
 			/// <param name="str"></param>
 			/// <returns></returns>
-            inline constexpr uint32_t genHash(const char* str) const {
+            inline constexpr uint64_t genHash(const char* str) const {
 				if (str == nullptr) return 0;
                 size_t size = 0;
                 for (size_t x = 0; x < 512; x++) {
@@ -142,24 +148,24 @@ namespace da::core::containers
 #ifdef DA_REVIEW
 			std::string m_string;
 #endif
-			uint32_t m_hash;
+			uint64_t m_hash;
 	};
 }
 
 
 namespace std
 {
-	template<> struct hash<da::core::containers::CBasicHashString>
+	template<> struct hash<da::CBasicHashString>
 	{
-		std::size_t operator()(da::core::containers::CBasicHashString const& hashStr) const noexcept
+		std::size_t operator()(da::CBasicHashString const& hashStr) const noexcept
 		{
 			return hashStr.hash();
 		}
 	};
 
-	template<> struct less<da::core::containers::CBasicHashString>
+	template<> struct less<da::CBasicHashString>
 	{
-		bool operator() (const da::core::containers::CBasicHashString& lhs, const da::core::containers::CBasicHashString& rhs) const
+		bool operator() (const da::CBasicHashString& lhs, const da::CBasicHashString& rhs) const
 		{
 #ifdef DA_REVIEW
 
@@ -171,4 +177,4 @@ namespace std
 	};
 }
 
-typedef da::core::containers::CBasicHashString CHashString;
+typedef da::CBasicHashString CHashString;

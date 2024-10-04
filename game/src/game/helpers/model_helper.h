@@ -5,5 +5,5 @@
 class CModelHelper
 {
 public:
-	static da::graphics::CStaticMesh* create(Model model);
+	static da::CStaticMesh* create(Model model);
 };

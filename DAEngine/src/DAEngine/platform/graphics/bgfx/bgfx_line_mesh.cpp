@@ -3,11 +3,11 @@
 #include "bgfx_line_mesh.h"
 #include "bgfx_util.h"
 
-namespace da::platform {
+namespace da {
 
 	CBgfxLineMesh::CBgfxLineMesh() : CBgfxStaticMesh()
 	{
-		memset(m_dynamicMeshes.data(), 0, sizeof(da::graphics::FVertexBase) * m_dynamicMeshes.size());
+		memset(m_dynamicMeshes.data(), 0, sizeof(da::FVertexBase) * m_dynamicMeshes.size());
 		memset(m_dynamicIndices.data(), 0, sizeof(uint32_t) * m_dynamicMeshes.size());
 	}	
 
@@ -44,7 +44,7 @@ namespace da::platform {
 		glm::vec3 n3 = endPos + (width * perpVec);
 		glm::vec3 n4 = endPos - (width * perpVec);
 
-		da::graphics::FVertexBase p1, p2, p3, p4;
+		da::FVertexBase p1, p2, p3, p4;
 		p1.Pos = Vector3f(&n1[0]);
 		p1.Normal = { color.x, color.y, color.z };
 		p2.Pos = Vector3f(&n2[0]);
@@ -73,7 +73,7 @@ namespace da::platform {
 		if (!::bgfx::isValid(m_vbh))
 		{
 			m_vbh = ::bgfx::createDynamicVertexBuffer(
-				::bgfx::makeRef(m_dynamicMeshes.data(), sizeof(da::graphics::FVertexBase)*m_dynamicMeshes.size()),
+				::bgfx::makeRef(m_dynamicMeshes.data(), sizeof(da::FVertexBase)*m_dynamicMeshes.size()),
 				CBgfxStaticMesh::getLayout()
 				, BGFX_BUFFER_COMPUTE_TYPE_FLOAT
 			);
@@ -94,7 +94,7 @@ namespace da::platform {
 
 		m_indexCount = 0;
 		m_vertexCount = 0;
-		::bgfx::update(m_vbh, 0, ::bgfx::makeRef(m_dynamicMeshes.data(), sizeof(da::graphics::FVertexBase)));
+		::bgfx::update(m_vbh, 0, ::bgfx::makeRef(m_dynamicMeshes.data(), sizeof(da::FVertexBase)));
 		::bgfx::update(m_ibh, 0, ::bgfx::makeRef(m_dynamicIndices.data(), sizeof(uint32_t)));
 	}
 
@@ -107,10 +107,10 @@ namespace da::platform {
 
 		if (!m_vertexCount) return;
 
-		::bgfx::update(m_vbh, 0, ::bgfx::makeRef(m_dynamicMeshes.data(), sizeof(da::graphics::FVertexBase) * m_vertexCount));
+		::bgfx::update(m_vbh, 0, ::bgfx::makeRef(m_dynamicMeshes.data(), sizeof(da::FVertexBase) * m_vertexCount));
 		::bgfx::update(m_ibh, 0, ::bgfx::makeRef(m_dynamicIndices.data(), sizeof(uint32_t) * m_indexCount));
 		::bgfx::setIndexBuffer(m_ibh, 0, m_indexCount);
-		::bgfx::setVertexBuffer(0, m_vbh, 0, sizeof(da::graphics::FVertexBase) * m_vertexCount);
+		::bgfx::setVertexBuffer(0, m_vbh, 0, sizeof(da::FVertexBase) * m_vertexCount);
 	}
 
 }

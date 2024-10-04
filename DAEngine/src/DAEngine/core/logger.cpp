@@ -21,7 +21,7 @@ namespace da
 	{
 		if (!s_logger)
 			s_logger = new CLogger();
-		s_logger->m_file = fopen(utility::GetLogFileName().c_str(), "w");
+		s_logger->m_file = fopen(GetLogFileName().c_str(), "w");
 		//CLogger::s_outFile = std::ofstream(utility::GetLogFileName().c_str(), std::ofstream::out);
 	}
 
@@ -75,7 +75,7 @@ namespace da
 
 	void CLogger::logScriptCallstack(ELogType type, ELogChannel channel)
 	{
-		std::string callStack = da::script::CScriptEngine::getCallstack(da::script::CScriptEngine::getState());
+		std::string callStack = da::CScriptEngine::getCallstack(da::CScriptEngine::getState());
 		if (!callStack.empty())
 		{
 			da::CLogger::log(type, channel, "PRINTING SCRIPT STACK: %s\n", callStack.c_str());

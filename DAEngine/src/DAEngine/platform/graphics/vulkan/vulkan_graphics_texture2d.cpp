@@ -9,9 +9,9 @@
 #include <cmath>
 
 
-namespace da::platform
+namespace da
 {
-	CVulkanGraphicsTexture2D::CVulkanGraphicsTexture2D(const std::string& path, graphics::CGraphicsApi& graphicsApi) : graphics::CGraphicsTexture2D(path)
+	CVulkanGraphicsTexture2D::CVulkanGraphicsTexture2D(const std::string& path, da::CGraphicsApi& graphicsApi) : da::CGraphicsTexture2D(path)
 		, m_vulkanGraphicsApi(*static_cast<CVulkanGraphicsApi*>(&graphicsApi))
 	{
 	}

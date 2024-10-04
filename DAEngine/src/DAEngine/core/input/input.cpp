@@ -5,10 +5,10 @@
 #include "graphics/window/window.h"
 #include "core/events/event_handler.h"
 
-namespace da::core {
+namespace da {
 
-	std::unordered_map<class CWindow*, da::core::FWindowInputData> CInput::s_inputs;
-	std::unordered_map<class CWindow*, da::core::FWindowMouseData> CInput::s_mouse;
+	std::unordered_map<class CWindow*, da::FWindowInputData> CInput::s_inputs;
+	std::unordered_map<class CWindow*, da::FWindowMouseData> CInput::s_mouse;
 	std::set<FInputContextData> CInput::s_inputContext;
 	std::vector<FInputContextData> CInput::s_inputContextList;
 
@@ -36,13 +36,13 @@ namespace da::core {
 		data.YPos = 0.0;
 		data.XScroll = 0.0;
 		data.YScroll = 0.0;
-		data.Func = [window](const core::events::CEvent& e) {
+		data.Func = [window](const CEvent& e) {
 			handleMouseInput(window, e);
 			};
 
-		window->getEventHandler().registerCallback(events::EEventType::InputCursorMove, data.Func);
-		window->getEventHandler().registerCallback(events::EEventType::InputMouseButton, data.Func);
-		window->getEventHandler().registerCallback(events::EEventType::InputMouseScroll, data.Func);
+		window->getEventHandler().registerCallback(EEventType::InputCursorMove, data.Func);
+		window->getEventHandler().registerCallback(EEventType::InputMouseButton, data.Func);
+		window->getEventHandler().registerCallback(EEventType::InputMouseScroll, data.Func);
 		s_mouse[window] = std::move(data);
 	}
 
@@ -58,11 +58,11 @@ namespace da::core {
 
 		FWindowInputData data;
 		data.Window = window;
-		data.Func = [window](const core::events::CEvent& e) {
+		data.Func = [window](const CEvent& e) {
 			handleKeyInput(window, e);
 			};
 
-		window->getEventHandler().registerCallback(events::EEventType::InputKeyboard, data.Func);
+		window->getEventHandler().registerCallback(EEventType::InputKeyboard, data.Func);
 
 		
 
@@ -87,9 +87,9 @@ namespace da::core {
 			return;
 		}
 
-		it->second.Window->getEventHandler().unregisterCallback(events::EEventType::InputCursorMove, it->second.Func);
-		it->second.Window->getEventHandler().unregisterCallback(events::EEventType::InputMouseButton, it->second.Func);
-		it->second.Window->getEventHandler().unregisterCallback(events::EEventType::InputMouseScroll, it->second.Func);
+		it->second.Window->getEventHandler().unregisterCallback(EEventType::InputCursorMove, it->second.Func);
+		it->second.Window->getEventHandler().unregisterCallback(EEventType::InputMouseButton, it->second.Func);
+		it->second.Window->getEventHandler().unregisterCallback(EEventType::InputMouseScroll, it->second.Func);
 		s_mouse.erase(it);
 	}
 
@@ -103,7 +103,7 @@ namespace da::core {
 			return;
 		}
 
-		it->second.Window->getEventHandler().unregisterCallback(events::EEventType::InputKeyboard, it->second.Func);
+		it->second.Window->getEventHandler().unregisterCallback(EEventType::InputKeyboard, it->second.Func);
 		s_inputs.erase(it);
 	}
 
@@ -191,7 +191,7 @@ namespace da::core {
 		return false;
 	}
 
-	void CInput::handleKeyInput(class CWindow* window, const events::CEvent& e)
+	void CInput::handleKeyInput(class CWindow* window, const CEvent& e)
 	{
 		if (e.getCategory() != EEventCategory::Input) return;
 
@@ -204,7 +204,7 @@ namespace da::core {
 
 		const auto& it = std::find(data.Inputs.begin(), data.Inputs.end(), btn->getBtn());
 
-		if (btn->getType() == da::core::EInputType::RELEASED)
+		if (btn->getType() == da::EInputType::RELEASED)
 		{
 			if (it == data.Inputs.end())
 			{
@@ -223,7 +223,7 @@ namespace da::core {
 		data.Inputs.push_back(btn->getBtn());
 	}
 
-	void CInput::handleMouseInput(class CWindow* window, const events::CEvent& e)
+	void CInput::handleMouseInput(class CWindow* window, const CEvent& e)
 	{
 		if (e.getCategory() != EEventCategory::Input) return;
 
@@ -242,7 +242,7 @@ namespace da::core {
 
 			const auto& it = std::find(data.Inputs.begin(), data.Inputs.end(), btn->getBtn());
 
-			if (btn->getType() == da::core::EInputType::RELEASED)
+			if (btn->getType() == da::EInputType::RELEASED)
 			{
 				if (it == data.Inputs.end())
 				{

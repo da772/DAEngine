@@ -4,7 +4,7 @@
 
 #ifdef DA_REVIEW
 
-namespace da::debug {
+namespace da {
 
 	class CDebugStatsWindow {
 

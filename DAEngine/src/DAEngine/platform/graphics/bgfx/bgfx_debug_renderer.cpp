@@ -10,19 +10,19 @@
 #include "bgfx_line_mesh.h"
 #include "graphics/factory/factory_graphics_smesh.h"
 
-namespace da::platform
+namespace da
 {
 	void CBgfxDebugRenderer::initialize()
 	{
 		m_frameBuffer = createFrameBuffer();
-		m_shader = da::factory::CMaterialFactory::create("shaders/cluster/vs_debug_geometry.sc", "shaders/cluster/fs_debug_geometry.sc");
+		m_shader = da::CMaterialFactory::create("shaders/cluster/vs_debug_geometry.sc", "shaders/cluster/fs_debug_geometry.sc");
 		m_uniform = ::bgfx::createUniform("u_Color", ::bgfx::UniformType::Vec4);
 
-		m_shapes[EDebugShapes::Cube] = da::factory::CStaticMeshFactory::create("assets/cube.fbx");
-		m_shapes[EDebugShapes::Sphere] = da::factory::CStaticMeshFactory::create("assets/sphere.fbx");
-		m_shapes[EDebugShapes::Plane] = da::factory::CStaticMeshFactory::create("assets/plane.fbx");
-		m_shapes[EDebugShapes::Cone] = da::factory::CStaticMeshFactory::create("assets/cone.fbx");
-		m_shapes[EDebugShapes::Capsule] = da::factory::CStaticMeshFactory::create("assets/capsule.fbx");
+		m_shapes[EDebugShapes::Cube] = da::CStaticMeshFactory::create("assets/cube.fbx");
+		m_shapes[EDebugShapes::Sphere] = da::CStaticMeshFactory::create("assets/sphere.fbx");
+		m_shapes[EDebugShapes::Plane] = da::CStaticMeshFactory::create("assets/plane.fbx");
+		m_shapes[EDebugShapes::Cone] = da::CStaticMeshFactory::create("assets/cone.fbx");
+		m_shapes[EDebugShapes::Capsule] = da::CStaticMeshFactory::create("assets/capsule.fbx");
 		m_shapes[EDebugShapes::Line] = new CBgfxLineMesh();
 		m_shapes[EDebugShapes::LineXRay] = new CBgfxLineMesh();
 	}
@@ -90,12 +90,12 @@ namespace da::platform
 
 	void CBgfxDebugRenderer::shutdown()
 	{
-		for (const std::pair<EDebugShapes, da::graphics::CStaticMesh*>& kv : m_shapes) {
-			da::factory::CStaticMeshFactory::remove(kv.second);
+		for (const std::pair<EDebugShapes, da::CStaticMesh*>& kv : m_shapes) {
+			da::CStaticMeshFactory::remove(kv.second);
 		}
 		m_shapes = {};
 
-		da::factory::CMaterialFactory::remove(m_shader);
+		da::CMaterialFactory::remove(m_shader);
 
 		BGFXTRYDESTROY(m_frameBuffer);
 		BGFXTRYDESTROY(m_uniform);
@@ -183,7 +183,7 @@ namespace da::platform
 		line->addTransientLine(startPosition, endPosition, color, width);
 	}
 
-	void CBgfxDebugRenderer::drawMesh(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, da::graphics::CStaticMesh* mesh, const glm::vec4& color, bool wireFrame /*= true*/, bool xray /*= true*/)
+	void CBgfxDebugRenderer::drawMesh(const glm::vec3& position, const glm::quat& rot, const glm::vec3& scale, da::CStaticMesh* mesh, const glm::vec4& color, bool wireFrame /*= true*/, bool xray /*= true*/)
 	{
 		m_toDraw.push_back({ [position, rot, scale, color, mesh, this, wireFrame] {
 			glm::mat4 transform = glm::translate(glm::mat4(1), position) * glm::toMat4(rot) * glm::scale(glm::mat4(1), scale);

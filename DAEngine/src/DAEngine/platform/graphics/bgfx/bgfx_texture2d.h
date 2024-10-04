@@ -5,19 +5,19 @@
 #include "graphics/graphics_texture2d.h"
 #include "core/asset/asset.h"
 
-namespace da::factory
+namespace da
 {
 	class CTexture2DFactory;
 }
 
-namespace da::platform::bgfx {
-	class CBgfxTexture2D : public da::graphics::CGraphicsTexture2D {
+namespace da {
+	class CBgfxTexture2D : public da::CGraphicsTexture2D {
 	public:
 		inline const uint16_t getHandle() const { return m_handle; }
 		inline virtual void* getTextureNative() const { return (void*)&m_handle; }
 		void destroy();
 
-		friend class da::core::CFactory<CGraphicsTexture2D>;
+		friend class da::CFactory<CGraphicsTexture2D>;
 
 	protected:
 		CBgfxTexture2D();
@@ -32,7 +32,7 @@ namespace da::platform::bgfx {
 		uint16_t m_handle = UINT16_MAX;
 		std::mutex* m_mutex;
 
-		friend class da::factory::CTexture2DFactory;
+		friend class da::CTexture2DFactory;
 
 	};
 }

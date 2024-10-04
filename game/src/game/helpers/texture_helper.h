@@ -4,7 +4,7 @@
 class CTextureHelper
 {
 public:
-	static da::graphics::CGraphicsTexture2D* create(Texture texture);
+	static da::CGraphicsTexture2D* create(Texture texture);
 
 
 };

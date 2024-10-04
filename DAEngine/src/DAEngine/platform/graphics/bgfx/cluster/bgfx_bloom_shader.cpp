@@ -10,7 +10,7 @@
 #include <imgui.h>
 #endif
 
-namespace da::platform
+namespace da
 {
 
 	void CBgfxBloomShader::initialize(size_t width, size_t height)
@@ -18,9 +18,9 @@ namespace da::platform
 		m_width = width;
 		m_height = height;
 
-		m_pBloomShader = da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom.sc");
-		m_pDownscaleShader= da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_downsample.sc");
-		m_pUpscaleShader = da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_upsample.sc");
+		m_pBloomShader = da::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom.sc");
+		m_pDownscaleShader= da::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_downsample.sc");
+		m_pUpscaleShader = da::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_bloom_upsample.sc");
 
 		// triangle used for blitting
 		constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
@@ -37,16 +37,16 @@ namespace da::platform
 		m_frameBuffer = createFrameBuffer(true);
 
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Bloom"), &m_debug, [this] { onDebugRender(); });
+		da::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("Bloom"), &m_debug, [this] { onDebugRender(); });
 #endif
 	}
 
 	void CBgfxBloomShader::shutdown()
 	{
 
-		da::factory::CMaterialFactory::remove(m_pBloomShader);
-		da::factory::CMaterialFactory::remove(m_pDownscaleShader);
-		da::factory::CMaterialFactory::remove(m_pUpscaleShader);
+		da::CMaterialFactory::remove(m_pBloomShader);
+		da::CMaterialFactory::remove(m_pDownscaleShader);
+		da::CMaterialFactory::remove(m_pUpscaleShader);
 
 		BGFXTRYDESTROY(m_frameBuffer);
 		BGFXTRYDESTROY(m_blitTriangleBuffer);
@@ -60,7 +60,7 @@ namespace da::platform
 		
 
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Bloom"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("Bloom"));
 #endif
 
 	}
@@ -72,7 +72,7 @@ namespace da::platform
 		::bgfx::setViewRect(view, 0, 0, width, height);
 		::bgfx::setViewFrameBuffer(view, m_frameBuffer);
 		::bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_CULL_CW);
-		::bgfx::setTexture(da::platform::CBgfxSamplers::DEFERRED_DEPTH, m_textureUniform, texture);
+		::bgfx::setTexture(da::CBgfxSamplers::DEFERRED_DEPTH, m_textureUniform, texture);
 		::bgfx::setUniform(m_bloomParamsUniform, glm::value_ptr(m_bloomParams));
 		::bgfx::setVertexBuffer(0, m_blitTriangleBuffer);
 		::bgfx::submit(view, { m_pBloomShader->getHandle() });
@@ -109,7 +109,7 @@ namespace da::platform
 			}
 			
 			
-			::bgfx::setTexture(da::platform::CBgfxSamplers::DEFERRED_DEPTH, m_textureUniform, texture);
+			::bgfx::setTexture(da::CBgfxSamplers::DEFERRED_DEPTH, m_textureUniform, texture);
 			::bgfx::setVertexBuffer(0, m_blitTriangleBuffer);
 			::bgfx::submit(view + i, { m_pDownscaleShader->getHandle() });
 		}
@@ -146,7 +146,7 @@ namespace da::platform
 				texture = ::bgfx::getTexture(m_processedFrameBuffers[i], 0);
 			}
 
-			::bgfx::setTexture(da::platform::CBgfxSamplers::DEFERRED_DEPTH, m_textureUniform, texture);
+			::bgfx::setTexture(da::CBgfxSamplers::DEFERRED_DEPTH, m_textureUniform, texture);
 			::bgfx::setVertexBuffer(0, m_blitTriangleBuffer);
 			::bgfx::submit(mView, { m_pUpscaleShader->getHandle() });
 		}

@@ -6,7 +6,7 @@
 
 #include <Imgui.h>
 
-namespace da::core {
+namespace da {
 #ifdef DA_REVIEW
 	COMPONENT_CPP_NO_UPDATE_DEBUG(CSkeletalMeshComponent);
 #else
@@ -15,36 +15,36 @@ namespace da::core {
 
 	CSkeletalMeshComponent::CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(false)
 	{
-		m_skeletalmesh = da::factory::CSkeletalMeshFactory::create(meshPath, false);
-		m_animation = new da::graphics::CSkeletalAnimation(animPath, m_skeletalmesh);
-		m_animator = new da::graphics::CSkeletalAnimator(m_animation);
+		m_skeletalmesh = da::CSkeletalMeshFactory::create(meshPath, false);
+		m_animation = new da::CSkeletalAnimation(animPath, m_skeletalmesh);
+		m_animator = new da::CSkeletalAnimator(m_animation);
 	}
 
 	CSkeletalMeshComponent::CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, bool inverseNormals, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(inverseNormals)
 	{
-		m_skeletalmesh = da::factory::CSkeletalMeshFactory::create(meshPath, inverseNormals);
-		m_animation = new da::graphics::CSkeletalAnimation(animPath, m_skeletalmesh);
-		m_animator = new da::graphics::CSkeletalAnimator(m_animation);
+		m_skeletalmesh = da::CSkeletalMeshFactory::create(meshPath, inverseNormals);
+		m_animation = new da::CSkeletalAnimation(animPath, m_skeletalmesh);
+		m_animator = new da::CSkeletalAnimator(m_animation);
 	}
 
-	CSkeletalMeshComponent::CSkeletalMeshComponent(da::graphics::CSkeletalMesh* mesh, da::graphics::CSkeletalAnimation* anim, da::graphics::CSkeletalAnimator* animator, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
+	CSkeletalMeshComponent::CSkeletalMeshComponent(da::CSkeletalMesh* mesh, da::CSkeletalAnimation* anim, da::CSkeletalAnimator* animator, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
 	{
 		m_skeletalmesh = mesh;
 		m_animation = anim;
 		m_animator = animator;
 	}
 
-	CSkeletalMeshComponent::CSkeletalMeshComponent(da::graphics::CSkeletalAnimGraph* graph, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
+	CSkeletalMeshComponent::CSkeletalMeshComponent(da::CSkeletalAnimGraph* graph, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent)
 	{
 		m_animGraph = graph;
-		m_animator = const_cast<da::graphics::CSkeletalAnimator*>(graph->getAnim());
+		m_animator = const_cast<da::CSkeletalAnimator*>(graph->getAnim());
 		m_skeletalmesh = graph->getMesh();
 	}
 
 	void CSkeletalMeshComponent::onInitialize()
 	{
 		m_animator->playAnimation(m_animation);
-		m_parent.getTransform().addOnTransform(BIND_EVENT_FN_2(da::core::CSkeletalMeshComponent, onTransform));
+		m_parent.getTransform().addOnTransform(BIND_EVENT_FN_2(da::CSkeletalMeshComponent, onTransform));
 	}
 
 
@@ -66,27 +66,27 @@ namespace da::core {
 
 	void CSkeletalMeshComponent::onShutdown()
 	{
-		if (m_skeletalmesh) da::factory::CSkeletalMeshFactory::remove(m_skeletalmesh);
+		if (m_skeletalmesh) da::CSkeletalMeshFactory::remove(m_skeletalmesh);
 		if (m_animation) delete m_animation;
 		if (m_animator) delete m_animator;
 
 		if (m_animGraph) delete m_animGraph;
 
-		m_parent.getTransform().removeOnTransform(BIND_EVENT_FN_2(da::core::CSkeletalMeshComponent, onTransform));
+		m_parent.getTransform().removeOnTransform(BIND_EVENT_FN_2(da::CSkeletalMeshComponent, onTransform));
 	}
 
-	da::graphics::CSkeletalMesh* CSkeletalMeshComponent::getSkeletalMesh() const
+	da::CSkeletalMesh* CSkeletalMeshComponent::getSkeletalMesh() const
 	{
 		if (m_animGraph) return m_animGraph->getMesh();
 		return m_skeletalmesh;
 	}
 
-	da::graphics::CSkeletalAnimator* CSkeletalMeshComponent::getSkeletalAnimator() const
+	da::CSkeletalAnimator* CSkeletalMeshComponent::getSkeletalAnimator() const
 	{
 		return m_animator;
 	}
 
-	da::graphics::CSkeletalAnimation* CSkeletalMeshComponent::getSkeletalAnimation() const
+	da::CSkeletalAnimation* CSkeletalMeshComponent::getSkeletalAnimation() const
 	{
 		return m_animation;
 	}
@@ -219,17 +219,17 @@ namespace da::core {
 
 			if (ImGui::Button("Reload Mesh")) {
 
-				da::graphics::CSkeletalMesh* oldMesh = m_skeletalmesh;
+				da::CSkeletalMesh* oldMesh = m_skeletalmesh;
 				std::string path = oldMesh->getPath();
 
-				m_skeletalmesh = da::factory::CSkeletalMeshFactory::create(path, m_inverseNormals);
+				m_skeletalmesh = da::CSkeletalMeshFactory::create(path, m_inverseNormals);
 
 				for (size_t i = 0; i < m_skeletalmesh->getMaterialCount() && i < oldMesh->getMaterials().size(); i++) {
 					m_skeletalmesh->getMaterial(i) = oldMesh->getMaterial(i);
 					oldMesh->getMaterial(i) = {};
 				}
 
-				da::factory::CSkeletalMeshFactory::remove(oldMesh);
+				da::CSkeletalMeshFactory::remove(oldMesh);
 			}
 			ImGui::Unindent();
 		}

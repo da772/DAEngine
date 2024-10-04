@@ -3,7 +3,7 @@
 #include "core.h"
 #include "stl/hashstring.h"
 
-namespace da::core
+namespace da
 {
 	class CInputContext
 	{

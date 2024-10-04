@@ -3,9 +3,9 @@
 #include "dastd.h"
 #include "core/events/event_handler.h"
 
-namespace da::core {
+namespace da {
 	
-	using namespace da::core::events;
+	using namespace da;
 	using u16 = uint16_t;
 	using u32 = uint32_t;
 

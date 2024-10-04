@@ -18,7 +18,7 @@
 #include "bgfx_util.h"
 #include "graphics/factory/factory_graphics_material.h"
 
-namespace da::platform::bgfx {
+namespace da {
 
 	::bgfx::VertexLayout CBgfxRenderer::PosVertex::layout;
 
@@ -43,7 +43,7 @@ namespace da::platform::bgfx {
 		const PosVertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
 		m_blitTriangleBuffer = ::bgfx::createVertexBuffer(::bgfx::copy(&vertices, sizeof(vertices)), PosVertex::layout);
 
-		m_blitProgram = da::factory::CMaterialFactory::create("shaders/Cluster/vs_tonemap.sc", "shaders/Cluster/fs_tonemap.sc");
+		m_blitProgram = da::CMaterialFactory::create("shaders/Cluster/vs_tonemap.sc", "shaders/Cluster/fs_tonemap.sc");
 
 		m_pbr.initialize();
 		m_pbr.generateAlbedoLUT();
@@ -56,7 +56,7 @@ namespace da::platform::bgfx {
 	void CBgfxRenderer::update(float dt)
 	{
 
-		glm::vec4 camPos = glm::vec4(da::core::CCamera::getCamera()->position(), 1.0f);
+		glm::vec4 camPos = glm::vec4(da::CCamera::getCamera()->position(), 1.0f);
 		::bgfx::setUniform(m_camPosUniform, glm::value_ptr(camPos));
 
 		glm::vec3 linear = m_pbr.m_whiteFurnaceEnabled
@@ -82,7 +82,7 @@ namespace da::platform::bgfx {
 	{
 		onShutdown();
 
-		da::factory::CMaterialFactory::remove(m_blitProgram);
+		da::CMaterialFactory::remove(m_blitProgram);
 		m_pbr.shutdown();
 
 		BGFXDESTROY(m_blitSampler);
@@ -102,7 +102,7 @@ namespace da::platform::bgfx {
 
 	void CBgfxRenderer::setViewProjection(::bgfx::ViewId view)
 	{
-		da::core::CCamera& cam = *da::core::CCamera::getCamera();
+		da::CCamera& cam = *da::CCamera::getCamera();
 
 		// view matrix
 		m_viewMat = cam.matrix();
@@ -136,7 +136,7 @@ namespace da::platform::bgfx {
 
 	void CBgfxRenderer::blitToScreen(::bgfx::ViewId view /*= MAX_VIEW*/)
 	{
-		da::core::CCamera& camera = *da::core::CCamera::getCamera();
+		da::CCamera& camera = *da::CCamera::getCamera();
 
 		::bgfx::setViewName(view, "Tonemapping");
 		::bgfx::setViewClear(view, BGFX_CLEAR_NONE);

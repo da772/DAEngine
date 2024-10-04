@@ -5,12 +5,12 @@
 #include "platform/graphics/vulkan/vulkan_graphics_material.h"
 #ifdef DA_GRAPHICS_VULKAN
 
-namespace da::platform
+namespace da
 {
 	class CVulkanGraphicsMaterialPBR : public CVulkanGraphicsMaterial
 	{
 	public:
-		CVulkanGraphicsMaterialPBR(da::graphics::CGraphicsPipeline& pipeline
+		CVulkanGraphicsMaterialPBR(da::CGraphicsPipeline& pipeline
 			, const std::string& albedo
 			, const std::string& normal
 			, const std::string& roughness

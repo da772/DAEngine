@@ -3,16 +3,16 @@
 
 #include "physics_bullet3_motion_state.h"
 
-namespace da::physics
+namespace da
 {
-	da::physics::CPhysicsDefaultMotionState* CPhysicsDefaultMotionState::create(const glm::mat4& transform)
+	da::CPhysicsDefaultMotionState* CPhysicsDefaultMotionState::create(const glm::mat4& transform)
 	{
-		return new da::physics::CBullet3DefaultMotionState(transform);
+		return new da::CBullet3DefaultMotionState(transform);
 	}
 
-	da::physics::CPhysicsEntityMotionState* CPhysicsEntityMotionState::create(da::core::CEntity* entity)
+	da::CPhysicsEntityMotionState* CPhysicsEntityMotionState::create(da::CEntity* entity)
 	{
-		return new da::physics::CBullet3EntityMotionState(entity);
+		return new da::CBullet3EntityMotionState(entity);
 	}
 
 }

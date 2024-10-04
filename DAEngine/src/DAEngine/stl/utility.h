@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace da::utility {
+namespace da {
 
 	std::string CurrentDateTime();
 

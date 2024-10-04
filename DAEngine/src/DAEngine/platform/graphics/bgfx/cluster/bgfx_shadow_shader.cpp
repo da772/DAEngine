@@ -9,13 +9,13 @@
 #include <glm/ext/matrix_relational.hpp>
 #include "graphics/factory/factory_graphics_material.h"
 
-namespace da::platform {
+namespace da {
 
 	void CBgfxShadowShader::initialize()
 	{
 		if (!useShadowSampler()) {
-			m_material = da::factory::CMaterialFactory::create("shaders/cluster/vs_shadow.sc", "shaders/cluster/fs_shadow.sc");
-			m_skmaterial = da::factory::CMaterialFactory::create("shaders/cluster/vs_sk_shadow.sc", "shaders/cluster/fs_shadow.sc");
+			m_material = da::CMaterialFactory::create("shaders/cluster/vs_shadow.sc", "shaders/cluster/fs_shadow.sc");
+			m_skmaterial = da::CMaterialFactory::create("shaders/cluster/vs_sk_shadow.sc", "shaders/cluster/fs_shadow.sc");
 		
 			m_depthScaleOffset = bgfx::createUniform("u_depthScaleOffset", bgfx::UniformType::Vec4);
 
@@ -31,8 +31,8 @@ namespace da::platform {
 			return;
 		}
 
-		m_material =   da::factory::CMaterialFactory::create("shaders/cluster/vs_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
-		m_skmaterial = da::factory::CMaterialFactory::create("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
+		m_material =   da::CMaterialFactory::create("shaders/cluster/vs_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
+		m_skmaterial = da::CMaterialFactory::create("shaders/cluster/vs_sk_shadow_sampler.sc", "shaders/cluster/fs_shadow_sampler.sc");
 
 		m_cascadeLevels = bgfx::createUniform("u_cascadePlaneDistances", bgfx::UniformType::Vec4, SHADOW_MAP_SIZE);
 
@@ -45,8 +45,8 @@ namespace da::platform {
 	void CBgfxShadowShader::shutdown()
 	{
 
-		da::factory::CMaterialFactory::remove(m_material);
-		da::factory::CMaterialFactory::remove(m_skmaterial);
+		da::CMaterialFactory::remove(m_material);
+		da::CMaterialFactory::remove(m_skmaterial);
 
 		BGFXDESTROY(m_cascadeLevels);
 
@@ -63,12 +63,12 @@ namespace da::platform {
 		}
 	}
 
-	da::graphics::CMaterial* CBgfxShadowShader::getMaterial() const
+	da::CMaterial* CBgfxShadowShader::getMaterial() const
 	{
 		return m_material;
 	}
 
-	da::core::CCamera& CBgfxShadowShader::getCamera()
+	da::CCamera& CBgfxShadowShader::getCamera()
 	{
 		return m_camera;
 	}
@@ -160,7 +160,7 @@ namespace da::platform {
 	std::pair<glm::mat4, glm::mat4> CBgfxShadowShader::getLightSpaceProjMatrix(const float nearPlane, const float farPlane, int i, glm::mat4 lightView1)
 	{	
 		// view matrix
-		da::core::CCamera* cam = da::core::CCamera::getCamera();
+		da::CCamera* cam = da::CCamera::getCamera();
 
 		glm::mat4 camView;
 
@@ -174,7 +174,7 @@ namespace da::platform {
 		glm::mat4 proj;
 
 		bx::mtxProj(glm::value_ptr(proj),
-			da::core::CCamera::getCamera()->fov,
+			da::CCamera::getCamera()->fov,
 			1280.f / 720.f,
 			nearPlane,
 			farPlane,
@@ -235,7 +235,7 @@ namespace da::platform {
 		return { lightProj, lightView };
 	}
 
-	da::graphics::CMaterial* CBgfxShadowShader::getSKMaterial() const
+	da::CMaterial* CBgfxShadowShader::getSKMaterial() const
 	{
 		return m_skmaterial;
 	}

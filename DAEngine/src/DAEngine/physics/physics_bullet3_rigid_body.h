@@ -4,7 +4,7 @@
 
 class btRigidBody;
 
-namespace da::physics
+namespace da
 {
 	class CBullet3RigidBody : public IPhysicsRigidBody
 	{

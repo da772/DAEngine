@@ -3,7 +3,7 @@
 #include "physics_shape.h"
 #include "dastd.h"
 
-namespace da::physics
+namespace da
 {
 	class ICollisionObject;
 

@@ -5,7 +5,7 @@
 #include "stl/maths/transform.h"
 #include "graphics/graphics_api.h"
 
-namespace da::graphics
+namespace da
 {
 
 	CGui::CGui(const CGraphicsApi& graphics) : m_graphics(graphics)

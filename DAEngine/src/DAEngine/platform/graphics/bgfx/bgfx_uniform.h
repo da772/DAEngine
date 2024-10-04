@@ -8,7 +8,7 @@
 
 #include <bgfx/bgfx.h>
 
-namespace da::platform::bgfx {
+namespace da {
 
 
 	template<typename T>

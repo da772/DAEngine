@@ -6,15 +6,15 @@
 class CVehicleManager
 {
 public:
-	static void addVehicleType(CHashString id, const da::physics::FVehicleData& data);
+	static void addVehicleType(CHashString id, const da::FVehicleData& data);
 	static void removeVehicleType(CHashString id, bool cleanup = false);
-	static const da::physics::FVehicleData& getVehicleData(CHashString id);
+	static const da::FVehicleData& getVehicleData(CHashString id);
 
-	static const std::unordered_map<CHashString, da::physics::FVehicleData>& getVehicleTypes();
+	static const std::unordered_map<CHashString, da::FVehicleData>& getVehicleTypes();
 
 private:
 	static CVehicleManager ms_manager;
 
 private:
-	std::unordered_map<CHashString, da::physics::FVehicleData> m_vehicles;
+	std::unordered_map<CHashString, da::FVehicleData> m_vehicles;
 };

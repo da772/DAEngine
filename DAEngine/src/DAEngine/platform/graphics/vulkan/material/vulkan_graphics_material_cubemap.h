@@ -3,12 +3,12 @@
 #ifdef DA_GRAPHICS_VULKAN
 #include "platform/graphics/vulkan/vulkan_graphics_texturecube.h"
 
-namespace da::platform
+namespace da
 {
 	class CVulkanGraphicsMaterialCubeMap: public CVulkanGraphicsMaterial
 	{
 	public:
-		CVulkanGraphicsMaterialCubeMap(da::graphics::CGraphicsPipeline& pipeline
+		CVulkanGraphicsMaterialCubeMap(da::CGraphicsPipeline& pipeline
 			, const std::string& texture);
 
 		virtual void initialize() override;

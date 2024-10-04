@@ -6,7 +6,7 @@
 #include <glm/gtx/euler_angles.hpp> >
 #include <glm/gtx/matrix_decompose.hpp>
 
-namespace da::maths
+namespace da
 {
 	CTransform::CTransform()
 	{

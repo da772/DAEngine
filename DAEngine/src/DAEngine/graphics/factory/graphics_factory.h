@@ -3,14 +3,14 @@
 #include "graphics/graphics_api.h"
 #include "graphics/window/window.h"
 
-using namespace da::graphics;
+using namespace da;
 
-namespace da::factory
+namespace da
 {
 	class CGraphicsFactory
 	{
 	public:
-		static CGraphicsApi* Create(da::core::CWindow* window);
+		static CGraphicsApi* Create(da::CWindow* window);
 
 	};
 }

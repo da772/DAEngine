@@ -3,7 +3,7 @@
 #include <core/ecs/component.h>
 #include <physics/physics_collision.h>
 
-namespace da::core
+namespace da
 {
 	class CCollisionComponent
 	{
@@ -13,10 +13,10 @@ namespace da::core
 		COMPONENT_H(CCollisionComponent)
 #endif
 	public:
-		CCollisionComponent(const da::physics::IPhysicsShape& shape, const glm::mat4& offset, const CGuid& id, da::core::CEntity& parent);
+		CCollisionComponent(const da::IPhysicsShape& shape, const glm::mat4& offset, const CGuid& id, da::CEntity& parent);
 		virtual ~CCollisionComponent();
 		void enable(bool enable = true);
-		void setCallback(const std::function<void(const da::physics::FCollisionEventData& data)>& func);
+		void setCallback(const std::function<void(const da::FCollisionEventData& data)>& func);
 
 	protected:
 		void onInitialize();
@@ -29,15 +29,15 @@ namespace da::core
 #endif
 
 	private:
-		void onOverlap(const da::physics::FCollisionEventData& data);
+		void onOverlap(const da::FCollisionEventData& data);
 
 
 	private:
-		da::physics::ICollisionObject* m_collision;
-		const da::physics::IPhysicsShape* m_shape;
+		da::ICollisionObject* m_collision;
+		const da::IPhysicsShape* m_shape;
 		glm::mat4 m_transform;
 		bool m_enabled = true;
-		std::function<void(const da::physics::FCollisionEventData& data)> m_func;
+		std::function<void(const da::FCollisionEventData& data)> m_func;
 
 	};
 }

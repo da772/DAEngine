@@ -2,7 +2,7 @@
 #include "core.h"
 #include "core/logger.h"
 
-namespace da::core {
+namespace da {
 
 	class CEntity;
 
@@ -26,6 +26,7 @@ namespace da::core {
 			LOG_ASSERT(((T*)ptr)->getId().isValid(), ELogChannel::Core, "Creating component with invalid id");
 #endif
 			CHashString hash((const char*)((T*)ptr)->getId().data(), sizeof(uint128_t));
+			ASSERT(m_componentCache.find(hash) == m_componentCache.end());
 			m_componentCache[hash] = (uint32_t)m_count;
 			m_count++;
 			return (T*)ptr;

@@ -3,7 +3,7 @@
 #include "physics_shape.h"
 #include "physics_motion_state.h"
 
-namespace da::physics
+namespace da
 {
 	enum class EPhysicsActivationState : uint8_t
 	{

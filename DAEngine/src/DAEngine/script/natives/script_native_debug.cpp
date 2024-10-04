@@ -66,7 +66,7 @@ extern "C" static int lua_register_debug_menu(lua_State * L)
 	
 	bool* b = new bool;
 	*b = false;
-	da::debug::CDebugMenuBar::register_debug(groupHash, id, b, [&, L,funcRef,objRef] {
+	da::CDebugMenuBar::register_debug(groupHash, id, b, [&, L,funcRef,objRef] {
 		lua_rawgeti(L, LUA_REGISTRYINDEX, funcRef);
 		lua_rawgeti(L, LUA_REGISTRYINDEX, objRef);
 		lua_pcall(L, 1, 0, 0);
@@ -98,7 +98,7 @@ extern "C" static int lua_unregister_debug_menu(lua_State * L)
 		return 0;
 	}
 
-	da::debug::CDebugMenuBar::unregister_debug(groupHash, idHash);
+	da::CDebugMenuBar::unregister_debug(groupHash, idHash);
 	s_debugMenu.erase(it);
 
 	return 0;
@@ -115,7 +115,7 @@ extern "C" static int lua_unregister_debug_menu(lua_State * L)
 	return 0;
 }
 #endif
-namespace da::script::debug
+namespace da::debug
 {
 	void registerNatives(lua_State* L)
 	{

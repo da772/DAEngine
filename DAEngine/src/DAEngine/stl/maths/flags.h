@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace da::maths
+namespace da
 {
 	class CFlag
 	{

@@ -11,12 +11,12 @@
 #include <imgui.h>
 #endif
 
-namespace da::platform
+namespace da
 {
 	void CBgfxSSAOShader::initialize()
 	{
-		m_pSsaoProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_ssao.sc");
-		m_pSsaoBlurProgram = da::factory::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_blur.sc");
+		m_pSsaoProgram = da::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_ssao.sc");
+		m_pSsaoBlurProgram = da::CMaterialFactory::create("shaders/cluster/vs_ssao.sc", "shaders/cluster/fs_blur.sc");
 
 		// triangle used for blitting
 		constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
@@ -30,7 +30,7 @@ namespace da::platform
 		m_ssaoUniformHandle = bgfx::createUniform("s_ssao", bgfx::UniformType::Sampler);
 
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("SSAO"), &m_debug, [this] { renderDebug(); });
+		da::CDebugMenuBar::register_debug(HASHSTR("Renderer"), HASHSTR("SSAO"), &m_debug, [this] { renderDebug(); });
 #endif
 	}
 
@@ -43,7 +43,7 @@ namespace da::platform
 		::bgfx::setViewFrameBuffer(view, m_ssaoBuffer);
 		::bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_CULL_CW);
 		::bgfx::TextureHandle frameBufferTexture = ::bgfx::getTexture(depthBuffer, 0);
-		::bgfx::setTexture(da::platform::CBgfxSamplers::DEFERRED_DEPTH, m_uniformHandle, frameBufferTexture);
+		::bgfx::setTexture(da::CBgfxSamplers::DEFERRED_DEPTH, m_uniformHandle, frameBufferTexture);
 		::bgfx::setVertexBuffer(0, m_blitTriangleBuffer);
 		::bgfx::setUniform(m_uniformParamHandle, glm::value_ptr(m_param1));
 		::bgfx::submit(view, { m_pSsaoProgram->getHandle() });
@@ -57,7 +57,7 @@ namespace da::platform
 		::bgfx::setViewFrameBuffer(view, m_ssaoProcessedBuffer);
 		::bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_CULL_CW);
 		::bgfx::TextureHandle frameBufferTexture = ::bgfx::getTexture(m_ssaoBuffer, 0);
-		::bgfx::setTexture(da::platform::CBgfxSamplers::DEFERRED_DEPTH, m_uniformHandle, frameBufferTexture);
+		::bgfx::setTexture(da::CBgfxSamplers::DEFERRED_DEPTH, m_uniformHandle, frameBufferTexture);
 		::bgfx::setVertexBuffer(0, m_blitTriangleBuffer);
 		::bgfx::setUniform(m_uniformParamHandle, glm::value_ptr(m_param1));
 		::bgfx::submit(view, { m_pSsaoBlurProgram->getHandle() });
@@ -65,8 +65,8 @@ namespace da::platform
 
 	void CBgfxSSAOShader::shutdown()
 	{
-		da::factory::CMaterialFactory::remove(m_pSsaoProgram);
-		da::factory::CMaterialFactory::remove(m_pSsaoBlurProgram);
+		da::CMaterialFactory::remove(m_pSsaoProgram);
+		da::CMaterialFactory::remove(m_pSsaoBlurProgram);
 
 		BGFXTRYDESTROY(m_ssaoBuffer);
 		BGFXTRYDESTROY(m_ssaoProcessedBuffer);
@@ -75,7 +75,7 @@ namespace da::platform
 		BGFXTRYDESTROY(m_uniformParamHandle);
 		BGFXTRYDESTROY(m_ssaoUniformHandle);
 #ifdef DA_REVIEW
-		da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("SSAO"));
+		da::CDebugMenuBar::unregister_debug(HASHSTR("Renderer"), HASHSTR("SSAO"));
 #endif
 	}
 

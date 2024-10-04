@@ -6,7 +6,7 @@ class CHealthComponent
 {
 	COMPONENT_H_NO_UPDATE(CHealthComponent);
 public:
-	CHealthComponent(const da::core::CGuid& id, da::core::CEntity& parent);
+	CHealthComponent(const da::CGuid& id, da::CEntity& parent);
 	void damage(float amt);
 	void setHealth(float amt);
 	bool isDead() const;

@@ -1,12 +1,12 @@
 #pragma once
 #include "daglm.h"
 
-namespace da::core
+namespace da
 {
 	class CCamera;
 }
 
-namespace da::graphics
+namespace da
 {
 	class CGraphicsApi;
 	

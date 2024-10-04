@@ -5,7 +5,7 @@
 #include <bullet3/btBulletDynamicsCommon.h>
 
 
-namespace da::physics
+namespace da
 {
 
 	CBullet3Vehicle::CBullet3Vehicle(const FVehicleData& tuning, IPhysicsRigidBody* rigidBody) : IVehicle(tuning, rigidBody)

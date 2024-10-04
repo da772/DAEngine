@@ -15,9 +15,9 @@
 #include "assimp_conversion_helpers.h"
 
 
-namespace da::graphics
+namespace da
 {
-	using namespace da::factory;
+	using namespace da;
 
 	CStaticMesh::CStaticMesh(const std::string& path, bool process) : m_path(path)
 	{
@@ -164,7 +164,7 @@ namespace da::graphics
 
 			aiMaterial* material = pScene->mMaterials[i];
 
-			da::graphics::FMaterialData out;
+			da::FMaterialData out;
 
 			// technically there is a difference between MASK and BLEND mode
 			// but for our purposes it's enough if we sort properly
@@ -213,7 +213,7 @@ namespace da::graphics
 			// metallic/roughness
 			if (CAsset::exists(fileMetallicRoughness.C_Str()))
 			{
-				out.setMetallicRoughnessTexture(da::graphics::CTexture2DFactory::Create(fileMetallicRoughness.C_Str()));
+				out.setMetallicRoughnessTexture(da::CTexture2DFactory::Create(fileMetallicRoughness.C_Str()));
 			}
 			else if (fileMetallicRoughness.length > 0)
 			{
@@ -238,7 +238,7 @@ namespace da::graphics
 
 			if (CAsset::exists(fileNormals.C_Str()))
 			{
-				out.setNormalTexture(da::graphics::CTexture2DFactory::Create(fileNormals.C_Str()));
+				out.setNormalTexture(da::CTexture2DFactory::Create(fileNormals.C_Str()));
 			}
 			else if (fileNormals.length > 0) {
 				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileNormals.C_Str()))
@@ -265,7 +265,7 @@ namespace da::graphics
 			}
 			else if (CAsset::exists(fileOcclusion.C_Str()))
 			{
-				out.setOcclusionTexture(da::graphics::CTexture2DFactory::Create(fileOcclusion.C_Str()));
+				out.setOcclusionTexture(da::CTexture2DFactory::Create(fileOcclusion.C_Str()));
 			}
 			else if (fileOcclusion.length > 0) {
 				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileOcclusion.C_Str()))
@@ -286,7 +286,7 @@ namespace da::graphics
 
 			if (CAsset::exists(fileEmissive.C_Str()))
 			{
-				out.setEmissiveTexture(da::graphics::CTexture2DFactory::Create(fileEmissive.C_Str()));
+				out.setEmissiveTexture(da::CTexture2DFactory::Create(fileEmissive.C_Str()));
 			}
 			else if (fileEmissive.length > 0) {
 				if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileEmissive.C_Str()))
@@ -316,7 +316,7 @@ namespace da::graphics
 	
 	}
 
-	da::graphics::FMaterialData& CStaticMesh::getMaterial(size_t index)
+	da::FMaterialData& CStaticMesh::getMaterial(size_t index)
 	{
 		return m_materials[index];
 		ASSERT(index < m_materials.size());
