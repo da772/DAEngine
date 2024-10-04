@@ -112,13 +112,13 @@ project "game"
 		}
 
 		filter "configurations:Debug"
-			defines {"DA_DEBUG", "DA_REVIEW"}
+			defines {"DA_DEBUG", "DA_REVIEW", "DA_PROFILE"}
 			runtime "Debug"
 			symbols "On"
 			kind "ConsoleApp"
 			
 		filter "configurations:Release"
-			defines {"DA_RELEASE", "DA_REVIEW"}
+			defines {"DA_RELEASE", "DA_REVIEW", "DA_PROFILE"}
 			runtime "Release"
 			optimize "On"
 			symbols "On"

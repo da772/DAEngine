@@ -13,6 +13,7 @@
 
 void CGame::onInitialize()
 {
+	PROFILE()
 	createModules();
 	CGameScriptNative::registerNatives();
 	CComponents::registerComponents();
@@ -33,11 +34,13 @@ void CGame::onInitialize()
 
 void CGame::onUpdate(float dt)
 {
+	PROFILE()
 	m_levelSelector->update(dt);
 }
 
 void CGame::onLateUpdate(float dt)
 {
+	PROFILE()
 	m_levelSelector->lateUpdate(dt);
 }
 
@@ -69,6 +72,7 @@ void CGame::windowEvent(const da::core::events::CEvent& e)
 
 void CGame::onShutdown()
 {
+	PROFILE()
 #ifdef DA_REVIEW
 	da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Script"), HASHSTR("Reload Scripts"));
 	da::debug::CDebugMenuBar::unregister_debug(HASHSTR("Script"), HASHSTR("Reload Scripts (Hard)"));
