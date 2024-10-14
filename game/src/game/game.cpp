@@ -14,7 +14,6 @@
 
 void CGame::onInitialize()
 {
-	PROFILE_START_CAPTURE()
 	PROFILE()
 	CFileMapGenerator::initialize();
 	createModules();
@@ -33,7 +32,7 @@ void CGame::onInitialize()
 #ifndef DA_REVIEW
 	m_levelSelector->startLevel(2);
 #endif
-	PROFILE_END_CAPTURE();
+
 }
 
 void CGame::onUpdate(float dt)

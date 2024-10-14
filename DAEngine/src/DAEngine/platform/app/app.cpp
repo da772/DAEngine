@@ -26,11 +26,13 @@ namespace da
 {
 
 	CApp::CApp(int argc, const char** argv) : m_running(true), m_modules() {
+		PROFILE_START_CAPTURE()
 		initalizeInternal(argc, argv);
 	}
 
 	CApp::~CApp() {
 		shutdownInternal();
+		PROFILE_END_CAPTURE()
 	}
 
 	void CApp::initialize()
