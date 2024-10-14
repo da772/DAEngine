@@ -10,10 +10,13 @@
 #include "levels/testbed02_level.h"
 #include "levels/testbed03_level.h"
 #include "script/game_script_native.h"
+#include "generated/file_map_generator.h"
 
 void CGame::onInitialize()
 {
+	PROFILE_START_CAPTURE()
 	PROFILE()
+	CFileMapGenerator::initialize();
 	createModules();
 	CGameScriptNative::registerNatives();
 	CGameComponents::registerComponents();
@@ -30,6 +33,7 @@ void CGame::onInitialize()
 #ifndef DA_REVIEW
 	m_levelSelector->startLevel(2);
 #endif
+	PROFILE_END_CAPTURE();
 }
 
 void CGame::onUpdate(float dt)

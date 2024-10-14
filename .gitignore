@@ -53,3 +53,4 @@ game/shaders/timestamp.txt
 *.hlsl
 game/assets/timestamp.txt
 /.VSCodeCounter
+*.opt

@@ -1,12 +1,10 @@
 local ____lualib = require("lualib_bundle")
 local __TS__SourceMapTraceBack = ____lualib.__TS__SourceMapTraceBack
-__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["5"] = 1,["6"] = 1,["7"] = 4,["8"] = 4,["9"] = 6,["11"] = 10,["13"] = 10,["14"] = 13,["15"] = 14,["16"] = 15,["17"] = 16,["19"] = 12,["20"] = 10,["21"] = 21,["22"] = 22,["23"] = 23,["25"] = 20});
+__TS__SourceMapTraceBack(debug.getinfo(1).short_src, {["5"] = 1,["6"] = 1,["7"] = 6,["9"] = 10,["11"] = 10,["12"] = 13,["13"] = 14,["14"] = 15,["15"] = 16,["17"] = 12,["18"] = 10,["19"] = 21,["20"] = 22,["21"] = 23,["23"] = 20});
 local ____exports = {}
 local ____vehicle_data = require("game.vehicle_data")
 local VehicleManager = ____vehicle_data.VehicleManager
-local ____vehicle_test_01 = require("vehicles.types.vehicle_test_01")
-local test_vehicle_01 = ____vehicle_test_01.test_vehicle_01
-local vehicle_types = {test_vehicle_01 = test_vehicle_01}
+local vehicle_types = {}
 ____exports.VehicleRegistrant = {}
 local VehicleRegistrant = ____exports.VehicleRegistrant
 do

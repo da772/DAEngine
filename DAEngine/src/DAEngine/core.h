@@ -24,6 +24,8 @@
 
 #ifdef DA_PROFILE
 #include "optick.h"
+#define PROFILE_START_CAPTURE() OPTICK_START_CAPTURE();
+#define PROFILE_END_CAPTURE() OPTICK_STOP_CAPTURE(); OPTICK_SAVE_CAPTURE("capture");
 #define PROFILE_FRAME(x) OPTICK_FRAME(x);
 #define PROFILE(...) OPTICK_EVENT(##__VA_ARGS__)
 #define PROFILE_NAME(name) OPTICK_EVENT(__FUNCTION__ "::" name)

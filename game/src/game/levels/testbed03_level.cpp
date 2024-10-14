@@ -8,7 +8,7 @@
 
 // game
 #include "game/character/character.h"
-#include "game/helpers/texture_helper.h"
+#include "game/helpers/asset_helper.h"
 
 CTestBed03Level::CTestBed03Level(CHashString name, da::CGraphicsModule& graphics, da::CWindowModule& window) : ILevel(name, graphics, window), m_scrlevel("scripts/build/levels/test_bed_01.lua", "TestBed01", "main", false)
 {
@@ -26,10 +26,10 @@ void CTestBed03Level::initialize()
 	// Test Bed
 	{
 		da::CEntity* testBed = da::CSceneManager::getScene()->createEntity();
-		da::CStaticMesh* colMesh = da::CStaticMeshFactory::create("assets/plane100.fbx");
+		da::CStaticMesh* colMesh = CAssetHelper::create(Model::plane100);
 		da::FComponentRef<da::CSmeshComponent> meshComponent = testBed->addComponent<da::CSmeshComponent>(colMesh);
 
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::CTexture2DFactory::Create("assets/source/textures/tex_debug_grid_01.png"));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CAssetHelper::create(Texture::tex_debug_grid_01));
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(0).uvScale = { 40.f,40.f };
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
@@ -52,10 +52,10 @@ void CTestBed03Level::initialize()
 	// Ramp
 	{
 		da::CEntity* testBed = da::CSceneManager::getScene()->createEntity();
-		da::CStaticMesh* colMesh = da::CStaticMeshFactory::create("assets/ramp.fbx");
+		da::CStaticMesh* colMesh = CAssetHelper::create(Model::ramp);
 		da::FComponentRef<da::CSmeshComponent> meshComponent = testBed->addComponent<da::CSmeshComponent>(colMesh);
 
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(da::CTexture2DFactory::Create("assets/source/textures/tex_debug_grid_01.png"));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CAssetHelper::create(Texture::tex_debug_grid_01));
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = true;

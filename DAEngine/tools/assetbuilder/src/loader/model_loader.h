@@ -13,8 +13,6 @@
 #include <graphics/graphics_smesh.h>
 #include <graphics/graphics_material_data.h>
 
-using namespace da::graphics;
-
 
 struct FMaterial
 {
@@ -35,10 +33,10 @@ struct FMaterial
 	CTextureLoader m_normalTexture = {};
 	CTextureLoader m_metallicRoughnessTexture = {};
 
-	uint32_t m_hash;
-	da::core::CGuid getHash();
+	CHashString m_hash;
+	CHashString getHash();
 
-	static std::unordered_map<da::core::CGuid, FAssetData> ms_materialSaved;
+	static std::unordered_map<CHashString, FAssetData> ms_materialSaved;
 	static bool hasSaved(FMaterial& mat);
 };
 
@@ -50,12 +48,12 @@ public:
 	bool loadModel();
 	bool saveModel();
 
-	static std::unordered_map <da::core::CGuid, FAssetData> ms_modelSaved;
+	static std::unordered_map<CHashString, FAssetData> ms_modelSaved;
 	static std::mutex ms_mutex;
 
 private:
 	std::string m_path, m_targetPath, m_dir, m_materialTargetPath, m_textureTargetPath, m_modelTargetPath, m_name;
-	std::vector<FMesh> m_meshes = {};
+	std::vector<da::FMesh> m_meshes = {};
 	std::vector<FMaterial> m_materials = {};
 	Assimp::Importer importer;
 };

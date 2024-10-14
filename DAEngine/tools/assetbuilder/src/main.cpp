@@ -74,6 +74,12 @@ int main(int argc, const char* argv[])
 		CHashString ext = CHashString(extStr.c_str(), extStr.size());
 		std::string name = dirEntry.path().filename().string();
 		name.erase(name.end() - extStr.size(), name.end());
+		std::string exPath = dirEntry.path().string();
+		size_t fSize = exPath.find("source");
+		exPath.erase(0, fSize+sizeof("source"));
+		fSize = exPath.find(dirEntry.path().filename().string());
+		exPath.erase(fSize, dirEntry.path().filename().string().size());
+
 
 		std::string dir = outPath;
 		switch (ext.hash())
@@ -82,8 +88,17 @@ int main(int argc, const char* argv[])
 		case HASH(".jpeg"):
 		case HASH(".png"):
 		{
-			dir += std::string("Textures\\");
 			da::cout << "Found Image Asset: " << dirEntry.path().string() << da::endl;
+
+			dir += exPath;
+			std::filesystem::create_directories(dir);
+			dir += dirEntry.path().filename().string();
+			std::string dir1 = dir;
+			size_t f = dir1.find(dirEntry.path().filename().string());
+			dir1.erase(f, dirEntry.path().filename().string().size());
+			dir.erase(dir.end() - extStr.size(), dir.end());
+			dir += std::string(".dds");
+
 			CThreadPool::get().ms_threads.push_back(std::thread([dirEntry, dir, name] {
 				CTextureLoader texture(dirEntry.path().string(), dir, name);
 				if (texture.loadTexture())
@@ -98,12 +113,17 @@ int main(int argc, const char* argv[])
 		}
 		case HASH(".fbx"):
 		{
-			dir += std::string("Props\\") + dirEntry.path().filename().string();
+			dir += std::string("Models\\") + exPath;
+			std::filesystem::create_directories(dir);
+			dir += dirEntry.path().filename().string();
+			std::string dir1 = dir;
+			size_t f = dir1.find(dirEntry.path().filename().string());
+			dir1.erase(f, dirEntry.path().filename().string().size());
 			dir.erase(dir.end() - extStr.size(), dir.end());
-			std::filesystem::create_directories(outPath);
-			dir += std::string(".prp");
-			CThreadPool::get().ms_threads.push_back(std::thread([dirEntry, dir, outPath, name] {
-				CModelLoader model = CModelLoader(dirEntry.path().string(), dir, outPath, name);
+			
+			dir += std::string(".mdel");
+			CThreadPool::get().ms_threads.push_back(std::thread([dirEntry, dir, dir1, name] {
+				CModelLoader model = CModelLoader(dirEntry.path().string(), dir, dir1, name);
 				if (model.loadModel())
 				{
 					model.saveModel();
@@ -152,13 +172,13 @@ int main(int argc, const char* argv[])
 		outEnum.open((enumPath.string() + std::string("texture.generated.h")).c_str(), std::ios::out | std::ios::trunc);
 
 		outEnum << "#pragma once" << std::endl << std::endl;
-		outEnum << "enum class Texture : unsigned int" << std::endl;
+		outEnum << "enum class Texture : unsigned long long" << std::endl;
 		outEnum << "{" << std::endl;
 
 		for (const auto& kv : CTextureLoader::getTextures()) {
 			outEnum << "\t";
 			outEnum << "/*" << kv.first.c_str() << " : " << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << "*/" << std::endl;
-			outEnum << "\t" << kv.second.Name << " = " << std::to_string(kv.second.DataHash) << "," << std::endl << std::endl;
+			outEnum << "\t" << kv.second.Name << " = " << kv.second.DataHash.hash() << "," << std::endl << std::endl;
 		}
 
 		outEnum << "};" << std::endl;
@@ -172,13 +192,13 @@ int main(int argc, const char* argv[])
 		outEnum.open((enumPath.string() + std::string("model.generated.h")).c_str(), std::ios::out | std::ios::trunc);
 
 		outEnum << "#pragma once" << std::endl << std::endl;
-		outEnum << "enum class Model : unsigned int" << std::endl;
+		outEnum << "enum class Model : unsigned long long" << std::endl;
 		outEnum << "{" << std::endl;
 
 		for (const auto& kv : CModelLoader::ms_modelSaved) {
 			outEnum << "\t";
-			outEnum << "/*" << kv.first.c_str() << " : " << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << "*/" << std::endl;
-			outEnum << "\t" << kv.second.Name << " = " << std::to_string(kv.second.DataHash) << "," << std::endl << std::endl;
+			outEnum << "/*" << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << "*/" << std::endl;
+			outEnum << "\t" << kv.second.Name << " = " << kv.second.DataHash.hash() << "," << std::endl << std::endl;
 		}
 
 		outEnum << "};" << std::endl;

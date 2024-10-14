@@ -1,3 +1,4 @@
 MATERIALS:
-45760000-8353-0000-8c02-000056070000 : cone_Mat_0 : C:\Dev\DAEngine\game\assets\source\export\..\cone.fbx : C:\Dev\DAEngine\game\assets\export\..\Materials\45760000-8353-0000-8c02-000056070000.mat
+ : plane_Mat_0 : C:\Dev\DAEngine\game\assets\source\plane.fbx : \.mat
+ : plane100_Mat_0 : C:\Dev\DAEngine\game\assets\source\plane100.fbx : \.mat
 TEXTURES:

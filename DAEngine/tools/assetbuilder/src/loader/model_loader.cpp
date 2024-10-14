@@ -11,33 +11,24 @@
 #include <fstream>
 #include <stl/guid.h>
 
-using namespace da::graphics;
 
-std::unordered_map<da::core::CGuid, FAssetData> FMaterial::ms_materialSaved;
-std::unordered_map <da::core::CGuid, FAssetData> CModelLoader::ms_modelSaved;
+std::unordered_map<CHashString, FAssetData> FMaterial::ms_materialSaved;
+std::unordered_map <CHashString, FAssetData> CModelLoader::ms_modelSaved;
 std::mutex CModelLoader::ms_mutex;
-
-
 
 
 
 bool FMaterial::hasSaved(FMaterial& mat)
 {
 	std::lock_guard <std::mutex> lockguard(CModelLoader::ms_mutex);
-	da::core::CGuid guid = mat.getHash();
+	CHashString guid = mat.getHash();
 	return ms_materialSaved.find(guid) != ms_materialSaved.end();
 }
 
 
 CModelLoader::CModelLoader(const std::string& path, const std::string& targetPath, const std::string& dir, const std::string& name)
-	: m_path(path), m_dir(dir), m_name(name)
+	: m_path(path), m_dir(dir), m_name(name), m_targetPath(targetPath)
 {
-	m_materialTargetPath = dir + "Materials";
-	m_textureTargetPath = dir + "Textures";
-	m_modelTargetPath = dir + "Models";
-	std::filesystem::create_directories(m_textureTargetPath);
-	std::filesystem::create_directories(m_materialTargetPath);
-	std::filesystem::create_directories(m_modelTargetPath);
 	m_materialTargetPath += "\\";
 	m_textureTargetPath += "\\";
 }
@@ -73,7 +64,7 @@ bool CModelLoader::loadModel()
 
 		for (size_t i = 0; i < node->mNumMeshes; i++)
 		{
-			std::vector<FVertexBase> vertices;
+			std::vector<da::FVertexBase> vertices;
 			std::vector<uint32_t> indices;
 
 			aiMesh* mesh = pScene->mMeshes[node->mMeshes[i]];
@@ -83,7 +74,7 @@ bool CModelLoader::loadModel()
 
 			for (size_t v = 0; v < mesh->mNumVertices; v++) {
 
-				FVertexBase vertex{};
+				da::FVertexBase vertex{};
 				glm::vec3 pos = transform * glm::vec4(mesh->mVertices[v].x, mesh->mVertices[v].y, mesh->mVertices[v].z, 1.f);
 				vertex.Pos = {
 					pos.x,
@@ -172,7 +163,7 @@ bool CModelLoader::loadModel()
 		{
 			if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileBaseColor.C_Str()))
 			{
-				out.m_baseColorTexture = CTextureLoader(m_path, std::string(fileBaseColor.C_Str()), m_textureTargetPath,(uint32_t)texture->mWidth, (uint32_t)texture->mHeight, (uint8_t*)texture->pcData);
+				out.m_baseColorTexture = CTextureLoader(m_path, m_name + "_Alb", m_textureTargetPath, (uint32_t)texture->mWidth, (uint32_t)texture->mHeight, (uint8_t*)texture->pcData);
 			}
 		}
 
@@ -187,7 +178,7 @@ bool CModelLoader::loadModel()
 		{
 			if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileMetallicRoughness.C_Str()))
 			{
-				out.m_metallicRoughnessTexture = CTextureLoader(m_path, std::string(fileMetallicRoughness.C_Str()), m_textureTargetPath, (uint32_t)texture->mWidth, (uint32_t)texture->mHeight, (uint8_t*)texture->pcData);
+				out.m_metallicRoughnessTexture = CTextureLoader(m_path, m_name + "_Mtl", m_textureTargetPath, (uint32_t)texture->mWidth, (uint32_t)texture->mHeight, (uint8_t*)texture->pcData);
 			}
 		}
 
@@ -202,7 +193,7 @@ bool CModelLoader::loadModel()
 		 if (fileNormals.length > 0) {
 			if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileNormals.C_Str()))
 			{
-				out.m_normalTexture = CTextureLoader(m_path, std::string(fileNormals.C_Str()), m_textureTargetPath, (uint32_t)texture->mWidth, (uint32_t)texture->mHeight, (uint8_t*)texture->pcData);
+				out.m_normalTexture = CTextureLoader(m_path, m_name + "_Nrm", m_textureTargetPath, (uint32_t)texture->mWidth, (uint32_t)texture->mHeight, (uint8_t*)texture->pcData);
 			}
 		}
 
@@ -221,7 +212,7 @@ bool CModelLoader::loadModel()
 		else if (fileOcclusion.length > 0) {
 			if (const aiTexture* texture = pScene->GetEmbeddedTexture(fileOcclusion.C_Str()))
 			{
-				out.m_occlusionTexture = CTextureLoader(m_path, std::string(fileOcclusion.C_Str()), m_textureTargetPath, (uint32_t)texture->mWidth, (uint32_t)texture->mHeight, (uint8_t*)texture->pcData);
+				out.m_occlusionTexture = CTextureLoader(m_path, m_name + "_Occ", m_textureTargetPath, (uint32_t)texture->mWidth, (uint32_t)texture->mHeight, (uint8_t*)texture->pcData);
 			}
 		}
 
@@ -247,7 +238,7 @@ bool CModelLoader::loadModel()
 		if (m_meshes[i].MaterialIndex != -1)
 		{
 			m_materials[m_meshes[i].MaterialIndex].getHash();
-			m_meshes[i].MaterialIndex = m_materials[m_meshes[i].MaterialIndex].m_hash;
+			m_meshes[i].MaterialIndex = m_materials[m_meshes[i].MaterialIndex].m_hash.hash();
 		}
 	}
 
@@ -274,7 +265,7 @@ bool CModelLoader::saveModel()
 
 		for (uint32_t x = 0; x < sizeof(textures) / sizeof(CTextureLoader*); x++) {
 
-			if (textures[x]->getHash().isValid())
+			if (textures[x]->getHash() != 0)
 			{
 				textures[x]->saveTexture();
 			}
@@ -299,11 +290,11 @@ bool CModelLoader::saveModel()
 		out << m_materials[i].roughnessFactor << "\n";
 		out << m_materials[i].uvScale.x << "," << m_materials[i].uvScale.y << "\n";
 
-		out << m_materials[i].m_baseColorTexture.getHash().c_str() << "\n";
-		out << m_materials[i].m_occlusionTexture.getHash().c_str() << "\n";
-		out << m_materials[i].m_normalTexture.getHash().c_str() << "\n";
-		out << m_materials[i].m_metallicRoughnessTexture.getHash().c_str() << "\n";
-		out << m_materials[i].m_emissiveTexture.getHash().c_str() << "\n";
+		out << m_materials[i].m_baseColorTexture.getName().c_str() << "\n";
+		out << m_materials[i].m_occlusionTexture.getName().c_str() << "\n";
+		out << m_materials[i].m_normalTexture.getName().c_str() << "\n";
+		out << m_materials[i].m_metallicRoughnessTexture.getName().c_str() << "\n";
+		out << m_materials[i].m_emissiveTexture.getName().c_str() << "\n";
 
 		out.close();
 	}
@@ -322,66 +313,31 @@ bool CModelLoader::saveModel()
 		outStream.write((const char*)&materialIndex, sizeof(size_t));
 		outStream.write((const char*)&vertexCount, sizeof(size_t));
 		outStream.write((const char*)&indexCount, sizeof(size_t));
-		outStream.write((const char*)m_meshes[i].Vertices.data(), m_meshes[i].Vertices.size() * sizeof(FVertexBase));
+		outStream.write((const char*)m_meshes[i].Vertices.data(), m_meshes[i].Vertices.size() * sizeof(da::FVertexBase));
 		outStream.write((const char*)m_meshes[i].Indices.data(), m_meshes[i].Indices.size() * sizeof(uint32_t));
 	}
 
-	CHashString hash = HASHSZ(outStream.str().c_str(), outStream.str().size());
-	da::core::CGuid guid = da::core::CGuid::Generate(hash.hash());
-	std::string path = m_modelTargetPath + "\\" + guid.c_str() + ".mdel";
-
-	{
-		std::lock_guard<std::mutex> lockguard(ms_mutex);
-		if (ms_modelSaved.find(guid) == ms_modelSaved.end())
-		{
-			FAssetData assetData;
-			assetData.Path = path;
-			assetData.OgPath = m_path;
-			assetData.Name = m_name;
-			assetData.DataHash = hash.hash();
-			ms_modelSaved[guid] = assetData;
-		}
-		else
-		{
-			return true;
-		}
-	}
-
-	
+	std::string& path = m_targetPath;
 	std::ofstream out;
 	out.open(path.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
 	out.write(outStream.str().c_str(), outStream.str().size());
 	out.close();
 
+	CHashString hash = HASHSTR(m_name.c_str());
+
+	std::string relPath;
+	size_t i = m_path.find("assets");
+	relPath = m_path.substr(i, relPath.size() - i);
+
+	std::string relOutPath;
+	i = path.find("assets");
+	relOutPath = path.substr(i, path.size() - i);
+
+	ms_modelSaved[hash] = { relPath, m_name, relOutPath, HASHSTR(relOutPath.c_str()) };
 	return true;
 }
 
-da::core::CGuid FMaterial::getHash()
+CHashString FMaterial::getHash()
 {
-	if (m_hash)
-	{
-		return da::core::CGuid::Generate(m_hash);
-	}
-
-	CTextureLoader* textures[] = {
-			&m_baseColorTexture,
-			&m_normalTexture,
-			&m_metallicRoughnessTexture,
-			&m_occlusionTexture,
-			&m_emissiveTexture
-	};
-
-	uint32_t hash = 0;
-
-	for (uint32_t x = 0; x < sizeof(textures) / sizeof(CTextureLoader*); x++) {
-		if (!hash) {
-			hash = HASHSZ((const char*)&textures[x]->getHash(), sizeof(da::core::CGuid));
-			continue;
-		}
-
-		hash = HASHCOMBINE(hash, HASHSZ((const char*)&textures[x]->getHash(), sizeof(da::core::CGuid)));
-	}
-
-	m_hash = hash;
-	return da::core::CGuid::Generate(m_hash);
+	return m_hash;
 }

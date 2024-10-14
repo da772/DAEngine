@@ -4,7 +4,7 @@
 
 #include <DAEngine/components.h>
 #include <game/components/health_component.h>
-#include "game/helpers/model_helper.h"
+#include "game/helpers/asset_helper.h"
 
 CCharacter::CCharacter(const da::CGraphicsApi& graphics, bool isLocalPlayer) : m_gui(graphics, this), m_isLocalPlayer(isLocalPlayer)
 {
@@ -28,7 +28,7 @@ void CCharacter::initialize()
 
 		m_sword = scene->createEntity();
 		m_sword->setTag(HASHSTR("Sword"));
-		m_sword->addComponent<da::CSmeshComponent>(CModelHelper::create(Model::prop_weap_sword));
+		m_sword->addComponent<da::CSmeshComponent>(CAssetHelper::create(Model::prop_weap_sword));
 		da::IPhysicsShape* shape = da::CPhysicsShapeCube::create({ .017f, .057f, .598f });
 		da::FComponentRef<da::CCollisionComponent> colComp =
 			m_sword->addComponent<da::CCollisionComponent>(*shape, glm::translate(glm::mat4(1.f), { 0.f, 0.f, 1.f }), da::CGuid::Generate());

@@ -1,35 +1,25 @@
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\capsule.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\cone.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\cube.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\export\GenerateAssets_Windows.bat
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\navmesh.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\plane.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\plane100.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\level\dungeon_test.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\level\dungeon_test_col.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\level\testbed.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\level\testbed_collision.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\medieval\prop_med_anvil.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\misc\target_dummy.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\misc\target_dummy_collision.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\road\prop_road_tile_01a.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\structure\prop_collision_gladiator_arena.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\structure\prop_gladiator_arena.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\veh\prop_collision_veh_sports_01a.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\veh\prop_veh_sedan\prop_veh_sedan_01a.FBX
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\veh\prop_veh_sedan\prop_veh_sedan_wheel_01a.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\veh\prop_veh_sports_01a.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\veh\prop_veh_sports_wheel_01a.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\props\weapon\prop_weap_sword.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\ramp.fbx
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\sphere.fbx
-Found Image Asset: C:\Dev\DAEngine\game\assets\source\export\..\textures\surface\road\Tex_Fine_Road_D.png
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\textures\surface\road\Tex_Fine_Road_D.png
-Found Image Asset: C:\Dev\DAEngine\game\assets\source\export\..\textures\surface\road\Tex_Fine_Road_N.png
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\textures\surface\road\Tex_Fine_Road_N.png
-Found Image Asset: C:\Dev\DAEngine\game\assets\source\export\..\textures\tex_debug_grid_01.png
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\textures\tex_debug_grid_01.png
-Found Image Asset: C:\Dev\DAEngine\game\assets\source\export\..\textures\tex_debug_grid_02.png
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\textures\tex_debug_grid_02.png
-Skipping: C:\Dev\DAEngine\game\assets\source\export\..\transform.fbx
-Elapsed Time: 22 seconds
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\prop\misc\dummy_baseColor.jpeg
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\prop\misc\dummy_metallicRoughness.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\prop\misc\dummy_normal.jpeg
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\surface\road\Tex_Fine_Road_D.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\surface\road\Tex_Fine_Road_N.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\tex_debug_grid_01.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\tex_debug_grid_02.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Body_DIF.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Body_NRM.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Body_ORM.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Chassis_DIF.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Chassis_NRM.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Chassis_ORM.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Glass_DIF.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Glass_EMS.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Glass_NRM.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Glass_OPC.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Glass_ORM.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Interior_DIF.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Interior_NRM.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\prop_veh_sedan_01a\Tex_Veh_Sedan_Interior_ORM.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\Tex_Veh_Pearl_01_Red_Albedo.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\Tex_Veh_Pearl_02_Cream_Albedo.png
+Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\veh\Tex_Veh_Pearl_02_Cream_Emissive.png
+Elapsed Time: 49 seconds

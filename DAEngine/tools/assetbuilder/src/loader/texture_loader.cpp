@@ -7,7 +7,7 @@
 nvtt::Context CTextureLoader::ms_context(true);
 std::mutex CTextureLoader::ms_mutex;
 
-std::unordered_map<da::core::CGuid, FAssetData> CTextureLoader::ms_textureSaved;
+std::unordered_map<CHashString, FAssetData> CTextureLoader::ms_textureSaved;
 
 CTextureLoader::CTextureLoader(const std::string& path, const std::string& targetPath, const std::string& name) 
 	: m_path(path), m_targetPath(targetPath), m_name(name)
@@ -22,6 +22,7 @@ CTextureLoader::CTextureLoader(const std::string& path, const std::string& name,
 	
 	m_name = name;
 	m_path = path;
+	m_targetPath = targetPath;
 
 	for (uint32_t i = 0; i < m_name.size(); i++) {
 		if (m_name[i] == '\\' || m_name[i] == '/') {
@@ -38,9 +39,8 @@ CTextureLoader::CTextureLoader(const std::string& path, const std::string& name,
 	}
 
 	m_dataHash = HASHSZ((const char*)data, width);
-	m_hash = da::core::CGuid::Generate(m_dataHash);
 
-	m_targetPath = targetPath + m_hash.c_str() + std::string(".dds");
+	m_targetPath = targetPath + m_name + std::string(".dds");
 	if (!m_surface.loadFromMemory(data, width, &m_hasAlpha))
 	{
 		da::cout << "Failed to load?" << da::endl;
@@ -77,10 +77,6 @@ bool CTextureLoader::loadTexture()
 	fclose(f);
 
 	m_dataHash = HASHSZ(ch, sz);
-	m_hash  = da::core::CGuid::Generate(m_dataHash);
-	std::string path = m_hash.c_str();
-
-	m_targetPath = m_targetPath + path + ".dds";
 
 	if (!m_surface.load(m_path.c_str(), &m_hasAlpha))
 	{
@@ -92,15 +88,6 @@ bool CTextureLoader::loadTexture()
 
 bool CTextureLoader::saveTexture()
 {
-	{
-		std::lock_guard <std::mutex> lockguard(ms_mutex);
-		if (ms_textureSaved.find(m_hash) != ms_textureSaved.end())
-		{
-			da::cout << "Failed to save file: Already Exists..." << da::endl;
-			return false;
-		}
-	}
-
 	da::cout << "[Mips " << std::to_string(m_surface.countMipmaps()) << " ]Writing Image Asset : " << m_path << " To : " << m_targetPath << da::endl;
 
 	nvtt::CompressionOptions compressionOptions;
@@ -108,6 +95,7 @@ bool CTextureLoader::saveTexture()
 
 	nvtt::OutputOptions outputOptions;
 	outputOptions.setSrgbFlag(true);
+	
 	outputOptions.setFileName(m_targetPath.c_str());
 	
 	if (!ms_context.outputHeader(m_surface, m_surface.countMipmaps() /* number of mipmaps */, compressionOptions, outputOptions)) {
@@ -145,8 +133,17 @@ bool CTextureLoader::saveTexture()
 		surface.toSrgb();*/
 	}
 
-	
-	ms_textureSaved[m_hash] = { m_path, m_name, m_targetPath, m_dataHash };
+	std::string relPath;
+	size_t i = m_path.find("assets");
+	relPath = m_path.substr(i, relPath.size() - i);
+
+	std::string relOutPath;
+	i = m_targetPath.find("assets");
+	relOutPath = m_targetPath.substr(i, m_targetPath.size() - i);
+
+	CHashString hash = HASHSTR(relOutPath.c_str());
+
+	ms_textureSaved[hash] = { relPath, m_name, relOutPath, hash };
 }
 
 const std::string& CTextureLoader::getTargetPath() const
@@ -159,7 +156,7 @@ const std::string& CTextureLoader::getName() const
 	return m_name;
 }
 
-const da::core::CGuid &CTextureLoader::getHash() const
+const CHashString &CTextureLoader::getHash() const
 {
 	return m_hash;
 }
@@ -169,7 +166,7 @@ const uint32_t CTextureLoader::getDataHash() const
 	return m_dataHash;
 }
 
-const std::unordered_map<da::core::CGuid, FAssetData>& CTextureLoader::getTextures()
+const std::unordered_map<CHashString, FAssetData>& CTextureLoader::getTextures()
 {
 	return ms_textureSaved;
 }

@@ -11,7 +11,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["da-core"] = "%{wks.location}/../src/DAEngine"
-IncludeDir["glm"] = "%{wks.location}../thirdparty/glm"
+IncludeDir["glm"] = "%{wks.location}/../thirdparty/glm"
 
 group "Tools"
 

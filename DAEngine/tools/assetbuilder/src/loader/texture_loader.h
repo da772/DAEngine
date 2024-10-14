@@ -11,7 +11,7 @@ struct FAssetData
 	std::string OgPath;
 	std::string Name;
 	std::string Path;
-	uint32_t DataHash;
+	CHashString DataHash;
 };
 
 
@@ -27,17 +27,17 @@ public:
 
 	const std::string& getTargetPath() const;
 	const std::string& getName() const;
-	const da::core::CGuid& getHash() const;
+	const CHashString& getHash() const;
 	const uint32_t getDataHash() const;
-	static const std::unordered_map<da::core::CGuid, FAssetData>& getTextures();
+	static const std::unordered_map<CHashString, FAssetData>& getTextures();
 
 private:
 	std::string m_path, m_targetPath, m_name;
 	uint32_t m_dataHash;
-	da::core::CGuid m_hash;
+	CHashString m_hash;
 	bool m_hasAlpha;
 	nvtt::Surface m_surface;
 	static nvtt::Context ms_context;
 	static std::mutex ms_mutex;
-	static std::unordered_map <da::core::CGuid , FAssetData > ms_textureSaved;
+	static std::unordered_map<CHashString, FAssetData > ms_textureSaved;
 };

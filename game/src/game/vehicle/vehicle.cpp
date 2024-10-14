@@ -16,7 +16,6 @@
 #include <core/input/input.h>
 #include <graphics/graphics_smesh.h>
 #include <glm/gtx/vector_angle.hpp> 
-#include "game/helpers/texture_helper.h"
 
 #ifdef DA_REVIEW
 #include <imgui.h>

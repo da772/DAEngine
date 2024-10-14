@@ -1,74 +1,77 @@
 #pragma once
 
-enum class Model : unsigned int
+enum class Model : unsigned long long
 {
-	/*79320000-bd6a-0000-1970-0000bb600000 : prop_collision_gladiator_arena : C:\Dev\DAEngine\game\assets\source\export\..\props\structure\prop_collision_gladiator_arena.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\79320000-bd6a-0000-1970-0000bb600000.mdel*/
-	prop_collision_gladiator_arena = 1055638765,
+	/*navmesh : assets\source\navmesh.fbx : assets\Models\navmesh.mdel*/
+	navmesh = 5141491183737572394,
 
-	/*936f0000-e934-0000-fa2b-00007b410000 : prop_road_tile_01a : C:\Dev\DAEngine\game\assets\source\export\..\props\road\prop_road_tile_01a.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\936f0000-e934-0000-fa2b-00007b410000.mdel*/
-	prop_road_tile_01a = 2640681214,
+	/*cone : assets\source\cone.fbx : assets\Models\cone.mdel*/
+	cone = 18044107283806098160,
 
-	/*5f3a0000-3046-0000-e27c-00004a330000 : navmesh : C:\Dev\DAEngine\game\assets\source\export\..\navmesh.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\5f3a0000-3046-0000-e27c-00004a330000.mdel*/
-	navmesh = 3465912906,
+	/*cube : assets\source\cube.fbx : assets\Models\cube.mdel*/
+	cube = 8403882714376194221,
 
-	/*cd500000-4b0c-0000-9b1e-000040410000 : prop_med_anvil : C:\Dev\DAEngine\game\assets\source\export\..\props\medieval\prop_med_anvil.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\cd500000-4b0c-0000-9b1e-000040410000.mdel*/
-	prop_med_anvil = 1960720414,
+	/*target_dummy_collision : assets\source\props\misc\target_dummy_collision.fbx : assets\Models\props\misc\target_dummy_collision.mdel*/
+	target_dummy_collision = 16611272816148588225,
 
-	/*611f0000-581b-0000-4d77-000011030000 : plane : C:\Dev\DAEngine\game\assets\source\export\..\plane.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\611f0000-581b-0000-4d77-000011030000.mdel*/
-	plane = 3883440541,
+	/*capsule : assets\source\capsule.fbx : assets\Models\capsule.mdel*/
+	capsule = 7909005708027960069,
 
-	/*610e0000-ef1d-0000-9275-0000af570000 : target_dummy : C:\Dev\DAEngine\game\assets\source\export\..\props\misc\target_dummy.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\610e0000-ef1d-0000-9275-0000af570000.mdel*/
-	target_dummy = 1729383054,
+	/*testbed : assets\source\props\level\testbed.fbx : assets\Models\props\level\testbed.mdel*/
+	testbed = 5303434924903283636,
 
-	/*cc0b0000-9e6e-0000-3473-00003f300000 : plane100 : C:\Dev\DAEngine\game\assets\source\export\..\plane100.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\cc0b0000-9e6e-0000-3473-00003f300000.mdel*/
-	plane100 = 3390892374,
+	/*plane100 : assets\source\plane100.fbx : assets\Models\plane100.mdel*/
+	plane100 = 2674802262229710588,
 
-	/*012d0000-646e-0000-b26e-0000545e0000 : cube : C:\Dev\DAEngine\game\assets\source\export\..\cube.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\012d0000-646e-0000-b26e-0000545e0000.mdel*/
-	cube = 1247103974,
+	/*ramp : assets\source\ramp.fbx : assets\Models\ramp.mdel*/
+	ramp = 5278626978350377294,
 
-	/*e4300000-8a38-0000-2d51-0000346d0000 : cone : C:\Dev\DAEngine\game\assets\source\export\..\cone.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\e4300000-8a38-0000-2d51-0000346d0000.mdel*/
-	cone = 268643727,
+	/*prop_collision_gladiator_arena : assets\source\props\structure\prop_collision_gladiator_arena.fbx : assets\Models\props\structure\prop_collision_gladiator_arena.mdel*/
+	prop_collision_gladiator_arena = 2387876604397970410,
 
-	/*14690000-4127-0000-d16e-000009480000 : capsule : C:\Dev\DAEngine\game\assets\source\export\..\capsule.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\14690000-4127-0000-d16e-000009480000.mdel*/
-	capsule = 2267522897,
+	/*plane : assets\source\plane.fbx : assets\Models\plane.mdel*/
+	plane = 12105220883908753979,
 
-	/*d1150000-f75e-0000-d25a-0000c8230000 : target_dummy_collision : C:\Dev\DAEngine\game\assets\source\export\..\props\misc\target_dummy_collision.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\d1150000-f75e-0000-d25a-0000c8230000.mdel*/
-	target_dummy_collision = 3325489196,
+	/*dungeon_test : assets\source\props\level\dungeon_test.fbx : assets\Models\props\level\dungeon_test.mdel*/
+	dungeon_test = 1306067237748034973,
 
-	/*b50c0000-0a61-0000-a961-000023640000 : ramp : C:\Dev\DAEngine\game\assets\source\export\..\ramp.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\b50c0000-0a61-0000-a961-000023640000.mdel*/
-	ramp = 1752411781,
+	/*sphere : assets\source\sphere.fbx : assets\Models\sphere.mdel*/
+	sphere = 498837278278569674,
 
-	/*c14d0000-f568-0000-e247-0000321a0000 : sphere : C:\Dev\DAEngine\game\assets\source\export\..\sphere.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\c14d0000-f568-0000-e247-0000321a0000.mdel*/
-	sphere = 3973412255,
+	/*prop_weap_sword : assets\source\props\weapon\prop_weap_sword.fbx : assets\Models\props\weapon\prop_weap_sword.mdel*/
+	prop_weap_sword = 10774970708388988419,
 
-	/*ca280000-c308-0000-6b49-0000a8570000 : transform : C:\Dev\DAEngine\game\assets\source\export\..\transform.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\ca280000-c308-0000-6b49-0000a8570000.mdel*/
-	transform = 795848406,
+	/*prop_veh_sedan_wheel_01a : assets\source\props\veh\prop_veh_sedan\prop_veh_sedan_wheel_01a.fbx : assets\Models\props\veh\prop_veh_sedan\prop_veh_sedan_wheel_01a.mdel*/
+	prop_veh_sedan_wheel_01a = 8303636045039882798,
 
-	/*070c0000-a81c-0000-d966-0000397e0000 : dungeon_test_col : C:\Dev\DAEngine\game\assets\source\export\..\props\level\dungeon_test_col.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\070c0000-a81c-0000-d966-0000397e0000.mdel*/
-	dungeon_test_col = 1983984705,
+	/*testbed_collision : assets\source\props\level\testbed_collision.fbx : assets\Models\props\level\testbed_collision.mdel*/
+	testbed_collision = 8362692684991855482,
 
-	/*252d0000-1544-0000-3d2c-00000c670000 : prop_veh_sedan_wheel_01a : C:\Dev\DAEngine\game\assets\source\export\..\props\veh\prop_veh_sedan\prop_veh_sedan_wheel_01a.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\252d0000-1544-0000-3d2c-00000c670000.mdel*/
-	prop_veh_sedan_wheel_01a = 4187151617,
+	/*transform : assets\source\transform.fbx : assets\Models\transform.mdel*/
+	transform = 410581889496716798,
 
-	/*3a5d0000-5c11-0000-c843-0000781a0000 : testbed_collision : C:\Dev\DAEngine\game\assets\source\export\..\props\level\testbed_collision.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\3a5d0000-5c11-0000-c843-0000781a0000.mdel*/
-	testbed_collision = 1064582732,
+	/*prop_road_tile_01a : assets\source\props\road\prop_road_tile_01a.fbx : assets\Models\props\road\prop_road_tile_01a.mdel*/
+	prop_road_tile_01a = 7214502189366870252,
 
-	/*8a440000-5510-0000-5e26-000075590000 : prop_gladiator_arena : C:\Dev\DAEngine\game\assets\source\export\..\props\structure\prop_gladiator_arena.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\8a440000-5510-0000-5e26-000075590000.mdel*/
-	prop_gladiator_arena = 2139050112,
+	/*dungeon_test_col : assets\source\props\level\dungeon_test_col.fbx : assets\Models\props\level\dungeon_test_col.mdel*/
+	dungeon_test_col = 18223272171455608756,
 
-	/*c1500000-0553-0000-d61c-0000fb5c0000 : prop_collision_veh_sports_01a : C:\Dev\DAEngine\game\assets\source\export\..\props\veh\prop_collision_veh_sports_01a.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\c1500000-0553-0000-d61c-0000fb5c0000.mdel*/
-	prop_collision_veh_sports_01a = 2203431528,
+	/*prop_gladiator_arena : assets\source\props\structure\prop_gladiator_arena.fbx : assets\Models\props\structure\prop_gladiator_arena.mdel*/
+	prop_gladiator_arena = 8729422511937975160,
 
-	/*c7310000-b916-0000-380e-0000eb400000 : prop_veh_sports_01a : C:\Dev\DAEngine\game\assets\source\export\..\props\veh\prop_veh_sports_01a.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\c7310000-b916-0000-380e-0000eb400000.mdel*/
-	prop_veh_sports_01a = 2552434201,
+	/*prop_med_anvil : assets\source\props\medieval\prop_med_anvil.fbx : assets\Models\props\medieval\prop_med_anvil.mdel*/
+	prop_med_anvil = 14041934625029025337,
 
-	/*c1650000-bb53-0000-de38-000073560000 : prop_veh_sports_wheel_01a : C:\Dev\DAEngine\game\assets\source\export\..\props\veh\prop_veh_sports_wheel_01a.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\c1650000-bb53-0000-de38-000073560000.mdel*/
-	prop_veh_sports_wheel_01a = 3778336129,
+	/*prop_veh_sports_wheel_01a : assets\source\props\veh\prop_veh_sports_wheel_01a.fbx : assets\Models\props\veh\prop_veh_sports_wheel_01a.mdel*/
+	prop_veh_sports_wheel_01a = 16116105694558452326,
 
-	/*ed580000-f06e-0000-a500-00003b0c0000 : prop_weap_sword : C:\Dev\DAEngine\game\assets\source\export\..\props\weapon\prop_weap_sword.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\ed580000-f06e-0000-a500-00003b0c0000.mdel*/
-	prop_weap_sword = 2802603918,
+	/*prop_veh_sports_01a : assets\source\props\veh\prop_veh_sports_01a.fbx : assets\Models\props\veh\prop_veh_sports_01a.mdel*/
+	prop_veh_sports_01a = 4038054102387555412,
 
-	/*d81e0000-4158-0000-0944-000059720000 : dungeon_test : C:\Dev\DAEngine\game\assets\source\export\..\props\level\dungeon_test.fbx : C:\Dev\DAEngine\game\assets\export\..\Models\d81e0000-4158-0000-0944-000059720000.mdel*/
-	dungeon_test = 2629205611,
+	/*prop_collision_veh_sports_01a : assets\source\props\veh\prop_collision_veh_sports_01a.fbx : assets\Models\props\veh\prop_collision_veh_sports_01a.mdel*/
+	prop_collision_veh_sports_01a = 13264695197389305779,
+
+	/*target_dummy : assets\source\props\misc\target_dummy.fbx : assets\Models\props\misc\target_dummy.mdel*/
+	target_dummy = 9042504977139675831,
 
 };

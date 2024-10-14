@@ -10,7 +10,7 @@
 #include "game/character/character.h"
 #include "game/vehicle/vehicle.h"
 #include <game/vehicle/vehicle_manager.h>
-#include "game/helpers/texture_helper.h"
+#include "game/helpers/asset_helper.h"
 
 #include "game\generated\texture.generated.h"
 
@@ -103,7 +103,7 @@ void CTestBed01Level::initialize()
 		ramp->setTag(HASHSTR("ramp1"));
 
 		da::FComponentRef<da::CSmeshComponent> meshComponent = ramp->addComponent<da::CSmeshComponent>("assets/cube.fbx");
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Texture::tex_debug_grid_01));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CAssetHelper::create(Texture::tex_debug_grid_01));
 
 		ramp->addComponent<da::CRigidBodyComponent>(
 			da::IPhysicsRigidBody::create(da::CPhysicsShapeCube::create({ 5.f,10.f,5.f })
@@ -120,8 +120,8 @@ void CTestBed01Level::initialize()
 		transformObj->setTag(HASHSTR("dummy"));
 
 		da::FComponentRef<da::CSmeshComponent> mesh = transformObj->addComponent<da::CSmeshComponent>("assets/prop/misc/target_dummy.fbx");
-		mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(CTextureHelper::create(Texture::dummy_baseColor));
-		mesh->getStaticMesh()->getMaterial(0).setNormalTexture(CTextureHelper::create(Texture::dummy_normal));
+		mesh->getStaticMesh()->getMaterial(0).setBaseColorTexture(CAssetHelper::create(Texture::dummy_baseColor));
+		mesh->getStaticMesh()->getMaterial(0).setNormalTexture(CAssetHelper::create(Texture::dummy_normal));
 		mesh->getStaticMesh()->getMaterial(0).metallicFactor = 0.f;
 		mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
 

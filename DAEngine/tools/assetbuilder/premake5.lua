@@ -18,7 +18,7 @@ project "assetbuilder"
 		"../../thirdparty/assimp/include",
 		"../../thirdparty/glm",
 		"%{IncludeDir['da-core']}",
-		"%{wks.location}/../thirdparty/glm/include"
+		"%{wks.location}/../thirdparty/glm"
 	}
 
 
