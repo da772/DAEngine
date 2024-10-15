@@ -9,7 +9,7 @@ namespace da {
 	class CSkeletalMeshFactory : da::CFactory<CSkeletalMesh>
 	{
 	public:
-		static CSkeletalMesh* create(const std::string& path, bool inverseNormals = false);
+		static CSkeletalMesh* create(const std::string& path, bool binary = false, bool inverseNormals = false);
 		static void remove(CSkeletalMesh* mesh);
 
 	private:

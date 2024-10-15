@@ -17,8 +17,62 @@
 
 namespace da
 {
-	CSkeletalMesh::CSkeletalMesh(const std::string& path, bool inverseNormals) : m_path(path)
+	CSkeletalMesh::CSkeletalMesh(const std::string& path, bool binary, bool inverseNormals) : m_path(path)
 	{
+		if (binary)
+		{
+			std::fstream in;
+			in.open(path.c_str(), std::ios::in | std::ios::binary);
+
+			size_t meshCount = 0;
+			size_t materialCount = 0;
+
+			in.read((char*)&meshCount, sizeof(size_t));
+			in.read((char*)&materialCount, sizeof(size_t));
+
+			m_meshes.resize(meshCount);
+			m_materials.resize(materialCount);
+
+			for (size_t i = 0; i < meshCount; i++)
+			{
+				FSkeletalMesh mesh;
+				size_t vertexCount = 0;
+				size_t indexCount = 0;
+
+				in.read((char*)&mesh.MaterialIndex, sizeof(size_t));
+				in.read((char*)&vertexCount, sizeof(size_t));
+				in.read((char*)&indexCount, sizeof(size_t));
+
+				mesh.Vertices.resize(vertexCount);
+				mesh.Indices.resize(indexCount);
+
+				in.read((char*)mesh.Vertices.data(), vertexCount * sizeof(FSkeletalVertexBase));
+				in.read((char*)mesh.Indices.data(), indexCount * sizeof(uint32_t));
+				m_meshes[i] = mesh;
+			}
+
+			in.read((char*)&m_boneCount, sizeof(int));
+
+			size_t boneMapCount = 0;
+			in.read((char*)&boneMapCount,sizeof(size_t));
+			
+			char boneNameBuffer[1024];
+
+			for (size_t i = 0; i < boneMapCount; i++)
+			{
+				size_t boneNameSize = 0;
+				in.read((char*)&boneNameSize, sizeof(size_t));
+				in.read((char*)boneNameBuffer, boneNameSize);
+				FBoneInfo boneInfo = {};
+				in.read((char*)&boneInfo, sizeof(da::FBoneInfo));
+				boneNameBuffer[boneNameSize] = 0;
+				m_boneMap[HASHSTR(boneNameBuffer)] = boneInfo;
+			}
+
+			in.close();
+			return;
+		}
+
 		CAsset file(path.c_str());
 #if !defined(DA_TEST)
 		Assimp::Importer importer;

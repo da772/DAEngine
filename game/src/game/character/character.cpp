@@ -29,6 +29,9 @@ void CCharacter::initialize()
 		m_sword = scene->createEntity();
 		m_sword->setTag(HASHSTR("Sword"));
 		m_sword->addComponent<da::CSmeshComponent>(CAssetHelper::create(Model::prop_weap_sword));
+		CAssetHelper::set_material(Material::prop_weap_sword_Mat, m_sword->getComponent<da::CSmeshComponent>()->getStaticMesh());
+		m_sword->getComponent<da::CSmeshComponent>()->getStaticMesh()->getMaterial(0).metallicFactor = .5f;
+		m_sword->getComponent<da::CSmeshComponent>()->getStaticMesh()->getMaterial(0).roughnessFactor = .4f;
 		da::IPhysicsShape* shape = da::CPhysicsShapeCube::create({ .017f, .057f, .598f });
 		da::FComponentRef<da::CCollisionComponent> colComp =
 			m_sword->addComponent<da::CCollisionComponent>(*shape, glm::translate(glm::mat4(1.f), { 0.f, 0.f, 1.f }), da::CGuid::Generate());

@@ -23,7 +23,7 @@ CTextureLoader::CTextureLoader(const std::string& path, const std::string& name,
 	m_name = name;
 	m_path = path;
 	m_targetPath = targetPath;
-
+	std::filesystem::create_directories(m_targetPath);
 	for (uint32_t i = 0; i < m_name.size(); i++) {
 		if (m_name[i] == '\\' || m_name[i] == '/') {
 			m_name.erase(m_name.begin(), m_name.begin() + i + 1);
@@ -39,6 +39,16 @@ CTextureLoader::CTextureLoader(const std::string& path, const std::string& name,
 	}
 
 	m_dataHash = HASHSZ((const char*)data, width);
+
+	std::string relPath;
+	size_t i = m_path.find("assets");
+	relPath = m_path.substr(i, relPath.size() - i);
+
+	std::string relOutPath;
+	i = m_targetPath.find("assets");
+	relOutPath = m_targetPath.substr(i, m_targetPath.size() - i) + name + ".dds";
+
+	m_hash = HASHSTR(relOutPath.c_str());
 
 	m_targetPath = targetPath + m_name + std::string(".dds");
 	if (!m_surface.loadFromMemory(data, width, &m_hasAlpha))
@@ -88,6 +98,11 @@ bool CTextureLoader::loadTexture()
 
 bool CTextureLoader::saveTexture()
 {
+	if (m_targetPath.empty())
+	{
+		return true;
+	}
+
 	da::cout << "[Mips " << std::to_string(m_surface.countMipmaps()) << " ]Writing Image Asset : " << m_path << " To : " << m_targetPath << da::endl;
 
 	nvtt::CompressionOptions compressionOptions;

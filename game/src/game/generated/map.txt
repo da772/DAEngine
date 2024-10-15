@@ -1,4 +1,14 @@
 MATERIALS:
- : plane_Mat_0 : C:\Dev\DAEngine\game\assets\source\plane.fbx : \.mat
- : plane100_Mat_0 : C:\Dev\DAEngine\game\assets\source\plane100.fbx : \.mat
+assets\materials\models\navmesh_Mat.mat : navmesh_Mat : C:\Dev\DAEngine\game\assets\source\models\navmesh.fbx : C:\Dev\DAEngine\game\assets\materials\models\navmesh_Mat.mat
+assets\materials\models\plane100_Mat.mat : plane100_Mat : C:\Dev\DAEngine\game\assets\source\models\plane100.fbx : C:\Dev\DAEngine\game\assets\materials\models\plane100_Mat.mat
+assets\materials\models\ramp_Mat.mat : ramp_Mat : C:\Dev\DAEngine\game\assets\source\models\ramp.fbx : C:\Dev\DAEngine\game\assets\materials\models\ramp_Mat.mat
+assets\materials\models\cone_Mat.mat : cone_Mat : C:\Dev\DAEngine\game\assets\source\models\cone.fbx : C:\Dev\DAEngine\game\assets\materials\models\cone_Mat.mat
+assets\materials\models\cube_Mat.mat : cube_Mat : C:\Dev\DAEngine\game\assets\source\models\cube.fbx : C:\Dev\DAEngine\game\assets\materials\models\cube_Mat.mat
+assets\materials\models\props\misc\target_dummy_collision_Mat.mat : target_dummy_collision_Mat : C:\Dev\DAEngine\game\assets\source\models\props\misc\target_dummy_collision.fbx : C:\Dev\DAEngine\game\assets\materials\models\props\misc\target_dummy_collision_Mat.mat
+assets\materials\models\props\structure\prop_collision_gladiator_arena_Mat.mat : prop_collision_gladiator_arena_Mat : C:\Dev\DAEngine\game\assets\source\models\props\structure\prop_collision_gladiator_arena.fbx : C:\Dev\DAEngine\game\assets\materials\models\props\structure\prop_collision_gladiator_arena_Mat.mat
+assets\materials\models\plane_Mat.mat : plane_Mat : C:\Dev\DAEngine\game\assets\source\models\plane.fbx : C:\Dev\DAEngine\game\assets\materials\models\plane_Mat.mat
+assets\materials\models\capsule_Mat.mat : capsule_Mat : C:\Dev\DAEngine\game\assets\source\models\capsule.fbx : C:\Dev\DAEngine\game\assets\materials\models\capsule_Mat.mat
+assets\materials\models\sphere_Mat.mat : sphere_Mat : C:\Dev\DAEngine\game\assets\source\models\sphere.fbx : C:\Dev\DAEngine\game\assets\materials\models\sphere_Mat.mat
+assets\materials\models\transform_Mat.mat : transform_Mat : C:\Dev\DAEngine\game\assets\source\models\transform.fbx : C:\Dev\DAEngine\game\assets\materials\models\transform_Mat.mat
+assets\materials\models\props\veh\prop_veh_sedan\prop_veh_sedan_wheel_01a_Mat.mat : prop_veh_sedan_wheel_01a_Mat : C:\Dev\DAEngine\game\assets\source\models\props\veh\prop_veh_sedan\prop_veh_sedan_wheel_01a.fbx : C:\Dev\DAEngine\game\assets\materials\models\props\veh\prop_veh_sedan\prop_veh_sedan_wheel_01a_Mat.mat
 TEXTURES:

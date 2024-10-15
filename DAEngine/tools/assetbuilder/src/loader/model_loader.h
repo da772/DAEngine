@@ -11,7 +11,9 @@
 #include <assimp/Importer.hpp>
 #include <graphics/graphics_vertex.h>
 #include <graphics/graphics_smesh.h>
+#include <graphics/graphics_skmesh.h>
 #include <graphics/graphics_material_data.h>
+#include <graphics/assimp_conversion_helpers.h>
 
 
 struct FMaterial
@@ -37,7 +39,6 @@ struct FMaterial
 	CHashString getHash();
 
 	static std::unordered_map<CHashString, FAssetData> ms_materialSaved;
-	static bool hasSaved(FMaterial& mat);
 };
 
 class CModelLoader
@@ -49,11 +50,22 @@ public:
 	bool saveModel();
 
 	static std::unordered_map<CHashString, FAssetData> ms_modelSaved;
+	static std::unordered_map<CHashString, FAssetData> ms_skeleSaved;
+	
 	static std::mutex ms_mutex;
+
+private:
+	bool loadSkeleton(const aiScene* pScehe);
+	bool loadStatic(const aiScene* pScene);
+
+	void setVertexBoneData(da::FSkeletalVertexBase& vertex, int boneID, float weight) const;
 
 private:
 	std::string m_path, m_targetPath, m_dir, m_materialTargetPath, m_textureTargetPath, m_modelTargetPath, m_name;
 	std::vector<da::FMesh> m_meshes = {};
+	std::vector<da::FSkeletalMesh> m_skmeshes = {};
+	std::unordered_map<CHashString, da::FBoneInfo> m_boneMap;
+	uint32_t m_boneCount = 0;
 	std::vector<FMaterial> m_materials = {};
 	Assimp::Importer importer;
 };

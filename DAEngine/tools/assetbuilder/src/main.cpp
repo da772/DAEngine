@@ -113,7 +113,7 @@ int main(int argc, const char* argv[])
 		}
 		case HASH(".fbx"):
 		{
-			dir += std::string("Models\\") + exPath;
+			dir += exPath;
 			std::filesystem::create_directories(dir);
 			dir += dirEntry.path().filename().string();
 			std::string dir1 = dir;
@@ -121,7 +121,6 @@ int main(int argc, const char* argv[])
 			dir1.erase(f, dirEntry.path().filename().string().size());
 			dir.erase(dir.end() - extStr.size(), dir.end());
 			
-			dir += std::string(".mdel");
 			CThreadPool::get().ms_threads.push_back(std::thread([dirEntry, dir, dir1, name] {
 				CModelLoader model = CModelLoader(dirEntry.path().string(), dir, dir1, name);
 				if (model.loadModel())
@@ -139,8 +138,8 @@ int main(int argc, const char* argv[])
 
 		uint64_t writeTime = to_time_t(dirEntry.last_write_time());
 		if (writeTime <= lastRun) {
-			da::cout << "Skipping: " << dirEntry.path().string() << da::endl;
-			continue;
+			//da::cout << "Skipping: " << dirEntry.path().string() << da::endl;
+			//continue;
 		}
 	}
 
@@ -196,6 +195,44 @@ int main(int argc, const char* argv[])
 		outEnum << "{" << std::endl;
 
 		for (const auto& kv : CModelLoader::ms_modelSaved) {
+			outEnum << "\t";
+			outEnum << "/*" << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << "*/" << std::endl;
+			outEnum << "\t" << kv.second.Name << " = " << kv.second.DataHash.hash() << "," << std::endl << std::endl;
+		}
+
+		outEnum << "};" << std::endl;
+		outEnum.close();
+	}
+
+	{
+
+		std::ofstream outEnum;
+		outEnum.open((enumPath.string() + std::string("skeleton.generated.h")).c_str(), std::ios::out | std::ios::trunc);
+
+		outEnum << "#pragma once" << std::endl << std::endl;
+		outEnum << "enum class Skeleton : unsigned long long" << std::endl;
+		outEnum << "{" << std::endl;
+
+		for (const auto& kv : CModelLoader::ms_skeleSaved) {
+			outEnum << "\t";
+			outEnum << "/*" << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << "*/" << std::endl;
+			outEnum << "\t" << kv.second.Name << " = " << kv.second.DataHash.hash() << "," << std::endl << std::endl;
+		}
+
+		outEnum << "};" << std::endl;
+		outEnum.close();
+	}
+
+	{
+
+		std::ofstream outEnum;
+		outEnum.open((enumPath.string() + std::string("material.generated.h")).c_str(), std::ios::out | std::ios::trunc);
+
+		outEnum << "#pragma once" << std::endl << std::endl;
+		outEnum << "enum class Material : unsigned long long" << std::endl;
+		outEnum << "{" << std::endl;
+
+		for (const auto& kv : FMaterial::ms_materialSaved) {
 			outEnum << "\t";
 			outEnum << "/*" << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << "*/" << std::endl;
 			outEnum << "\t" << kv.second.Name << " = " << kv.second.DataHash.hash() << "," << std::endl << std::endl;

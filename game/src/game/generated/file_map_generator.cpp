@@ -22,16 +22,9 @@ void CFileMapGenerator::initialize()
 
 		std::string dir = dirEntry.path().string();
 		size_t asIt = dir.find("assets");
-	
 		dir.erase(0, asIt);
 
 		CHashString hash = HASHSTR(dir.c_str());
-
-		if (hash.hash() == 2688253374725150482)
-		{
-			ASSERT(true);
-		}
-
 		s_fileMapGenerator.m_fileMap[hash] = dirEntry.path().string();
 	}
 }

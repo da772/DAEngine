@@ -42,8 +42,6 @@ namespace da
 				size_t indexCount = 0;
 
 				in.read((char*)&mesh.MaterialIndex, sizeof(size_t));
-				// temp
-				mesh.MaterialIndex = 0;
 				in.read((char*)&vertexCount, sizeof(size_t));
 				in.read((char*)&indexCount, sizeof(size_t));
 

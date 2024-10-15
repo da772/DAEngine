@@ -10,7 +10,7 @@ namespace da
 	bool CBgfxSkeletalMesh::s_init;
 	::bgfx::VertexLayout CBgfxSkeletalMesh::s_layout;
 
-	CBgfxSkeletalMesh::CBgfxSkeletalMesh(const std::string& path, bool inverseNormals) : CSkeletalMesh(path, inverseNormals)
+	CBgfxSkeletalMesh::CBgfxSkeletalMesh(const std::string& path, bool binary, bool inverseNormals) : CSkeletalMesh(path, binary, inverseNormals)
 	{
 		m_vbh.reserve(m_meshes.size());
 		m_ibh.reserve(m_meshes.size());

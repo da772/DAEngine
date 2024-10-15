@@ -51,7 +51,7 @@ namespace da
 		inline virtual void setBuffers(size_t index, uint8_t stream) {};
 
 	protected:
-		CSkeletalMesh(const std::string& path, bool inverseNormals = false);
+		CSkeletalMesh(const std::string& path, bool binary, bool inverseNormals = false);
 		inline CSkeletalMesh() {};
 		virtual ~CSkeletalMesh();
 

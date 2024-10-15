@@ -7,6 +7,7 @@
 #include "character_movement_component.h"
 #include "game/character/movement/ai_character_movement.h"
 #include "game/character/movement/character_movement_1.h"
+#include "game/helpers/asset_helper.h"
 
 
 #ifdef DA_REVIEW
@@ -20,13 +21,15 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::CGuid& gu
 	da::CSkeletalMesh* mesh;
 	if (isLocalPlayer)
 	{
-		mesh = da::CSkeletalMeshFactory::create("assets/skeletons/camilla/camilla_02.fbx", false);
+		mesh = CAssetHelper::create(Skeleton::camilla_02);
+		CAssetHelper::set_material(Material::camilla_02_Mat, mesh);
 		mesh->getMaterial(10).baseColorFactor = { 0.f,0.f,0.f,0.f };
 		mesh->getMaterial(13).baseColorFactor = { 0.f,0.f,0.f,0.25f };
 	} 
 	else
 	{
-		mesh = da::CSkeletalMeshFactory::create("assets/skeletons/pesant_f/pesant_f_02.fbx", false);
+		mesh = CAssetHelper::create(Skeleton::pesant_f_02);
+		CAssetHelper::set_material(Material::pesant_f_02_Mat, mesh);
 		mesh->getMaterial(11).baseColorFactor = { 0.f,0.f,0.f,0.f };
 	}
 
@@ -52,15 +55,15 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::CGuid& gu
 
 	m_anims = {
 			
-		  { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Idle_RM_01.fbx", mesh)), 1.f }// idle
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // jog
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // sprint
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/archer/button.fbx", mesh)), 0.f } // button
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/archer/jogLeft.fbx", mesh)), 0.f } // jog left
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/archer/jogRight.fbx", mesh)), 0.f } // jog right
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/archer/jogBack.fbx", mesh)), 0.f } // jog back
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Combo_A1_IP_01.fbx", mesh), false), 0.f } // attack 1
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/skeletons/ue_mannequin/Anim_DK2_Combo_A2_IP_01.fbx", mesh), false), 0.f } // attack 2
+		  { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/ue_mannequin/Anim_DK2_Idle_RM_01.fbx", mesh)), 1.f }// idle
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // jog
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // sprint
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/archer/button.fbx", mesh)), 0.f } // button
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/archer/jogLeft.fbx", mesh)), 0.f } // jog left
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/archer/jogRight.fbx", mesh)), 0.f } // jog right
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/archer/jogBack.fbx", mesh)), 0.f } // jog back
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/ue_mannequin/Anim_DK2_Combo_A1_IP_01.fbx", mesh), false), 0.f } // attack 1
+		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/ue_mannequin/Anim_DK2_Combo_A2_IP_01.fbx", mesh), false), 0.f } // attack 2
 	};
 
 

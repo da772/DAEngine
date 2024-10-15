@@ -27,7 +27,7 @@ namespace da {
 		virtual const void* getNativeIBIndex(size_t index) const override;
 
 	protected:
-		CBgfxSkeletalMesh(const std::string& path, bool inverseNormals);
+		CBgfxSkeletalMesh(const std::string& path, bool binary, bool inverseNormals);
 		virtual ~CBgfxSkeletalMesh();
 
 	private:

@@ -11,11 +11,11 @@ namespace da
 
 	CSkeletalMeshFactory da::CSkeletalMeshFactory::ms_factory;
 
-	da::CSkeletalMesh* da::CSkeletalMeshFactory::create(const std::string& path, bool inverseNormals /*= false*/)
+	da::CSkeletalMesh* da::CSkeletalMeshFactory::create(const std::string& path, bool binary, bool inverseNormals /*= false*/)
 	{
 		CHashString hash(path.c_str(), path.size());
 #ifdef DA_GRAPHICS_BGFX
-		return ms_factory.addInstance(hash, [path, inverseNormals] { return new da::CBgfxSkeletalMesh(path, inverseNormals); });
+		return ms_factory.addInstance(hash, [path, binary,inverseNormals] { return new da::CBgfxSkeletalMesh(path, binary, inverseNormals); });
 #endif
 	}
 
