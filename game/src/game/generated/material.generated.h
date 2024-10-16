@@ -21,6 +21,11 @@ enum class EMaterial : unsigned long long
 	capsule_Mat = 10670505574562822452,
 
 	/*
+		assets\materials\models\cone_Mat.mat HASH(16282026761436331405)
+	 */
+	cone_Mat = 16282026761436331405,
+
+	/*
 		assets\materials\models\cube_Mat.mat HASH(14781322892457219859)
 	 */
 	cube_Mat = 14781322892457219859,

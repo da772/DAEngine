@@ -6,4 +6,4 @@ Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\surface\road\Tex_
 Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\surface\road\Tex_Fine_Road_N.png
 Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\tex_debug_grid_01.png
 Found Image Asset: C:\Dev\DAEngine\game\assets\source\textures\tex_debug_grid_02.png
-Elapsed Time: 142 seconds
+Elapsed Time: 154 seconds

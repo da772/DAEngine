@@ -562,7 +562,7 @@ bool CModelLoader::saveModel()
 		std::string path = (m_materialTargetPath + matName + ".mat");
 		std::string hashStr = relOutPath + m_name + "_Mat.mat";
 
-		CHashString hash = HASHSTR(hashStr.c_str(), hashStr.size());
+		CHashString hash = CHashString(hashStr.c_str(), hashStr.size());
 
 		FMaterial::ms_materialSaved[HASHSTR(hash.c_str())] = { m_path, matName, hashStr, hash };
 
@@ -787,7 +787,7 @@ bool CModelLoader::saveModel()
 	out.write(outStream.str().c_str(), outStream.str().size());
 	out.close();
 
-	CHashString hash = HASHSTR(relOutPath.c_str(), relOutPath.size());
+	CHashString hash = CHashString(relOutPath.c_str(), relOutPath.size());
 
 	if (m_skmeshes.empty() && !m_animData.HasAnim)
 	{

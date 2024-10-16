@@ -24,7 +24,7 @@ void CFileMapGenerator::initialize()
 		size_t asIt = dir.find("assets");
 		dir.erase(0, asIt);
 
-		CHashString hash = HASHSTR(dir.c_str());
+		CHashString hash = CHashString(dir.c_str(), dir.size());
 		s_fileMapGenerator.m_fileMap[hash] = dirEntry.path().string();
 	}
 }
