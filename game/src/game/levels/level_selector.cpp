@@ -32,6 +32,7 @@ void CLevelSelector::update(float dt)
 
 		if (!m_levelInit)
 		{
+			PROFILE("Level Initialize")
 			m_levels[m_level]->initialize();
 			m_levelInit = true;
 			return;

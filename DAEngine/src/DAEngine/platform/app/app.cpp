@@ -31,9 +31,6 @@ namespace da
 
 	CApp::~CApp() {
 		shutdownInternal();
-#ifdef DA_REVIEW
-		if (m_captureProfile) PROFILE_END_CAPTURE()
-#endif
 	}
 
 	void CApp::initialize()

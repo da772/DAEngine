@@ -3,42 +3,42 @@
 #include "game/generated/file_map_generator.h"
 
 
-da::CStaticMesh* CAssetHelper::create(Model model)
+da::CStaticMesh* CAssetHelper::create(EModel model)
 {
 	return da::CStaticMeshFactory::create(CFileMapGenerator::get_filepath(CHashString((uint64_t)model)), false);
 }
 
-da::CGraphicsTexture2D* CAssetHelper::create(Texture texture)
+da::CGraphicsTexture2D* CAssetHelper::create(ETexture texture)
 {
 	return da::CTexture2DFactory::Create(CFileMapGenerator::get_filepath(CHashString((uint64_t)texture)));
 }
 
-da::CSkeletalMesh* CAssetHelper::create(Skeleton skeleton)
+da::CSkeletalMesh* CAssetHelper::create(ESkeleton skeleton)
 {
 	return da::CSkeletalMeshFactory::create(CFileMapGenerator::get_filepath(CHashString((uint64_t)skeleton)), true);
 }
 
-da::CSkeletalAnimation* CAssetHelper::create(Animation animation, da::CSkeletalMesh* skeleton)
+da::CSkeletalAnimation* CAssetHelper::create(EAnimation animation, da::CSkeletalMesh* skeleton)
 {
 	return new da::CSkeletalAnimation(CFileMapGenerator::get_filepath(CHashString((uint64_t)animation)), skeleton, true);
 }
 
-da::CSkeletalAnimator* CAssetHelper::create_animator(Animation animation, da::CSkeletalMesh* skeleton)
+da::CSkeletalAnimator* CAssetHelper::create_animator(EAnimation animation, da::CSkeletalMesh* skeleton)
 {
 	return new da::CSkeletalAnimator(new da::CSkeletalAnimation(CFileMapGenerator::get_filepath(CHashString((uint64_t)animation)), skeleton, true), true);
 }
 
-void CAssetHelper::set_material(Material material, da::CSkeletalMesh* mesh)
+void CAssetHelper::set_material(EMaterial material, da::CSkeletalMesh* mesh)
 {
 	set_material_internal(material, [mesh](uint32_t i) { return &mesh->getMaterial(i); });
 }
 
-void CAssetHelper::set_material(Material material, da::CStaticMesh* mesh)
+void CAssetHelper::set_material(EMaterial material, da::CStaticMesh* mesh)
 {
 	set_material_internal(material, [mesh](uint32_t i) { return& mesh->getMaterial(i); });
 }
 
-void CAssetHelper::set_material_internal(Material materialEnum, std::function<da::FMaterialData* (uint32_t)> getMaterial)
+void CAssetHelper::set_material_internal(EMaterial materialEnum, std::function<da::FMaterialData* (uint32_t)> getMaterial)
 {
 	std::fstream in;
 	in.open(CFileMapGenerator::get_filepath(CHashString((uint64_t)materialEnum)).c_str(), std::ios::in | std::ios::binary);
@@ -65,35 +65,35 @@ void CAssetHelper::set_material_internal(Material materialEnum, std::function<da
 		in.read((char*)&baseColorHash, sizeof(uint64_t));
 		if (baseColorHash)
 		{
-			material.m_baseColorTexture = create((Texture)baseColorHash);
+			material.m_baseColorTexture = create((ETexture)baseColorHash);
 		}
 
 		baseColorHash = 0;
 		in.read((char*)&baseColorHash, sizeof(uint64_t));
 		if (baseColorHash)
 		{
-			material.m_occlusionTexture = create((Texture)baseColorHash);
+			material.m_occlusionTexture = create((ETexture)baseColorHash);
 		}
 
 		baseColorHash = 0;
 		in.read((char*)&baseColorHash, sizeof(uint64_t));
 		if (baseColorHash)
 		{
-			material.m_normalTexture = create((Texture)baseColorHash);
+			material.m_normalTexture = create((ETexture)baseColorHash);
 		}
 
 		baseColorHash = 0;
 		in.read((char*)&baseColorHash, sizeof(uint64_t));
 		if (baseColorHash)
 		{
-			material.m_metallicRoughnessTexture = create((Texture)baseColorHash);
+			material.m_metallicRoughnessTexture = create((ETexture)baseColorHash);
 		}
 
 		baseColorHash = 0;
 		in.read((char*)&baseColorHash, sizeof(uint64_t));
 		if (baseColorHash)
 		{
-			material.m_emissiveTexture = create((Texture)baseColorHash);
+			material.m_emissiveTexture = create((ETexture)baseColorHash);
 		}
 	}
 }

@@ -21,15 +21,15 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::CGuid& gu
 	da::CSkeletalMesh* mesh;
 	if (isLocalPlayer)
 	{
-		mesh = CAssetHelper::create(Skeleton::camilla_02);
-		CAssetHelper::set_material(Material::camilla_02_Mat, mesh);
+		mesh = CAssetHelper::create(ESkeleton::camilla_02);
+		CAssetHelper::set_material(EMaterial::camilla_02_Mat, mesh);
 		mesh->getMaterial(10).baseColorFactor = { 0.f,0.f,0.f,0.f };
 		mesh->getMaterial(13).baseColorFactor = { 0.f,0.f,0.f,0.25f };
 	} 
 	else
 	{
-		mesh = CAssetHelper::create(Skeleton::pesant_f_02);
-		CAssetHelper::set_material(Material::pesant_f_02_Mat, mesh);
+		mesh = CAssetHelper::create(ESkeleton::pesant_f_02);
+		CAssetHelper::set_material(EMaterial::pesant_f_02_Mat, mesh);
 		mesh->getMaterial(11).baseColorFactor = { 0.f,0.f,0.f,0.f };
 	}
 
@@ -55,15 +55,15 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::CGuid& gu
 
 	m_anims = {
 			
-		  {  CAssetHelper::create_animator(Animation::Anim_DK2_Idle_RM_01, mesh), 1.f }// idle
-		, {  CAssetHelper::create_animator(Animation::Anim_DK2_Run_F_IP_01, mesh), 0.f } // jog
-		, {  CAssetHelper::create_animator(Animation::Anim_DK2_Run_F_IP_01, mesh), 0.f } // sprint
-		, {  CAssetHelper::create_animator(Animation::button, mesh), 0.f } // button
-		, {  CAssetHelper::create_animator(Animation::jogLeft, mesh), 0.f } // jog left
-		, {  CAssetHelper::create_animator(Animation::jogRight, mesh), 0.f } // jog right
-		, {  CAssetHelper::create_animator(Animation::jogBack, mesh), 0.f } // jog back
-		, {  CAssetHelper::create_animator(Animation::Anim_DK2_Combo_A1_IP_01, mesh), 0.f } // attack 1
-		, {  CAssetHelper::create_animator(Animation::Anim_DK2_Combo_A2_IP_01, mesh), 0.f } // attack 2
+		  {  CAssetHelper::create_animator(EAnimation::Anim_DK2_Idle_RM_01, mesh), 1.f }// idle
+		, {  CAssetHelper::create_animator(EAnimation::Anim_DK2_Run_F_IP_01, mesh), 0.f } // jog
+		, {  CAssetHelper::create_animator(EAnimation::Anim_DK2_Run_F_IP_01, mesh), 0.f } // sprint
+		, {  CAssetHelper::create_animator(EAnimation::button, mesh), 0.f } // button
+		, {  CAssetHelper::create_animator(EAnimation::jogLeft, mesh), 0.f } // jog left
+		, {  CAssetHelper::create_animator(EAnimation::jogRight, mesh), 0.f } // jog right
+		, {  CAssetHelper::create_animator(EAnimation::jogBack, mesh), 0.f } // jog back
+		, {  CAssetHelper::create_animator(EAnimation::Anim_DK2_Combo_A1_IP_01, mesh), 0.f } // attack 1
+		, {  CAssetHelper::create_animator(EAnimation::Anim_DK2_Combo_A2_IP_01, mesh), 0.f } // attack 2
 	};
 
 	m_animGraph = new da::CSkeletalAnimGraph(mesh, m_anims);

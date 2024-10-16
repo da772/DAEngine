@@ -3,7 +3,7 @@
 #define DA_REVIEW
 
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <thread>
 #include <glm/glm.hpp>
 #include "stl/hashstring.h"
@@ -47,7 +47,7 @@ struct FMaterial
 	CHashString m_hash;
 	CHashString getHash();
 
-	static std::unordered_map<CHashString, FAssetData> ms_materialSaved;
+	static std::map<CHashString, FAssetData> ms_materialSaved;
 };
 
 class CModelLoader
@@ -58,9 +58,9 @@ public:
 	bool loadModel();
 	bool saveModel();
 
-	static std::unordered_map<CHashString, FAssetData> ms_modelSaved;
-	static std::unordered_map<CHashString, FAssetData> ms_skeleSaved;
-	static std::unordered_map<CHashString, FAssetData> ms_AnimSaved;
+	static std::map<CHashString, FAssetData> ms_modelSaved;
+	static std::map<CHashString, FAssetData> ms_skeleSaved;
+	static std::map<CHashString, FAssetData> ms_AnimSaved;
 	
 	static std::mutex ms_mutex;
 

@@ -54,3 +54,5 @@ game/shaders/timestamp.txt
 game/assets/timestamp.txt
 /.VSCodeCounter
 *.opt
+asset_cache.bin*
+output.txt*

@@ -47,9 +47,9 @@ void CTestBed01Level::initialize()
 	// Test Bed
 	{
 		da::CEntity* testBed = da::CSceneManager::getScene()->createEntity();
-		da::CStaticMesh* colMesh = CAssetHelper::create(Model::dungeon_test_col);
-		da::FComponentRef<da::CSmeshComponent> meshComponent = testBed->addComponent<da::CSmeshComponent>(CAssetHelper::create(Model::dungeon_test));
-		CAssetHelper::set_material(Material::dungeon_test_Mat, meshComponent->getStaticMesh());
+		da::CStaticMesh* colMesh = CAssetHelper::create(EModel::dungeon_test_col);
+		da::FComponentRef<da::CSmeshComponent> meshComponent = testBed->addComponent<da::CSmeshComponent>(CAssetHelper::create(EModel::dungeon_test));
+		CAssetHelper::set_material(EMaterial::dungeon_test_Mat, meshComponent->getStaticMesh());
 		
 
 		for (int i = 0; i < meshComponent->getStaticMesh()->getMaterialCount(); i++) {
@@ -104,8 +104,8 @@ void CTestBed01Level::initialize()
 		ramp->getTransform().setScale({ 5,10,5.f });
 		ramp->setTag(HASHSTR("ramp1"));
 
-		da::FComponentRef<da::CSmeshComponent> meshComponent = ramp->addComponent<da::CSmeshComponent>(CAssetHelper::create(Model::cube));
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CAssetHelper::create(Texture::tex_debug_grid_01));
+		da::FComponentRef<da::CSmeshComponent> meshComponent = ramp->addComponent<da::CSmeshComponent>(CAssetHelper::create(EModel::cube));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CAssetHelper::create(ETexture::tex_debug_grid_01));
 
 		ramp->addComponent<da::CRigidBodyComponent>(
 			da::IPhysicsRigidBody::create(da::CPhysicsShapeCube::create({ 5.f,10.f,5.f })
@@ -121,12 +121,12 @@ void CTestBed01Level::initialize()
 		transformObj->getTransform().setRotation({ 0,0,0 });
 		transformObj->setTag(HASHSTR("dummy"));
 
-		da::FComponentRef<da::CSmeshComponent> mesh = transformObj->addComponent<da::CSmeshComponent>(CAssetHelper::create(Model::target_dummy));
-		CAssetHelper::set_material(Material::target_dummy_Mat, mesh->getStaticMesh());
+		da::FComponentRef<da::CSmeshComponent> mesh = transformObj->addComponent<da::CSmeshComponent>(CAssetHelper::create(EModel::target_dummy));
+		CAssetHelper::set_material(EMaterial::target_dummy_Mat, mesh->getStaticMesh());
 		mesh->getStaticMesh()->getMaterial(0).metallicFactor = 0.f;
 		mesh->getStaticMesh()->getMaterial(0).roughnessFactor = 1.f;
 
-		da::CStaticMesh* colMesh = CAssetHelper::create(Model::target_dummy_collision);
+		da::CStaticMesh* colMesh = CAssetHelper::create(EModel::target_dummy_collision);
 
 		transformObj->addComponent<da::CRigidBodyComponent>(
 			da::IPhysicsRigidBody::create(da::CPhysicsShapeTriangleMesh::create(colMesh)
@@ -141,10 +141,10 @@ void CTestBed01Level::initialize()
 		arena->getTransform().setRotation({ 0,0,0 });
 		arena->setTag(HASHSTR("arena"));
 
-		da::FComponentRef<da::CSmeshComponent> meshComponent = arena->addComponent<da::CSmeshComponent>(CAssetHelper::create(Model::prop_gladiator_arena));
+		da::FComponentRef<da::CSmeshComponent> meshComponent = arena->addComponent<da::CSmeshComponent>(CAssetHelper::create(EModel::prop_gladiator_arena));
 		meshComponent->getStaticMesh()->castShadows(false);
-		CAssetHelper::set_material(Material::prop_gladiator_arena_Mat, meshComponent->getStaticMesh());
-		da::CStaticMesh* collision = CAssetHelper::create(Model::prop_collision_gladiator_arena);
+		CAssetHelper::set_material(EMaterial::prop_gladiator_arena_Mat, meshComponent->getStaticMesh());
+		da::CStaticMesh* collision = CAssetHelper::create(EModel::prop_collision_gladiator_arena);
 		/*arena->addComponent<da::CRigidBodyComponent>(da::IPhysicsRigidBody::create(
 			da::CPhysicsShapeTriangleMesh::create(collision)
 			, da::CPhysicsDefaultMotionState::create(arena->getTransform().matrix())

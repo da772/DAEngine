@@ -7,7 +7,9 @@
 nvtt::Context CTextureLoader::ms_context(true);
 std::mutex CTextureLoader::ms_mutex;
 
-std::unordered_map<CHashString, FAssetData> CTextureLoader::ms_textureSaved;
+
+std::set<std::string> FAssetData::s_allFiles;
+std::map<CHashString, FAssetData> CTextureLoader::ms_textureSaved;
 
 CTextureLoader::CTextureLoader(const std::string& path, const std::string& targetPath, const std::string& name) 
 	: m_path(path), m_targetPath(targetPath), m_name(name)
@@ -158,7 +160,7 @@ bool CTextureLoader::saveTexture()
 
 	CHashString hash = HASHSTR(relOutPath.c_str());
 
-	ms_textureSaved[hash] = { relPath, m_name, relOutPath, hash };
+	ms_textureSaved[hash] = { m_path, m_name, relOutPath, hash };
 }
 
 const std::string& CTextureLoader::getTargetPath() const
@@ -181,8 +183,81 @@ const uint32_t CTextureLoader::getDataHash() const
 	return m_dataHash;
 }
 
-const std::unordered_map<CHashString, FAssetData>& CTextureLoader::getTextures()
+const std::map<CHashString, FAssetData>& CTextureLoader::getTextures()
 {
 	return ms_textureSaved;
 }
 
+void FAssetData::serialize(std::ostringstream& stream, const std::map<CHashString, FAssetData>& data, uint64_t saveTime)
+{
+	size_t dataSize = data.size();
+	stream.write((char*)&dataSize, sizeof(size_t));
+
+	for (const std::pair<CHashString, FAssetData>& kv : data)
+	{
+		size_t size = strlen(kv.first.c_str());
+		stream.write((const char*)& size, sizeof(size));
+		stream.write(kv.first.c_str(), size);
+
+		size = strlen(kv.second.Name.c_str());
+		stream.write((const char*)&size, sizeof(size));
+		stream.write(kv.second.Name.c_str(), size);
+
+		size = strlen(kv.second.Path.c_str());
+		stream.write((const char*)&size, sizeof(size));
+		stream.write(kv.second.Path.c_str(), size);
+
+		size = strlen(kv.second.OgPath.c_str());
+		stream.write((const char*)&size, sizeof(size));
+		stream.write(kv.second.OgPath.c_str(), size);
+
+		size = strlen(kv.second.DataHash.c_str());
+		stream.write((const char*)&size, sizeof(size));
+		stream.write(kv.second.DataHash.c_str(), size);
+	}
+}
+
+std::map<CHashString, FAssetData> FAssetData::deserialize(std::fstream& stream, uint64_t& saveTime)
+{
+	std::map<CHashString, FAssetData> result;
+	uint64_t dataSize = 0;
+	stream.read((char*)&dataSize, sizeof(size_t));
+
+	char buffer[4096];
+
+	for (uint64_t i = 0; i < dataSize; i++)
+	{
+		FAssetData data;
+		
+		size_t size = 0;
+		stream.read((char*)&size, sizeof(size));
+		stream.read(buffer, size);
+		CHashString key = CHashString(buffer, size);
+
+		size = 0;
+		stream.read((char*)&size, sizeof(size));
+		stream.read(buffer, size);
+		data.Name = std::string(buffer, size);
+
+		size = 0;
+		stream.read((char*)&size, sizeof(size));
+		stream.read(buffer, size);
+		data.Path = std::string(buffer, size);
+
+		size = 0;
+		stream.read((char*)&size, sizeof(size));
+		stream.read(buffer, size);
+		data.OgPath = std::string(buffer, size);
+
+		FAssetData::s_allFiles.insert(data.OgPath);
+
+		size = 0;
+		stream.read((char*)&size, sizeof(size));
+		stream.read(buffer, size);
+		data.DataHash = CHashString(buffer, size);
+
+		result[key] = data;
+	}
+
+	return result;
+}

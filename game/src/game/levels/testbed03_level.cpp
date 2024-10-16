@@ -26,10 +26,10 @@ void CTestBed03Level::initialize()
 	// Test Bed
 	{
 		da::CEntity* testBed = da::CSceneManager::getScene()->createEntity();
-		da::CStaticMesh* colMesh = CAssetHelper::create(Model::plane100);
+		da::CStaticMesh* colMesh = CAssetHelper::create(EModel::plane100);
 		da::FComponentRef<da::CSmeshComponent> meshComponent = testBed->addComponent<da::CSmeshComponent>(colMesh);
 
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CAssetHelper::create(Texture::tex_debug_grid_01));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CAssetHelper::create(ETexture::tex_debug_grid_01));
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(0).uvScale = { 40.f,40.f };
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
@@ -52,10 +52,10 @@ void CTestBed03Level::initialize()
 	// Ramp
 	{
 		da::CEntity* testBed = da::CSceneManager::getScene()->createEntity();
-		da::CStaticMesh* colMesh = CAssetHelper::create(Model::ramp);
+		da::CStaticMesh* colMesh = CAssetHelper::create(EModel::ramp);
 		da::FComponentRef<da::CSmeshComponent> meshComponent = testBed->addComponent<da::CSmeshComponent>(colMesh);
 
-		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CAssetHelper::create(Texture::tex_debug_grid_01));
+		meshComponent->getStaticMesh()->getMaterial(0).setBaseColorTexture(CAssetHelper::create(ETexture::tex_debug_grid_01));
 		meshComponent->getStaticMesh()->getMaterial(0).metallicFactor = 0.0;
 		meshComponent->getStaticMesh()->getMaterial(0).roughnessFactor = 1.0;
 		meshComponent->getStaticMesh()->getMaterial(0).doubleSided = true;

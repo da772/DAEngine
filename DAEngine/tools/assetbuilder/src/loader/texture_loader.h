@@ -12,7 +12,13 @@ struct FAssetData
 	std::string Name;
 	std::string Path;
 	CHashString DataHash;
+
+	static void serialize(std::ostringstream& stream, const std::map<CHashString, FAssetData>& data, uint64_t saveTime);
+	static std::map<CHashString, FAssetData> deserialize(std::fstream& stream, uint64_t& saveTime);
+
+	static std::set<std::string> s_allFiles;
 };
+
 
 
 class CTextureLoader
@@ -29,7 +35,7 @@ public:
 	const std::string& getName() const;
 	const CHashString& getHash() const;
 	const uint32_t getDataHash() const;
-	static const std::unordered_map<CHashString, FAssetData>& getTextures();
+	static const std::map<CHashString, FAssetData>& getTextures();
 
 private:
 	std::string m_path, m_targetPath, m_name;
@@ -39,5 +45,5 @@ private:
 	nvtt::Surface m_surface;
 	static nvtt::Context ms_context;
 	static std::mutex ms_mutex;
-	static std::unordered_map<CHashString, FAssetData > ms_textureSaved;
+	static std::map<CHashString, FAssetData > ms_textureSaved;
 };

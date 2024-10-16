@@ -12,10 +12,10 @@
 #include <stl/guid.h>
 
 
-std::unordered_map<CHashString, FAssetData> FMaterial::ms_materialSaved;
-std::unordered_map <CHashString, FAssetData> CModelLoader::ms_modelSaved;
-std::unordered_map<CHashString, FAssetData> CModelLoader::ms_skeleSaved;
-std::unordered_map<CHashString, FAssetData> CModelLoader::ms_AnimSaved;
+std::map<CHashString, FAssetData> FMaterial::ms_materialSaved;
+std::map <CHashString, FAssetData> CModelLoader::ms_modelSaved;
+std::map<CHashString, FAssetData> CModelLoader::ms_skeleSaved;
+std::map<CHashString, FAssetData> CModelLoader::ms_AnimSaved;
 
 std::mutex CModelLoader::ms_mutex;
 
@@ -562,9 +562,9 @@ bool CModelLoader::saveModel()
 		std::string path = (m_materialTargetPath + matName + ".mat");
 		std::string hashStr = relOutPath + m_name + "_Mat.mat";
 
-		CHashString hash = HASHSTR(hashStr.c_str());
+		CHashString hash = HASHSTR(hashStr.c_str(), hashStr.size());
 
-		FMaterial::ms_materialSaved[HASHSTR(hash.c_str())] = { m_path, matName, path, hash };
+		FMaterial::ms_materialSaved[HASHSTR(hash.c_str())] = { m_path, matName, hashStr, hash };
 
 		std::ostringstream outStream;
 		size_t materialCount = m_materials.size();
@@ -698,8 +698,8 @@ bool CModelLoader::saveModel()
 		std::string apath = (m_animTargetPath + matName + ".anim");
 		std::string hashStr = relOutPath + m_name + ".anim";
 
-		CHashString hash = HASHSTR(hashStr.c_str());
-		ms_AnimSaved[HASHSTR(hash.c_str())] = { m_path, matName, apath , hash };
+		CHashString hash = HASHSTR(hashStr.c_str(), hashStr.size());
+		ms_AnimSaved[HASHSTR(hash.c_str())] = { m_path, matName, hashStr , hash };
 
 		std::ostringstream animStream;
 		
@@ -787,15 +787,15 @@ bool CModelLoader::saveModel()
 	out.write(outStream.str().c_str(), outStream.str().size());
 	out.close();
 
-	CHashString hash = HASHSTR(relOutPath.c_str());
+	CHashString hash = HASHSTR(relOutPath.c_str(), relOutPath.size());
 
 	if (m_skmeshes.empty() && !m_animData.HasAnim)
 	{
-		ms_modelSaved[hash] = { relPath, m_name, relOutPath, HASHSTR(relOutPath.c_str()) };
+		ms_modelSaved[hash] = { m_path, m_name, relOutPath, hash };
 	}
 	else
 	{
-		ms_skeleSaved[hash] = { relPath, m_name, relOutPath, HASHSTR(relOutPath.c_str()) };
+		ms_skeleSaved[hash] = { m_path, m_name, relOutPath, hash };
 	}
 	
 	return true;

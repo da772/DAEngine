@@ -9,15 +9,15 @@
 class CAssetHelper
 {
 public:
-	static da::CStaticMesh* create(Model model);
-	static da::CGraphicsTexture2D* create(Texture texture);
-	static da::CSkeletalMesh* create(Skeleton skeleton);
-	static da::CSkeletalAnimation* create(Animation animation, da::CSkeletalMesh* skeleton);
-	static da::CSkeletalAnimator* create_animator(Animation animation, da::CSkeletalMesh* skeleton);
-	static void set_material(Material material, da::CStaticMesh* mesh);
-	static void set_material(Material material, da::CSkeletalMesh* mesh);
+	static da::CStaticMesh* create(EModel model);
+	static da::CGraphicsTexture2D* create(ETexture texture);
+	static da::CSkeletalMesh* create(ESkeleton skeleton);
+	static da::CSkeletalAnimation* create(EAnimation animation, da::CSkeletalMesh* skeleton);
+	static da::CSkeletalAnimator* create_animator(EAnimation animation, da::CSkeletalMesh* skeleton);
+	static void set_material(EMaterial material, da::CStaticMesh* mesh);
+	static void set_material(EMaterial material, da::CSkeletalMesh* mesh);
 
 private:
-	static void set_material_internal(Material materialEnum, std::function<da::FMaterialData*(uint32_t)> getMaterial);
+	static void set_material_internal(EMaterial materialEnum, std::function<da::FMaterialData*(uint32_t)> getMaterial);
 
 };
