@@ -18,6 +18,16 @@ da::CSkeletalMesh* CAssetHelper::create(Skeleton skeleton)
 	return da::CSkeletalMeshFactory::create(CFileMapGenerator::get_filepath(CHashString((uint64_t)skeleton)), true);
 }
 
+da::CSkeletalAnimation* CAssetHelper::create(Animation animation, da::CSkeletalMesh* skeleton)
+{
+	return new da::CSkeletalAnimation(CFileMapGenerator::get_filepath(CHashString((uint64_t)animation)), skeleton, true);
+}
+
+da::CSkeletalAnimator* CAssetHelper::create_animator(Animation animation, da::CSkeletalMesh* skeleton)
+{
+	return new da::CSkeletalAnimator(new da::CSkeletalAnimation(CFileMapGenerator::get_filepath(CHashString((uint64_t)animation)), skeleton, true), true);
+}
+
 void CAssetHelper::set_material(Material material, da::CSkeletalMesh* mesh)
 {
 	set_material_internal(material, [mesh](uint32_t i) { return &mesh->getMaterial(i); });

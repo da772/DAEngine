@@ -82,7 +82,8 @@ int main(int argc, const char* argv[])
 
 
 		std::string dir = outPath;
-		switch (ext.hash())
+		uint64_t hash = ext.hash();
+		switch (hash)
 		{
 		case HASH(".jpg"):
 		case HASH(".jpeg"):
@@ -163,8 +164,6 @@ int main(int argc, const char* argv[])
 	out.close();
 
 	CThreadPool::get().wait();
-	
-
 	{
 
 		std::ofstream outEnum;
@@ -233,6 +232,25 @@ int main(int argc, const char* argv[])
 		outEnum << "{" << std::endl;
 
 		for (const auto& kv : FMaterial::ms_materialSaved) {
+			outEnum << "\t";
+			outEnum << "/*" << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << "*/" << std::endl;
+			outEnum << "\t" << kv.second.Name << " = " << kv.second.DataHash.hash() << "," << std::endl << std::endl;
+		}
+
+		outEnum << "};" << std::endl;
+		outEnum.close();
+	}
+
+	{
+
+		std::ofstream outEnum;
+		outEnum.open((enumPath.string() + std::string("animation.generated.h")).c_str(), std::ios::out | std::ios::trunc);
+
+		outEnum << "#pragma once" << std::endl << std::endl;
+		outEnum << "enum class Animation : unsigned long long" << std::endl;
+		outEnum << "{" << std::endl;
+
+		for (const auto& kv : CModelLoader::ms_AnimSaved) {
 			outEnum << "\t";
 			outEnum << "/*" << kv.second.Name << " : " << kv.second.OgPath << " : " << kv.second.Path << "*/" << std::endl;
 			outEnum << "\t" << kv.second.Name << " = " << kv.second.DataHash.hash() << "," << std::endl << std::endl;

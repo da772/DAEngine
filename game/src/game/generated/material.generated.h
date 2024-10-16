@@ -11,18 +11,6 @@ enum class Material : unsigned long long
 	/*navmesh_Mat : C:\Dev\DAEngine\game\assets\source\models\navmesh.fbx : C:\Dev\DAEngine\game\assets\materials\models\navmesh_Mat.mat*/
 	navmesh_Mat = 12495307499327277934,
 
-	/*plane100_Mat : C:\Dev\DAEngine\game\assets\source\models\plane100.fbx : C:\Dev\DAEngine\game\assets\materials\models\plane100_Mat.mat*/
-	plane100_Mat = 9415002426168040242,
-
-	/*ramp_Mat : C:\Dev\DAEngine\game\assets\source\models\ramp.fbx : C:\Dev\DAEngine\game\assets\materials\models\ramp_Mat.mat*/
-	ramp_Mat = 1645884462572916557,
-
-	/*cone_Mat : C:\Dev\DAEngine\game\assets\source\models\cone.fbx : C:\Dev\DAEngine\game\assets\materials\models\cone_Mat.mat*/
-	cone_Mat = 16282026761436331405,
-
-	/*cube_Mat : C:\Dev\DAEngine\game\assets\source\models\cube.fbx : C:\Dev\DAEngine\game\assets\materials\models\cube_Mat.mat*/
-	cube_Mat = 14781322892457219859,
-
 	/*SwordSlash_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\mannequin\SwordSlash.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\mannequin\SwordSlash_Mat.mat*/
 	SwordSlash_Mat = 7510888223653092176,
 
@@ -34,6 +22,18 @@ enum class Material : unsigned long long
 
 	/*plane_Mat : C:\Dev\DAEngine\game\assets\source\models\plane.fbx : C:\Dev\DAEngine\game\assets\materials\models\plane_Mat.mat*/
 	plane_Mat = 12657596669329658240,
+
+	/*plane100_Mat : C:\Dev\DAEngine\game\assets\source\models\plane100.fbx : C:\Dev\DAEngine\game\assets\materials\models\plane100_Mat.mat*/
+	plane100_Mat = 9415002426168040242,
+
+	/*cube_Mat : C:\Dev\DAEngine\game\assets\source\models\cube.fbx : C:\Dev\DAEngine\game\assets\materials\models\cube_Mat.mat*/
+	cube_Mat = 14781322892457219859,
+
+	/*ramp_Mat : C:\Dev\DAEngine\game\assets\source\models\ramp.fbx : C:\Dev\DAEngine\game\assets\materials\models\ramp_Mat.mat*/
+	ramp_Mat = 1645884462572916557,
+
+	/*cone_Mat : C:\Dev\DAEngine\game\assets\source\models\cone.fbx : C:\Dev\DAEngine\game\assets\materials\models\cone_Mat.mat*/
+	cone_Mat = 16282026761436331405,
 
 	/*dungeon_test_Mat : C:\Dev\DAEngine\game\assets\source\models\props\level\dungeon_test.fbx : C:\Dev\DAEngine\game\assets\materials\models\props\level\dungeon_test_Mat.mat*/
 	dungeon_test_Mat = 6338350325235310644,
@@ -86,14 +86,14 @@ enum class Material : unsigned long long
 	/*prop_weap_sword_Mat : C:\Dev\DAEngine\game\assets\source\models\props\weapon\prop_weap_sword.fbx : C:\Dev\DAEngine\game\assets\materials\models\props\weapon\prop_weap_sword_Mat.mat*/
 	prop_weap_sword_Mat = 2159062025713362053,
 
+	/*Anim_DK2_Run_F_IP_01_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\ue_mannequin\Anim_DK2_Run_F_IP_01.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\ue_mannequin\Anim_DK2_Run_F_IP_01_Mat.mat*/
+	Anim_DK2_Run_F_IP_01_Mat = 11892740312115666697,
+
 	/*Anim_DK2_Combo_A1_IP_01_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\ue_mannequin\Anim_DK2_Combo_A1_IP_01.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\ue_mannequin\Anim_DK2_Combo_A1_IP_01_Mat.mat*/
 	Anim_DK2_Combo_A1_IP_01_Mat = 1873295947901505218,
 
 	/*Anim_DK2_Idle_RM_01_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\ue_mannequin\Anim_DK2_Idle_RM_01.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\ue_mannequin\Anim_DK2_Idle_RM_01_Mat.mat*/
 	Anim_DK2_Idle_RM_01_Mat = 4658287449225032543,
-
-	/*Anim_DK2_Run_F_IP_01_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\ue_mannequin\Anim_DK2_Run_F_IP_01.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\ue_mannequin\Anim_DK2_Run_F_IP_01_Mat.mat*/
-	Anim_DK2_Run_F_IP_01_Mat = 11892740312115666697,
 
 	/*Anim_DK2_Combo_A2_IP_01_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\ue_mannequin\Anim_DK2_Combo_A2_IP_01.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\ue_mannequin\Anim_DK2_Combo_A2_IP_01_Mat.mat*/
 	Anim_DK2_Combo_A2_IP_01_Mat = 11560831039861606728,
@@ -119,23 +119,17 @@ enum class Material : unsigned long long
 	/*SwordWalk_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\mannequin\SwordWalk.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\mannequin\SwordWalk_Mat.mat*/
 	SwordWalk_Mat = 1113570505941161717,
 
-	/*prop_collision_veh_sports_01a_Mat : C:\Dev\DAEngine\game\assets\source\models\props\veh\prop_collision_veh_sports_01a.fbx : C:\Dev\DAEngine\game\assets\materials\models\props\veh\prop_collision_veh_sports_01a_Mat.mat*/
-	prop_collision_veh_sports_01a_Mat = 12091021081924747433,
-
 	/*archer_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\archer\archer.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\archer\archer_Mat.mat*/
 	archer_Mat = 1042181048974828566,
 
 	/*prop_veh_sports_01a_Mat : C:\Dev\DAEngine\game\assets\source\models\props\veh\prop_veh_sports_01a.fbx : C:\Dev\DAEngine\game\assets\materials\models\props\veh\prop_veh_sports_01a_Mat.mat*/
 	prop_veh_sports_01a_Mat = 14506259139934677718,
 
+	/*prop_collision_veh_sports_01a_Mat : C:\Dev\DAEngine\game\assets\source\models\props\veh\prop_collision_veh_sports_01a.fbx : C:\Dev\DAEngine\game\assets\materials\models\props\veh\prop_collision_veh_sports_01a_Mat.mat*/
+	prop_collision_veh_sports_01a_Mat = 12091021081924747433,
+
 	/*target_dummy_Mat : C:\Dev\DAEngine\game\assets\source\models\props\misc\target_dummy.fbx : C:\Dev\DAEngine\game\assets\materials\models\props\misc\target_dummy_Mat.mat*/
 	target_dummy_Mat = 11174268676722991835,
-
-	/*Walking_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\mannequin\Walking.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\mannequin\Walking_Mat.mat*/
-	Walking_Mat = 3167290580927814087,
-
-	/*jogRight_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\archer\jogRight.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\archer\jogRight_Mat.mat*/
-	jogRight_Mat = 15095906000471871687,
 
 	/*idle_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\archer\idle.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\archer\idle_Mat.mat*/
 	idle_Mat = 12817728439670340378,
@@ -145,6 +139,12 @@ enum class Material : unsigned long long
 
 	/*button_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\archer\button.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\archer\button_Mat.mat*/
 	button_Mat = 2333145356347585839,
+
+	/*Walking_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\mannequin\Walking.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\mannequin\Walking_Mat.mat*/
+	Walking_Mat = 3167290580927814087,
+
+	/*jogRight_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\archer\jogRight.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\archer\jogRight_Mat.mat*/
+	jogRight_Mat = 15095906000471871687,
 
 	/*Dancing2_Mat : C:\Dev\DAEngine\game\assets\source\skeletons\mannequin\Dancing2.fbx : C:\Dev\DAEngine\game\assets\materials\skeletons\mannequin\Dancing2_Mat.mat*/
 	Dancing2_Mat = 13141984314835940087,

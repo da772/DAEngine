@@ -15,6 +15,7 @@
 std::unordered_map<CHashString, FAssetData> FMaterial::ms_materialSaved;
 std::unordered_map <CHashString, FAssetData> CModelLoader::ms_modelSaved;
 std::unordered_map<CHashString, FAssetData> CModelLoader::ms_skeleSaved;
+std::unordered_map<CHashString, FAssetData> CModelLoader::ms_AnimSaved;
 
 std::mutex CModelLoader::ms_mutex;
 
@@ -28,6 +29,10 @@ CModelLoader::CModelLoader(const std::string& path, const std::string& targetPat
 	m_materialTargetPath = dir;
 	m_materialTargetPath.insert(it + sizeof("assets"), "materials\\");
 	std::filesystem::create_directories(m_materialTargetPath);
+
+	m_animTargetPath = dir;
+	m_animTargetPath.insert(it + sizeof("assets"), "anim\\");
+	std::filesystem::create_directories(m_animTargetPath);
 
 	m_textureTargetPath = dir;
 	m_textureTargetPath.insert(it + sizeof("assets"), "textures\\");
@@ -52,7 +57,7 @@ bool CModelLoader::loadModel()
 		| aiProcess_FlipUVs
 	);
 
-	if (pScene->mNumMeshes && pScene->mMeshes[0]->HasBones())
+	if (pScene->HasAnimations() || pScene->mNumMeshes && pScene->mMeshes[0]->HasBones())
 	{
 		return loadSkeleton(pScene);
 	}
@@ -277,6 +282,17 @@ bool CModelLoader::loadSkeleton(const aiScene* pScene)
 		m_materials.push_back(out);
 	}
 
+	if (pScene->HasAnimations())
+	{
+		m_animData.HasAnim = true;
+		aiAnimation* anim = pScene->mAnimations[0];
+		m_animData.Duration = anim->mDuration;
+		m_animData.TicksPerSecond = anim->mTicksPerSecond;
+
+		ReadHeirarchyData(m_animData.Node, pScene->mRootNode);
+		ReadMissingBones(anim);
+	}
+
 	return true;
 }
 
@@ -466,6 +482,60 @@ bool CModelLoader::loadStatic(const aiScene* pScene)
 	return true;
 }
 
+const da::FBoneInfo& CModelLoader::addBone(CHashString name)
+{
+	const std::unordered_map<CHashString, da::FBoneInfo>::iterator& it = m_boneMap.find(name);
+
+	if (it != m_boneMap.end())
+	{
+		return it->second;
+	}
+
+	m_boneMap[name] = { m_boneCount++, glm::mat4(1.f) };
+	return m_boneMap[name];
+}
+
+void CModelLoader::ReadHeirarchyData(da::FAssimpNodeData& dest, const aiNode* src)
+{
+	dest.name = src->mName.data;
+	dest.transformation = AssimpGLMHelpers::ConvertMatrixToGLMFormat(src->mTransformation);
+	dest.childrenCount = src->mNumChildren;
+
+	for (int i = 0; i < src->mNumChildren; i++)
+	{
+		da::FAssimpNodeData newData;
+		ReadHeirarchyData(newData, src->mChildren[i]);
+		dest.children.push_back(newData);
+	}
+}
+
+void CModelLoader::ReadMissingBones(const aiAnimation* animation)
+{
+	int size = animation->mNumChannels;
+
+	//reading channels(bones engaged in an animation and their keyframes)
+	for (int i = 0; i < size; i++)
+	{
+		auto channel = animation->mChannels[i];
+		CHashString boneName = channel->mNodeName.data;
+
+		bool boneMapped = m_BoneInfoMap.find(boneName) != m_BoneInfoMap.end() && false;
+
+		if (!boneMapped)
+		{
+			m_BoneInfoMap[boneName].id = 0;
+			m_BoneInfoMap[boneName].offset = {};
+		}
+
+		if (m_Bones.find(boneName) != m_Bones.end())
+		{
+			continue;
+		}
+
+		m_Bones[boneName] = da::CAnimatedBone(channel->mNodeName.data, 0, channel);
+	}
+}
+
 void CModelLoader::setVertexBoneData(da::FSkeletalVertexBase& vertex, int boneID, float weight) const
 {
 	for (int i = 0; i < MAX_BONE_INFLUENCE; ++i)
@@ -562,8 +632,10 @@ bool CModelLoader::saveModel()
 
 	std::ostringstream outStream;
 
-	if (!m_meshes.empty())
+	if (!m_meshes.empty() && !m_animData.HasAnim)
 	{
+		relOutPath += ".mdel";
+		m_targetPath += ".mdel";
 		size_t meshCount = m_meshes.size();
 		size_t materialCount = m_materials.size();
 		outStream.write((const char*)&meshCount, sizeof(size_t));
@@ -581,8 +653,10 @@ bool CModelLoader::saveModel()
 			outStream.write((const char*)m_meshes[i].Indices.data(), m_meshes[i].Indices.size() * sizeof(uint32_t));
 		}
 	}
-	else
+	else if (!m_skmeshes.empty())
 	{
+		relOutPath += ".skel";
+		m_targetPath += ".skel";
 		size_t meshCount = m_skmeshes.size();
 		size_t materialCount = m_materials.size();
 		outStream.write((const char*)&meshCount, sizeof(size_t));
@@ -612,22 +686,102 @@ bool CModelLoader::saveModel()
 			outStream.write((const char*)kv.first.c_str(), boneNameSize);
 			outStream.write((const char*)&kv.second, sizeof(da::FBoneInfo));
 		}
-
 	}
 
-	if (m_skmeshes.empty())
+	if (m_animData.HasAnim)
 	{
-		relOutPath += ".mdel";
-		m_targetPath += ".mdel";
-	}
-	else
-	{
-		relOutPath += ".skel";
-		m_targetPath += ".skel";
-	}
-	
+		std::string relOutPath;
+		size_t i = m_animTargetPath.find("assets");
+		relOutPath = m_animTargetPath.substr(i, m_animTargetPath.size() - i);
 
-	
+		std::string matName = m_name;
+		std::string apath = (m_animTargetPath + matName + ".anim");
+		std::string hashStr = relOutPath + m_name + ".anim";
+
+		CHashString hash = HASHSTR(hashStr.c_str());
+		ms_AnimSaved[HASHSTR(hash.c_str())] = { m_path, matName, apath , hash };
+
+		std::ostringstream animStream;
+		
+		animStream.write((char*)&m_animData.Duration, sizeof(float));
+		animStream.write((char*)&m_animData.TicksPerSecond, sizeof(float));
+
+		std::deque<da::FAssimpNodeData*> queue = { &m_animData.Node };
+
+		while (!queue.empty())
+		{
+			da::FAssimpNodeData* data = queue.front();
+			size_t nameSize = strlen(data->name.c_str());
+			queue.erase(queue.begin());
+			animStream.write((char*)&data->transformation, sizeof(glm::mat4));
+			animStream.write((char*)&nameSize, sizeof(nameSize));
+			animStream.write((char*)data->name.c_str(), nameSize);
+			animStream.write((char*)&data->childrenCount, sizeof(int));
+
+			for (int i = 0; i < data->childrenCount; i++)
+			{
+				queue.push_front(&data->children[i]);
+			}
+			
+		}
+
+		uint64_t validityCheck = ANIM_PARSER_VALIDITY_SEC_01;
+		animStream.write((char*)&validityCheck, sizeof(uint64_t));
+
+		size_t boneInfoMapSize = m_BoneInfoMap.size();
+		animStream.write((char*)&boneInfoMapSize, sizeof(size_t));
+
+		for (const std::pair<CHashString, da::FBoneInfo>& kv : m_BoneInfoMap)
+		{
+			size_t nameSize = strlen(kv.first.c_str());
+			animStream.write((char*)&nameSize, sizeof(nameSize));
+			animStream.write(kv.first.c_str(), nameSize);
+			animStream.write((char*)&kv.second, sizeof(da::FBoneInfo));
+		}
+		
+		validityCheck = ANIM_PARSER_VALIDITY_SEC_02;
+		animStream.write((char*)&validityCheck, sizeof(uint64_t));
+
+		size_t boneSize = m_Bones.size();
+		animStream.write((char*)&boneSize, sizeof(size_t));
+
+		for (const std::pair<CHashString, da::CAnimatedBone>& kv : m_Bones)
+		{
+			size_t nameSize = strlen(kv.first.c_str());
+			animStream.write((char*)&nameSize, sizeof(nameSize));
+			animStream.write(kv.first.c_str(), nameSize);
+
+			animStream.write((char*)&kv.second.m_ID, sizeof(int));
+			animStream.write((char*)&kv.second.m_LocalTransform, sizeof(glm::mat4));
+
+			animStream.write((char*)&kv.second.m_NumPositions, sizeof(int));
+			for (int i = 0; i < kv.second.m_NumPositions; i++)
+			{
+				animStream.write((char*)&kv.second.m_Positions[i], sizeof(da::FKeyPosition));
+			}
+
+			animStream.write((char*)&kv.second.m_NumRotations, sizeof(int));
+			for (int i = 0; i < kv.second.m_NumRotations; i++)
+			{
+				animStream.write((char*)&kv.second.m_Rotations[i], sizeof(da::FKeyRotation));
+			}
+
+			animStream.write((char*)&kv.second.m_NumScalings, sizeof(int));
+			for (int i = 0; i < kv.second.m_NumScalings; i++)
+			{
+				animStream.write((char*)&kv.second.m_Scales[i], sizeof(da::FKeyScale));
+			}
+		}
+
+		validityCheck = ANIM_PARSER_VALIDITY_SEC_03;
+		animStream.write((char*)&validityCheck, sizeof(uint64_t));
+
+		std::ofstream out;
+		out.open(apath.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
+		out.write(animStream.str().c_str(), animStream.str().size());
+		out.close();
+	}
+
 	std::ofstream out;
 	out.open(path.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
 	out.write(outStream.str().c_str(), outStream.str().size());
@@ -635,7 +789,7 @@ bool CModelLoader::saveModel()
 
 	CHashString hash = HASHSTR(relOutPath.c_str());
 
-	if (m_skmeshes.empty())
+	if (m_skmeshes.empty() && !m_animData.HasAnim)
 	{
 		ms_modelSaved[hash] = { relPath, m_name, relOutPath, HASHSTR(relOutPath.c_str()) };
 	}

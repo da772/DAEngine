@@ -33,12 +33,15 @@ namespace da
 #endif
 
 	private:
-		bool m_running;
-		bool m_initialized  = false;
 		std::vector<IModule*> m_modules;
-		bool m_reset = false;
+		bool m_running : 1;
+		bool m_initialized : 1  = false;
+#ifdef DA_REVIEW
+		bool m_captureProfile : 1 = false;
 		bool m_sceneDebug = false;
 		bool m_ecsDebug = false;
+		bool m_reset = false;
+#endif
 	};
 	
 	extern CApp* createApp(int argc, const char** argv);

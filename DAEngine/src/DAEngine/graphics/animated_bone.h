@@ -4,24 +4,41 @@
 
 struct aiNodeAnim;
 
+
 namespace da {
+    class CSkeletalAnimation;
 
     struct FKeyPosition
     {
         glm::vec3 position;
         float timeStamp;
+
+        bool operator==(const FKeyPosition& rhs) const
+        {
+            return position == rhs.position && timeStamp == rhs.timeStamp;
+        }
     };
 
     struct FKeyRotation
     {
         glm::quat orientation;
         float timeStamp;
+
+		bool operator==(const FKeyRotation& rhs) const
+		{
+			return orientation == rhs.orientation && timeStamp == rhs.timeStamp;
+		}
     };
 
     struct FKeyScale
     {
         glm::vec3 scale;
         float timeStamp;
+
+		bool operator==(const FKeyScale& rhs) const
+		{
+			return scale == rhs.scale && timeStamp == rhs.timeStamp;
+		}
     };
 
     class CAnimatedBone
@@ -53,7 +70,40 @@ namespace da {
         current animation time */
         int GetScaleIndex(float animationTime);
 
-	private:
+		bool operator==(const CAnimatedBone& rhs) const
+		{
+            if (m_Positions != rhs.m_Positions)
+            {
+                return false;
+            }
+
+            if (m_Rotations != rhs.m_Rotations)
+            {
+                return false;
+			}
+            if (m_Scales != rhs.m_Scales)
+			{
+				return false;
+			}
+
+            if (m_ID != rhs.m_ID)
+            {
+                return false;
+            }
+
+            if (m_Name != rhs.m_Name)
+            {
+                return false;
+            }
+
+            return true;
+	    }
+
+#ifdef DA_TOOLS
+    public:
+#else
+    private:
+#endif
 		std::vector<FKeyPosition> m_Positions;
 		std::vector<FKeyRotation> m_Rotations;
 		std::vector<FKeyScale> m_Scales;
@@ -84,5 +134,7 @@ namespace da {
         and returns the scale matrix*/
         glm::mat4 InterpolateScaling(float animationTime);
 
+
+        friend class da::CSkeletalAnimation;
     };
 }

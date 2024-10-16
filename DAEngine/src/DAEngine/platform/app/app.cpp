@@ -26,13 +26,14 @@ namespace da
 {
 
 	CApp::CApp(int argc, const char** argv) : m_running(true), m_modules() {
-		PROFILE_START_CAPTURE()
 		initalizeInternal(argc, argv);
 	}
 
 	CApp::~CApp() {
 		shutdownInternal();
-		PROFILE_END_CAPTURE()
+#ifdef DA_REVIEW
+		if (m_captureProfile) PROFILE_END_CAPTURE()
+#endif
 	}
 
 	void CApp::initialize()
@@ -189,9 +190,13 @@ namespace da
 
 	void CApp::initalizeInternal(int argc, const char** argv)
 	{
+		CArgHandler::initialize(argc, argv);
+#ifdef DA_REVIEW
+		m_captureProfile = CArgHandler::contains(HASHSTR("profileCapture"));
+		if (m_captureProfile) PROFILE_START_CAPTURE()
+#endif
 		CLogger::initialize();
 		CWorkerPool::initialize();
-		CArgHandler::initialize(argc, argv);
 		std::string args = "Initialized with argc: %d\n";
 		for (size_t i = 0; i < argc; i++) {
 			args += std::string(argv[i]);
@@ -210,6 +215,9 @@ namespace da
 		CArgHandler::shutdown();
 		CLogger::shutdown();
 		CWorkerPool::shutdown();
+#ifdef DA_REVIEW
+		if (m_captureProfile) PROFILE_START_CAPTURE()
+#endif
 	}
 
 #ifdef DA_REVIEW

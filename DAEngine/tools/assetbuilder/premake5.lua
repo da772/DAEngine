@@ -21,10 +21,11 @@ project "assetbuilder"
 		"%{wks.location}/../thirdparty/glm"
 	}
 
-
     files {
 		"src/**.h",
 		"src/**.cpp",
+		"%{IncludeDir['da-core']}/graphics/animated_bone.h",
+		"%{IncludeDir['da-core']}/graphics/animated_bone.cpp"
 	}
 
 	links 
@@ -42,13 +43,17 @@ project "assetbuilder"
 
     filter "configurations:Release"
     filter "configurations:Debug"
-        
+    
+	defines
+	{
+		"DA_TOOLS"
+	}
 
     filter "system:windows"
         buildoptions {"/Zc:__cplusplus"}
         defines
         {
-            "__STDC_LIMIT_MACROS"
+            "__STDC_LIMIT_MACROS", "DA_TOOLS"
         }
         includedirs
         {

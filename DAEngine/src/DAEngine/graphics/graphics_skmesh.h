@@ -19,6 +19,11 @@ namespace da
 	{
 		int id;
 		glm::mat4 offset;
+
+		bool operator==(const FBoneInfo& rhs) const
+		{
+			return id == rhs.id && offset == rhs.offset;
+		}
 	};
 
 	struct FSkeletalMesh

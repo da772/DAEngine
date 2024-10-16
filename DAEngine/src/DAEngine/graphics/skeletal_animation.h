@@ -2,6 +2,10 @@
 #include "animated_bone.h"
 #include "graphics_skmesh.h"
 
+#define ANIM_PARSER_VALIDITY_SEC_01 HASH("ANIM_PARSER_VALIDITY_SEC_01")
+#define ANIM_PARSER_VALIDITY_SEC_02 HASH("ANIM_PARSER_VALIDITY_SEC_02")
+#define ANIM_PARSER_VALIDITY_SEC_03 HASH("ANIM_PARSER_VALIDITY_SEC_03")
+
 class aiAnimation;
 class aiNode;
 
@@ -13,12 +17,18 @@ namespace da
 		CHashString name;
 		int childrenCount;
 		std::vector<FAssimpNodeData> children;
+
+
+		bool operator ==(const FAssimpNodeData& other) const
+		{
+			return transformation == other.transformation && name == other.name && childrenCount == other.childrenCount;
+		}
 	};
 
 	class CSkeletalAnimation
 	{
 	public:
-		CSkeletalAnimation(const std::string& animationPath, CSkeletalMesh* model);
+		CSkeletalAnimation(const std::string& animationPath, CSkeletalMesh* model, bool binary);
 		CSkeletalAnimation(const std::string& name, const CSkeletalAnimation* copy);
 
 		inline CAnimatedBone* FindBone(const CHashString& name)
@@ -47,13 +57,15 @@ namespace da
 
 		inline const CHashString& getAnimName() const { return m_AnimName; }
 
+		bool compare(const CSkeletalAnimation* animations) const;
+
 	private:
 		void ReadMissingBones(const aiAnimation* animation, CSkeletalMesh& mesh);
 		void ReadHeirarchyData(FAssimpNodeData& dest, const aiNode* src);
 
 	private:
 		float m_Duration;
-		int m_TicksPerSecond;
+		float m_TicksPerSecond;
 		std::unordered_map<CHashString, CAnimatedBone> m_Bones;
 		FAssimpNodeData m_RootNode;
 		std::unordered_map<CHashString, FBoneInfo> m_BoneInfoMap;

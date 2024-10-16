@@ -2,6 +2,111 @@
 
 enum class Texture : unsigned long long
 {
+	/*assets\textures\skeletons\archer\idle_Alb_0.dds : idle_Alb_0 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Alb_0.dds*/
+	idle_Alb_0 = 10465938761299100754,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_36.dds : dungeon_test_Nrm_36 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_36.dds*/
+	dungeon_test_Nrm_36 = 2100359496188931914,
+
+	/*assets\textures\skeletons\archer\jog_Alb_2.dds : jog_Alb_2 : assets\source\skeletons\archer\jog.fbx : assets\textures\skeletons\archer\jog_Alb_2.dds*/
+	jog_Alb_2 = 6172939315632500554,
+
+	/*assets\textures\skeletons\archer\swing2_Alb_0.dds : swing2_Alb_0 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Alb_0.dds*/
+	swing2_Alb_0 = 5956435752738731850,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_1.dds : dungeon_test_Alb_1 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_1.dds*/
+	dungeon_test_Alb_1 = 8025475611387454642,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_61.dds : dungeon_test_Nrm_61 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_61.dds*/
+	dungeon_test_Nrm_61 = 17583279548925582578,
+
+	/*assets\textures\skeletons\archer\jog_Alb_0.dds : jog_Alb_0 : assets\source\skeletons\archer\jog.fbx : assets\textures\skeletons\archer\jog_Alb_0.dds*/
+	jog_Alb_0 = 12572385719210302706,
+
+	/*assets\textures\skeletons\archer\button_Nrm_0.dds : button_Nrm_0 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Nrm_0.dds*/
+	button_Nrm_0 = 12165574246891507442,
+
+	/*assets\textures\prop\misc\dummy_baseColor.dds : dummy_baseColor : assets\source\textures\prop\misc\dummy_baseColor.jpeg : assets\textures\prop\misc\dummy_baseColor.dds*/
+	dummy_baseColor = 13101498195675826041,
+
+	/*assets\textures\skeletons\archer\jogLeft_Alb_0.dds : jogLeft_Alb_0 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Alb_0.dds*/
+	jogLeft_Alb_0 = 9958326524826406585,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_80.dds : dungeon_test_Nrm_80 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_80.dds*/
+	dungeon_test_Nrm_80 = 11765630137645956409,
+
+	/*assets\textures\skeletons\archer\jogBack_Nrm_2.dds : jogBack_Nrm_2 : assets\source\skeletons\archer\jogBack.fbx : assets\textures\skeletons\archer\jogBack_Nrm_2.dds*/
+	jogBack_Nrm_2 = 16710381518983280441,
+
+	/*assets\textures\models\props\veh\prop_veh_sports_01a_Alb_0.dds : prop_veh_sports_01a_Alb_0 : assets\source\models\props\veh\prop_veh_sports_01a.fbx : assets\textures\models\props\veh\prop_veh_sports_01a_Alb_0.dds*/
+	prop_veh_sports_01a_Alb_0 = 11471087056444765497,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_85.dds : dungeon_test_Alb_85 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_85.dds*/
+	dungeon_test_Alb_85 = 17821428742367839,
+
+	/*assets\textures\models\props\weapon\prop_weap_sword_Nrm_0.dds : prop_weap_sword_Nrm_0 : assets\source\models\props\weapon\prop_weap_sword.fbx : assets\textures\models\props\weapon\prop_weap_sword_Nrm_0.dds*/
+	prop_weap_sword_Nrm_0 = 4860566610572771423,
+
+	/*assets\textures\skeletons\mannequin\Dancing1_Alb_0.dds : Dancing1_Alb_0 : assets\source\skeletons\mannequin\Dancing1.fbx : assets\textures\skeletons\mannequin\Dancing1_Alb_0.dds*/
+	Dancing1_Alb_0 = 11220926154990736543,
+
+	/*assets\textures\models\props\medieval\prop_med_anvil_Nrm_0.dds : prop_med_anvil_Nrm_0 : assets\source\models\props\medieval\prop_med_anvil.fbx : assets\textures\models\props\medieval\prop_med_anvil_Nrm_0.dds*/
+	prop_med_anvil_Nrm_0 = 15624911441092454559,
+
+	/*assets\textures\skeletons\archer\jog_Nrm_3.dds : jog_Nrm_3 : assets\source\skeletons\archer\jog.fbx : assets\textures\skeletons\archer\jog_Nrm_3.dds*/
+	jog_Nrm_3 = 11464165775176728427,
+
+	/*assets\textures\skeletons\mannequin\Dancing1_Alb_1.dds : Dancing1_Alb_1 : assets\source\skeletons\mannequin\Dancing1.fbx : assets\textures\skeletons\mannequin\Dancing1_Alb_1.dds*/
+	Dancing1_Alb_1 = 4415045714759940971,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_0.dds : camilla_02_Alb_0 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_0.dds*/
+	camilla_02_Alb_0 = 8489338532190961323,
+
+	/*assets\textures\skeletons\archer\button_Alb_2.dds : button_Alb_2 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Alb_2.dds*/
+	button_Alb_2 = 291464682890079659,
+
+	/*assets\textures\skeletons\archer\jogBack_Alb_0.dds : jogBack_Alb_0 : assets\source\skeletons\archer\jogBack.fbx : assets\textures\skeletons\archer\jogBack_Alb_0.dds*/
+	jogBack_Alb_0 = 3117529705319199659,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_77.dds : dungeon_test_Alb_77 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_77.dds*/
+	dungeon_test_Alb_77 = 5319448728248869011,
+
+	/*assets\textures\skeletons\archer\jog_Alb_1.dds : jog_Alb_1 : assets\source\skeletons\archer\jog.fbx : assets\textures\skeletons\archer\jog_Alb_1.dds*/
+	jog_Alb_1 = 13610564314360224915,
+
+	/*assets\textures\tex_debug_grid_01.dds : tex_debug_grid_01 : assets\source\textures\tex_debug_grid_01.png : assets\textures\tex_debug_grid_01.dds*/
+	tex_debug_grid_01 = 2699487840350785811,
+
+	/*assets\textures\skeletons\mannequin\Walking_Alb_0.dds : Walking_Alb_0 : assets\source\skeletons\mannequin\Walking.fbx : assets\textures\skeletons\mannequin\Walking_Alb_0.dds*/
+	Walking_Alb_0 = 3006257751369090323,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_86.dds : dungeon_test_Alb_86 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_86.dds*/
+	dungeon_test_Alb_86 = 12929819618957950148,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_57.dds : dungeon_test_Nrm_57 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_57.dds*/
+	dungeon_test_Nrm_57 = 8935232182400985796,
+
+	/*assets\textures\skeletons\archer\idle_Nrm_1.dds : idle_Nrm_1 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Nrm_1.dds*/
+	idle_Nrm_1 = 2058764669555012804,
+
+	/*assets\textures\surface\road\Tex_Fine_Road_D.dds : Tex_Fine_Road_D : assets\source\textures\surface\road\Tex_Fine_Road_D.png : assets\textures\surface\road\Tex_Fine_Road_D.dds*/
+	Tex_Fine_Road_D = 2344272204905809092,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_106.dds : dungeon_test_Alb_106 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_106.dds*/
+	dungeon_test_Alb_106 = 579802183912380770,
+
+	/*assets\textures\skeletons\archer\swing_Alb_2.dds : swing_Alb_2 : assets\source\skeletons\archer\swing.fbx : assets\textures\skeletons\archer\swing_Alb_2.dds*/
+	swing_Alb_2 = 11370096144900099938,
+
+	/*assets\textures\models\props\veh\prop_collision_veh_sports_01a_Alb_0.dds : prop_collision_veh_sports_01a_Alb_0 : assets\source\models\props\veh\prop_collision_veh_sports_01a.fbx : assets\textures\models\props\veh\prop_collision_veh_sports_01a_Alb_0.dds*/
+	prop_collision_veh_sports_01a_Alb_0 = 8313518236410366306,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_14.dds : camilla_02_Alb_14 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_14.dds*/
+	camilla_02_Alb_14 = 9414449709771013730,
+
+	/*assets\textures\models\props\road\prop_road_tile_01a_Alb_0.dds : prop_road_tile_01a_Alb_0 : assets\source\models\props\road\prop_road_tile_01a.fbx : assets\textures\models\props\road\prop_road_tile_01a_Alb_0.dds*/
+	prop_road_tile_01a_Alb_0 = 11988760278565432418,
+
 	/*assets\textures\skeletons\camilla\camilla_02_Nrm_24.dds : camilla_02_Nrm_24 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_24.dds*/
 	camilla_02_Nrm_24 = 15870887747555187118,
 
@@ -20,71 +125,26 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_0.dds : pesant_f_02_Alb_0 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_0.dds*/
 	pesant_f_02_Alb_0 = 7176545112189787438,
 
-	/*assets\textures\skeletons\archer\idle_Alb_0.dds : idle_Alb_0 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Alb_0.dds*/
-	idle_Alb_0 = 10465938761299100754,
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_17.dds : pesant_f_02_Alb_17 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_17.dds*/
+	pesant_f_02_Alb_17 = 14421692611729430376,
 
-	/*assets\textures\models\props\level\dungeon_test_Alb_106.dds : dungeon_test_Alb_106 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_106.dds*/
-	dungeon_test_Alb_106 = 579802183912380770,
+	/*assets\textures\skeletons\archer\sprint_Alb_0.dds : sprint_Alb_0 : assets\source\skeletons\archer\sprint.fbx : assets\textures\skeletons\archer\sprint_Alb_0.dds*/
+	sprint_Alb_0 = 1190583322368423784,
 
-	/*assets\textures\skeletons\archer\swing_Alb_2.dds : swing_Alb_2 : assets\source\skeletons\archer\swing.fbx : assets\textures\skeletons\archer\swing_Alb_2.dds*/
-	swing_Alb_2 = 11370096144900099938,
+	/*assets\textures\models\props\misc\target_dummy_Alb_0.dds : target_dummy_Alb_0 : assets\source\models\props\misc\target_dummy.fbx : assets\textures\models\props\misc\target_dummy_Alb_0.dds*/
+	target_dummy_Alb_0 = 13576375413806239753,
 
-	/*assets\textures\models\props\veh\prop_collision_veh_sports_01a_Alb_0.dds : prop_collision_veh_sports_01a_Alb_0 : assets\source\models\props\veh\prop_collision_veh_sports_01a.fbx : assets\textures\models\props\veh\prop_collision_veh_sports_01a_Alb_0.dds*/
-	prop_collision_veh_sports_01a_Alb_0 = 8313518236410366306,
+	/*assets\textures\models\props\weapon\prop_weap_sword_Alb_0.dds : prop_weap_sword_Alb_0 : assets\source\models\props\weapon\prop_weap_sword.fbx : assets\textures\models\props\weapon\prop_weap_sword_Alb_0.dds*/
+	prop_weap_sword_Alb_0 = 3491950834928095113,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_14.dds : camilla_02_Alb_14 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_14.dds*/
-	camilla_02_Alb_14 = 9414449709771013730,
-
-	/*assets\textures\models\props\road\prop_road_tile_01a_Alb_0.dds : prop_road_tile_01a_Alb_0 : assets\source\models\props\road\prop_road_tile_01a.fbx : assets\textures\models\props\road\prop_road_tile_01a_Alb_0.dds*/
-	prop_road_tile_01a_Alb_0 = 11988760278565432418,
-
-	/*assets\textures\skeletons\mannequin\Dancing1_Alb_0.dds : Dancing1_Alb_0 : assets\source\skeletons\mannequin\Dancing1.fbx : assets\textures\skeletons\mannequin\Dancing1_Alb_0.dds*/
-	Dancing1_Alb_0 = 11220926154990736543,
-
-	/*assets\textures\models\props\medieval\prop_med_anvil_Nrm_0.dds : prop_med_anvil_Nrm_0 : assets\source\models\props\medieval\prop_med_anvil.fbx : assets\textures\models\props\medieval\prop_med_anvil_Nrm_0.dds*/
-	prop_med_anvil_Nrm_0 = 15624911441092454559,
-
-	/*assets\textures\models\props\level\dungeon_test_Alb_85.dds : dungeon_test_Alb_85 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_85.dds*/
-	dungeon_test_Alb_85 = 17821428742367839,
-
-	/*assets\textures\models\props\weapon\prop_weap_sword_Nrm_0.dds : prop_weap_sword_Nrm_0 : assets\source\models\props\weapon\prop_weap_sword.fbx : assets\textures\models\props\weapon\prop_weap_sword_Nrm_0.dds*/
-	prop_weap_sword_Nrm_0 = 4860566610572771423,
-
-	/*assets\textures\skeletons\archer\jog_Nrm_3.dds : jog_Nrm_3 : assets\source\skeletons\archer\jog.fbx : assets\textures\skeletons\archer\jog_Nrm_3.dds*/
-	jog_Nrm_3 = 11464165775176728427,
-
-	/*assets\textures\skeletons\mannequin\Dancing1_Alb_1.dds : Dancing1_Alb_1 : assets\source\skeletons\mannequin\Dancing1.fbx : assets\textures\skeletons\mannequin\Dancing1_Alb_1.dds*/
-	Dancing1_Alb_1 = 4415045714759940971,
-
-	/*assets\textures\skeletons\archer\button_Alb_2.dds : button_Alb_2 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Alb_2.dds*/
-	button_Alb_2 = 291464682890079659,
-
-	/*assets\textures\skeletons\archer\jogBack_Alb_0.dds : jogBack_Alb_0 : assets\source\skeletons\archer\jogBack.fbx : assets\textures\skeletons\archer\jogBack_Alb_0.dds*/
-	jogBack_Alb_0 = 3117529705319199659,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_0.dds : camilla_02_Alb_0 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_0.dds*/
-	camilla_02_Alb_0 = 8489338532190961323,
-
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_2.dds : pesant_f_02_Nrm_2 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_2.dds*/
-	pesant_f_02_Nrm_2 = 18177125380916030121,
-
-	/*assets\skeletons\mannequin\alpha_body_mat.dds : alpha_body_mat : assets\source\skeletons\mannequin\alpha_body_mat.png : assets\skeletons\mannequin\alpha_body_mat.dds*/
-	alpha_body_mat = 18196113589290631849,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_91.dds : dungeon_test_Nrm_91 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_91.dds*/
-	dungeon_test_Nrm_91 = 10354259425125771516,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_16.dds : dungeon_test_Nrm_16 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_16.dds*/
-	dungeon_test_Nrm_16 = 16189894238668765436,
-
-	/*assets\textures\skeletons\archer\button_Alb_0.dds : button_Alb_0 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Alb_0.dds*/
-	button_Alb_0 = 10857008615119024380,
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_1.dds : pesant_f_02_Alb_1 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_1.dds*/
+	pesant_f_02_Alb_1 = 11771704506512309413,
 
 	/*assets\textures\skeletons\mannequin\Dancing2_Alb_0.dds : Dancing2_Alb_0 : assets\source\skeletons\mannequin\Dancing2.fbx : assets\textures\skeletons\mannequin\Dancing2_Alb_0.dds*/
 	Dancing2_Alb_0 = 11602138735723252965,
 
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_1.dds : pesant_f_02_Alb_1 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_1.dds*/
-	pesant_f_02_Alb_1 = 11771704506512309413,
+	/*assets\textures\prop\misc\dummy_normal.dds : dummy_normal : assets\source\textures\prop\misc\dummy_normal.jpeg : assets\textures\prop\misc\dummy_normal.dds*/
+	dummy_normal = 11851124507578810403,
 
 	/*assets\textures\models\props\veh\prop_veh_sports_wheel_01a_Alb_0.dds : prop_veh_sports_wheel_01a_Alb_0 : assets\source\models\props\veh\prop_veh_sports_wheel_01a.fbx : assets\textures\models\props\veh\prop_veh_sports_wheel_01a_Alb_0.dds*/
 	prop_veh_sports_wheel_01a_Alb_0 = 6968381277881823681,
@@ -98,78 +158,6 @@ enum class Texture : unsigned long long
 	/*assets\textures\models\props\medieval\prop_med_anvil_Alb_0.dds : prop_med_anvil_Alb_0 : assets\source\models\props\medieval\prop_med_anvil.fbx : assets\textures\models\props\medieval\prop_med_anvil_Alb_0.dds*/
 	prop_med_anvil_Alb_0 = 17215314773268339713,
 
-	/*assets\textures\skeletons\archer\jogLeft_Alb_0.dds : jogLeft_Alb_0 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Alb_0.dds*/
-	jogLeft_Alb_0 = 9958326524826406585,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_80.dds : dungeon_test_Nrm_80 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_80.dds*/
-	dungeon_test_Nrm_80 = 11765630137645956409,
-
-	/*assets\textures\skeletons\archer\jogBack_Nrm_2.dds : jogBack_Nrm_2 : assets\source\skeletons\archer\jogBack.fbx : assets\textures\skeletons\archer\jogBack_Nrm_2.dds*/
-	jogBack_Nrm_2 = 16710381518983280441,
-
-	/*assets\textures\models\props\veh\prop_veh_sports_01a_Alb_0.dds : prop_veh_sports_01a_Alb_0 : assets\source\models\props\veh\prop_veh_sports_01a.fbx : assets\textures\models\props\veh\prop_veh_sports_01a_Alb_0.dds*/
-	prop_veh_sports_01a_Alb_0 = 11471087056444765497,
-
-	/*assets\textures\prop\misc\dummy_baseColor.dds : dummy_baseColor : assets\source\textures\prop\misc\dummy_baseColor.jpeg : assets\textures\prop\misc\dummy_baseColor.dds*/
-	dummy_baseColor = 13101498195675826041,
-
-	/*assets\textures\models\props\level\dungeon_test_Alb_86.dds : dungeon_test_Alb_86 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_86.dds*/
-	dungeon_test_Alb_86 = 12929819618957950148,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_57.dds : dungeon_test_Nrm_57 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_57.dds*/
-	dungeon_test_Nrm_57 = 8935232182400985796,
-
-	/*assets\textures\skeletons\archer\idle_Nrm_1.dds : idle_Nrm_1 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Nrm_1.dds*/
-	idle_Nrm_1 = 2058764669555012804,
-
-	/*assets\textures\surface\road\Tex_Fine_Road_D.dds : Tex_Fine_Road_D : assets\source\textures\surface\road\Tex_Fine_Road_D.png : assets\textures\surface\road\Tex_Fine_Road_D.dds*/
-	Tex_Fine_Road_D = 2344272204905809092,
-
-	/*assets\textures\models\props\level\dungeon_test_Alb_77.dds : dungeon_test_Alb_77 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_77.dds*/
-	dungeon_test_Alb_77 = 5319448728248869011,
-
-	/*assets\textures\skeletons\archer\jog_Alb_1.dds : jog_Alb_1 : assets\source\skeletons\archer\jog.fbx : assets\textures\skeletons\archer\jog_Alb_1.dds*/
-	jog_Alb_1 = 13610564314360224915,
-
-	/*assets\textures\skeletons\mannequin\Walking_Alb_0.dds : Walking_Alb_0 : assets\source\skeletons\mannequin\Walking.fbx : assets\textures\skeletons\mannequin\Walking_Alb_0.dds*/
-	Walking_Alb_0 = 3006257751369090323,
-
-	/*assets\textures\tex_debug_grid_01.dds : tex_debug_grid_01 : assets\source\textures\tex_debug_grid_01.png : assets\textures\tex_debug_grid_01.dds*/
-	tex_debug_grid_01 = 2699487840350785811,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_61.dds : dungeon_test_Nrm_61 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_61.dds*/
-	dungeon_test_Nrm_61 = 17583279548925582578,
-
-	/*assets\textures\skeletons\archer\jog_Alb_0.dds : jog_Alb_0 : assets\source\skeletons\archer\jog.fbx : assets\textures\skeletons\archer\jog_Alb_0.dds*/
-	jog_Alb_0 = 12572385719210302706,
-
-	/*assets\textures\skeletons\archer\button_Nrm_0.dds : button_Nrm_0 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Nrm_0.dds*/
-	button_Nrm_0 = 12165574246891507442,
-
-	/*assets\textures\skeletons\mannequin\Dancing2_Nrm_0.dds : Dancing2_Nrm_0 : assets\source\skeletons\mannequin\Dancing2.fbx : assets\textures\skeletons\mannequin\Dancing2_Nrm_0.dds*/
-	Dancing2_Nrm_0 = 2559465458900454941,
-
-	/*assets\textures\skeletons\archer\jogRight_Alb_0.dds : jogRight_Alb_0 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Alb_0.dds*/
-	jogRight_Alb_0 = 8916424245841939613,
-
-	/*assets\textures\prop\misc\dummy_normal.dds : dummy_normal : assets\source\textures\prop\misc\dummy_normal.jpeg : assets\textures\prop\misc\dummy_normal.dds*/
-	dummy_normal = 11851124507578810403,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_36.dds : dungeon_test_Nrm_36 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_36.dds*/
-	dungeon_test_Nrm_36 = 2100359496188931914,
-
-	/*assets\textures\skeletons\archer\jog_Alb_2.dds : jog_Alb_2 : assets\source\skeletons\archer\jog.fbx : assets\textures\skeletons\archer\jog_Alb_2.dds*/
-	jog_Alb_2 = 6172939315632500554,
-
-	/*assets\textures\skeletons\archer\swing2_Alb_0.dds : swing2_Alb_0 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Alb_0.dds*/
-	swing2_Alb_0 = 5956435752738731850,
-
-	/*assets\textures\models\props\misc\target_dummy_Alb_0.dds : target_dummy_Alb_0 : assets\source\models\props\misc\target_dummy.fbx : assets\textures\models\props\misc\target_dummy_Alb_0.dds*/
-	target_dummy_Alb_0 = 13576375413806239753,
-
-	/*assets\textures\models\props\weapon\prop_weap_sword_Alb_0.dds : prop_weap_sword_Alb_0 : assets\source\models\props\weapon\prop_weap_sword.fbx : assets\textures\models\props\weapon\prop_weap_sword_Alb_0.dds*/
-	prop_weap_sword_Alb_0 = 3491950834928095113,
-
 	/*assets\textures\models\props\veh\prop_collision_veh_sports_01a_Ems_0.dds : prop_collision_veh_sports_01a_Ems_0 : assets\source\models\props\veh\prop_collision_veh_sports_01a.fbx : assets\textures\models\props\veh\prop_collision_veh_sports_01a_Ems_0.dds*/
 	prop_collision_veh_sports_01a_Ems_0 = 3554285663108359820,
 
@@ -179,8 +167,29 @@ enum class Texture : unsigned long long
 	/*assets\textures\surface\road\Tex_Fine_Road_N.dds : Tex_Fine_Road_N : assets\source\textures\surface\road\Tex_Fine_Road_N.png : assets\textures\surface\road\Tex_Fine_Road_N.dds*/
 	Tex_Fine_Road_N = 16369967077321877580,
 
-	/*assets\textures\tex_debug_grid_02.dds : tex_debug_grid_02 : assets\source\textures\tex_debug_grid_02.png : assets\textures\tex_debug_grid_02.dds*/
-	tex_debug_grid_02 = 15686256914662777056,
+	/*assets\textures\models\props\level\dungeon_test_Nrm_91.dds : dungeon_test_Nrm_91 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_91.dds*/
+	dungeon_test_Nrm_91 = 10354259425125771516,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_16.dds : dungeon_test_Nrm_16 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_16.dds*/
+	dungeon_test_Nrm_16 = 16189894238668765436,
+
+	/*assets\textures\skeletons\archer\button_Alb_0.dds : button_Alb_0 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Alb_0.dds*/
+	button_Alb_0 = 10857008615119024380,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_73.dds : dungeon_test_Alb_73 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_73.dds*/
+	dungeon_test_Alb_73 = 1268682545162804291,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_31.dds : dungeon_test_Alb_31 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_31.dds*/
+	dungeon_test_Alb_31 = 14920307851952761923,
+
+	/*assets\textures\prop\misc\dummy_metallicRoughness.dds : dummy_metallicRoughness : assets\source\textures\prop\misc\dummy_metallicRoughness.png : assets\textures\prop\misc\dummy_metallicRoughness.dds*/
+	dummy_metallicRoughness = 5611081864731562563,
+
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_2.dds : pesant_f_02_Nrm_2 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_2.dds*/
+	pesant_f_02_Nrm_2 = 18177125380916030121,
+
+	/*assets\skeletons\mannequin\alpha_body_mat.dds : alpha_body_mat : assets\source\skeletons\mannequin\alpha_body_mat.png : assets\skeletons\mannequin\alpha_body_mat.dds*/
+	alpha_body_mat = 18196113589290631849,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_106.dds : dungeon_test_Nrm_106 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_106.dds*/
 	dungeon_test_Nrm_106 = 15858235819745005785,
@@ -197,53 +206,14 @@ enum class Texture : unsigned long long
 	/*assets\textures\models\props\level\dungeon_test_Alb_0.dds : dungeon_test_Alb_0 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_0.dds*/
 	dungeon_test_Alb_0 = 12744062137020034713,
 
-	/*assets\textures\models\props\level\dungeon_test_Alb_73.dds : dungeon_test_Alb_73 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_73.dds*/
-	dungeon_test_Alb_73 = 1268682545162804291,
+	/*assets\textures\tex_debug_grid_02.dds : tex_debug_grid_02 : assets\source\textures\tex_debug_grid_02.png : assets\textures\tex_debug_grid_02.dds*/
+	tex_debug_grid_02 = 15686256914662777056,
 
-	/*assets\textures\models\props\level\dungeon_test_Alb_31.dds : dungeon_test_Alb_31 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_31.dds*/
-	dungeon_test_Alb_31 = 14920307851952761923,
+	/*assets\textures\skeletons\mannequin\Dancing2_Nrm_0.dds : Dancing2_Nrm_0 : assets\source\skeletons\mannequin\Dancing2.fbx : assets\textures\skeletons\mannequin\Dancing2_Nrm_0.dds*/
+	Dancing2_Nrm_0 = 2559465458900454941,
 
-	/*assets\textures\prop\misc\dummy_metallicRoughness.dds : dummy_metallicRoughness : assets\source\textures\prop\misc\dummy_metallicRoughness.png : assets\textures\prop\misc\dummy_metallicRoughness.dds*/
-	dummy_metallicRoughness = 5611081864731562563,
-
-	/*assets\textures\skeletons\archer\swing2_Alb_1.dds : swing2_Alb_1 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Alb_1.dds*/
-	swing2_Alb_1 = 8331691378711450536,
-
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_17.dds : pesant_f_02_Alb_17 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_17.dds*/
-	pesant_f_02_Alb_17 = 14421692611729430376,
-
-	/*assets\textures\skeletons\archer\sprint_Alb_0.dds : sprint_Alb_0 : assets\source\skeletons\archer\sprint.fbx : assets\textures\skeletons\archer\sprint_Alb_0.dds*/
-	sprint_Alb_0 = 1190583322368423784,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_1.dds : camilla_02_Alb_1 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_1.dds*/
-	camilla_02_Alb_1 = 9419392634084919642,
-
-	/*assets\textures\skeletons\mannequin\Dancing1_Nrm_0.dds : Dancing1_Nrm_0 : assets\source\skeletons\mannequin\Dancing1.fbx : assets\textures\skeletons\mannequin\Dancing1_Nrm_0.dds*/
-	Dancing1_Nrm_0 = 868521963073733235,
-
-	/*assets\textures\skeletons\archer\jogRight_Alb_1.dds : jogRight_Alb_1 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Alb_1.dds*/
-	jogRight_Alb_1 = 10984409757723638698,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_84.dds : dungeon_test_Nrm_84 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_84.dds*/
-	dungeon_test_Nrm_84 = 10436780538779118881,
-
-	/*assets\textures\skeletons\archer\swing_Nrm_0.dds : swing_Nrm_0 : assets\source\skeletons\archer\swing.fbx : assets\textures\skeletons\archer\swing_Nrm_0.dds*/
-	swing_Nrm_0 = 5191326740420790049,
-
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_2.dds : pesant_f_02_Alb_2 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_2.dds*/
-	pesant_f_02_Alb_2 = 17413473985777471992,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_56.dds : dungeon_test_Nrm_56 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_56.dds*/
-	dungeon_test_Nrm_56 = 8526723826187829576,
-
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_3.dds : pesant_f_02_Alb_3 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_3.dds*/
-	pesant_f_02_Alb_3 = 65232729128196424,
-
-	/*assets\textures\skeletons\archer\idle_Nrm_0.dds : idle_Nrm_0 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Nrm_0.dds*/
-	idle_Nrm_0 = 14344513721577142088,
-
-	/*assets\textures\skeletons\archer\jogLeft_Nrm_0.dds : jogLeft_Nrm_0 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Nrm_0.dds*/
-	jogLeft_Nrm_0 = 9847149619174105911,
+	/*assets\textures\skeletons\archer\jogRight_Alb_0.dds : jogRight_Alb_0 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Alb_0.dds*/
+	jogRight_Alb_0 = 8916424245841939613,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_68.dds : dungeon_test_Alb_68 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_68.dds*/
 	dungeon_test_Alb_68 = 17258202801943159206,
@@ -254,17 +224,11 @@ enum class Texture : unsigned long long
 	/*assets\textures\models\props\veh\prop_veh_sports_01a_Ems_0.dds : prop_veh_sports_01a_Ems_0 : assets\source\models\props\veh\prop_veh_sports_01a.fbx : assets\textures\models\props\veh\prop_veh_sports_01a_Ems_0.dds*/
 	prop_veh_sports_01a_Ems_0 = 2687838138460663206,
 
-	/*assets\textures\skeletons\archer\jog_Nrm_0.dds : jog_Nrm_0 : assets\source\skeletons\archer\jog.fbx : assets\textures\skeletons\archer\jog_Nrm_0.dds*/
-	jog_Nrm_0 = 10967080830406324090,
+	/*assets\textures\skeletons\archer\jogLeft_Nrm_0.dds : jogLeft_Nrm_0 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Nrm_0.dds*/
+	jogLeft_Nrm_0 = 9847149619174105911,
 
 	/*assets\textures\skeletons\archer\jogBack_Nrm_0.dds : jogBack_Nrm_0 : assets\source\skeletons\archer\jogBack.fbx : assets\textures\skeletons\archer\jogBack_Nrm_0.dds*/
 	jogBack_Nrm_0 = 8023859773842419974,
-
-	/*assets\textures\skeletons\archer\archer_Nrm_0.dds : archer_Nrm_0 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Nrm_0.dds*/
-	archer_Nrm_0 = 10119545598796970142,
-
-	/*assets\textures\skeletons\archer\jogRight_Nrm_1.dds : jogRight_Nrm_1 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Nrm_1.dds*/
-	jogRight_Nrm_1 = 15162317824857397918,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_78.dds : dungeon_test_Nrm_78 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_78.dds*/
 	dungeon_test_Nrm_78 = 10979681321574088030,
@@ -275,6 +239,24 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\mannequin\Walking_Nrm_0.dds : Walking_Nrm_0 : assets\source\skeletons\mannequin\Walking.fbx : assets\textures\skeletons\mannequin\Walking_Nrm_0.dds*/
 	Walking_Nrm_0 = 2010649778761840990,
 
+	/*assets\textures\skeletons\archer\jogRight_Nrm_1.dds : jogRight_Nrm_1 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Nrm_1.dds*/
+	jogRight_Nrm_1 = 15162317824857397918,
+
+	/*assets\textures\skeletons\archer\archer_Nrm_0.dds : archer_Nrm_0 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Nrm_0.dds*/
+	archer_Nrm_0 = 10119545598796970142,
+
+	/*assets\textures\skeletons\mannequin\Dancing1_Nrm_0.dds : Dancing1_Nrm_0 : assets\source\skeletons\mannequin\Dancing1.fbx : assets\textures\skeletons\mannequin\Dancing1_Nrm_0.dds*/
+	Dancing1_Nrm_0 = 868521963073733235,
+
+	/*assets\textures\skeletons\archer\jog_Nrm_0.dds : jog_Nrm_0 : assets\source\skeletons\archer\jog.fbx : assets\textures\skeletons\archer\jog_Nrm_0.dds*/
+	jog_Nrm_0 = 10967080830406324090,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_84.dds : dungeon_test_Nrm_84 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_84.dds*/
+	dungeon_test_Nrm_84 = 10436780538779118881,
+
+	/*assets\textures\skeletons\archer\swing_Nrm_0.dds : swing_Nrm_0 : assets\source\skeletons\archer\swing.fbx : assets\textures\skeletons\archer\swing_Nrm_0.dds*/
+	swing_Nrm_0 = 5191326740420790049,
+
 	/*assets\textures\models\props\level\dungeon_test_Nrm_102.dds : dungeon_test_Nrm_102 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_102.dds*/
 	dungeon_test_Nrm_102 = 3652767426586921511,
 
@@ -284,8 +266,14 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\archer\swing2_Nrm_0.dds : swing2_Nrm_0 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Nrm_0.dds*/
 	swing2_Nrm_0 = 311034804129910311,
 
-	/*assets\textures\skeletons\archer\button_Alb_1.dds : button_Alb_1 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Alb_1.dds*/
-	button_Alb_1 = 10031443336301056022,
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_1.dds : camilla_02_Alb_1 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_1.dds*/
+	camilla_02_Alb_1 = 9419392634084919642,
+
+	/*assets\textures\skeletons\archer\sprint_Nrm_1.dds : sprint_Nrm_1 : assets\source\skeletons\archer\sprint.fbx : assets\textures\skeletons\archer\sprint_Nrm_1.dds*/
+	sprint_Nrm_1 = 5722064902797150904,
+
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_2.dds : pesant_f_02_Alb_2 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_2.dds*/
+	pesant_f_02_Alb_2 = 17413473985777471992,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_8.dds : dungeon_test_Alb_8 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_8.dds*/
 	dungeon_test_Alb_8 = 2281756605329638087,
@@ -296,11 +284,8 @@ enum class Texture : unsigned long long
 	/*assets\textures\models\props\level\dungeon_test_Nrm_0.dds : dungeon_test_Nrm_0 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_0.dds*/
 	dungeon_test_Nrm_0 = 12116573632717350919,
 
-	/*assets\textures\models\props\level\dungeon_test_Nrm_30.dds : dungeon_test_Nrm_30 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_30.dds*/
-	dungeon_test_Nrm_30 = 15278022463759246720,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Nrm_1.dds : camilla_02_Nrm_1 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_1.dds*/
-	camilla_02_Nrm_1 = 259326957181731712,
+	/*assets\textures\skeletons\archer\jogRight_Alb_1.dds : jogRight_Alb_1 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Alb_1.dds*/
+	jogRight_Alb_1 = 10984409757723638698,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_20.dds : dungeon_test_Nrm_20 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_20.dds*/
 	dungeon_test_Nrm_20 = 11914757782728292559,
@@ -311,41 +296,41 @@ enum class Texture : unsigned long long
 	/*assets\textures\models\props\misc\target_dummy_Nrm_0.dds : target_dummy_Nrm_0 : assets\source\models\props\misc\target_dummy.fbx : assets\textures\models\props\misc\target_dummy_Nrm_0.dds*/
 	target_dummy_Nrm_0 = 18099831118649553615,
 
+	/*assets\textures\models\props\level\dungeon_test_Nrm_56.dds : dungeon_test_Nrm_56 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_56.dds*/
+	dungeon_test_Nrm_56 = 8526723826187829576,
+
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_3.dds : pesant_f_02_Alb_3 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_3.dds*/
+	pesant_f_02_Alb_3 = 65232729128196424,
+
+	/*assets\textures\skeletons\archer\idle_Nrm_0.dds : idle_Nrm_0 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Nrm_0.dds*/
+	idle_Nrm_0 = 14344513721577142088,
+
 	/*assets\textures\skeletons\archer\archer_Alb_1.dds : archer_Alb_1 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Alb_1.dds*/
 	archer_Alb_1 = 18201824955024683766,
 
 	/*assets\textures\skeletons\archer\jogLeft_Alb_1.dds : jogLeft_Alb_1 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Alb_1.dds*/
 	jogLeft_Alb_1 = 5766467099450295640,
 
+	/*assets\textures\models\props\level\dungeon_test_Nrm_30.dds : dungeon_test_Nrm_30 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_30.dds*/
+	dungeon_test_Nrm_30 = 15278022463759246720,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Nrm_1.dds : camilla_02_Nrm_1 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_1.dds*/
+	camilla_02_Nrm_1 = 259326957181731712,
+
+	/*assets\textures\skeletons\archer\sprint_Alb_2.dds : sprint_Alb_2 : assets\source\skeletons\archer\sprint.fbx : assets\textures\skeletons\archer\sprint_Alb_2.dds*/
+	sprint_Alb_2 = 12721616313127312718,
+
 	/*assets\textures\skeletons\archer\swing_Alb_1.dds : swing_Alb_1 : assets\source\skeletons\archer\swing.fbx : assets\textures\skeletons\archer\swing_Alb_1.dds*/
 	swing_Alb_1 = 9894943614169769275,
+
+	/*assets\textures\skeletons\archer\swing2_Alb_1.dds : swing2_Alb_1 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Alb_1.dds*/
+	swing2_Alb_1 = 8331691378711450536,
 
 	/*assets\textures\skeletons\mannequin\Dancing1_Nrm_1.dds : Dancing1_Nrm_1 : assets\source\skeletons\mannequin\Dancing1.fbx : assets\textures\skeletons\mannequin\Dancing1_Nrm_1.dds*/
 	Dancing1_Nrm_1 = 6012384178243031026,
 
-	/*assets\textures\skeletons\archer\button_Nrm_1.dds : button_Nrm_1 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Nrm_1.dds*/
-	button_Nrm_1 = 16172209413732536904,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_2.dds : camilla_02_Alb_2 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_2.dds*/
-	camilla_02_Alb_2 = 4238006952046921103,
-
-	/*assets\textures\skeletons\archer\sprint_Nrm_1.dds : sprint_Nrm_1 : assets\source\skeletons\archer\sprint.fbx : assets\textures\skeletons\archer\sprint_Nrm_1.dds*/
-	sprint_Nrm_1 = 5722064902797150904,
-
-	/*assets\textures\models\props\level\dungeon_test_Alb_1.dds : dungeon_test_Alb_1 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_1.dds*/
-	dungeon_test_Alb_1 = 8025475611387454642,
-
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_11.dds : pesant_f_02_Alb_11 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_11.dds*/
-	pesant_f_02_Alb_11 = 14798199585826825841,
-
-	/*assets\textures\skeletons\archer\jogRight_Alb_2.dds : jogRight_Alb_2 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Alb_2.dds*/
-	jogRight_Alb_2 = 8397801230279282289,
-
-	/*assets\textures\skeletons\archer\archer_Nrm_1.dds : archer_Nrm_1 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Nrm_1.dds*/
-	archer_Nrm_1 = 15264837880187430683,
-
-	/*assets\textures\skeletons\archer\swing2_Nrm_1.dds : swing2_Nrm_1 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Nrm_1.dds*/
-	swing2_Nrm_1 = 16262229083248099082,
+	/*assets\textures\skeletons\archer\button_Alb_1.dds : button_Alb_1 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Alb_1.dds*/
+	button_Alb_1 = 10031443336301056022,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_73.dds : dungeon_test_Nrm_73 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_73.dds*/
 	dungeon_test_Nrm_73 = 11784180407834498250,
@@ -359,11 +344,50 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\archer\jogLeft_Alb_2.dds : jogLeft_Alb_2 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Alb_2.dds*/
 	jogLeft_Alb_2 = 7634104267052195304,
 
-	/*assets\textures\skeletons\archer\sprint_Alb_2.dds : sprint_Alb_2 : assets\source\skeletons\archer\sprint.fbx : assets\textures\skeletons\archer\sprint_Alb_2.dds*/
-	sprint_Alb_2 = 12721616313127312718,
+	/*assets\textures\models\props\level\dungeon_test_Nrm_1.dds : dungeon_test_Nrm_1 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_1.dds*/
+	dungeon_test_Nrm_1 = 17732594446460836992,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_3.dds : camilla_02_Alb_3 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_3.dds*/
-	camilla_02_Alb_3 = 8536434043628875247,
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_11.dds : pesant_f_02_Alb_11 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_11.dds*/
+	pesant_f_02_Alb_11 = 14798199585826825841,
+
+	/*assets\textures\skeletons\archer\jogRight_Alb_2.dds : jogRight_Alb_2 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Alb_2.dds*/
+	jogRight_Alb_2 = 8397801230279282289,
+
+	/*assets\textures\skeletons\archer\archer_Nrm_1.dds : archer_Nrm_1 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Nrm_1.dds*/
+	archer_Nrm_1 = 15264837880187430683,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_2.dds : camilla_02_Alb_2 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_2.dds*/
+	camilla_02_Alb_2 = 4238006952046921103,
+
+	/*assets\textures\skeletons\archer\sprint_Nrm_2.dds : sprint_Nrm_2 : assets\source\skeletons\archer\sprint.fbx : assets\textures\skeletons\archer\sprint_Nrm_2.dds*/
+	sprint_Nrm_2 = 7627790444271432935,
+
+	/*assets\textures\skeletons\archer\swing2_Nrm_1.dds : swing2_Nrm_1 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Nrm_1.dds*/
+	swing2_Nrm_1 = 16262229083248099082,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_81.dds : dungeon_test_Nrm_81 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_81.dds*/
+	dungeon_test_Nrm_81 = 4147204425356727491,
+
+	/*assets\textures\skeletons\archer\jogLeft_Nrm_2.dds : jogLeft_Nrm_2 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Nrm_2.dds*/
+	jogLeft_Nrm_2 = 9781451187846443715,
+
+	/*assets\textures\skeletons\archer\button_Nrm_1.dds : button_Nrm_1 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Nrm_1.dds*/
+	button_Nrm_1 = 16172209413732536904,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_23.dds : dungeon_test_Nrm_23 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_23.dds*/
+	dungeon_test_Nrm_23 = 3547983184653323285,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_13.dds : dungeon_test_Nrm_13 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_13.dds*/
+	dungeon_test_Nrm_13 = 5732079205605519381,
+
+	/*assets\textures\skeletons\archer\archer_Alb_2.dds : archer_Alb_2 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Alb_2.dds*/
+	archer_Alb_2 = 4288918771470587925,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Nrm_22.dds : camilla_02_Nrm_22 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_22.dds*/
+	camilla_02_Nrm_22 = 11747810994739313623,
+
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_3.dds : pesant_f_02_Nrm_3 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_3.dds*/
+	pesant_f_02_Nrm_3 = 10180392978994742231,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_107.dds : dungeon_test_Alb_107 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_107.dds*/
 	dungeon_test_Alb_107 = 18266725459581476138,
@@ -377,38 +401,8 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\archer\jogRight_Nrm_2.dds : jogRight_Nrm_2 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Nrm_2.dds*/
 	jogRight_Nrm_2 = 9449932825911663402,
 
-	/*assets\textures\models\props\level\dungeon_test_Nrm_23.dds : dungeon_test_Nrm_23 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_23.dds*/
-	dungeon_test_Nrm_23 = 3547983184653323285,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_13.dds : dungeon_test_Nrm_13 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_13.dds*/
-	dungeon_test_Nrm_13 = 5732079205605519381,
-
-	/*assets\textures\skeletons\archer\archer_Alb_2.dds : archer_Alb_2 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Alb_2.dds*/
-	archer_Alb_2 = 4288918771470587925,
-
-	/*assets\textures\skeletons\archer\idle_Alb_2.dds : idle_Alb_2 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Alb_2.dds*/
-	idle_Alb_2 = 4273767946241263495,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_1.dds : dungeon_test_Nrm_1 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_1.dds*/
-	dungeon_test_Nrm_1 = 17732594446460836992,
-
-	/*assets\textures\skeletons\archer\button_Nrm_2.dds : button_Nrm_2 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Nrm_2.dds*/
-	button_Nrm_2 = 8120997708350880187,
-
-	/*assets\textures\models\props\level\dungeon_test_Alb_23.dds : dungeon_test_Alb_23 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_23.dds*/
-	dungeon_test_Alb_23 = 13474840763444200871,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_26.dds : camilla_02_Alb_26 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_26.dds*/
-	camilla_02_Alb_26 = 11349245213777632167,
-
-	/*assets\textures\skeletons\archer\swing2_Alb_2.dds : swing2_Alb_2 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Alb_2.dds*/
-	swing2_Alb_2 = 14210247549964389287,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Nrm_22.dds : camilla_02_Nrm_22 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_22.dds*/
-	camilla_02_Nrm_22 = 11747810994739313623,
-
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_3.dds : pesant_f_02_Nrm_3 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_3.dds*/
-	pesant_f_02_Nrm_3 = 10180392978994742231,
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_3.dds : camilla_02_Alb_3 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_3.dds*/
+	camilla_02_Alb_3 = 8536434043628875247,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_34.dds : dungeon_test_Nrm_34 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_34.dds*/
 	dungeon_test_Nrm_34 = 16159415150555080692,
@@ -419,38 +413,38 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\archer\swing_Nrm_2.dds : swing_Nrm_2 : assets\source\skeletons\archer\swing.fbx : assets\textures\skeletons\archer\swing_Nrm_2.dds*/
 	swing_Nrm_2 = 1841910020675378676,
 
-	/*assets\textures\skeletons\archer\sprint_Nrm_2.dds : sprint_Nrm_2 : assets\source\skeletons\archer\sprint.fbx : assets\textures\skeletons\archer\sprint_Nrm_2.dds*/
-	sprint_Nrm_2 = 7627790444271432935,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_81.dds : dungeon_test_Nrm_81 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_81.dds*/
-	dungeon_test_Nrm_81 = 4147204425356727491,
-
-	/*assets\textures\skeletons\archer\jogLeft_Nrm_2.dds : jogLeft_Nrm_2 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Nrm_2.dds*/
-	jogLeft_Nrm_2 = 9781451187846443715,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_4.dds : camilla_02_Alb_4 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_4.dds*/
-	camilla_02_Alb_4 = 17032391204090163161,
-
-	/*assets\textures\skeletons\archer\archer_Nrm_2.dds : archer_Nrm_2 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Nrm_2.dds*/
-	archer_Nrm_2 = 11005172075659583045,
-
-	/*assets\textures\skeletons\archer\idle_Nrm_2.dds : idle_Nrm_2 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Nrm_2.dds*/
-	idle_Nrm_2 = 12301519047721468378,
-
 	/*assets\textures\models\props\level\dungeon_test_Alb_76.dds : dungeon_test_Alb_76 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_76.dds*/
 	dungeon_test_Alb_76 = 13386267680341322860,
 
 	/*assets\textures\skeletons\archer\jogBack_Alb_3.dds : jogBack_Alb_3 : assets\source\skeletons\archer\jogBack.fbx : assets\textures\skeletons\archer\jogBack_Alb_3.dds*/
 	jogBack_Alb_3 = 4774001388936166508,
 
-	/*assets\textures\skeletons\archer\swing2_Alb_3.dds : swing2_Alb_3 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Alb_3.dds*/
-	swing2_Alb_3 = 6779985685323873413,
+	/*assets\textures\models\props\level\dungeon_test_Alb_23.dds : dungeon_test_Alb_23 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_23.dds*/
+	dungeon_test_Alb_23 = 13474840763444200871,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_26.dds : camilla_02_Alb_26 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_26.dds*/
+	camilla_02_Alb_26 = 11349245213777632167,
+
+	/*assets\textures\skeletons\archer\swing2_Alb_2.dds : swing2_Alb_2 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Alb_2.dds*/
+	swing2_Alb_2 = 14210247549964389287,
+
+	/*assets\textures\skeletons\archer\idle_Alb_2.dds : idle_Alb_2 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Alb_2.dds*/
+	idle_Alb_2 = 4273767946241263495,
+
+	/*assets\textures\skeletons\archer\archer_Nrm_2.dds : archer_Nrm_2 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Nrm_2.dds*/
+	archer_Nrm_2 = 11005172075659583045,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_2.dds : dungeon_test_Nrm_2 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_2.dds*/
+	dungeon_test_Nrm_2 = 10121661720020723761,
+
+	/*assets\textures\skeletons\archer\jogLeft_Alb_3.dds : jogLeft_Alb_3 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Alb_3.dds*/
+	jogLeft_Alb_3 = 2532552010525052465,
 
 	/*assets\textures\skeletons\archer\jogRight_Alb_3.dds : jogRight_Alb_3 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Alb_3.dds*/
 	jogRight_Alb_3 = 729716641181187922,
 
-	/*assets\textures\skeletons\archer\button_Alb_3.dds : button_Alb_3 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Alb_3.dds*/
-	button_Alb_3 = 14730703735073908884,
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_4.dds : camilla_02_Alb_4 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_4.dds*/
+	camilla_02_Alb_4 = 17032391204090163161,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_75.dds : dungeon_test_Nrm_75 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_75.dds*/
 	dungeon_test_Nrm_75 = 7215242107962650328,
@@ -461,41 +455,17 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\archer\swing_Alb_3.dds : swing_Alb_3 : assets\source\skeletons\archer\swing.fbx : assets\textures\skeletons\archer\swing_Alb_3.dds*/
 	swing_Alb_3 = 16002659573547072216,
 
-	/*assets\textures\models\props\level\dungeon_test_Nrm_53.dds : dungeon_test_Nrm_53 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_53.dds*/
-	dungeon_test_Nrm_53 = 12238893291393567792,
+	/*assets\textures\skeletons\archer\button_Nrm_2.dds : button_Nrm_2 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Nrm_2.dds*/
+	button_Nrm_2 = 8120997708350880187,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Nrm_20.dds : camilla_02_Nrm_20 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_20.dds*/
-	camilla_02_Nrm_20 = 5334092432432924720,
+	/*assets\textures\skeletons\archer\idle_Nrm_2.dds : idle_Nrm_2 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Nrm_2.dds*/
+	idle_Nrm_2 = 12301519047721468378,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Nrm_4.dds : camilla_02_Nrm_4 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_4.dds*/
-	camilla_02_Nrm_4 = 11666650574209128496,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_2.dds : dungeon_test_Nrm_2 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_2.dds*/
-	dungeon_test_Nrm_2 = 10121661720020723761,
-
-	/*assets\textures\skeletons\archer\jogLeft_Alb_3.dds : jogLeft_Alb_3 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Alb_3.dds*/
-	jogLeft_Alb_3 = 2532552010525052465,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_21.dds : dungeon_test_Nrm_21 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_21.dds*/
-	dungeon_test_Nrm_21 = 6338820540584682806,
-
-	/*assets\textures\skeletons\archer\idle_Alb_3.dds : idle_Alb_3 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Alb_3.dds*/
-	idle_Alb_3 = 15581386528560659254,
-
-	/*assets\textures\skeletons\archer\swing2_Nrm_3.dds : swing2_Nrm_3 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Nrm_3.dds*/
-	swing2_Nrm_3 = 17109433509490991549,
+	/*assets\textures\skeletons\archer\swing2_Alb_3.dds : swing2_Alb_3 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Alb_3.dds*/
+	swing2_Alb_3 = 6779985685323873413,
 
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_4.dds : pesant_f_02_Alb_4 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_4.dds*/
 	pesant_f_02_Alb_4 = 2741278543484384120,
-
-	/*assets\textures\skeletons\archer\archer_Alb_3.dds : archer_Alb_3 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Alb_3.dds*/
-	archer_Alb_3 = 14866343634908237316,
-
-	/*assets\textures\skeletons\archer\jogBack_Nrm_3.dds : jogBack_Nrm_3 : assets\source\skeletons\archer\jogBack.fbx : assets\textures\skeletons\archer\jogBack_Nrm_3.dds*/
-	jogBack_Nrm_3 = 2499187806313120377,
-
-	/*assets\textures\skeletons\archer\jogRight_Nrm_3.dds : jogRight_Nrm_3 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Nrm_3.dds*/
-	jogRight_Nrm_3 = 3675251125295715168,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_28.dds : dungeon_test_Alb_28 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_28.dds*/
 	dungeon_test_Alb_28 = 2750888832696543774,
@@ -503,14 +473,8 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\archer\sprint_Nrm_3.dds : sprint_Nrm_3 : assets\source\skeletons\archer\sprint.fbx : assets\textures\skeletons\archer\sprint_Nrm_3.dds*/
 	sprint_Nrm_3 = 15577586285237459486,
 
-	/*assets\textures\skeletons\archer\swing_Nrm_3.dds : swing_Nrm_3 : assets\source\skeletons\archer\swing.fbx : assets\textures\skeletons\archer\swing_Nrm_3.dds*/
-	swing_Nrm_3 = 9755720115275581876,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Nrm_18.dds : camilla_02_Nrm_18 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_18.dds*/
-	camilla_02_Nrm_18 = 17700705022052960532,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_5.dds : camilla_02_Alb_5 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_5.dds*/
-	camilla_02_Alb_5 = 12027169317217296660,
+	/*assets\textures\skeletons\archer\archer_Alb_3.dds : archer_Alb_3 : assets\source\skeletons\archer\archer.fbx : assets\textures\skeletons\archer\archer_Alb_3.dds*/
+	archer_Alb_3 = 14866343634908237316,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_68.dds : dungeon_test_Nrm_68 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_68.dds*/
 	dungeon_test_Nrm_68 = 4062589900957828589,
@@ -521,17 +485,38 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\archer\jogLeft_Nrm_3.dds : jogLeft_Nrm_3 : assets\source\skeletons\archer\jogLeft.fbx : assets\textures\skeletons\archer\jogLeft_Nrm_3.dds*/
 	jogLeft_Nrm_3 = 6118780944492329453,
 
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_4.dds : pesant_f_02_Nrm_4 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_4.dds*/
-	pesant_f_02_Nrm_4 = 15509074735687529500,
+	/*assets\textures\skeletons\archer\jogRight_Nrm_3.dds : jogRight_Nrm_3 : assets\source\skeletons\archer\jogRight.fbx : assets\textures\skeletons\archer\jogRight_Nrm_3.dds*/
+	jogRight_Nrm_3 = 3675251125295715168,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_3.dds : dungeon_test_Alb_3 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_3.dds*/
 	dungeon_test_Alb_3 = 11596850999905369811,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Nrm_5.dds : camilla_02_Nrm_5 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_5.dds*/
-	camilla_02_Nrm_5 = 2255427726629734022,
+	/*assets\textures\skeletons\archer\jogBack_Nrm_3.dds : jogBack_Nrm_3 : assets\source\skeletons\archer\jogBack.fbx : assets\textures\skeletons\archer\jogBack_Nrm_3.dds*/
+	jogBack_Nrm_3 = 2499187806313120377,
 
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_5.dds : pesant_f_02_Alb_5 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_5.dds*/
-	pesant_f_02_Alb_5 = 12338898643884145790,
+	/*assets\textures\models\props\level\dungeon_test_Nrm_53.dds : dungeon_test_Nrm_53 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_53.dds*/
+	dungeon_test_Nrm_53 = 12238893291393567792,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Nrm_20.dds : camilla_02_Nrm_20 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_20.dds*/
+	camilla_02_Nrm_20 = 5334092432432924720,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Nrm_4.dds : camilla_02_Nrm_4 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_4.dds*/
+	camilla_02_Nrm_4 = 11666650574209128496,
+
+	/*assets\textures\skeletons\archer\button_Alb_3.dds : button_Alb_3 : assets\source\skeletons\archer\button.fbx : assets\textures\skeletons\archer\button_Alb_3.dds*/
+	button_Alb_3 = 14730703735073908884,
+
+	/*assets\textures\skeletons\archer\swing2_Nrm_3.dds : swing2_Nrm_3 : assets\source\skeletons\archer\swing2.fbx : assets\textures\skeletons\archer\swing2_Nrm_3.dds*/
+	swing2_Nrm_3 = 17109433509490991549,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_21.dds : dungeon_test_Nrm_21 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_21.dds*/
+	dungeon_test_Nrm_21 = 6338820540584682806,
+
+	/*assets\textures\skeletons\archer\idle_Alb_3.dds : idle_Alb_3 : assets\source\skeletons\archer\idle.fbx : assets\textures\skeletons\archer\idle_Alb_3.dds*/
+	idle_Alb_3 = 15581386528560659254,
+
+	/*assets\textures\skeletons\archer\swing_Nrm_3.dds : swing_Nrm_3 : assets\source\skeletons\archer\swing.fbx : assets\textures\skeletons\archer\swing_Nrm_3.dds*/
+	swing_Nrm_3 = 9755720115275581876,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_95.dds : dungeon_test_Alb_95 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_95.dds*/
 	dungeon_test_Alb_95 = 10616854173191022672,
@@ -539,8 +524,26 @@ enum class Texture : unsigned long long
 	/*assets\textures\models\props\level\dungeon_test_Nrm_3.dds : dungeon_test_Nrm_3 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_3.dds*/
 	dungeon_test_Nrm_3 = 11205239592555803728,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_6.dds : camilla_02_Alb_6 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_6.dds*/
-	camilla_02_Alb_6 = 6728988194610584208,
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_4.dds : pesant_f_02_Nrm_4 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_4.dds*/
+	pesant_f_02_Nrm_4 = 15509074735687529500,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Nrm_18.dds : camilla_02_Nrm_18 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_18.dds*/
+	camilla_02_Nrm_18 = 17700705022052960532,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_5.dds : camilla_02_Alb_5 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_5.dds*/
+	camilla_02_Alb_5 = 12027169317217296660,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Nrm_5.dds : camilla_02_Nrm_5 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_5.dds*/
+	camilla_02_Nrm_5 = 2255427726629734022,
+
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_5.dds : pesant_f_02_Alb_5 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_5.dds*/
+	pesant_f_02_Alb_5 = 12338898643884145790,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_53.dds : dungeon_test_Alb_53 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_53.dds*/
+	dungeon_test_Alb_53 = 3491704302918768736,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_4.dds : dungeon_test_Alb_4 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_4.dds*/
+	dungeon_test_Alb_4 = 13085558485620766816,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_82.dds : dungeon_test_Nrm_82 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_82.dds*/
 	dungeon_test_Nrm_82 = 8510021714259218333,
@@ -554,17 +557,20 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_5.dds : pesant_f_02_Nrm_5 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_5.dds*/
 	pesant_f_02_Nrm_5 = 15112560105344178589,
 
-	/*assets\textures\models\props\level\dungeon_test_Alb_53.dds : dungeon_test_Alb_53 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_53.dds*/
-	dungeon_test_Alb_53 = 3491704302918768736,
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_6.dds : camilla_02_Alb_6 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_6.dds*/
+	camilla_02_Alb_6 = 6728988194610584208,
 
-	/*assets\textures\models\props\level\dungeon_test_Alb_4.dds : dungeon_test_Alb_4 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_4.dds*/
-	dungeon_test_Alb_4 = 13085558485620766816,
+	/*assets\textures\models\props\level\dungeon_test_Nrm_4.dds : dungeon_test_Nrm_4 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_4.dds*/
+	dungeon_test_Nrm_4 = 6257563818519699061,
 
 	/*assets\textures\skeletons\camilla\camilla_02_Nrm_6.dds : camilla_02_Nrm_6 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_6.dds*/
 	camilla_02_Nrm_6 = 11598922844410715153,
 
-	/*assets\textures\models\props\level\dungeon_test_Nrm_4.dds : dungeon_test_Nrm_4 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_4.dds*/
-	dungeon_test_Nrm_4 = 6257563818519699061,
+	/*assets\textures\models\props\level\dungeon_test_Alb_5.dds : dungeon_test_Alb_5 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_5.dds*/
+	dungeon_test_Alb_5 = 3890720658660404908,
+
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_6.dds : pesant_f_02_Nrm_6 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_6.dds*/
+	pesant_f_02_Nrm_6 = 9377771053528445016,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_19.dds : dungeon_test_Nrm_19 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_19.dds*/
 	dungeon_test_Nrm_19 = 11567762071639687881,
@@ -572,23 +578,11 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\camilla\camilla_02_Alb_7.dds : camilla_02_Alb_7 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_7.dds*/
 	camilla_02_Alb_7 = 8904047185208468681,
 
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_6.dds : pesant_f_02_Nrm_6 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_6.dds*/
-	pesant_f_02_Nrm_6 = 9377771053528445016,
-
-	/*assets\textures\models\props\level\dungeon_test_Alb_5.dds : dungeon_test_Alb_5 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_5.dds*/
-	dungeon_test_Alb_5 = 3890720658660404908,
-
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_7.dds : pesant_f_02_Alb_7 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_7.dds*/
-	pesant_f_02_Alb_7 = 14425746427308115851,
-
 	/*assets\textures\models\props\level\dungeon_test_Nrm_5.dds : dungeon_test_Nrm_5 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_5.dds*/
 	dungeon_test_Nrm_5 = 13882893000044085208,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_8.dds : camilla_02_Alb_8 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_8.dds*/
-	camilla_02_Alb_8 = 12314687365535556580,
-
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_7.dds : pesant_f_02_Nrm_7 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_7.dds*/
-	pesant_f_02_Nrm_7 = 4819043162273711365,
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_7.dds : pesant_f_02_Alb_7 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_7.dds*/
+	pesant_f_02_Alb_7 = 14425746427308115851,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_97.dds : dungeon_test_Alb_97 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_97.dds*/
 	dungeon_test_Alb_97 = 1143371713084539521,
@@ -596,11 +590,14 @@ enum class Texture : unsigned long long
 	/*assets\textures\models\props\level\dungeon_test_Alb_6.dds : dungeon_test_Alb_6 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_6.dds*/
 	dungeon_test_Alb_6 = 3932818971834229377,
 
-	/*assets\textures\models\props\level\dungeon_test_Nrm_69.dds : dungeon_test_Nrm_69 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_69.dds*/
-	dungeon_test_Nrm_69 = 16466948998420748150,
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_7.dds : pesant_f_02_Nrm_7 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_7.dds*/
+	pesant_f_02_Nrm_7 = 4819043162273711365,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Nrm_8.dds : camilla_02_Nrm_8 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_8.dds*/
-	camilla_02_Nrm_8 = 14996953960101285238,
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_8.dds : camilla_02_Alb_8 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_8.dds*/
+	camilla_02_Alb_8 = 12314687365535556580,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_6.dds : dungeon_test_Nrm_6 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_6.dds*/
+	dungeon_test_Nrm_6 = 3996817610570847078,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_37.dds : dungeon_test_Nrm_37 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_37.dds*/
 	dungeon_test_Nrm_37 = 11453733717023745873,
@@ -608,11 +605,14 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_8.dds : pesant_f_02_Alb_8 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_8.dds*/
 	pesant_f_02_Alb_8 = 7652151363600303441,
 
-	/*assets\textures\models\props\level\dungeon_test_Nrm_6.dds : dungeon_test_Nrm_6 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_6.dds*/
-	dungeon_test_Nrm_6 = 3996817610570847078,
+	/*assets\textures\models\props\level\dungeon_test_Nrm_69.dds : dungeon_test_Nrm_69 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_69.dds*/
+	dungeon_test_Nrm_69 = 16466948998420748150,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_9.dds : camilla_02_Alb_9 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_9.dds*/
-	camilla_02_Alb_9 = 2509246067367550869,
+	/*assets\textures\skeletons\camilla\camilla_02_Nrm_8.dds : camilla_02_Nrm_8 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_8.dds*/
+	camilla_02_Nrm_8 = 14996953960101285238,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_7.dds : dungeon_test_Alb_7 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_7.dds*/
+	dungeon_test_Alb_7 = 1298492326304115786,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_80.dds : dungeon_test_Alb_80 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_80.dds*/
 	dungeon_test_Alb_80 = 17211445787114249271,
@@ -620,23 +620,23 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_8.dds : pesant_f_02_Nrm_8 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_8.dds*/
 	pesant_f_02_Nrm_8 = 6280885756339705399,
 
-	/*assets\textures\models\props\level\dungeon_test_Alb_7.dds : dungeon_test_Alb_7 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_7.dds*/
-	dungeon_test_Alb_7 = 1298492326304115786,
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_9.dds : camilla_02_Alb_9 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_9.dds*/
+	camilla_02_Alb_9 = 2509246067367550869,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_7.dds : dungeon_test_Nrm_7 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_7.dds*/
+	dungeon_test_Nrm_7 = 17476285917089761024,
 
 	/*assets\textures\skeletons\camilla\camilla_02_Nrm_9.dds : camilla_02_Nrm_9 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_9.dds*/
 	camilla_02_Nrm_9 = 4107982384190505979,
 
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_14.dds : pesant_f_02_Alb_14 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_14.dds*/
-	pesant_f_02_Alb_14 = 2548168521291208447,
-
 	/*assets\textures\models\props\level\dungeon_test_Alb_12.dds : dungeon_test_Alb_12 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_12.dds*/
 	dungeon_test_Alb_12 = 8121792177310836991,
 
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_14.dds : pesant_f_02_Alb_14 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_14.dds*/
+	pesant_f_02_Alb_14 = 2548168521291208447,
+
 	/*assets\textures\skeletons\camilla\camilla_02_Alb_10.dds : camilla_02_Alb_10 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_10.dds*/
 	camilla_02_Alb_10 = 10443114597307237631,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_7.dds : dungeon_test_Nrm_7 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_7.dds*/
-	dungeon_test_Nrm_7 = 17476285917089761024,
 
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_9.dds : pesant_f_02_Nrm_9 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_9.dds*/
 	pesant_f_02_Nrm_9 = 1257466365159243142,
@@ -647,14 +647,14 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\camilla\camilla_02_Alb_11.dds : camilla_02_Alb_11 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_11.dds*/
 	camilla_02_Alb_11 = 16342837647488853483,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_12.dds : camilla_02_Alb_12 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_12.dds*/
-	camilla_02_Alb_12 = 8266370912975147191,
-
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_10.dds : pesant_f_02_Alb_10 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_10.dds*/
 	pesant_f_02_Alb_10 = 2145851693193959624,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_8.dds : dungeon_test_Nrm_8 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_8.dds*/
 	dungeon_test_Nrm_8 = 14285707447496634135,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_12.dds : camilla_02_Alb_12 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_12.dds*/
+	camilla_02_Alb_12 = 8266370912975147191,
 
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_10.dds : pesant_f_02_Nrm_10 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_10.dds*/
 	pesant_f_02_Nrm_10 = 17251158133438431407,
@@ -674,12 +674,6 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_11.dds : pesant_f_02_Nrm_11 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_11.dds*/
 	pesant_f_02_Nrm_11 = 2817257437780315297,
 
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_15.dds : pesant_f_02_Alb_15 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_15.dds*/
-	pesant_f_02_Alb_15 = 1242303268906090171,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_15.dds : camilla_02_Alb_15 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_15.dds*/
-	camilla_02_Alb_15 = 8445546470466642619,
-
 	/*assets\textures\models\props\level\dungeon_test_Alb_10.dds : dungeon_test_Alb_10 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_10.dds*/
 	dungeon_test_Alb_10 = 15888099006148028027,
 
@@ -689,8 +683,23 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_12.dds : pesant_f_02_Alb_12 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_12.dds*/
 	pesant_f_02_Alb_12 = 14429583601214946920,
 
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_15.dds : pesant_f_02_Alb_15 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_15.dds*/
+	pesant_f_02_Alb_15 = 1242303268906090171,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_15.dds : camilla_02_Alb_15 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_15.dds*/
+	camilla_02_Alb_15 = 8445546470466642619,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_10.dds : dungeon_test_Nrm_10 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_10.dds*/
+	dungeon_test_Nrm_10 = 8092697177726677670,
+
 	/*assets\textures\skeletons\camilla\camilla_02_Nrm_15.dds : camilla_02_Nrm_15 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_15.dds*/
 	camilla_02_Nrm_15 = 13092315213136533332,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_52.dds : dungeon_test_Nrm_52 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_52.dds*/
+	dungeon_test_Nrm_52 = 6655919567744688947,
+
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_12.dds : pesant_f_02_Nrm_12 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_12.dds*/
+	pesant_f_02_Nrm_12 = 3193230776691420979,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_74.dds : dungeon_test_Alb_74 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_74.dds*/
 	dungeon_test_Alb_74 = 7703310555713868452,
@@ -700,18 +709,6 @@ enum class Texture : unsigned long long
 
 	/*assets\textures\skeletons\camilla\camilla_02_Alb_16.dds : camilla_02_Alb_16 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_16.dds*/
 	camilla_02_Alb_16 = 7580737404431532708,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_52.dds : dungeon_test_Nrm_52 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_52.dds*/
-	dungeon_test_Nrm_52 = 6655919567744688947,
-
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_12.dds : pesant_f_02_Nrm_12 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_12.dds*/
-	pesant_f_02_Nrm_12 = 3193230776691420979,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_10.dds : dungeon_test_Nrm_10 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_10.dds*/
-	dungeon_test_Nrm_10 = 8092697177726677670,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Nrm_16.dds : camilla_02_Nrm_16 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_16.dds*/
-	camilla_02_Nrm_16 = 3750638395057437594,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_102.dds : dungeon_test_Alb_102 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_102.dds*/
 	dungeon_test_Alb_102 = 6843924228705920182,
@@ -728,8 +725,14 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_13.dds : pesant_f_02_Alb_13 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_13.dds*/
 	pesant_f_02_Alb_13 = 7646373701432609041,
 
+	/*assets\textures\skeletons\camilla\camilla_02_Nrm_16.dds : camilla_02_Nrm_16 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_16.dds*/
+	camilla_02_Nrm_16 = 3750638395057437594,
+
 	/*assets\textures\models\props\level\dungeon_test_Nrm_11.dds : dungeon_test_Nrm_11 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_11.dds*/
 	dungeon_test_Nrm_11 = 5717861518172750213,
+
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_13.dds : pesant_f_02_Nrm_13 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_13.dds*/
+	pesant_f_02_Nrm_13 = 4604940596585642310,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_28.dds : dungeon_test_Nrm_28 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_28.dds*/
 	dungeon_test_Nrm_28 = 210896261984914366,
@@ -737,17 +740,14 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\camilla\camilla_02_Alb_17.dds : camilla_02_Alb_17 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_17.dds*/
 	camilla_02_Alb_17 = 10565370940324030910,
 
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_13.dds : pesant_f_02_Nrm_13 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_13.dds*/
-	pesant_f_02_Nrm_13 = 4604940596585642310,
-
 	/*assets\textures\skeletons\camilla\camilla_02_Nrm_17.dds : camilla_02_Nrm_17 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_17.dds*/
 	camilla_02_Nrm_17 = 5591425548242089203,
 
-	/*assets\textures\models\props\level\dungeon_test_Nrm_12.dds : dungeon_test_Nrm_12 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_12.dds*/
-	dungeon_test_Nrm_12 = 18123692182720665886,
-
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_14.dds : pesant_f_02_Nrm_14 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_14.dds*/
 	pesant_f_02_Nrm_14 = 1709852813318951575,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_12.dds : dungeon_test_Nrm_12 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_12.dds*/
+	dungeon_test_Nrm_12 = 18123692182720665886,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_104.dds : dungeon_test_Alb_104 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_104.dds*/
 	dungeon_test_Alb_104 = 9871002774296223992,
@@ -767,9 +767,6 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\camilla\camilla_02_Alb_19.dds : camilla_02_Alb_19 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_19.dds*/
 	camilla_02_Alb_19 = 13362907800668946288,
 
-	/*assets\textures\models\props\level\dungeon_test_Alb_14.dds : dungeon_test_Alb_14 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_14.dds*/
-	dungeon_test_Alb_14 = 14265210678340519399,
-
 	/*assets\textures\models\props\level\dungeon_test_Nrm_29.dds : dungeon_test_Nrm_29 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_29.dds*/
 	dungeon_test_Nrm_29 = 8355947835050726434,
 
@@ -778,6 +775,12 @@ enum class Texture : unsigned long long
 
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_16.dds : pesant_f_02_Alb_16 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_16.dds*/
 	pesant_f_02_Alb_16 = 11960271630698701858,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_14.dds : dungeon_test_Alb_14 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_14.dds*/
+	dungeon_test_Alb_14 = 14265210678340519399,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_21.dds : camilla_02_Alb_21 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_21.dds*/
+	camilla_02_Alb_21 = 17291751395535337023,
 
 	/*assets\textures\models\props\level\dungeon_test_Nrm_45.dds : dungeon_test_Nrm_45 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_45.dds*/
 	dungeon_test_Nrm_45 = 13014773903843365793,
@@ -791,23 +794,14 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_17.dds : pesant_f_02_Nrm_17 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Nrm_17.dds*/
 	pesant_f_02_Nrm_17 = 7786292634931967209,
 
+	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_18.dds : pesant_f_02_Alb_18 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_18.dds*/
+	pesant_f_02_Alb_18 = 5827864678524217530,
+
 	/*assets\textures\models\props\level\dungeon_test_Alb_103.dds : dungeon_test_Alb_103 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_103.dds*/
 	dungeon_test_Alb_103 = 3556709038539774989,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_15.dds : dungeon_test_Alb_15 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_15.dds*/
 	dungeon_test_Alb_15 = 9819556561629094413,
-
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_21.dds : camilla_02_Alb_21 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_21.dds*/
-	camilla_02_Alb_21 = 17291751395535337023,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_15.dds : dungeon_test_Nrm_15 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_15.dds*/
-	dungeon_test_Nrm_15 = 10683731992137544727,
-
-	/*assets\textures\skeletons\pesant_f\pesant_f_02_Alb_18.dds : pesant_f_02_Alb_18 : assets\source\skeletons\pesant_f\pesant_f_02.fbx : assets\textures\skeletons\pesant_f\pesant_f_02_Alb_18.dds*/
-	pesant_f_02_Alb_18 = 5827864678524217530,
-
-	/*assets\textures\models\props\level\dungeon_test_Alb_16.dds : dungeon_test_Alb_16 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_16.dds*/
-	dungeon_test_Alb_16 = 4627860507019462,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_90.dds : dungeon_test_Alb_90 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_90.dds*/
 	dungeon_test_Alb_90 = 2602556396975087986,
@@ -815,8 +809,17 @@ enum class Texture : unsigned long long
 	/*assets\textures\skeletons\camilla\camilla_02_Alb_23.dds : camilla_02_Alb_23 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_23.dds*/
 	camilla_02_Alb_23 = 5480491709479467378,
 
+	/*assets\textures\models\props\level\dungeon_test_Nrm_15.dds : dungeon_test_Nrm_15 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_15.dds*/
+	dungeon_test_Nrm_15 = 10683731992137544727,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_16.dds : dungeon_test_Alb_16 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_16.dds*/
+	dungeon_test_Alb_16 = 4627860507019462,
+
 	/*assets\textures\skeletons\camilla\camilla_02_Alb_24.dds : camilla_02_Alb_24 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_24.dds*/
 	camilla_02_Alb_24 = 18246403549627256459,
+
+	/*assets\textures\skeletons\camilla\camilla_02_Alb_25.dds : camilla_02_Alb_25 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_25.dds*/
+	camilla_02_Alb_25 = 15991793290162898251,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_17.dds : dungeon_test_Alb_17 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_17.dds*/
 	dungeon_test_Alb_17 = 3908965335011345328,
@@ -827,23 +830,11 @@ enum class Texture : unsigned long long
 	/*assets\textures\models\props\level\dungeon_test_Nrm_17.dds : dungeon_test_Nrm_17 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_17.dds*/
 	dungeon_test_Nrm_17 = 183840204629572009,
 
-	/*assets\textures\skeletons\camilla\camilla_02_Alb_25.dds : camilla_02_Alb_25 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_25.dds*/
-	camilla_02_Alb_25 = 15991793290162898251,
-
-	/*assets\textures\models\props\level\dungeon_test_Alb_18.dds : dungeon_test_Alb_18 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_18.dds*/
-	dungeon_test_Alb_18 = 17011003847358330963,
-
-	/*assets\textures\models\props\level\dungeon_test_Alb_93.dds : dungeon_test_Alb_93 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_93.dds*/
-	dungeon_test_Alb_93 = 10999708266976915248,
-
-	/*assets\textures\models\props\level\dungeon_test_Nrm_18.dds : dungeon_test_Nrm_18 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_18.dds*/
-	dungeon_test_Nrm_18 = 17891075605528960816,
-
 	/*assets\textures\skeletons\camilla\camilla_02_Nrm_26.dds : camilla_02_Nrm_26 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Nrm_26.dds*/
 	camilla_02_Nrm_26 = 17600207256824045435,
 
-	/*assets\textures\models\props\level\dungeon_test_Alb_19.dds : dungeon_test_Alb_19 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_19.dds*/
-	dungeon_test_Alb_19 = 15391272128217185486,
+	/*assets\textures\models\props\level\dungeon_test_Alb_18.dds : dungeon_test_Alb_18 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_18.dds*/
+	dungeon_test_Alb_18 = 17011003847358330963,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_89.dds : dungeon_test_Alb_89 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_89.dds*/
 	dungeon_test_Alb_89 = 6959828359565431338,
@@ -853,6 +844,15 @@ enum class Texture : unsigned long long
 
 	/*assets\textures\skeletons\camilla\camilla_02_Alb_27.dds : camilla_02_Alb_27 : assets\source\skeletons\camilla\camilla_02.fbx : assets\textures\skeletons\camilla\camilla_02_Alb_27.dds*/
 	camilla_02_Alb_27 = 5828944720944725546,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_93.dds : dungeon_test_Alb_93 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_93.dds*/
+	dungeon_test_Alb_93 = 10999708266976915248,
+
+	/*assets\textures\models\props\level\dungeon_test_Nrm_18.dds : dungeon_test_Nrm_18 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Nrm_18.dds*/
+	dungeon_test_Nrm_18 = 17891075605528960816,
+
+	/*assets\textures\models\props\level\dungeon_test_Alb_19.dds : dungeon_test_Alb_19 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_19.dds*/
+	dungeon_test_Alb_19 = 15391272128217185486,
 
 	/*assets\textures\models\props\level\dungeon_test_Alb_21.dds : dungeon_test_Alb_21 : assets\source\models\props\level\dungeon_test.fbx : assets\textures\models\props\level\dungeon_test_Alb_21.dds*/
 	dungeon_test_Alb_21 = 16874614254499759449,

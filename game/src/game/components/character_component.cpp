@@ -55,18 +55,16 @@ CCharacterComponent::CCharacterComponent(bool isLocalPlayer, const da::CGuid& gu
 
 	m_anims = {
 			
-		  { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/ue_mannequin/Anim_DK2_Idle_RM_01.fbx", mesh)), 1.f }// idle
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // jog
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/ue_mannequin/Anim_DK2_Run_F_IP_01.fbx", mesh)), 0.f } // sprint
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/archer/button.fbx", mesh)), 0.f } // button
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/archer/jogLeft.fbx", mesh)), 0.f } // jog left
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/archer/jogRight.fbx", mesh)), 0.f } // jog right
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/archer/jogBack.fbx", mesh)), 0.f } // jog back
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/ue_mannequin/Anim_DK2_Combo_A1_IP_01.fbx", mesh), false), 0.f } // attack 1
-		, { new da::CSkeletalAnimator(new da::CSkeletalAnimation("assets/source/skeletons/ue_mannequin/Anim_DK2_Combo_A2_IP_01.fbx", mesh), false), 0.f } // attack 2
+		  {  CAssetHelper::create_animator(Animation::Anim_DK2_Idle_RM_01, mesh), 1.f }// idle
+		, {  CAssetHelper::create_animator(Animation::Anim_DK2_Run_F_IP_01, mesh), 0.f } // jog
+		, {  CAssetHelper::create_animator(Animation::Anim_DK2_Run_F_IP_01, mesh), 0.f } // sprint
+		, {  CAssetHelper::create_animator(Animation::button, mesh), 0.f } // button
+		, {  CAssetHelper::create_animator(Animation::jogLeft, mesh), 0.f } // jog left
+		, {  CAssetHelper::create_animator(Animation::jogRight, mesh), 0.f } // jog right
+		, {  CAssetHelper::create_animator(Animation::jogBack, mesh), 0.f } // jog back
+		, {  CAssetHelper::create_animator(Animation::Anim_DK2_Combo_A1_IP_01, mesh), 0.f } // attack 1
+		, {  CAssetHelper::create_animator(Animation::Anim_DK2_Combo_A2_IP_01, mesh), 0.f } // attack 2
 	};
-
-
 
 	m_animGraph = new da::CSkeletalAnimGraph(mesh, m_anims);
 	da::FComponentRef<da::CSkeletalMeshComponent> meshComponent = parent.addComponent<da::CSkeletalMeshComponent>(m_animGraph);

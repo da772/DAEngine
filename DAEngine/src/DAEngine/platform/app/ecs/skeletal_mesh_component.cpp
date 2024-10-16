@@ -16,14 +16,14 @@ namespace da {
 	CSkeletalMeshComponent::CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(false)
 	{
 		m_skeletalmesh = da::CSkeletalMeshFactory::create(meshPath, false);
-		m_animation = new da::CSkeletalAnimation(animPath, m_skeletalmesh);
+		m_animation = new da::CSkeletalAnimation(animPath, m_skeletalmesh, false);
 		m_animator = new da::CSkeletalAnimator(m_animation);
 	}
 
 	CSkeletalMeshComponent::CSkeletalMeshComponent(const std::string& meshPath, const std::string& animPath, bool inverseNormals, CEntity& parent) : m_guid(CGuid::Generate()), m_parent(parent), m_inverseNormals(inverseNormals)
 	{
 		m_skeletalmesh = da::CSkeletalMeshFactory::create(meshPath, inverseNormals);
-		m_animation = new da::CSkeletalAnimation(animPath, m_skeletalmesh);
+		m_animation = new da::CSkeletalAnimation(animPath, m_skeletalmesh, false);
 		m_animator = new da::CSkeletalAnimator(m_animation);
 	}
 
