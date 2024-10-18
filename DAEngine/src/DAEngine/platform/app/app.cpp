@@ -210,11 +210,16 @@ namespace da
 		CFactoryDebug::checkInstances();
 #endif
 		CArgHandler::shutdown();
-		CLogger::shutdown();
 		CWorkerPool::shutdown();
 #ifdef DA_REVIEW
-		if (m_captureProfile) PROFILE_START_CAPTURE()
+		if (m_captureProfile)
+		{
+			LOG_INFO(ELogChannel::Application, "Serializing Profile Capture...");
+			PROFILE_END_CAPTURE()
+		}
 #endif
+
+		CLogger::shutdown();
 	}
 
 #ifdef DA_REVIEW
