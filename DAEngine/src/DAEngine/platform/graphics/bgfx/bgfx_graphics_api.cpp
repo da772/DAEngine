@@ -266,6 +266,9 @@ namespace da {
 		da::CDebugStatsWindow::s_cpuTime = ((stats->cpuTimeEnd - stats->cpuTimeBegin) / 1000.0);
 		da::CDebugStatsWindow::s_waitTime = stats->waitRender / 1000.0;
 		da::CDebugStatsWindow::s_drawCalls = stats->numDraw;
+		da::CDebugStatsWindow::s_numTextures = stats->numTextures;
+		da::CDebugStatsWindow::s_numTriangles = stats->numPrims[bgfx::Topology::TriList];
+		da::CDebugStatsWindow::s_numShaders = stats->numPrograms;
 		da::CDebugStatsWindow::s_gpuMem = stats->gpuMemoryUsed;
 		da::CDebugStatsWindow::s_gpuMemMax = stats->gpuMemoryMax;
 #endif

@@ -18,6 +18,9 @@ namespace da {
 		static double s_gpuTime;
 		static double s_waitTime;
 		static uint64_t s_drawCalls;
+		static uint64_t s_numTextures;
+		static uint64_t s_numTriangles;
+		static uint64_t s_numShaders;;
 		static uint64_t s_gpuMem;
 		static uint64_t s_gpuMemMax;
 		static uint64_t s_frameCount;

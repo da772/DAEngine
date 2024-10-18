@@ -10,6 +10,9 @@
 double da::CDebugStatsWindow::s_gpuTime;
 double da::CDebugStatsWindow::s_cpuTime;
 uint64_t da::CDebugStatsWindow::s_drawCalls;
+uint64_t da::CDebugStatsWindow::s_numTextures;
+uint64_t da::CDebugStatsWindow::s_numTriangles;
+uint64_t da::CDebugStatsWindow::s_numShaders;
 double da::CDebugStatsWindow::s_waitTime;
 uint64_t da::CDebugStatsWindow::s_gpuMemMax;
 uint64_t da::CDebugStatsWindow::s_gpuMem;
@@ -53,7 +56,11 @@ void da::CDebugStatsWindow::update()
 		ImGui::Separator();
 		ImGui::Text("Renderer Stats");
 		ImGui::Separator();
-		ImGui::Text("Draw Calls:   %d", s_drawCalls);
+		ImGui::Text("Draw Calls :   %d", s_drawCalls);
+		ImGui::Text("Textures    :   %d", s_numTextures);
+		ImGui::Text("Shaders     :   %d", s_numShaders);
+		ImGui::Text("Triangles   :   %d", s_numTriangles);
+
 	}
 
 	ImGui::End();

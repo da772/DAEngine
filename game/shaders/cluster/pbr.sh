@@ -132,12 +132,28 @@ vec3 pbrEmissive(vec2 texcoord, float lod)
 
 PBRMaterial pbrInitMaterial(PBRMaterial mat);
 
-PBRMaterial pbrMaterial(vec2 texcoord, float lod)
+int findMSB(int x) {
+    return int(log2(float(x))); // Using logarithm to find the position
+}
+
+float findLod(vec2 texcoord, sampler2D tex)
+{
+    float lodBias = -.75;
+    vec2 texsize = textureSize(tex, 0);
+    vec2 texcoordPixels = texcoord * texsize;
+    float lod = max(length(dFdx(texcoordPixels)), length(dFdy(texcoordPixels)));
+    lod = clamp(log2(lod)+lodBias, 0, findMSB(texsize.x)/2);
+    return lod;
+}
+
+PBRMaterial pbrMaterial(vec2 texcoord)
 {
     PBRMaterial mat;
     texcoord *= s_uvScale;
-    // Read textures/uniforms
+    // get texture lod (assuming all textures are the same resolution)
+    float lod = findLod(texcoord, s_texBaseColor);
 
+    // Read textures/uniforms
     mat.albedo = pbrBaseColor(texcoord, lod);
     vec2 metallicRoughness = pbrMetallicRoughness(texcoord, lod);
     mat.metallic  = metallicRoughness.r;

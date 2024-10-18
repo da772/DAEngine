@@ -100,37 +100,6 @@ AmbientLight getAmbientLight()
     return light;
 }
 
-float calcLod(vec3 pos1, vec3 pos2)
-{
-    float dist = distance(pos1, pos2);
-
-    float LOD1_DistanceSquared = 5;
-    float LOD2_DistanceSquared = 15; 
-    float LOD3_DistanceSquared = 25; 
-    float LOD4_DistanceSquared = 35; 
-    float LOD5_DistanceSquared = 50;
-    
-    if (dist <= LOD1_DistanceSquared) {
-        return 0;
-    }
-    else if (dist <= LOD2_DistanceSquared) {
-        return 1;
-    }
-    else if (dist <= LOD3_DistanceSquared) {
-        return 2;
-    }
-    else if (dist <= LOD4_DistanceSquared) {
-        return 3;
-    }
-    else if (dist <= LOD5_DistanceSquared) {
-        return 4;
-    }
-    else {
-        return 5;
-    }
-
-}
-
 #ifdef INCLUDE_PASS
 vec4 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0, vec4 u_camPos, vec4 gl_FragCoord, float visibility)
 {
@@ -139,9 +108,7 @@ vec4 lightPass(vec3 v_worldpos, vec3 v_normal, vec3 v_tangent, vec2 v_texcoord0,
     // light count is read from the grid instead of a uniform
     // light indices are read and looped over starting from the grid offset
 
-    float lod = calcLod(v_worldpos, u_camPos);
-
-    PBRMaterial mat = pbrMaterial(v_texcoord0, lod);
+    PBRMaterial mat = pbrMaterial(v_texcoord0);
     vec3 N = convertTangentNormal(v_normal, v_tangent, mat.normal);
     mat.a = specularAntiAliasing(N, mat.a);
 
